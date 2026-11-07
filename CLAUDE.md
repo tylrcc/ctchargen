@@ -316,3 +316,21 @@ go run ./cmd/ctchargen new --auto --seed 145 --sheet
   built or attached; a release is a tag, installed with `go install`. A
   published document that went stale while nobody noticed is what issue #31
   was, and neither of these is held by the gate.
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in GitHub Issues for `philoserf/ctchargen`, worked through `gh`.
+See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical labels, unchanged: `needs-triage`, `needs-info`,
+`ready-for-agent`, `ready-for-human`, `wontfix`. See
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` and `docs/adr/` at the repo root, created
+lazily. See `docs/agents/domain.md`.
