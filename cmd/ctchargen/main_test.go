@@ -179,13 +179,9 @@ func parsedInputs(t *testing.T, args ...string) chargen.Inputs {
 // record then carries the seed is held by TestRunWritesEachRendering, from a
 // seed the test names.
 //
-// It is asserted of the parsed flags rather than of a whole run on purpose. A
-// character rolled from a drawn seed walks whichever mustering out rows it
-// lands on, so an unseeded generation reaches a different set of statements
-// every time - and the coverage profile is taken with -coverpkg=./..., under
-// which those statements are counted against the chargen package by this
-// binary too. The ratchet fails on a count that falls as well as one that
-// rises, so an unseeded generation here makes the gate fail at random.
+// It is asserted of the parsed flags rather than of a whole run: the draw
+// is what is under test, and a whole run would roll a character to read one
+// number out of it.
 func TestADrawnSeedIsRecorded(t *testing.T) {
 	t.Parallel()
 

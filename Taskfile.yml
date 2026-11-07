@@ -7,57 +7,6 @@
 # a linter disable to silence it.
 version: "3"
 
-vars:
-  PROFILE: coverage.out
-  RATCHET: coverage.ratchet
-  COUNTS: coverage.counts.out
-
-  # The module path, which every line of a well-formed profile begins with.
-  MODULE:
-    sh: go list -m
-
-  # A profile line whose path is not in this module is a torn write, not a
-  # package. -coverpkg makes every test binary append to one file, and in
-  # cschargen an interleaved write produced "gigithub.com/..." -- a
-  # duplicated "gi" in one line of 22,140.
-  #
-  # UNCOVERED derives a package by string surgery on that path and validates
-  # nothing, so a torn line invents a package and the gate fails on "a
-  # package appearing": a real check, on fabricated input, reported as
-  # something it is not. Checked separately so the message can say which.
-  MALFORMED: >-
-    awk -v module='{{.MODULE}}' 'NR > 1 && index($1, module "/") != 1 {
-    printf "  line %d: %s\n", NR, $1 > "/dev/stderr"; torn++ }
-    END { exit (torn > 0) }' {{.PROFILE}}
-  # Uncovered statements per package, read out of the raw coverage profile.
-  # A profile line is "import/path/file.go:span statements executions", and
-  # the package is the directory the file sits in.
-  #
-  # A block can appear more than once. Under -coverpkg every test binary
-  # instruments every package, so the same statement is reported by each
-  # binary that linked it -- covered by the one whose tests reach it, and
-  # uncovered by the rest. Executions are summed per block before anything
-  # is called uncovered, or a statement every run executes would be counted
-  # as uncovered once for each binary that did not happen to reach it. The
-  # sum in the wrong order reads chargen as 7064 uncovered rather than 45.
-  #
-  # A package with nothing uncovered still prints, at 0. Without that a
-  # later regression would read as a package appearing rather than as a
-  # count rising, and the message would name the wrong fault.
-  #
-  # An integer count, not a percentage: a percentage holds still while a
-  # guarded branch adds one covered statement and one uncovered, and it
-  # grows more forgiving as the repository grows.
-  #
-  # LC_ALL=C because the output is checked in here and compared on a Linux
-  # runner, and the two collate a path separator differently.
-  UNCOVERED: >-
-    awk 'NR>1 { split($1,a,":"); n=split(a[1],p,"/"); d=p[1];
-    for (i=2; i<n; i++) d = d "/" p[i];
-    pkg[$1]=d; stmts[$1]=$2; runs[$1]+=$3; seen[d]=1 }
-    END { for (b in runs) if (runs[b]==0) u[pkg[b]] += stmts[b];
-    for (d in seen) print d, u[d]+0 }' {{.PROFILE}} | LC_ALL=C sort
-
 tasks:
   default:
     desc: The whole gate, in the order a failure is cheapest to read
@@ -68,7 +17,6 @@ tasks:
       - task: nilaway
       - task: vuln
       - task: test
-      - task: ratchet
       - task: docs
 
   tidy:
@@ -116,69 +64,9 @@ tasks:
       - govulncheck ./...
 
   test:
-    desc: The suite, with the race detector, writing a coverage profile
-    # Once per invocation: `default` runs the suite and then `ratchet`,
-    # which depends on it. Without this the whole -race suite runs twice on
-    # every gate, for one profile that does not change.
-    run: once
+    desc: The suite, with the race detector
     cmds:
-      # -coverpkg because the packages are exercised across package lines:
-      # render is driven by chargen's golden tests, and the engine by the
-      # command's. Without it the profile counts only the package under
-      # test, and the ratchet reads code as uncovered that every run
-      # executes.
-      - go test -race -covermode=atomic -coverpkg=./... -coverprofile={{.PROFILE}} ./...
-
-  ratchet:
-    desc: Uncovered statements per package have not moved
-    # A failure here is often not lost coverage. Blank lines split coverage
-    # blocks, so any reflow by wsl_v5, and any extraction of a helper, moves
-    # these counts without changing what the tests reach. Read the named
-    # packages first: if the change was a reflow or a refactor,
-    # `task ratchet:update` is the answer. If it was neither, something
-    # stopped being covered.
-    deps: [test]
-    cmds:
-      # diff carries the whole semantic, in both directions and for free: a
-      # count that rose is coverage lost, one that fell is coverage to lock
-      # in, and a package on one side only is one added or one gone. A
-      # number that has fallen fails too, because a stale number is a
-      # ratchet that has stopped holding.
-      - |
-        {{.MALFORMED}} || {
-          echo "" >&2
-          echo "{{.PROFILE}} is torn: the lines above are not paths in {{.MODULE}}." >&2
-          echo "Re-run \`task test\` -- this is a write race, not a coverage change," >&2
-          echo "and \`task ratchet:update\` would record the damage." >&2
-          exit 1
-        }
-        {{.UNCOVERED}} > {{.COUNTS}}
-        grep -v '^#' {{.RATCHET}} | diff - {{.COUNTS}} || {
-          echo "" >&2
-          echo "coverage moved. If that was deliberate: task ratchet:update" >&2
-          exit 1
-        }
-        echo "ratchet holds: $(wc -l < {{.COUNTS}} | tr -d ' ') packages"
-
-  ratchet:update:
-    desc: Record the current uncovered-statement counts
-    deps: [test]
-    cmds:
-      # The header is stripped before the comparison, so it is prose for a
-      # reader of the file rather than part of what is held.
-      - |
-        {{.MALFORMED}} || {
-          echo "" >&2
-          echo "{{.PROFILE}} is torn: the lines above are not paths in {{.MODULE}}." >&2
-          echo "Refusing to write {{.RATCHET}} from it. Re-run \`task test\`." >&2
-          exit 1
-        }
-        {
-          echo "# Uncovered statements per package. The gate fails in both directions:"
-          echo "# a number that rises is lost coverage, one that falls is coverage to lock in."
-          echo "# Regenerate with: task ratchet:update"
-          {{.UNCOVERED}}
-        } > {{.RATCHET}}
+      - go test -race ./...
 
   docs:
     desc: Markdown, JSON and YAML are formatted
@@ -199,6 +87,6 @@ tasks:
       - go build ./...
 
   clean:
-    desc: Remove build and coverage artifacts
+    desc: Remove the built binary
     cmds:
-      - rm -f {{.PROFILE}} {{.COUNTS}} ctchargen
+      - rm -f ctchargen

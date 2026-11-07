@@ -253,11 +253,9 @@ go test ./internal/docsgate -regenerate  # rewrite the exported API baseline
 go run ./cmd/ctchargen new --auto --seed 145 --sheet
 ```
 
-- **A package that passes on its own can still move the gate.** `-race`,
-  `-coverpkg` and the ratchet run only under `task`, and `-coverpkg` is what
-  makes the profile count code exercised across package lines — render driven
-  by chargen's goldens, the engine by the command's. Run `task` before calling
-  a change done.
+- **A package that passes on its own can still move the gate.** `-race`, the
+  linters and the formatting check run only under `task`. Run `task` before
+  calling a change done.
 - **`task fix` is not a safe blind operation here**, on a repository that
   quotes a primary source. Two of its fixers have already rewritten this tree
   incorrectly: `godot` appended a period after a closing quotation mark in
@@ -277,13 +275,9 @@ go run ./cmd/ctchargen new --auto --seed 145 --sheet
   golangci-lint, so there is one definition of formatted: format with
   `golangci-lint fmt`, never a standalone `gofumpt`, whose version and rule
   set need not match `.golangci.yml`.
-- **A ratchet failure is usually not lost coverage.** `coverage.ratchet` holds
-  each package's count of uncovered statements, and a blank line splits a
-  coverage block — so a `wsl_v5` reflow or an extracted helper moves the counts
-  without changing what the tests reach. Read the named packages first: a
-  reflow or a refactor is answered by `task ratchet:update`; anything else
-  stopped being covered. It fails in both directions, because a number that has
-  fallen is a ratchet that has stopped holding.
+- **Coverage is not measured (#198).** The gate writes no coverage profile
+  and holds no count. What keeps a test honest is the mutation rule below,
+  and a test that holds nothing is not kept.
 - **The toolchain is deliberately unpinned.** A red gate on untouched code is
   the signal working. Answer the finding; do not pin a tool to silence it.
 - **Dice-stream consumption order is load-bearing.** The die is `IntN(6) + 1`

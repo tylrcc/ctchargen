@@ -12,8 +12,7 @@ import (
 // The render subcommand, end to end.
 //
 // It shipped with no test through the command at all, and three of the
-// findings against this change lived in the branches that left uncovered.
-// A gate that says coverage fell is worth reading rather than recording.
+// findings against this change lived in the branches no test reached.
 
 // writeRecord generates a character into a temporary file and returns its
 // path, which is what render is given.

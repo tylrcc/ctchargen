@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The coverage ratchet is gone (#198). `task` no longer writes a coverage
+  profile or holds a per-package count of uncovered statements, and
+  `coverage.ratchet`, `task ratchet` and `task ratchet:update` are removed.
+  Nothing a referee sees changes.
+
 ## 1.0.0-beta.4
 
 Every character this build generates is the character beta.3 generated from

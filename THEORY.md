@@ -256,9 +256,9 @@ names what was broken."
 The converse holds too: a test exists because it holds something. An assertion
 whose only possible failure is an edit to a `fmt.Sprintf` fallback's format
 string holds nothing about the rules or the record, and the tree does not keep
-such tests to lower an uncovered-statement count. The ratchet in
-`coverage.ratchet` records what the tests reach; it is not a target to write
-tests toward.
+such tests. Coverage is not measured here (#198): the ratchet that held each
+package's uncovered-statement count was removed after it induced tests of
+that kind (#166) and nothing else the record shows.
 
 **The gate is local.** There is no CI. `task` is the gate, and a change is checked
 when someone runs it and not otherwise — so every "held by" in this document
@@ -480,8 +480,8 @@ into its own slice is not in what `record` checks against, and is refused.
   one line at the command line and `render` prints what it is given. Doing the
   first moves the defence to a place that would change every sheet; doing the
   second removes it.
-- **Writing a test to move the ratchet.** A test that can fail only when a format
-  string is edited holds nothing. Coverage is reported, not chased.
+- **Writing a test for coverage.** A test that can fail only when a format
+  string is edited holds nothing. Coverage is neither measured nor chased.
 - **Regenerating `internal/docsgate/testdata/api.txt` without reading the diff.**
   A line gone is a break to callers once `v1.0.0` is tagged; `-regenerate` makes
   the gate pass, and the diff is the only place the break is visible.
