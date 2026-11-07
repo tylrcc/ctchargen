@@ -69,12 +69,18 @@ tasks:
       - go test -race ./...
 
   docs:
-    desc: Markdown, JSON and YAML are formatted
+    desc: Markdown, JSON and YAML are formatted, and no link points at nothing
     # `bun fmt` is to every non-Go file what gofumpt is to the Go files. It
     # runs in --check here because the gate reports rather than repairs;
     # `task docs:fix` is the writer.
+    #
+    # lychee checks every tracked Markdown file's links to files and anchors
+    # in this tree, offline: a document moved or deleted is found here rather
+    # than by a reader. Links to the web are not followed, so the gate needs
+    # no network and a site going down never turns it red.
     cmds:
       - bun fmt --check
+      - git ls-files -z '*.md' | xargs -0 lychee --offline --include-fragments --no-progress
 
   docs:fix:
     desc: Format Markdown, JSON and YAML with bun fmt

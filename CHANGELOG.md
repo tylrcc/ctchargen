@@ -5,6 +5,14 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The gate checks links. `task docs` runs lychee, offline, over every tracked
+  Markdown file, and fails on a link to a file or an anchor that is not in the
+  tree; `Brewfile` lists it so `task clean` keeps it. The alpha releases' notes
+  linked to documents since moved or deleted, and now link to them as they
+  stood at those tags.
+- The review rules a diff is held to are `CODING_STANDARDS.md`, and
+  `CLAUDE.md`'s tree map is a line per package, pointing at the package's own
+  doc comment rather than restating it.
 - Each fact the code and the documents both stated now lives in one place,
   and `internal/docsgate`, which existed to hold the copies together, is
   deleted (#204, completed by #221). The readings document is lifted by
@@ -549,7 +557,7 @@ Across 30 characters from one base seed:
 
 `--career` sets **intent, not outcome**: the reenlistment throw is still required each term (p. 6) and a 12 exactly still forces another term (pp. 6–7). `--muster benefits` never rolls for cash, so the character musters out with none.
 
-Every strategy is a pure function of the choice it is handed, so the policy stays **total** and **deterministic** — same inputs, same character. [`docs/POLICY.md`](docs/POLICY.md) describes each one, and a gate holds the strategies the CLI accepts to the ones that document describes, in both directions.
+Every strategy is a pure function of the choice it is handed, so the policy stays **total** and **deterministic** — same inputs, same character. [`docs/POLICY.md`](https://github.com/philoserf/ctchargen/blob/v1.0.0-alpha.2/docs/POLICY.md) describes each one, and a gate holds the strategies the CLI accepts to the ones that document describes, in both directions.
 
 ### Breaking: record versions moved
 
@@ -602,13 +610,13 @@ The JSON record is canonical; the Markdown is a render of it. Every record carri
 
 ### What is verified
 
-Every rule carries a printed-page cite, and every interpretation is recorded in [`rules/data/ERRATA.md`](rules/data/ERRATA.md) with its cite and **stamped on the records it governed** — E001 through E009, so a record says which readings shaped it.
+Every rule carries a printed-page cite, and every interpretation is recorded in [`docs/ERRATA.md`](https://github.com/philoserf/ctchargen/blob/v1.0.0-alpha.1/docs/ERRATA.md) with its cite and **stamped on the records it governed** — E001 through E009, so a record says which readings shaped it.
 
 The rule data was checked cell by cell against the held pages: the Prior Service Table, the Table of Ranks, all 24 acquired-skills tables, both mustering-out tables, the Aging Table, the Rank and Service Skills box, the retirement pay table, both weapons lists, and Book 3's Nobility table.
 
 The book's own worked example reproduces. Jamison (p. 25): UPP 779C99, four merchant-ship receipts becoming a 30-year-old ship owing 10 years of payments, CR 4,000 retirement, two extra muster rolls at rank 5, aging saves at 34 and 38.
 
-[`docs/COVERAGE.md`](docs/COVERAGE.md) maps every rule to its cite, implementation, and test. [`docs/POLICY.md`](docs/POLICY.md) is the auto mode's decision table. [`docs/PRERELEASE_REVIEW.md`](docs/PRERELEASE_REVIEW.md) is the v1.0.0 bar and the evidence for each line of it.
+[`docs/COVERAGE.md`](https://github.com/philoserf/ctchargen/blob/v1.0.0-alpha.1/docs/COVERAGE.md) maps every rule to its cite, implementation, and test. [`docs/POLICY.md`](https://github.com/philoserf/ctchargen/blob/v1.0.0-alpha.1/docs/POLICY.md) is the auto mode's decision table. [`docs/PRERELEASE_REVIEW.md`](https://github.com/philoserf/ctchargen/blob/v1.0.0-alpha.1/docs/PRERELEASE_REVIEW.md) is the v1.0.0 bar and the evidence for each line of it.
 
 ### Why alpha
 

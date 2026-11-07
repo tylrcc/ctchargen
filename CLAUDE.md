@@ -179,6 +179,7 @@ its list of places the book is silent, and the readings it reached there.
 | `docs/PRERELEASE.md`         | One section per tag: what it ships with open and why, and the review that preceded it where there was one. A finding is recorded before it is fixed.                                                 |
 | `THEORY.md`                  | Nothing binding. What the code believes, where those beliefs are enforced, and where they rest on nothing but care. A reader's account, not a contract.                                              |
 | `WALKTHROUGH.md`             | Nothing binding. A linear read of the code in execution order, generated. Where it disagrees with the tree, it is the document that is wrong.                                                        |
+| `CODING_STANDARDS.md`        | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
 | `CLAUDE.md`                  | This file.                                                                                                                                                                                           |
 
 Each fact lives in one place, so there is no second copy to hold to the
@@ -193,75 +194,25 @@ is verified by breaking it.
 
 ## The shape of the tree
 
-The packages, and the arrows point one way: `traveller` imports none of the
-others; `rules` and `chargen` import `traveller`; `render` imports the record.
-A domain type that needs to know about dice or JSON is in the wrong package.
-Each package carries its own contract in its doc comment, which is the current
-statement of it; what follows is only the map.
+The arrows point one way: `traveller` imports none of the others; `rules` and
+`chargen` import `traveller`; `render` imports the record. A domain type that
+needs to know about dice or JSON is in the wrong package. Each package's doc
+comment is its contract; read it before changing the package.
 
-**`traveller`** is the domain, and imports nothing else here. It holds the
-alphabets Book 1 prints, the values it works in, and the sums that say
-"exactly one of". The sums that are folds carry a cases interface — adding a
-case adds a method and every implementation stops compiling. The plain enums
-are held by the `exhaustive` linter instead, which is the gate and not the
-compiler, so dropping the linter drops the guarantee.
-
-**`rules`** holds every table of pp. 4–25 as `data/*.json`, embedded, and lifts
-it into `traveller` values once through `sync.OnceValues`. **The lift is the
-validation**: a cell naming no service, no characteristic, no benefit any row
-prints, or a target in a notation pp. 2–3 do not use fails there, so a table
-that will not lift is a build defect that surfaces immediately rather than a
-runtime condition some path might reach. Each table is transcribed twice —
-into `data/`, and into `transcription_test.go` and `tables_test.go` — from one
-visual reading. That is authority rule 3, and `rules` is where it lives.
-The readings document, `data/ERRATA.md`, is embedded and lifted the same way:
-only its entries are parsed, into `Reading` values that carry the document's
-prose, and an `Erratum` constant with no entry or an entry with no constant
-fails the lift naming the id.
-
-**`dice`** draws from an unseeded stream and never judges a throw against a
-target; that is `traveller.Target`. No character can be brought back by running
-the tool again: the record is the only way back (ADR 0001), and every golden is
-generated from a fixture that scripts its dice.
-
-**`chargen`** walks the procedure. `Generate(Inputs, Decider, ...Option)` is
-the entry point: it throws through a `Roller` and asks through a `Decider`, and
-it cannot tell auto mode from a person from a test. `Decider` has one method
-per choice point — that is what closes the set. `Policy` is the `--auto`
-implementation: total, deterministic, and a pure function of what it is
-handed. It describes itself: each method's doc comment says when the choice
-is asked and what each of the three strategies answers, and `PolicyVersion`'s
-says what bumps it. The run writes an
-event log as it goes, which is what `--history` prints and what an observer
-watches live.
-
-**`render`** projects the finished record — `JSON`, `JSONLine`, `Sheet`,
-`Transcript`, `EventLine` for a live watcher — and reads one back in
-`decode.go`. Where the domain shape and the wire shape disagree, the codec
-absorbs it and the domain type keeps its shape.
-
-`chargen`'s tests hold the readings to the goldens, beside the roster that
-generates them: each reading's stamping predicate is checked over every
-golden in both directions, every choice point must be reached by some golden,
-and the readings no golden stamps by design are pinned by name in one list,
-`namesNoRecord`. They read the checked-in goldens rather than generating
-records, so they read what a referee would be handed. The schema's three
-strategy enums are held to the strategies there too, where the strategies
-are defined.
-
-**`internal/coverage`** has no non-test code. It is the generator of
-`docs/COVERAGE.md`: an implementation carries
-`// Implements: <rule> [<page>] in <section>.` and the test or golden that
-holds it carries `// Holds: <rule>.`; the generator joins them on the rule and
-writes each section's table, leaving the document's prose as written. Its
-package doc says where a marker may sit, and a marker anywhere else fails it.
-It also holds the exported Go API to its baseline until #199 decides whether
-there is a Go library to freeze.
-
-**`cmd/ctchargen`** is the subcommands and their flag sets. It splits the data
-channel from the asking channel: the record, the sheet and the transcript to
-stdout, every question, count and warning to stderr — so
-`ctchargen new | jq` pipes a record and not a conversation.
+- `traveller`: the domain. Alphabets, values, and the sums that say "exactly
+  one of".
+- `rules`: every table of pp. 4–25 and the readings document, embedded and
+  lifted once. The lift is the validation.
+- `dice`: an unseeded stream. The record is the only way back (ADR 0001).
+- `chargen`: the procedure, the `Decider` it asks, and the `--auto` `Policy`,
+  which describes itself. Its tests hold the readings, the choice points and
+  the schema's strategies to the goldens.
+- `render`: the record's projections, and reading one back.
+- `internal/coverage`: test code only. Generates `docs/COVERAGE.md` from
+  `Implements:` and `Holds:` markers, and holds the exported API baseline
+  until #199.
+- `cmd/ctchargen`: the subcommands. The record goes to stdout and the
+  conversation to stderr, so `ctchargen new | jq` pipes a record.
 
 ## Commands
 
@@ -330,11 +281,16 @@ go run ./cmd/ctchargen new --auto --sheet
 
 ## Working conventions
 
-- **A removal is swept by its vocabulary, not only its names.** Grep for the
-  words the code and documents used to describe the thing — what it did, what
-  it promised — as well as its identifiers and file names, and rewrite every
-  comment and sentence still telling the old story. A name-only sweep left
-  stale prose in every ticket of #203; the reviewers caught it each time.
+- **The review rules are `CODING_STANDARDS.md`**: sweeping a removal by its
+  vocabulary, verbatim quotation, predicates written from the prose, marker
+  placement, mutations shown, walkthrough excerpts kept true. Read it before
+  calling a change done; the reviewer holds the diff to it.
+- **What a change does to the narrative documents.** The global release-docs
+  rule brings `README.md`, `CLAUDE.md`, `THEORY.md` and `WALKTHROUGH.md`
+  current at release; here a change also fixes, in all of them, every line
+  that names something it removed or moved — a path, a package, a test, a
+  command — and adds its bullet to the changelog's Unreleased section.
+  Everything else in them waits for the release pass.
 - Markdown written here is reflowed by `bun fmt` immediately after the write
   (a user-level `PostToolUse` hook, not repo config). The reflow is expected;
   leave it alone rather than reverting it.
