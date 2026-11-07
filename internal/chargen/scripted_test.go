@@ -160,6 +160,10 @@ func TestAnAnswerOutsideTheOfferIsRefused(t *testing.T) {
 
 			f := byName(t, tc.fixture)
 
+			// Not f.run: the decider is not the fixture's policy, and a
+			// refusal stops the procedure partway, so the script's unread
+			// tail is expected rather than a sign it carries dice it never
+			// throws.
 			_, err := chargen.Generate(f.inputs(), tc.decider, chargen.WithRoller(f.roller(t)))
 			if err == nil {
 				t.Fatal("the engine applied an answer it had not offered")

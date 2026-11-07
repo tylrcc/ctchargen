@@ -142,13 +142,14 @@ it produced. Every golden is generated from a fixture that scripts its dice:
 **a throw the procedure does not make consumes nothing**, and a throw it makes
 beyond the script fails the test naming it.
 
-The strictness runs only one way. Nothing checks that a script is consumed to
-its end, so a fixture can carry dice and draws its path never throws and every
-test stays green. When a change makes the procedure throw fewer dice, the golden
-comparison catches it, but not "naming the die asked for" as the roster's
-comment promises. `-regenerate` then accepts the shorter path and leaves the
-unread tail in the script. A fixture is therefore an upper bound on its path's
-dice, not an exact statement of them, until something holds the other side.
+The strictness runs both ways (#231). A fixture's character is generated
+through `fixture.run`, which, when the procedure finishes, fails if the script
+still holds a die or a draw it never asked for, naming how many and where they
+start. So a fixture states the dice of its path exactly, and a change that
+throws fewer dice fails naming what it left, before `-regenerate` can accept
+the shorter path. A run that ends in an error is not held to it: the
+refused-answer test drives a fixture's roller with a decider of its own, and a
+refusal stops the procedure partway.
 
 The fixtures are also where the record proves it is a way back. Every
 script was extracted from its golden's own event log, and the goldens
@@ -566,9 +567,10 @@ record's event reaches that event and no other question's offer.
 - **Hoisting the yes-or-no pair back into a package-level slice.** It reads
   like a harmless allocation saved, and it is the slice every later character
   would be offered and checked against, reachable through every record (#230).
-- **Reading a fixture's script as the exact dice of its path.** It is held
-  against running short and not against running long. After a change that
-  throws fewer dice, look for an unread tail by hand.
+- **Generating a fixture's character around `fixture.run`.** Calling
+  `chargen.Generate` with `fixture.roller` directly skips the check that the
+  script was read to its end, and a fixture can again carry dice its path
+  never throws (#231).
 - **Escaping in `render`, or relaxing the `--name` check.** The name is held to
   one line at the command line and `render` prints what it is given. Doing the
   first moves the defence to a place that would change every sheet; doing the
@@ -663,6 +665,5 @@ tree.** Writing `"maybe"` into one finished record's yes-or-no alternatives made
 the next character fail with "answered outside what was offered"; #230 closed
 it, and `TestAYesOrNoOfferIsEachEventsOwn` now makes that write. Appending four
 unused dice and two unused draws to `other-serve`'s script left the whole
-`chargen` suite green. That one is stated above as a fact about the code, not
-as an intention. I do not know whether it was a known and accepted cost.
-Nothing in the issue history says so.
+`chargen` suite green; #231 closed it, and one unused die or draw now fails
+every test that generates the fixture.

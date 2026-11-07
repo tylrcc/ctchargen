@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A fixture's script is consumed exactly (#231). A fixture that finishes
+  with dice or draws its path never asked for fails, naming the fixture,
+  how many were left and where they start, so a change that throws fewer
+  dice fails the fixture that felt it rather than only its golden. Every
+  fixture already read its script to the end; no golden changed.
 - E004 says what the engine does with a survival death's age (#233): the
   fatal term's four years go onto the character's own age, months from an
   earlier medical crisis included, as E006 and E008 already read it. It

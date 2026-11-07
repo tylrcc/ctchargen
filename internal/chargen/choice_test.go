@@ -131,8 +131,7 @@ func TestAYesOrNoOfferIsEachEventsOwn(t *testing.T) {
 				written += rewriteYesOrNo(e)
 			})
 
-			_, err := chargen.Generate(fixture.inputs(), fixture.policy,
-				chargen.WithRoller(fixture.roller(t)), watch)
+			_, err := fixture.run(t, watch)
 			if err != nil {
 				t.Errorf("%s, watched by a writer: %v", fixture.name, err)
 			}
@@ -157,8 +156,7 @@ func TestAYesOrNoOfferIsEachEventsOwn(t *testing.T) {
 		}
 
 		for _, fixture := range fixtures {
-			_, err := chargen.Generate(fixture.inputs(), fixture.policy,
-				chargen.WithRoller(fixture.roller(t)))
+			_, err := fixture.run(t)
 			if err != nil {
 				t.Errorf("%s, after a record was written to: %v", fixture.name, err)
 			}
