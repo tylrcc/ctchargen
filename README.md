@@ -148,16 +148,16 @@ standard error after `ctchargen:`.
 
 ## The documents
 
-| File                                                     | What it holds                                                                    |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [docs/PRD.md](docs/PRD.md)                               | The delivered v1 contract — historical, kept for why the tree has this shape.    |
-| [rules/data/ERRATA.md](rules/data/ERRATA.md)             | Every recorded reading, with its page cite and its stamping condition.           |
-| [docs/COVERAGE.md](docs/COVERAGE.md)                     | Every implemented rule mapped to its page cite, its implementation and its test. |
-| [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it.           |
-| [docs/PRERELEASE.md](docs/PRERELEASE.md)                 | What each tag ships with open, and the review that preceded it.                  |
-| [THEORY.md](THEORY.md)                                   | What the code believes and where each belief is enforced. Binds nothing.         |
-| [WALKTHROUGH.md](WALKTHROUGH.md)                         | A linear read of the code in execution order. Binds nothing.                     |
-| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                  |
+| File                                                           | What it holds                                                                    |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [docs/PRD.md](docs/PRD.md)                                     | The delivered v1 contract — historical, kept for why the tree has this shape.    |
+| [internal/rules/data/ERRATA.md](internal/rules/data/ERRATA.md) | Every recorded reading, with its page cite and its stamping condition.           |
+| [docs/COVERAGE.md](docs/COVERAGE.md)                           | Every implemented rule mapped to its page cite, its implementation and its test. |
+| [docs/character.schema.json](docs/character.schema.json)       | What the tool writes, with a minimal and a complete example beside it.           |
+| [docs/PRERELEASE.md](docs/PRERELEASE.md)                       | What each tag ships with open, and the review that preceded it.                  |
+| [THEORY.md](THEORY.md)                                         | What the code believes and where each belief is enforced. Binds nothing.         |
+| [WALKTHROUGH.md](WALKTHROUGH.md)                               | A linear read of the code in execution order. Binds nothing.                     |
+| [CLAUDE.md](CLAUDE.md)                                         | Authority, source precedence, and the working rules for agents.                  |
 
 ## The gate
 
@@ -166,9 +166,9 @@ task
 ```
 
 `go mod tidy -diff`, `go vet`, golangci-lint, NilAway, govulncheck, `go test -race`, and
-`bun fmt` over the non-Go files. The tests hold the three things `v1.0.0`
-freezes: every record against the schema, the exported Go API against a
-baseline, and each command's flags, defaults and exit status. There is no CI
+`bun fmt` over the non-Go files. The tests hold the two things `v1.0.0`
+freezes: every record against the schema, and each command's flags, defaults
+and exit status. There is no CI
 (#149); a change is checked when this is run, and not otherwise.
 
 The toolchain is unpinned on purpose, and golangci-lint runs with

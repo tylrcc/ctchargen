@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/philoserf/ctchargen/chargen"
-	"github.com/philoserf/ctchargen/render"
-	"github.com/philoserf/ctchargen/traveller"
+	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/render"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // errNoAnswer reports that the input ended while the procedure was still

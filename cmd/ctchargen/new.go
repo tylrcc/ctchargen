@@ -7,9 +7,9 @@ import (
 	"io"
 	"strings"
 
-	"github.com/philoserf/ctchargen/chargen"
-	"github.com/philoserf/ctchargen/render"
-	"github.com/philoserf/ctchargen/traveller"
+	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/render"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // characterFlags are the flags both generating subcommands take: what a

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/philoserf/ctchargen/chargen"
-	"github.com/philoserf/ctchargen/traveller"
+	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // The flags v1.0.0 ships, each with its type and its default (#126).

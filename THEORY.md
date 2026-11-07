@@ -35,10 +35,10 @@ Mustering Out Table 1 extract as the digit `4`; "Travellers' Aid" extracts as
 `Travellers9`; a minus sign becomes a digit, so an `N−` target reads as `N3`. Each
 of those is a plausible number in a table full of numbers. The defence is
 threefold and every layer is visible in the tree: pages are read visually rather
-than extracted, every table is transcribed **twice** — once into `rules/data/*.json`
-and once independently into `rules/*_test.go` from the same visual pass — and the
+than extracted, every table is transcribed **twice** — once into `internal/rules/data/*.json`
+and once independently into `internal/rules/*_test.go` from the same visual pass — and the
 lift refuses anything that does not resolve. `traveller.ParseTarget` is
-deliberately strict about the sign for exactly this reason, and `rules/parse.go`
+deliberately strict about the sign for exactly this reason, and `internal/rules/parse.go`
 accepts both the ASCII hyphen and U+2212 because "someone transcribing p. 11 will
 type what he sees."
 
@@ -73,7 +73,7 @@ audit log first and a character sheet second.
 
 ### 1. Exhaustiveness has two strengths, and the code knows which it is using
 
-`traveller/doc.go` states this outright, and it is the single most load-bearing
+`internal/traveller/doc.go` states this outright, and it is the single most load-bearing
 idea in the tree:
 
 - **Sums** — `Enlistment`, `TableResult`, `BenefitRow`, `Departure`, `Event`,
@@ -87,8 +87,8 @@ idea in the tree:
 Go's type switch over an interface promises nothing, and the code says so. The
 practical consequence: **when you add a case to a sum, follow the compiler
 errors** — they are the complete list of places that must learn about it, and they
-span packages (`chargen/enlist.go`'s `applyResult`, `chargen/muster.go`'s
-`applyBenefit` and `takeWeapon`, `render/fold.go`'s codecs). When you add a value
+span packages (`internal/chargen/enlist.go`'s `applyResult`, `internal/chargen/muster.go`'s
+`applyBenefit` and `takeWeapon`, `internal/render/fold.go`'s codecs). When you add a value
 to an enum, the compiler will not help you; grep and trust the linter.
 
 The `Decider` interface is the same idea applied to questions. Twelve methods, one
@@ -119,8 +119,8 @@ Table's last printed term indexes a column of the table, so it lives in
 is also E014's stamping condition, and holding it as a Go constant would let the
 bands move without the term at which a record declares the reading moving with
 them. The three-roll cap on Mustering Out Table 2 and the rank thresholds bound a
-procedure and index nothing, so they are constants in `chargen/muster.go` and
-`rules/rules.go` beside the code that applies them. `rules.go` states the test
+procedure and index nothing, so they are constants in `internal/chargen/muster.go` and
+`internal/rules/rules.go` beside the code that applies them. `rules.go` states the test
 in one line: "Being printed is not the test; indexing a printed table is."
 
 If you find yourself moving a number, this is the rule you are arguing with. A
@@ -148,7 +148,7 @@ Three corollaries you must hold:
   so the record would stop carrying every die. `Vary` is
   `interface{ Among(n int) int }` and that is the only variation
   a decider may take. The narrowing is the value's and not only the parameter's:
-  the one site that hands a decider a `Vary` (`chargen/enlist.go`, `applyResult`'s
+  the one site that hands a decider a `Vary` (`internal/chargen/enlist.go`, `applyResult`'s
   `WeaponPick`) passes `varyOnly{a.run.roll}`, a wrapper with nothing on it but
   `Among`, so a type assertion back to `Roller` finds nothing. The run's own
   `Roller` passed bare would have kept its dynamic type, and the dice with it.
@@ -183,7 +183,7 @@ what makes the record auditable rather than merely verbose.
 
 ### 6. `logging` is the single gate, and it rests on a stated assumption
 
-`chargen/logging.go` wraps every `Decider` — `generate.go` does this
+`internal/chargen/logging.go` wraps every `Decider` — `generate.go` does this
 unconditionally, so it is the only way a decider reaches the engine. It must
 implement all twelve methods to compile, "so a choice point cannot reach the engine
 without reaching the log."
@@ -221,7 +221,7 @@ A fact stated twice is held by a test whose catches are a record of the copies
 drifting, so the tree states each fact once and the documents that remain
 either are that statement or are generated from it:
 
-- **The readings are `rules/data/ERRATA.md`**, hand-written and lifted once by
+- **The readings are `internal/rules/data/ERRATA.md`**, hand-written and lifted once by
   `rules` with the tables: every `Erratum` constant ↔ every `### E0NN` entry
   both ways, so a constant with no entry, an entry with no constant, or an id
   twice fails the lift naming the id (`rules.TestMalformedReadings`). Each
@@ -245,27 +245,20 @@ either are that statement or are generated from it:
   design are pinned in one list;
 - in `strategy_test.go`, the schema's strategy enums ↔ the code's strategies.
 
-`internal/coverage`'s `api_test.go` holds, in `TestTheExportedAPIIsTheBaseline`,
-**the exported Go API of `traveller`, `dice`, `rules`, `chargen` and `render`
-against `testdata/api.txt`**, one line per exported declaration, field and
-method, read through `go/importer`'s source importer. Both ways: a line gone is
-a removed name or a changed signature, which breaks a caller; a line arrived is
-a new promise, which Go's rules allow but only on purpose. Either is answered
-by `go test ./internal/coverage -regenerate-api` and reading the diff. It lives
-there until #199 decides whether there is a Go library to freeze.
+**There is no Go library (#199).** `traveller`, `dice`, `rules`, `chargen` and
+`render` are under `internal/`, so the compiler refuses an import of any of them
+from outside this module, and there is no exported API for a tag to freeze or a
+baseline to hold.
 
-The command line has the same kind of baseline, beside the code it holds.
-`cmd/ctchargen/cli_test.go` types out each subcommand's flags with their types
+The command line is what a script depends on, and it has a baseline beside the
+code it holds. `cmd/ctchargen/cli_test.go` types out each subcommand's flags with their types
 and defaults and holds them **one way**
 (`TestEveryBaselineFlagIsStillDeclared`): a flag gone, or retyped, or with a
 moved default breaks a script that passed it, while a new flag breaks nobody and
 is held instead by `usage_test.go`'s `TestEveryDeclaredFlagIsListed`, which walks
 the declared set against the help's list. `TestTheExitStatusIsZeroOrOne` holds
-`main`'s `exitStatus` to real runs. These are the three things `v1.0.0` freezes —
-the record, the exported API, the CLI — and each has a gate. The API is frozen
-under ordinary Go rules, so an exported name is a promise: a sentinel error
-nothing matches with `errors.Is`, or a bound only its own file reads, stays
-lowercase in its package rather than being promised by the baseline.
+`main`'s `exitStatus` to real runs. These are the two things `v1.0.0` freezes —
+the record and the CLI — and each has a gate.
 
 `CLAUDE.md` adds the discipline that makes these worth having: "A new invariant is
 not done until a deliberate mutation has been shown to kill it, and the failure
@@ -298,7 +291,7 @@ them into domain values, and **the lift is the validation**: a cell naming no
 service, no characteristic, no benefit any row prints, or a target in a notation
 pp. 2–3 do not use fails at `Load()`, which happens once. A table that will not lift
 is a build defect that surfaces immediately, not a runtime condition some path
-might reach. That reaches the Prior Service Table's draft row too: `rules/lift.go`'s
+might reach. That reaches the Prior Service Table's draft row too: `internal/rules/lift.go`'s
 `checkDraft` holds it to one die face per service, each face printed once, so a
 draft die always names a service and `Rules.Draft` cannot miss for any die the
 engine throws.
@@ -310,7 +303,7 @@ to it. Its tables are unexported fields reached through methods (`Aging()`,
 value), `Retirement`'s pay map is unexported, and every method that returns a
 slice returns a copy: `Weapons`, `Service` (its ranks and the DMs of all four
 throws, through `Service.clone` and `Throw.clone`), and `Aging.At`. The comment
-beside `Load` states it once, and `rules/tables_test.go`'s
+beside `Load` states it once, and `internal/rules/tables_test.go`'s
 `TestAWeaponListIsTheCallersOwn` and `TestNothingTheRulesHandOutIsShared` hold
 it by writing through each and reading a fresh `Load()`. A new method that hands
 out a slice of the ruleset without copying it is the defect those tests exist to
@@ -319,7 +312,7 @@ catch, and they catch it only for the slices they name.
 ### The record boundary — the thinnest seam in the system
 
 `render` projects a `*chargen.Character` into a flat `record` struct, and this is
-where the domain's vocabulary and the wire's diverge. `render/json.go` is honest
+where the domain's vocabulary and the wire's diverge. `internal/render/json.go` is honest
 about it: "Where the two disagree — a sum that must marshal flat, an array-backed
 profile that must marshal as six named keys — the codec here absorbs the difference
 and the domain type keeps its shape."
@@ -327,14 +320,14 @@ and the domain type keeps its shape."
 The write side is held by folds: `enlistmentCodec`, `departureCodec`, the event
 codec. Add a case to a sum and this package stops compiling.
 
-**The read side is held by nothing.** `render/decode.go` unmarshals into `record`
+**The read side is held by nothing.** `internal/render/decode.go` unmarshals into `record`
 and deliberately does not rebuild domain types — "rebuilding an `Enlistment` or a
 `Departure` back into an interface would give the renderer nothing it does not
 already have, and would need a decoder for every sum." Consequently `SheetFrom` and
 `TranscriptFrom` work on strings: `sheet.go` compares `ship.Kind ==
 traveller.ScoutShip.String()` and `choice.By == traveller.ByPolicy.String()`.
 The compiler cannot see those. What holds them is the round-trip test in
-`render/roundtrip_test.go` and the schema tests.
+`internal/render/roundtrip_test.go` and the schema tests.
 
 If you rename a `String()` on a domain value, the write side moves and the read
 side silently does not. This is the seam to be careful at.
@@ -344,10 +337,10 @@ this build has, not some perhaps future. The root is open — a later build may 
 a top-level section, and a reader holding this schema loads the record and
 renders what it understands. Everything inside is closed: the fourteen nested
 objects refuse an unknown key, and the event kinds, the choice-point names and
-the three strategy vocabularies are closed enums. `render/transcript.go` prints
+the three strategy vocabularies are closed enums. `internal/render/transcript.go` prints
 `(unknown event kind %q)` for a kind it does not know, which is how a reader
 survives a record it could not validate — not a reason to validate it.
-`render/schema_test.go`'s `TestAnUnknownEventKindDoesNotValidate` holds the
+`internal/render/schema_test.go`'s `TestAnUnknownEventKindDoesNotValidate` holds the
 schema to that, and `TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders`
 holds the open root.
 
@@ -391,10 +384,10 @@ the status a script sees.
 
 ## What the system is shaped to accommodate
 
-**A new erratum.** Add the constant to `traveller/erratum.go`, add it to `Errata`,
-write the `### E0NN` entry in `rules/data/ERRATA.md` with its page cite and its stamping
+**A new erratum.** Add the constant to `internal/traveller/erratum.go`, add it to `Errata`,
+write the `### E0NN` entry in `internal/rules/data/ERRATA.md` with its page cite and its stamping
 condition as a predicate over the finished record, stamp it at the outcome it
-governs, and write the predicate into `chargen/stamping_test.go` **from the
+governs, and write the predicate into `internal/chargen/stamping_test.go` **from the
 document's prose**. The gates will tell you what you forgot in both directions.
 
 **A new choice point.** Add the `Decider` method; the compiler names every
@@ -403,10 +396,9 @@ comment says when it is asked and what each strategy answers. Add the
 `ChoicePoint` constant; `chargen`'s tests hold it to the interface. The schema's `point` enum
 is the part the compiler cannot reach, and it is held by a chain of tests instead:
 `chargen`'s `TestEveryChoicePointIsReachedByARecord` demands a golden that
-reaches the new point, and `render/schema_test.go`'s
+reaches the new point, and `internal/render/schema_test.go`'s
 `TestEveryGoldenMatchesTheSchema` refuses that golden until the enum learns the
-name. The exported-API baseline will also report `Decider` as changed, which is
-true — see the freeze, below.
+name.
 
 **A new `--auto` strategy for an existing question.** Add the constant, the
 `String()` case, the entry in the unexported strategy slice (`careerStrategies`,
@@ -424,9 +416,9 @@ service's position is a rank and what the Table of Ranks prints is its name;
 "title" belongs to nobility. One word with two meanings is how two fields of one
 record come to name each other's thing.
 
-**A new rules table.** Add the JSON under `rules/data/`, a wire type in `lift.go`,
+**A new rules table.** Add the JSON under `internal/rules/data/`, a wire type in `lift.go`,
 a lift function that validates every cell against a closed alphabet, and — this is
-not optional — an independent second transcription in `rules/*_test.go` from the
+not optional — an independent second transcription in `internal/rules/*_test.go` from the
 same visual reading pass. Retyping the second copy from the first checks nothing.
 
 ## What would require rethinking something fundamental
@@ -437,16 +429,6 @@ ruleset is no longer the obstacle. Generation is single-threaded everywhere toda
 `batch` is a sequential loop, and each member rolls from a stream of its own. I
 did not audit the rest of the tree for shared state, so I claim
 only that the ruleset would not stand in the way of parallelising it.
-
-**The routine extensions, after `v1.0.0`.** The tag freezes the exported Go API
-under ordinary Go rules, and the extensions this tree is shaped for are, in Go's
-terms, breaking. A new choice point adds a method to the exported `Decider`
-interface, which breaks any implementation outside the module; a new case on a
-sum adds a method to its exported `…Cases` interface, which breaks any fold
-outside it. The compiler-error discipline of idea 1 is exactly what a caller in
-another module would experience as a break. The API baseline will report it
-as a line gone. After the tag either one is a major version; the tree
-grows the same way, and the cost is the number.
 
 **Cross-build record compatibility, before `v1.0.0`.** Deliberately unpromised.
 `recordShape` is 1 and stays 1 until the tag; #96 explicitly declined the reading
@@ -499,9 +481,8 @@ into its own slice is not in what `record` checks against, and is refused.
   second removes it.
 - **Writing a test for coverage.** A test that can fail only when a format
   string is edited holds nothing. Coverage is neither measured nor chased.
-- **Regenerating `internal/coverage/testdata/api.txt` without reading the diff.**
-  A line gone is a break to callers once `v1.0.0` is tagged; `-regenerate-api` makes
-  the gate pass, and the diff is the only place the break is visible.
+- **Moving a package out of `internal/`.** That exports a Go API, which is a
+  third promise beside the record and the CLI, and #199 decided there is none.
 - **Consulting the repository's own history at or before `41a213a`.** The clean
   room covers it, at every rank but one: only that tree's _errata_ may be
   consulted, only where the page and `ERRATA.md` are both silent, and only as a
@@ -513,7 +494,7 @@ Marked because you should know which claims to trust.
 
 **Inferred from code alone.** I did not open the Traveller PDFs — they are outside
 this repository and outside the review's scope. Every page citation above is
-repeated from the code's own comments and `rules/data/ERRATA.md`. I verified that the
+repeated from the code's own comments and `internal/rules/data/ERRATA.md`. I verified that the
 citations are internally consistent and that the gates hold them to the documents;
 I did **not** verify any of them against the printed page. If a transcription is
 wrong, nothing in this document would catch it, and the twice-transcribed
@@ -523,7 +504,7 @@ discipline is the only thing that would.
 `CLAUDE.md`'s document table says the PRD governs nothing now and is kept as
 history. Yet `cmd/ctchargen/render.go` justifies a parse decision with "the PRD's
 CLI sketch says so plainly: flags precede the filename," `new.go` argues from
-"Neither flag is in the PRD's CLI sketch," and `traveller/choice.go` quotes the
+"Neither flag is in the PRD's CLI sketch," and `internal/traveller/choice.go` quotes the
 PRD's "a rendering of that interface, never a second list kept parallel to it"
 as the standard `ChoicePoint` is held to. All three are historical rationales
 rather than live authority, and I read them that way — but a maintainer could
@@ -536,13 +517,10 @@ choice-point names and the event kinds are closed enums, and growing any of them
 after `v1.0.0` is a change to a frozen shape, said in the record's `record`
 number. That is a decision, not an oversight.
 
-**Settled: growing `Decider` or a sum's cases interface is a breaking change.**
-Ordinary Go rules govern the exported API, and under them a method added to an
-exported interface breaks every implementation outside the module, so after
-`v1.0.0` it is a major version. `Decider`'s doc comment and `traveller/doc.go`
-already say a new method breaks every implementation, and the API baseline
-reports it as a line gone. Idea 1's growth path is unchanged; what it costs
-after the tag is the version number.
+**Settled: growing `Decider` or a sum's cases interface is not a version
+question.** Every implementation is inside the module, under `internal/`
+(#199), so a new method breaks only code the same change must fix, and the
+compiler names each one. Idea 1's growth path costs nothing after the tag.
 
 **The `Roller` termination contract is documented and unenforced**, and I take that
 as deliberate rather than as drift — the comment names the failure mode and the one

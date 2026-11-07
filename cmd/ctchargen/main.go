@@ -9,7 +9,7 @@ import (
 	"os"
 	"runtime/debug"
 
-	"github.com/philoserf/ctchargen/chargen"
+	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
 // errUsage reports a command line the tool cannot act on.

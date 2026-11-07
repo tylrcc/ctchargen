@@ -7,7 +7,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/philoserf/ctchargen/render"
+	"github.com/philoserf/ctchargen/internal/render"
 )
 
 // renderRecord reads a record written earlier and writes it as a character

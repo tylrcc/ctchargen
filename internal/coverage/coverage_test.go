@@ -2,11 +2,7 @@
 // maps, so the map from each rule to its page, its implementation and its test
 // is one copy of what the markers say rather than a second one typed by hand.
 //
-// The package has no non-test code. Beside the generator it holds the
-// exported Go API to its baseline (api_test.go), which lives here until #199
-// decides whether there is a Go library to freeze;
-// it regenerates under its own flag, -regenerate-api, so rewriting the
-// coverage map never accepts an API change in passing.
+// The package has no non-test code.
 //
 // # Markers
 //
@@ -94,7 +90,7 @@ const (
 	schema   = "docs/character.schema.json"
 
 	// rosterDir and rosterVar are where chargen's fixture roster is declared.
-	rosterDir = "chargen"
+	rosterDir = "internal/chargen"
 	rosterVar = "fixtures"
 )
 

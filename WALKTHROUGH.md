@@ -29,7 +29,9 @@ the source; a transcript is a command run while writing, and says so.
 ## Architecture
 
 Six packages, and a seventh, `internal/coverage`, that is tests alone and
-imports nothing outside them. The import arrows point one way. The compiler holds most of
+imports nothing outside them. Every package but the command is under
+`internal/`, so nothing outside this module can import one: the tool is the
+command, and there is no Go library (#199). The import arrows point one way. The compiler holds most of
 that, because a reverse edge is an import cycle; the edges that would still
 compile — `traveller` or `rules` importing `dice`, the command importing `rules`
 or `dice` — are denied by `depguard` in `.golangci.yml`. It is also easy to
@@ -38,11 +40,11 @@ check.
 A transcript of `go list -deps ./... | grep philoserf | sed 's|github.com/philoserf/ctchargen|.|'`, run while writing:
 
 ```text
-./dice
-./traveller
-./rules
-./chargen
-./render
+./internal/dice
+./internal/traveller
+./internal/rules
+./internal/chargen
+./internal/render
 ./cmd/ctchargen
 ./internal/coverage
 ```
@@ -53,13 +55,13 @@ neither imports anything else in the module. The edges themselves:
 A transcript of each package's in-module imports, from `go list -f '{{.Imports}}'`, run while writing:
 
 ```text
-traveller        ->
-dice             ->
-rules            -> traveller
-chargen          -> dice rules traveller
-render           -> chargen traveller
-cmd/ctchargen    -> chargen render traveller
-internal/coverage ->
+internal/traveller ->
+internal/dice      ->
+internal/rules     -> internal/traveller
+internal/chargen   -> internal/dice internal/rules internal/traveller
+internal/render    -> internal/chargen internal/traveller
+cmd/ctchargen      -> internal/chargen internal/render internal/traveller
+internal/coverage  ->
 ```
 
 Read that as four layers:
@@ -77,8 +79,7 @@ Read that as four layers:
 - **`cmd/ctchargen`** — flag parsing, the interactive player, file output.
 
 `internal/coverage` has no non-test code at all. It generates
-`docs/COVERAGE.md` from markers beside the code, and holds the exported API to
-its baseline.
+`docs/COVERAGE.md` from markers beside the code.
 
 ## Layer one: the domain
 
@@ -88,10 +89,10 @@ Start with `traveller`, because everything else is expressed in its vocabulary.
 
 Book 1 pp. 2-3 fix the die-roll notation: `8+` means eight or more, `3-` means
 three or less, and a bare number must be thrown exactly. A `Target` is that
-number plus which of the three it is. `traveller/target.go`, the modality
+number plus which of the three it is. `internal/traveller/target.go`, the modality
 constants:
 
-`traveller/target.go` — `Modality`
+`internal/traveller/target.go` — `Modality`
 
 ```go
 // The three modalities (pp. 2-3).
@@ -112,9 +113,9 @@ again at throw time. It is deliberately strict about the sign, and the reason is
 the reprint's font: under text extraction a printed minus becomes a digit, so an
 `N-` target silently reads as `N3`. It also accepts two different minus glyphs,
 because someone transcribing p. 11 types what he sees on the page.
-`traveller/target.go`, `minusSigns` and `ParseTarget`:
+`internal/traveller/target.go`, `minusSigns` and `ParseTarget`:
 
-`traveller/target.go` — `ParseTarget`
+`internal/traveller/target.go` — `ParseTarget`
 
 ```go
 // minusSigns are the two characters a minus may arrive as: the ASCII hyphen
@@ -172,9 +173,9 @@ The domain's most important idea is how it closes a set of alternatives. Go's
 type switch over an interface promises nothing — the compiler will not tell you a
 case is missing, and neither will the `exhaustive` linter. So the six places
 where "exactly one of" is the rule are written as **sealed interfaces with a fold**.
-`traveller/sums.go`, the file's opening comment:
+`internal/traveller/sums.go`, the file's opening comment:
 
-`traveller/sums.go` — `the sums`
+`internal/traveller/sums.go` — `the sums`
 
 ```go
 // The sums: the places where "exactly one of" is the rule.
@@ -194,9 +195,9 @@ where "exactly one of" is the rule are written as **sealed interfaces with a fol
 `Enlistment` is the smallest one, and it shows the pattern whole. There are
 exactly three ways p. 5's enlistment step can end, and "declined the draft" is a
 case of the type rather than a nil service with a flag beside it.
-`traveller/sums.go`, `Enlistment` through its last seal:
+`internal/traveller/sums.go`, `Enlistment` through its last seal:
 
-`traveller/sums.go` — `Enlistment`
+`internal/traveller/sums.go` — `Enlistment`
 
 ```go
 // Enlistment is how — or whether — a character entered a service (p. 5).
@@ -242,24 +243,24 @@ The six sums are `Enlistment`, `TableResult`, `BenefitRow`, `Departure`,
 `WeaponBenefit` and `Event`. Their cases interfaces are where you will feel the
 compiler if you add a case:
 
-A transcript of `grep -n 'Cases interface' traveller/*.go`, run while writing:
+A transcript of `grep -n 'Cases interface' internal/traveller/*.go`, run while writing:
 
 ```text
-traveller/event.go:19:type EventCases interface {
-traveller/sums.go:28:type EnlistmentCases interface {
-traveller/sums.go:106:type TableResultCases interface {
-traveller/sums.go:146:type BenefitRowCases interface {
-traveller/sums.go:218:type DepartureCases interface {
-traveller/sums.go:269:type WeaponBenefitCases interface {
+internal/traveller/event.go:19:type EventCases interface {
+internal/traveller/sums.go:28:type EnlistmentCases interface {
+internal/traveller/sums.go:110:type TableResultCases interface {
+internal/traveller/sums.go:150:type BenefitRowCases interface {
+internal/traveller/sums.go:222:type DepartureCases interface {
+internal/traveller/sums.go:273:type WeaponBenefitCases interface {
 ```
 
 ## Layer two: the tables
 
 `rules` holds every table of pp. 4-25 as embedded JSON and lifts it into domain
 values. The package's own doc comment says why the lift is where validation
-lives. `rules/rules.go`, the package doc:
+lives. `internal/rules/rules.go`, the package doc:
 
-`rules/rules.go` — `package rules`
+`internal/rules/rules.go` — `package rules`
 
 ```go
 // Package rules holds every table of Book 1 pp. 4-25 as embedded data, and
@@ -281,10 +282,11 @@ lives. `rules/rules.go`, the package doc:
 package rules
 ```
 
-A transcript of `ls rules/data/`, run while writing:
+A transcript of `ls internal/rules/data/`, run while writing:
 
 ```text
 aging.json
+ERRATA.md
 mustering.json
 nobility.json
 services.json
@@ -294,11 +296,11 @@ weapons.json
 ```
 
 Each file carries its own page citation. Here is the head of the Prior Service
-Table's data, `rules/data/services.json` through its `draft` row — the six
+Table's data, `internal/rules/data/services.json` through its `draft` row — the six
 services of p. 10, their enlistment throws, the die modifiers that apply, and the
 draft number of each:
 
-`rules/data/services.json` — `services`
+`internal/rules/data/services.json` — `services`
 
 ```json
 {
@@ -319,13 +321,13 @@ draft number of each:
   "draft": [1, 2, 3, 4, 5, 6],
 ```
 
-Nothing in that file is trusted. `rules/parse.go` checks every printed string
+Nothing in that file is trusted. `internal/rules/parse.go` checks every printed string
 against the domain's own closed alphabet, indexing each type by the name its
 values give themselves — so a data file's spelling is checked against the type
-and against nothing else. `rules/parse.go`, `named` and the indexes built with
+and against nothing else. `internal/rules/parse.go`, `named` and the indexes built with
 it:
 
-`rules/parse.go` — `named`
+`internal/rules/parse.go` — `named`
 
 ```go
 // named indexes an alphabet by the name its values give themselves, so that
@@ -352,9 +354,9 @@ var (
 
 Some checks are about a whole row rather than a cell. The draft row is the one
 the draft die indexes, so it is held at load to what `Rules.Draft` needs of it.
-`rules/lift.go`, `checkDraft`:
+`internal/rules/lift.go`, `checkDraft`:
 
-`rules/lift.go` — `checkDraft`
+`internal/rules/lift.go` — `checkDraft`
 
 ```go
 // checkDraft holds the draft row to what Draft needs of it (p. 5): one die
@@ -382,9 +384,9 @@ func checkDraft(draft []int) error {
 ```
 
 The tables are loaded once per process and validated on the way in.
-`rules/rules.go`, `Load`:
+`internal/rules/rules.go`, `Load`:
 
-`rules/rules.go` — `Load`
+`internal/rules/rules.go` — `Load`
 
 ```go
 // Load returns the lifted rules, loading and validating them once.
@@ -405,9 +407,9 @@ requires, and retyping it from the first copy would check nothing.
 
 Because `Load` hands every caller in a process the same `*Rules`, nothing on it
 is a field a caller can write. The tables are reached through methods, and a
-method that returns a slice returns a copy. `rules/rules.go`, the accessors:
+method that returns a slice returns a copy. `internal/rules/rules.go`, the accessors:
 
-`rules/rules.go` — `Rules.Aging`
+`internal/rules/rules.go` — `Rules.Aging`
 
 ```go
 // Aging is the Aging Table (p. 9) and the medical crisis of pp. 7-8.
@@ -429,9 +431,9 @@ func (r *Rules) Retirement() Retirement { return r.retirement }
 `Service` returns its column through `clone`, which copies the ranks and every
 throw's modifiers; `Aging.At` returns a clone of the effects it collects; and
 `Weapons` copies its list, because that list goes straight to a decider.
-`rules/rules.go`, `Weapons`:
+`internal/rules/rules.go`, `Weapons`:
 
-`rules/rules.go` — `Rules.Weapons`
+`internal/rules/rules.go` — `Rules.Weapons`
 
 ```go
 // Weapons is the printed list for a category (pp. 12-13), column-major.
@@ -451,9 +453,9 @@ func (r *Rules) Weapons(c traveller.WeaponCategory) []traveller.WeaponName {
 
 `dice` is thirty lines of substance. Its whole contract is that a seed means
 something, and the package doc states the properties that make it so.
-`dice/dice.go`, the package doc:
+`internal/dice/dice.go`, the package doc:
 
-`dice/dice.go` — `package dice`
+`internal/dice/dice.go` — `package dice`
 
 ```go
 // Package dice draws the die rolls Classic Traveller's character generation
@@ -481,9 +483,9 @@ package dice
 to a player and names no basis for making it — which weapon to take off the p. 12
 blade list — the tool draws rather than always taking the first name. It draws
 from the same stream, so a varied choice consumes like a throw does and the same
-seed still makes the same character. `dice/dice.go`, `Stream.Among`:
+seed still makes the same character. `internal/dice/dice.go`, `Stream.Among`:
 
-`dice/dice.go` — `Stream.Among`
+`internal/dice/dice.go` — `Stream.Among`
 
 ```go
 // Among returns an index into a set of n alternatives: 0 through n-1.
@@ -508,9 +510,9 @@ func (s *Stream) Among(n int) int {
 
 `chargen.Generate` is the whole public entry point. It loads the tables, builds a
 `run`, applies options, wraps the caller's `Decider` in the logging decorator,
-and walks the procedure. `chargen/generate.go`, `Generate`:
+and walks the procedure. `internal/chargen/generate.go`, `Generate`:
 
-`chargen/generate.go` — `Generate`
+`internal/chargen/generate.go` — `Generate`
 
 ```go
 // Generate walks Book 1's character generation procedure, pp. 4-25, rolling
@@ -561,9 +563,9 @@ func Generate(in Inputs, decider Decider, options ...Option) (*Character, error)
 `run.generate` is the procedure at its coarsest. Note that a civilian — someone
 who declined the draft — returns before `serve` is ever entered, and that the
 dead skip mustering out but are still assessed for a title.
-`chargen/generate.go`, `run.generate`:
+`internal/chargen/generate.go`, `run.generate`:
 
-`chargen/generate.go` — `run.generate`
+`internal/chargen/generate.go` — `run.generate`
 
 ```go
 func (r *run) generate() error {
@@ -603,9 +605,9 @@ func (r *run) generate() error {
 bound and needs none under dice — the reenlistment throw fails eventually — but
 that is a **contract on the `Roller`**, not a property of the function, and the
 comment says so. A test roller that answers every 2D throw with 12 would never
-return. `chargen/serve.go`, `run.serve`:
+return. `internal/chargen/serve.go`, `run.serve`:
 
-`chargen/serve.go` — `run.serve`
+`internal/chargen/serve.go` — `run.serve`
 
 ```go
 // serve runs terms until one of them ends the service.
@@ -633,9 +635,9 @@ func (r *run) serve() error {
 
 `run.term` is the six steps of a term, in the order the exposition gives rather
 than the order the book's worked example rolls them (E002), with the aging round
-last (E006). `chargen/serve.go`, `run.term`:
+last (E006). `internal/chargen/serve.go`, `run.term`:
 
-`chargen/serve.go` — `run.term`
+`internal/chargen/serve.go` — `run.term`
 
 ```go
 func (r *run) term(term traveller.Term) (bool, error) {
@@ -700,21 +702,21 @@ The engine never decides anything on its own behalf. Every question goes to a
 That typing is what closes the set: adding a thirteenth question breaks every
 implementation at compile time.
 
-A transcript of `grep -nE '^	[A-Z][A-Za-z0-9]*\(' chargen/decider.go | sed 's/(.*//' | cat -n`, run while writing:
+A transcript of `grep -nE '^	[A-Z][A-Za-z0-9]*\(' internal/chargen/decider.go | sed 's/(.*//' | cat -n`, run while writing:
 
 ```text
-     1	34:	Service
-     2	38:	SubmitToDraft
-     3	43:	AttemptCommission
-     4	47:	AttemptPromotion
-     5	58:	SkillTable
-     6	67:	Weapon
-     7	76:	ReenlistIntent
-     8	82:	MusterTable
-     9	86:	MusterTable1DM
-    10	90:	MusterTable2DM
-    11	97:	MusterWeapon
-    12	107:	AssumeTitle
+     1	33:	Service
+     2	37:	SubmitToDraft
+     3	42:	AttemptCommission
+     4	46:	AttemptPromotion
+     5	57:	SkillTable
+     6	66:	Weapon
+     7	75:	ReenlistIntent
+     8	81:	MusterTable
+     9	85:	MusterTable1DM
+    10	89:	MusterTable2DM
+    11	96:	MusterWeapon
+    12	106:	AssumeTitle
 ```
 
 Twelve, and the enum `traveller.ChoicePoint` has twelve constants whose
@@ -724,15 +726,15 @@ two together. What the auto policy answers at each is in the doc comment of
 `Policy`'s method of the same name.
 
 Every decider — the auto policy, the interactive player, the scripted test
-deciders — reaches the engine through one decorator, `chargen/logging.go`. It
+deciders — reaches the engine through one decorator, `internal/chargen/logging.go`. It
 must implement all twelve to compile, so a choice point cannot reach the engine
 without reaching the log. Each of its methods names the offer before it asks,
 so what `record` checks an answer against is what the decider was shown, not
 whatever the decider left in its slice afterwards. `record` itself does two
 jobs.
-`chargen/logging.go`, `logging.record`:
+`internal/chargen/logging.go`, `logging.record`:
 
-`chargen/logging.go` — `logging.record`
+`internal/chargen/logging.go` — `logging.record`
 
 ```go
 // record writes the answer into the generation record, and refuses one that
@@ -774,11 +776,11 @@ That injectivity assumption is itself held by a test — and that test's claim t
 cover _every_ alphabet is held by a second test that reads the package's own
 source for `var X = [...]` declarations and fails on one nobody checks:
 
-A transcript of `grep -n 'var alphabet' -A 1 traveller/spelling_test.go; grep -c 'spelledOnce(t,' traveller/spelling_test.go`, run while writing:
+A transcript of `grep -n 'var alphabet' -A 1 internal/traveller/spelling_test.go; grep -c 'spelledOnce(t,' internal/traveller/spelling_test.go`, run while writing:
 
 ```text
-84:var alphabet = regexp.MustCompile(`(?m)^var ([A-Z]\w*) = \[\.\.\.\]`)
-85-
+87:var alphabet = regexp.MustCompile(`(?m)^var ([A-Z]\w*) = \[\.\.\.\]`)
+88-
 12
 ```
 
@@ -786,10 +788,10 @@ One method is handed more than the offered set. `Weapon` also gets a `Vary`, the
 only variation a decider may take — and what it is handed is not the run's
 `Roller` under a narrower name. A `Roller` passed as a `Vary` would keep its
 dynamic type, and one type assertion would give the decider the dice back, so
-`WeaponPick` in `chargen/enlist.go` hands it a wrapper with nothing on it but
-`Among`. `chargen/roller.go`, `varyOnly`:
+`WeaponPick` in `internal/chargen/enlist.go` hands it a wrapper with nothing on it but
+`Among`. `internal/chargen/roller.go`, `varyOnly`:
 
-`chargen/roller.go` — `varyOnly`
+`internal/chargen/roller.go` — `varyOnly`
 
 ```go
 // varyOnly is the Vary a decider is handed: a Roller with everything but
@@ -804,17 +806,17 @@ func (v varyOnly) Among(n int) int { return v.roller.Among(n) }
 
 ### The auto policy
 
-`chargen/policy.go` is the `--auto` decider. It is total, deterministic, and a
+`internal/chargen/policy.go` is the `--auto` decider. It is total, deterministic, and a
 pure function of what it is handed: where it needs to know an option is legal,
 the engine supplies that by what it puts in the offered set, never by the policy
 reaching into the character. It also assumes that set is non-empty, and checks
 nothing: the engine never offers an empty one.
 
 Three orthogonal strategies, each a closed type rather than a string — which is
-why `chargen` has no `Validate` method. `chargen/policy.go`, the skills and
+why `chargen` has no `Validate` method. `internal/chargen/policy.go`, the skills and
 mustering out constants and the three strategy sets:
 
-`chargen/policy.go` — `Skills`
+`internal/chargen/policy.go` — `Skills`
 
 ```go
 // The skills strategies, in their listed order; the first is the default.
@@ -845,10 +847,10 @@ var (
 
 A flag word becomes a domain value once, at the boundary, and past there a
 `Career` is a `Career`. The boundary is one call that parses all three words
-together and hands back the policy they name. `chargen/policy.go`, `ParsePolicy`,
+together and hands back the policy they name. `internal/chargen/policy.go`, `ParsePolicy`,
 its doc and signature:
 
-`chargen/policy.go` — `ParsePolicy`
+`internal/chargen/policy.go` — `ParsePolicy`
 
 ```go
 // ParsePolicy turns the three strategy flags' words into the policy they name.
@@ -866,9 +868,9 @@ in the rules costs a character a failed attempt. Three are more interesting.
 `Service` computes the odds of meeting each offer's printed target on two dice
 after its printed modifier, and takes the best, ties going to book order. It is
 not a table and not a rule; it is arithmetic over what the offer carries.
-`chargen/policy.go`, `odds`:
+`internal/chargen/policy.go`, `odds`:
 
-`chargen/policy.go` — `odds`
+`internal/chargen/policy.go` — `odds`
 
 ```go
 // odds is the chance of meeting an offer's target on two dice after its
@@ -896,10 +898,10 @@ Education table every time it was offered and Personal Development never, so a
 character generated under the default would never raise a characteristic —
 though p. 11's first table is exactly how that is done. The engine hands the
 decider a `taken` slice parallel to `from`, and the policy prefers the tables he
-has trained on least before applying its ranking. `chargen/policy.go`,
+has trained on least before applying its ranking. `internal/chargen/policy.go`,
 `thinnest`:
 
-`chargen/policy.go` — `thinnest`
+`internal/chargen/policy.go` — `thinnest`
 
 ```go
 // thinnest is the offered tables the character has had fewest results off.
@@ -935,9 +937,9 @@ drawing, and drawing admits it. So the policy's whole answer is
 `render` projects a `*chargen.Character` into a flat `record` struct and then
 into JSON, a character sheet, or a transcript. The domain types are the
 interface; JSON is a projection, and where the two disagree the codec absorbs it.
-`render/json.go`, the package doc:
+`internal/render/json.go`, the package doc:
 
-`render/json.go` — `package render`
+`internal/render/json.go` — `package render`
 
 ```go
 // Package render projects a generated character into the shapes a reader
@@ -955,9 +957,9 @@ The wire shape is one struct. Its JSON tags are the record's public field names,
 and `docs/character.schema.json` describes it in draft 2020-12. The names follow
 the book: a service rank's name is `rankName` ("Captain"), and the hereditary
 title of p. 5 is `nobility`, whose own `title` field is the title it confers.
-`render/json.go`, `record`:
+`internal/render/json.go`, `record`:
 
-`render/json.go` — `record`
+`internal/render/json.go` — `record`
 
 ```go
 type record struct {
@@ -987,30 +989,30 @@ type record struct {
 
 The schema leaves the record's root open to a section a later build may add, and
 closes everything inside it — the event kinds included, so an event of a kind
-the procedure does not log does not validate. `render/schema_test.go` holds both
+the procedure does not log does not validate. `internal/render/schema_test.go` holds both
 halves.
 
 The write side is held by folds — one codec per sum, so adding a case stops this
 package compiling until the projection learns to write it:
 
-A transcript of `grep -n 'Codec struct\|^func fold' render/fold.go`, run while writing:
+A transcript of `grep -n 'Codec struct\|^func fold' internal/render/fold.go`, run while writing:
 
 ```text
 13:type enlistmentCodec struct{ out enlistmentRecord }
 33:func foldEnlistment(from traveller.Enlistment) enlistmentRecord {
 46:type departureCodec struct{ out departureRecord }
 80:func foldDeparture(from traveller.Departure) departureRecord {
-157:type eventCodec struct {
+160:type eventCodec struct {
 ```
 
-The **read** side is not. `render/decode.go` unmarshals into the same `record`
+The **read** side is not. `internal/render/decode.go` unmarshals into the same `record`
 struct and deliberately does not rebuild domain types, so `SheetFrom` and
 `TranscriptFrom` work on strings — comparing, for example, a ship's kind against
 `traveller.ScoutShip.String()`. The compiler cannot see those comparisons; what
-holds them is a round-trip test. `render/decode.go`, `errNotARecord` and the head
+holds them is a round-trip test. `internal/render/decode.go`, `errNotARecord` and the head
 of `decode`:
 
-`render/decode.go` — `errNotARecord`
+`internal/render/decode.go` — `errNotARecord`
 
 ```go
 var errNotARecord = errors.New("not a character record")
@@ -1029,7 +1031,7 @@ func decode(text []byte) (record, error) {
 
 A sheet is what a referee reads and keeps, and the record is the only way back
 to the character on it (ADR 0001). So every sheet and every transcript ends with
-the same one line, `render/sheet.go`, `keepTheRecord`:
+the same one line, `internal/render/sheet.go`, `keepTheRecord`:
 
 ```text
 Keep the JSON record: it is the only way back to this character.
@@ -1329,7 +1331,7 @@ Development. Under pure ranking all four would have been the 8+ table.
 
 `[E002]` is an erratum stamp. Every skill taken this term names the reading that
 put the training step where it is — the exposition's per-term order rather than
-the worked example's. Fifteen such readings are recorded in `rules/data/ERRATA.md`, and
+the worked example's. Fifteen such readings are recorded in `internal/rules/data/ERRATA.md`, and
 a record names every one that governed it.
 
 The term ends on a failed reenlistment throw, which is `traveller.ForcedOut` —
@@ -1422,7 +1424,7 @@ builds, which is precisely the promise the tool does not make.
 The repository's goldens are records, so they are what `render` can be pointed
 at directly:
 
-A transcript of `ctchargen render chargen/testdata/navy-captain.json`, run while writing:
+A transcript of `ctchargen render internal/chargen/testdata/navy-captain.json`, run while writing:
 
 ```text
 # (unnamed)
@@ -1463,7 +1465,7 @@ re-run.
 Each golden is a triple: the record, the sheet it renders to, and the transcript.
 All three are regenerated, never hand-edited.
 
-A transcript of `ls chargen/testdata/ | grep '^navy-captain'`, run while writing:
+A transcript of `ls internal/chargen/testdata/ | grep '^navy-captain'`, run while writing:
 
 ```text
 navy-captain.json
@@ -1480,15 +1482,14 @@ comments; `COVERAGE.md` is generated from markers beside the code.
 
 `chargen`'s tests hold the readings and the choice points to the goldens,
 beside the roster that generates them: the stamping conditions of
-`rules/data/ERRATA.md` both ways, every choice point to a golden that reaches
+`internal/rules/data/ERRATA.md` both ways, every choice point to a golden that reaches
 it, and the schema's three strategy enums to the strategies the code takes.
 `internal/coverage`, a package with no non-test code, generates the coverage
-map and holds the exported Go API to a checked-in baseline:
+map:
 
 A transcript of `grep -h '^func Test' internal/coverage/*.go | sed 's/func //; s/(t \*testing.T) {//'`, run while writing:
 
 ```text
-TestTheExportedAPIIsTheBaseline
 TestTheCoverageMapIsGenerated
 TestAMarkerRemovedFailsNamingTheRule
 TestOnlyTheTablesAreGenerated
@@ -1497,12 +1498,8 @@ TestAMarkerOutOfPlaceOrOutOfShape
 TestAMarkerWraps
 ```
 
-`TestTheExportedAPIIsTheBaseline` writes one line per exported declaration of
-the five library packages and compares the list with
-`internal/coverage/testdata/api.txt`, both ways: a line gone is a name removed
-or a signature changed, and a line arrived is a promise made, which is taken
-on purpose by regenerating the baseline under its own flag
-(`go test ./internal/coverage -regenerate-api`) and reading the diff. The command line has its own baseline in
+There is no Go API to hold: the packages are under `internal/`. The command
+line is what a script depends on, and it has a baseline in
 `cmd/ctchargen/cli_test.go`, held in one direction only — a flag a script passes
 must keep its name, type and default, and a new flag breaks nothing — beside a
 test that the exit status is only ever 0 or 1:
@@ -1532,13 +1529,13 @@ timings stripped so the output is stable:
 A transcript of `go test ./... -count=1 2>&1 | sed -E 's/[[:space:]]+[0-9.]+s$//'`, run while writing:
 
 ```text
-ok  	github.com/philoserf/ctchargen/chargen
 ok  	github.com/philoserf/ctchargen/cmd/ctchargen
-ok  	github.com/philoserf/ctchargen/dice
+ok  	github.com/philoserf/ctchargen/internal/chargen
 ok  	github.com/philoserf/ctchargen/internal/coverage
-ok  	github.com/philoserf/ctchargen/render
-ok  	github.com/philoserf/ctchargen/rules
-ok  	github.com/philoserf/ctchargen/traveller
+ok  	github.com/philoserf/ctchargen/internal/dice
+ok  	github.com/philoserf/ctchargen/internal/render
+ok  	github.com/philoserf/ctchargen/internal/rules
+ok  	github.com/philoserf/ctchargen/internal/traveller
 ```
 
 ## Where the linear order breaks down

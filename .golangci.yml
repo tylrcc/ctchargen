@@ -52,21 +52,21 @@ linters:
         traveller-imports-nothing:
           files: ["**/traveller/*.go"]
           deny:
-            - pkg: github.com/philoserf/ctchargen/dice
+            - pkg: github.com/philoserf/ctchargen/internal/dice
               desc: the domain does not roll; a type that needs dice is in the wrong package
-            - pkg: github.com/philoserf/ctchargen/rules
+            - pkg: github.com/philoserf/ctchargen/internal/rules
               desc: the domain carries identity, never the printed tables
         rules-does-not-roll:
           files: ["**/rules/*.go"]
           deny:
-            - pkg: github.com/philoserf/ctchargen/dice
+            - pkg: github.com/philoserf/ctchargen/internal/dice
               desc: the tables are consulted, not thrown; the engine brings the dice
         engine-is-the-only-door:
           files: ["**/cmd/ctchargen/*.go"]
           deny:
-            - pkg: github.com/philoserf/ctchargen/rules
+            - pkg: github.com/philoserf/ctchargen/internal/rules
               desc: the command drives the engine; the tables are chargen's to consult
-            - pkg: github.com/philoserf/ctchargen/dice
+            - pkg: github.com/philoserf/ctchargen/internal/dice
               desc: the command drives the engine; the dice stream is chargen's to consume
 
     dupword:
@@ -127,7 +127,7 @@ linters:
         - empty
         - stdlib
         - generic
-        - 'github\.com/philoserf/ctchargen/traveller\.(TableResult|BenefitRow|Enlistment|Departure|WeaponBenefit|Event)$'
+        - 'github\.com/philoserf/ctchargen/internal/traveller\.(TableResult|BenefitRow|Enlistment|Departure|WeaponBenefit|Event)$'
 
     nolintlint:
       # A //nolint is a disable one line wide and carries the same burden of
@@ -178,7 +178,7 @@ linters:
       # cases interface beside it. Restating "dispatches to its case" on
       # every one would be ceremony, not documentation.
       - linters: [revive]
-        path: traveller/
+        path: internal/traveller/
         text: "exported method \\S+\\.(Fold|Sequence) should have comment"
 
       # The second transcription of every table is a literal, cell by cell,
@@ -187,7 +187,7 @@ linters:
       # typo reaches every cell that shares it, and the two copies stop
       # being two readings. Repetition is the mechanism here, not a smell.
       - linters: [goconst]
-        path: rules/.*_test\.go
+        path: internal/rules/.*_test\.go
 
 # gofumpt rather than gofmt: a strict superset, so enabling it makes gofmt
 # redundant rather than contradictory. It ships inside golangci-lint, so it

@@ -26,7 +26,7 @@ elsewhere in the tree. A reading's stamped-on prose is quoted by lifting it
 ## A stamping predicate is written from the prose
 
 `CLAUDE.md`'s gate section states the rule (#66, #77). Review a predicate in
-`chargen/stamping_test.go` by reading it against its reading's stamped-on
+`internal/chargen/stamping_test.go` by reading it against its reading's stamped-on
 prose, not against the stamping code: one that matches the code and departs
 from the prose is the defect the check exists for.
 

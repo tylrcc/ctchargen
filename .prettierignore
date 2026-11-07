@@ -6,7 +6,7 @@
 
 # Transcribed from the page and read by the loader; leave the shape alone
 # so a diff here is a transcription change and nothing else.
-rules/data/
+internal/rules/data/
 
 # Records in the shape the engine emits, validated against the schema.
 docs/character.complete.json

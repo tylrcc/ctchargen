@@ -5,6 +5,13 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- There is no Go library (#199). `traveller`, `dice`, `rules`, `chargen` and
+  `render` move under `internal/`, so the compiler refuses an import of any of
+  them from outside the module, and `v1.0.0` freezes two things rather than
+  three: the record and the command line. The exported API baseline and its
+  `-regenerate-api` flag are deleted with nothing left to hold. Paths in the
+  documents and the coverage map name the new locations; no golden moved.
+
 - The gate checks links. `task docs` runs lychee, offline, over every tracked
   Markdown file, and fails on a link to a file or an anchor that is not in the
   tree; `Brewfile` lists it so `task clean` keeps it. The alpha releases' notes

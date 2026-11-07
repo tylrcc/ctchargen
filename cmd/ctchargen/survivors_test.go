@@ -12,8 +12,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/philoserf/ctchargen/chargen"
-	"github.com/philoserf/ctchargen/traveller"
+	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // scouts is the service the report used, and the one that kills most.

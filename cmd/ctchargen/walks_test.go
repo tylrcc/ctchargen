@@ -4,7 +4,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/philoserf/ctchargen/chargen"
+	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
 // The walks the command tests take. Each is a scripted list of dice and

@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/philoserf/ctchargen/traveller"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // commandList is the subcommands in the order run's switch takes them. Both

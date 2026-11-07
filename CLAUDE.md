@@ -103,7 +103,7 @@ counted here, because a count is one more thing to get wrong.
    it carries a `Holds:` marker. `COVERAGE.md` is generated from the two.
 
 5. **Where the text is silent or ambiguous, the reading goes in
-   `rules/data/ERRATA.md`** with its page cite and its stamping condition, and is
+   `internal/rules/data/ERRATA.md`** with its page cite and its stamping condition, and is
    named on every record it governed. Never applied silently.
 
 6. **A number that indexes a printed table is data; a bare procedural bound is
@@ -138,7 +138,7 @@ overrides a higher one:
 1. **The held page.** Book 1, and Books 2–3 where Book 1 points at them. If
    the page settles it, nothing else is consulted — not memory, not an
    erratum, not the past.
-2. **`rules/data/ERRATA.md`, the readings decided here.** Each was decided against
+2. **`internal/rules/data/ERRATA.md`, the readings decided here.** Each was decided against
    the page and carries its cite, so it governs wherever the page is silent
    or self-contradictory.
 3. **The errata of the implementation removed at `41a213a`.** Last resort,
@@ -147,7 +147,7 @@ overrides a higher one:
 
 A third-rank answer is never applied as it stands. Take it as a **pointer to
 a page**, go read that page, and decide the reading here: it earns an id in
-`rules/data/ERRATA.md`, its own rationale, and its own stamping condition, at which
+`internal/rules/data/ERRATA.md`, its own rationale, and its own stamping condition, at which
 point it is a rank-2 reading like any other and its origin is history. A
 reading inherited unread has an authority it never earned — that is the whole
 reason the ordering puts it third rather than first.
@@ -170,17 +170,17 @@ its list of places the book is silent, and the readings it reached there.
 
 ## Documents and what each governs
 
-| File                         | Governs                                                                                                                                                                                              |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/PRD.md`                | Nothing now. The delivered v1 contract, kept as the record of why the tree has this shape.                                                                                                           |
-| `rules/data/ERRATA.md`       | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                        |
-| `docs/COVERAGE.md`           | Every implemented rule of pp. 4–25, mapped to its page cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
-| `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
-| `docs/PRERELEASE.md`         | One section per tag: what it ships with open and why, and the review that preceded it where there was one. A finding is recorded before it is fixed.                                                 |
-| `THEORY.md`                  | Nothing binding. What the code believes, where those beliefs are enforced, and where they rest on nothing but care. A reader's account, not a contract.                                              |
-| `WALKTHROUGH.md`             | Nothing binding. A linear read of the code in execution order, generated. Where it disagrees with the tree, it is the document that is wrong.                                                        |
-| `CODING_STANDARDS.md`        | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
-| `CLAUDE.md`                  | This file.                                                                                                                                                                                           |
+| File                            | Governs                                                                                                                                                                                              |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/PRD.md`                   | Nothing now. The delivered v1 contract, kept as the record of why the tree has this shape.                                                                                                           |
+| `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                        |
+| `docs/COVERAGE.md`              | Every implemented rule of pp. 4–25, mapped to its page cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
+| `docs/character.schema.json`    | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
+| `docs/PRERELEASE.md`            | One section per tag: what it ships with open and why, and the review that preceded it where there was one. A finding is recorded before it is fixed.                                                 |
+| `THEORY.md`                     | Nothing binding. What the code believes, where those beliefs are enforced, and where they rest on nothing but care. A reader's account, not a contract.                                              |
+| `WALKTHROUGH.md`                | Nothing binding. A linear read of the code in execution order, generated. Where it disagrees with the tree, it is the document that is wrong.                                                        |
+| `CODING_STANDARDS.md`           | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
+| `CLAUDE.md`                     | This file.                                                                                                                                                                                           |
 
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings document is the readings, and `rules` lifts it: an
@@ -188,8 +188,8 @@ first. The readings document is the readings, and `rules` lifts it: an
 lift. The `--auto` policy is its own doc comments. `COVERAGE.md`'s tables are
 generated from markers beside the code, and a rule an implementation names
 and no test holds, or the reverse, fails the generator. What still describes
-the code from outside it — the schema's strategy enums, the exported API
-baseline — is held to the code by a test beside what it describes. Each gate
+the code from outside it — the schema's strategy enums — is
+held to the code by a test beside what it describes. Each gate
 is verified by breaking it.
 
 ## The shape of the tree
@@ -198,6 +198,10 @@ The arrows point one way: `traveller` imports none of the others; `rules` and
 `chargen` import `traveller`; `render` imports the record. A domain type that
 needs to know about dice or JSON is in the wrong package. Each package's doc
 comment is its contract; read it before changing the package.
+
+Every package but the command is under `internal/`: there is no Go library,
+so nothing outside the module can import one and no exported name is a
+promise (#199).
 
 - `traveller`: the domain. Alphabets, values, and the sums that say "exactly
   one of".
@@ -209,8 +213,7 @@ comment is its contract; read it before changing the package.
   the schema's strategies to the goldens.
 - `render`: the record's projections, and reading one back.
 - `internal/coverage`: test code only. Generates `docs/COVERAGE.md` from
-  `Implements:` and `Holds:` markers, and holds the exported API baseline
-  until #199.
+  `Implements:` and `Holds:` markers.
 - `cmd/ctchargen`: the subcommands. The record goes to stdout and the
   conversation to stderr, so `ctchargen new | jq` pipes a record.
 
@@ -220,11 +223,10 @@ comment is its contract; read it before changing the package.
 narrower than a task, in a loop:
 
 ```sh
-go test ./chargen                     # one package
-go test ./chargen -run TestGoldens    # one test
-go test ./chargen -regenerate         # rewrite the goldens
+go test ./internal/chargen                   # one package
+go test ./internal/chargen -run TestGoldens  # one test
+go test ./internal/chargen -regenerate       # rewrite the goldens
 go test ./internal/coverage -regenerate      # rewrite docs/COVERAGE.md from the markers
-go test ./internal/coverage -regenerate-api  # rewrite the exported API baseline
 go run ./cmd/ctchargen new --auto --sheet
 ```
 
@@ -236,7 +238,7 @@ go run ./cmd/ctchargen new --auto --sheet
   incorrectly: `godot` appended a period after a closing quotation mark in
   doc comments, and `dupword` deleted a word from a verbatim quotation
   of Book 1 p. 3. Both are configured off that behaviour now. Read the diff.
-- **`go test ./chargen -regenerate` rewrites more than `chargen/testdata/`.**
+- **`go test ./internal/chargen -regenerate` rewrites more than `internal/chargen/testdata/`.**
   The same fixtures write `docs/character.minimal.json` and
   `docs/character.complete.json`, so the schema's published examples cannot
   drift from what the engine emits. `docs/character.schema.json` itself is not
@@ -262,18 +264,15 @@ go run ./cmd/ctchargen new --auto --sheet
   felt it fails naming the throw that moved, and its dice are re-scripted
   from a record that walks the new path.
 - **Goldens are regenerated, never hand-edited.**
-- **The exported Go API and the CLI are held to a baseline (#126).** The API
-  is `internal/coverage/testdata/api.txt`, held both ways: a line gone is a
-  break, a line new is a promise, and either is regenerated only on purpose,
-  under its own `-regenerate-api` flag.
-  The CLI's flags, types and defaults are typed out in
+- **The CLI is held to a baseline (#126).** Its flags, types and defaults are
+  typed out in
   `cmd/ctchargen/cli_test.go` and held one way, because a new flag breaks
   nobody; the exit status beside them is 0 or 1.
 - **A new invariant is not done until a deliberate mutation has been shown to
   kill it**, and the failure names what was broken.
 - **An erratum's stamping condition is machine-checked, not just reachable**
   (#66). `ERRATA.md` states each as a predicate over the finished record, and
-  `chargen/stamping_test.go` holds what a record stamps to what the document
+  `internal/chargen/stamping_test.go` holds what a record stamps to what the document
   says it should, quoting the lifted stamped-on prose when it fails. Write the
   predicate from the document's prose, never from the stamping code: a condition
   transcribed from the thing it checks is one reading written twice, which is
