@@ -98,8 +98,9 @@ counted here, because a count is one more thing to get wrong.
    transcription is the check the font trap needs. Retyping the second copy
    from the first checks nothing.
 
-4. **Every implemented rule carries its printed-page cite**, in the code and
-   in `COVERAGE.md`.
+4. **Every implemented rule carries its printed-page cite** in the code, as
+   an `Implements:` marker beside the implementation, and the test that holds
+   it carries a `Holds:` marker. `COVERAGE.md` is generated from the two.
 
 5. **Where the text is silent or ambiguous, the reading goes in
    `rules/data/ERRATA.md`** with its page cite and its stamping condition, and is
@@ -174,7 +175,7 @@ its list of places the book is silent, and the readings it reached there.
 | `docs/PRD.md`                | Nothing now. The delivered v1 contract, kept as the record of why the tree has this shape.                                                                                                           |
 | `rules/data/ERRATA.md`       | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                        |
 | `docs/POLICY.md`             | The `--auto` decision table: one row per `Decider` method.                                                                                                                                           |
-| `docs/COVERAGE.md`           | Every implemented rule of pp. 4–25, mapped to its page cite, its implementation and its test. A rule with no row is not implemented; a row with no test is a defect.                                 |
+| `docs/COVERAGE.md`           | Every implemented rule of pp. 4–25, mapped to its page cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
 | `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
 | `docs/PRERELEASE.md`         | One section per tag: what it ships with open and why, and the review that preceded it where there was one. A finding is recorded before it is fixed.                                                 |
 | `THEORY.md`                  | Nothing binding. What the code believes, where those beliefs are enforced, and where they rest on nothing but care. A reader's account, not a contract.                                              |
@@ -184,8 +185,9 @@ its list of places the book is silent, and the readings it reached there.
 The documents are held to the code in both directions once code exists: every
 `Erratum` constant has an `ERRATA.md` entry and every entry a constant, which
 the `rules` lift holds; every `POLICY.md` row names a `Decider`
-method and every method has a row; every `COVERAGE.md` row names a test that
-exists. Each gate is verified by breaking it.
+method and every method has a row; `COVERAGE.md` is generated from markers,
+and a rule an implementation names and no test holds, or the reverse, fails
+the generator. Each gate is verified by breaking it.
 
 ## The shape of the tree
 
@@ -236,10 +238,16 @@ absorbs it and the domain type keeps its shape.
 
 **`internal/docsgate`** has no non-test code. It is the one package allowed to
 know about `traveller`, `chargen` and the documents at once, and it holds
-`POLICY.md`, `COVERAGE.md` and `ERRATA.md`'s stamping conditions to the code
-in both directions. It
-reads the checked-in goldens rather than generating records, so it reads what a
-referee would be handed.
+`POLICY.md` and `ERRATA.md`'s stamping conditions to the code in both
+directions. It reads the checked-in goldens rather than generating records, so
+it reads what a referee would be handed.
+
+**`internal/coverage`** has no non-test code and is nothing but the generator
+of `docs/COVERAGE.md`. An implementation carries
+`// Implements: <rule> [<page>] in <section>.` and the test or golden that
+holds it carries `// Holds: <rule>.`; the generator joins them on the rule and
+writes each section's table, leaving the document's prose as written. Its
+package doc says where a marker may sit, and a marker anywhere else fails it.
 
 **`cmd/ctchargen`** is the subcommands and their flag sets. It splits the data
 channel from the asking channel: the record, the sheet and the transcript to
@@ -256,6 +264,7 @@ go test ./chargen                     # one package
 go test ./chargen -run TestGoldens    # one test
 go test ./chargen -regenerate         # rewrite the goldens
 go test ./internal/docsgate -regenerate  # rewrite the exported API baseline
+go test ./internal/coverage -regenerate  # rewrite docs/COVERAGE.md from the markers
 go run ./cmd/ctchargen new --auto --sheet
 ```
 

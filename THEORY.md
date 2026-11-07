@@ -224,7 +224,6 @@ and regex over the documents' own heading forms:
 - every `Decider` method ↔ every `### \`Method(\``row in`POLICY.md`, both ways;
 - every `ChoicePoint` ↔ every `Decider` method;
 - `chargen.PolicyVersion` ↔ the version `POLICY.md` names;
-- every `COVERAGE.md` row's cited test and golden ↔ files that exist;
 - in `errata_test.go`, **each erratum's stamping condition as a predicate over
   a finished record** — written from the document's prose, never from the stamping
   code, because "a condition transcribed from the thing it checks is one reading

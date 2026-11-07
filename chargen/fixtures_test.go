@@ -113,6 +113,7 @@ func (s *scripted) Among(n int) int {
 //
 //nolint:gochecknoglobals // an immutable roster, and Go has no const slice.
 var fixtures = []fixture{
+	// Holds: A round at the end of term 4 and every term after.
 	{
 		name: "other-serve", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -124,6 +125,10 @@ var fixtures = []fixture{
 	},
 
 	// The four services that print a rank column (p. 10).
+	//
+	// Holds: Commission: once per term until achieved.
+	// Holds: Promotion: the commissioning term and every term after.
+	// Holds: Retirement pay from term 5, not for Scouts or Other.
 	{
 		name: "navy-captain", service: traveller.Navy, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -159,6 +164,10 @@ var fixtures = []fixture{
 	},
 	// Captain of the Merchants, which is the top of that column (E013), and
 	// the only column whose Table 1 awards a Free Trader.
+	//
+	// Holds: No promotion at the top of the ranks table.
+	// Holds: Rank-keyed grants, at the moment the rank is conferred.
+	// Holds: Free Trader: 40 years of payments, 10 off per repeat.
 	{
 		name: "merchants-captain", service: traveller.Merchants, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -175,6 +184,8 @@ var fixtures = []fixture{
 	// there in a later term - p. 5 bars a draftee from a commission in his
 	// first term only: "they do become eligible during the second and
 	// subsequent terms of service if they reenlist."
+	//
+	// Holds: Draftees are not eligible for commission in the first term only.
 	{
 		name: "drafted-then-commissioned", service: traveller.Navy, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -185,6 +196,8 @@ var fixtures = []fixture{
 		among: []int{9},
 	},
 	// Rank 5 taking the +1 the page allows on Table 1 (p. 9).
+	//
+	// Holds: The +1 at rank 5 or 6 on Table 1.
 	{
 		name: "merchants-table1-modifier", service: traveller.Merchants, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
@@ -198,6 +211,9 @@ var fixtures = []fixture{
 	},
 	// A characteristic reduced to zero, and the crisis survived - the one
 	// path that puts months on an age (pp. 7-8).
+	//
+	// Holds: A characteristic at zero is a medical crisis, resolved inline.
+	// Holds: Survival recovers to 1 and adds 1D months.
 	{
 		name: "other-crisis-survived", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -210,6 +226,9 @@ var fixtures = []fixture{
 		among: []int{7},
 	},
 	// The same crisis, failed. E008 reads a failed saving throw as death.
+	//
+	// Holds: A failed crisis throw is death.
+	// Holds: Which departures are deaths is said in one place.
 	{
 		name: "other-crisis-died", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -220,6 +239,8 @@ var fixtures = []fixture{
 		},
 		among: nil,
 	},
+	// Holds: Survival throw; failure is death.
+	// Holds: The dead character's age and term.
 	{
 		name: "other-death", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -229,6 +250,8 @@ var fixtures = []fixture{
 		},
 		among: []int{3},
 	},
+	// Holds: Social Standing 11+ may assume the hereditary title.
+	// Holds: Assessed once, at the end, against the final value.
 	{
 		name: "other-title", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -240,6 +263,8 @@ var fixtures = []fixture{
 	// Killed by a survival throw holding a Social Standing of 12. E011
 	// assesses the dead and does not ask them, and no other fixture reaches
 	// that branch: every other death in this roster ends below 11.
+	//
+	// Holds: The dead are assessed but not asked.
 	{
 		name: "died-a-noble", service: traveller.Navy, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -252,6 +277,8 @@ var fixtures = []fixture{
 	// Rank 5 declining the +1 that p. 9 allows him on Table 1. Spartan is
 	// the only strategy that declines it, and until this fixture no
 	// generated character both held the rank and refused the modifier.
+	//
+	// Holds: The +1 on Table 1 may be declined.
 	{
 		name: "navy-spartan-declines", service: traveller.Navy, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
@@ -267,6 +294,8 @@ var fixtures = []fixture{
 	},
 	// Killed in the Scouts, which is where the service-wide grant of p. 23
 	// is carried by a character who never lived to muster out.
+	//
+	// Holds: Service-wide rank and service skills, granted once on entering.
 	{
 		name: "scouts-died", service: traveller.Scouts, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
@@ -279,6 +308,8 @@ var fixtures = []fixture{
 	// The scout ship rolled twice. P. 23: "Only one scout ship may be
 	// acquired by a character, and throws resulting in additional ships are
 	// lost."
+	//
+	// Holds: Scout ship: duplicates lost.
 	{
 		name: "scouts-second-ship", service: traveller.Scouts, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
@@ -300,6 +331,8 @@ var fixtures = []fixture{
 		},
 		among: nil,
 	},
+	// Holds: The draft is offered, not compelled.
+	// Holds: Declining ends generation with a civilian.
 	{
 		name: "scouts-civilian", service: traveller.Scouts, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
@@ -310,6 +343,8 @@ var fixtures = []fixture{
 	},
 	// Weapon rows taken twice: goods converts the repeat into expertise,
 	// spartan takes a different weapon instead (p. 22).
+	//
+	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
 		name: "scouts-expertise", service: traveller.Scouts, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
@@ -322,6 +357,7 @@ var fixtures = []fixture{
 		},
 		among: nil,
 	},
+	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
 		name: "scouts-diversified", service: traveller.Scouts, forced: true,
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
@@ -363,6 +399,9 @@ var fixtures = []fixture{
 	// this roster reached the Weapon choice point at all - eleven of the
 	// twelve were exercised and that one was not - so the answer to it was
 	// covered by nothing, before or after it changed.
+	//
+	// Holds: The weapon for a Blade or Gun result is drawn, not always the first
+	// printed.
 	{
 		name: "marines-armed", service: traveller.Marines, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -381,6 +420,8 @@ var fixtures = []fixture{
 	// are the only records the reading governs that did not end in death
 	// (#92). Until they were added the roster reached neither, and E011 was
 	// stamped on nine records the document says it must not be.
+	//
+	// Holds: E011 is stamped only where the reading changed the answer.
 	{
 		name: "marines-ennobled", service: traveller.Marines, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{
@@ -393,6 +434,7 @@ var fixtures = []fixture{
 		},
 		among: []int{9, 2},
 	},
+	// Holds: E011 is stamped only where the reading changed the answer.
 	{
 		name: "other-lost-the-title", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
 		dice: []int{

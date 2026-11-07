@@ -6,6 +6,7 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
+// Holds: Die roll conventions: `N+`, `N−`, exact.
 func TestParseTarget(t *testing.T) {
 	t.Parallel()
 
@@ -51,6 +52,7 @@ func TestParseTargetRefusesNonsense(t *testing.T) {
 	}
 }
 
+// Holds: Die roll conventions: `N+`, `N−`, exact.
 func TestTargetSatisfied(t *testing.T) {
 	t.Parallel()
 

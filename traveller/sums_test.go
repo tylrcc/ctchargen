@@ -81,6 +81,7 @@ func (r *tableResultRecorder) WeaponPick(c traveller.WeaponCategory) error {
 	return r.note("weapon %v", c)
 }
 
+// Holds: Three kinds of result.
 func TestTableResultFolds(t *testing.T) {
 	t.Parallel()
 
@@ -122,6 +123,8 @@ func (r *benefitRecorder) TravellersAid() error { return r.note("travellers aid"
 func (r *benefitRecorder) Ship(k traveller.ShipKind) error { return r.note("ship %v", k) }
 func (r *benefitRecorder) Nothing() error                  { return r.note("nothing") }
 
+// Holds: The seven kinds of Table 1 row.
+// Holds: Travellers' Aid only once; duplicates wasted.
 func TestBenefitRowFolds(t *testing.T) {
 	t.Parallel()
 

@@ -369,6 +369,8 @@ func TestMalformedShips(t *testing.T) {
 // Repeated because once proves nothing: Go's map order is deliberately
 // unstable, and a single pass through an unordered range agrees with an
 // ordered one about half the time.
+//
+// Holds: A data file broken two ways reports the same one every run.
 func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 	t.Parallel()
 

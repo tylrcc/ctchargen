@@ -328,6 +328,7 @@ func TestPriorServiceTable(t *testing.T) {
 	}
 }
 
+// Holds: Ranks and their names, per the Table of Ranks.
 func TestTableOfRanks(t *testing.T) {
 	t.Parallel()
 
@@ -411,6 +412,8 @@ func TestMusteringOutTables(t *testing.T) {
 // The three cells that are the font trap: under text extraction each comes
 // out as the digit 4, which would give a Scout a seventh benefit he does not
 // have and give Other two benefits at rows 6 and 7.
+//
+// Holds: The dash rows deliver nothing.
 func TestTheDashCellsAreNothing(t *testing.T) {
 	t.Parallel()
 

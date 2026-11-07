@@ -24,6 +24,9 @@ import "math/rand/v2"
 const faces = 6
 
 // Stream is a source of dice. The zero value is not usable; call New.
+//
+// Implements: Two-die throws except the draft [1:10] in Characteristics and the
+// record.
 type Stream struct {
 	r *rand.Rand
 }

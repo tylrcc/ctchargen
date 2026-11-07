@@ -72,6 +72,11 @@ func withDice(dice source) option {
 // record, the sheet, the transcript - and `asking` is where the tool talks to
 // the person driving it. Interactive mode writes its questions to the second,
 // so that `ctchargen new | jq` pipes a record and not a conversation.
+//
+// Implements: What the command writes matches the schema, build stamp and all
+// [JSON conventions] in The record.
+// Implements: The questions go to stderr, not into the record [CLI sketch] in
+// The record.
 func run(args []string, in io.Reader, out, asking io.Writer, options ...option) error {
 	var chosen settings
 
@@ -154,6 +159,9 @@ func version(args []string, out io.Writer) error {
 // in-process by a test carries none, because a test binary's build info is
 // not the build of a released tool and would make every golden differ by
 // machine.
+//
+// Implements: The record names its ruleset and the build that wrote it
+// [Determinism] in The record.
 func stamp(character *chargen.Character) {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {

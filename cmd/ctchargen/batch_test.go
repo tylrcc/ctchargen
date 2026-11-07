@@ -92,6 +92,9 @@ func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 
 // A collision anywhere in the batch is found before any of it is written, so
 // a refused batch leaves the directory as it was.
+//
+// Holds: A refused batch writes none of itself, on the members it will actually
+// write.
 func TestARefusedBatchWritesNothing(t *testing.T) {
 	t.Parallel()
 

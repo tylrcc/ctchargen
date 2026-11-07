@@ -76,6 +76,10 @@ func validate(t *testing.T, schema *jsonschema.Schema, path string) {
 }
 
 // Every record this repository writes matches the schema that describes it.
+//
+// Holds: A roll with nothing to meet is not recorded as a throw that succeeded.
+//
+// Holds: The record matches the schema that describes it.
 func TestEveryGoldenMatchesTheSchema(t *testing.T) {
 	t.Parallel()
 
@@ -114,6 +118,9 @@ func TestTheDocumentedExamplesMatchTheSchema(t *testing.T) {
 // and is absent from anything generated in-process; `ruleset` names the source
 // text. Neither says what the file looks like, so the schema requires a field
 // that does - and this is what would notice if it stopped being written.
+//
+// Holds: A record names the shape it is, so the v1 freeze has something to
+// attach to.
 func TestARecordWithoutItsShapeDoesNotValidate(t *testing.T) {
 	t.Parallel()
 
@@ -175,6 +182,9 @@ func example(t *testing.T, name string) map[string]any {
 // The reading half was already true - decode ignores what it does not know -
 // so the schema was contradicting behaviour the tool already had. This holds
 // the two together.
+//
+// Holds: A record from a later build validates and renders, which is what v1
+// promises.
 func TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders(t *testing.T) {
 	t.Parallel()
 
@@ -227,6 +237,8 @@ func TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders(t *testing.T) {
 // what a sheet is rendered from, and pinning them is what keeps this schema
 // worth validating against. A later build may add a section; it may not
 // quietly change an event.
+//
+// Holds: A key a later build adds inside an existing object is still refused.
 func TestAnUnknownKeyInsideAnEventDoesNotValidate(t *testing.T) {
 	t.Parallel()
 

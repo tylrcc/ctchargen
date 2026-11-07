@@ -226,6 +226,8 @@ func TestServicePicksTheLikeliestEnlistment(t *testing.T) {
 // to do, moved to the one place a string is supposed to become a domain
 // value. Past the parser the type carries it, which is why nothing downstream
 // checks any more (#41).
+//
+// Holds: A strategy no row of POLICY.md carries never becomes one.
 func TestAWordNoRowCarriesIsNotAStrategy(t *testing.T) {
 	t.Parallel()
 

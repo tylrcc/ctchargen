@@ -70,6 +70,11 @@ func JSON(character *chargen.Character) ([]byte, error) {
 // a reader holding the v1.0.0 schema has to validate a record from a later
 // build rather than refuse it before looking at its contents. What holds this
 // build to 1 is ctchargen.TestThisBuildWritesShapeOne.
+//
+// Implements: A record names the shape it is, so the v1 freeze has something to
+// attach to [JSON conventions] in The record.
+// Implements: This build writes record shape 1 [JSON conventions] in The
+// record.
 const recordShape = 1
 
 type record struct {

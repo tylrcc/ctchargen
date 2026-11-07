@@ -59,6 +59,9 @@ type ThrowEvent struct {
 // ones a one-die roll takes and a record printing the face alone would send
 // an auditor to the wrong row. It has no target and no outcome, because
 // there is nothing for the roll to succeed at.
+//
+// Implements: A roll with nothing to meet is not recorded as a throw that
+// succeeded [FR11] in The record.
 type RollEvent struct {
 	Seq  int
 	Step string

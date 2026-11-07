@@ -42,6 +42,9 @@ type Policy struct {
 // bump: no record was answered differently under the old table.
 // Version 2 draws the weapon rather than taking the first name; version 3
 // designates the skills table he has trained on least (#34).
+//
+// Implements: A record names the policy that answered it, and the document says
+// so too [JSON conventions] in The record.
 const PolicyVersion = 3
 
 // Career is the --auto career strategy: continue, retire, or take one term.
@@ -188,6 +191,9 @@ func DefaultPolicy() Policy {
 // The rejection names the values and not the document. POLICY.md is a
 // repository file, and the reader most likely to be told his strategy is
 // wrong is the one who typed `go install` and has never seen this tree.
+//
+// Implements: A strategy no row of POLICY.md carries never becomes one [FR9] in
+// The record.
 func parsed[T fmt.Stringer](word, flag string, all []T) (T, error) {
 	for _, want := range all {
 		if word == want.String() {
@@ -309,6 +315,9 @@ func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error
 // designation, when every count is zero. advanced remains the default because
 // it is the one ranking that reaches the Education 8+ gate the instant it
 // opens.
+//
+// Implements: The skills table designated is the one he has trained on least
+// [1:11] in The record.
 func (p Policy) SkillTable(
 	from []traveller.SkillTable, taken []int,
 ) (traveller.SkillTable, error) {
@@ -374,6 +383,9 @@ func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
 // Repeats can still take the same weapon again, which raises its level
 // (p. 12) and is the branch that produces a level above 1, by drawing the
 // same name twice.
+//
+// Implements: The weapon for a Blade or Gun result is drawn, not always the
+// first printed [1:11-13] in The record.
 func (p Policy) Weapon(
 	_ traveller.WeaponCategory, from []traveller.WeaponName, vary Vary,
 ) (traveller.WeaponName, error) {

@@ -76,6 +76,8 @@ func mustMatch(t *testing.T, compiled *jsonschema.Schema, what, text string) {
 }
 
 // Every shape of record the command writes matches the schema.
+//
+// Holds: What the command writes matches the schema, build stamp and all.
 func TestWhatTheCommandWritesMatchesTheSchema(t *testing.T) {
 	t.Parallel()
 
@@ -122,6 +124,8 @@ func TestWhatTheCommandWritesMatchesTheSchema(t *testing.T) {
 }
 
 // Every line of a batch is a record in its own right, and each is validated.
+//
+// Holds: Every batch member matches the schema.
 func TestEveryBatchMemberMatchesTheSchema(t *testing.T) {
 	t.Parallel()
 
@@ -148,6 +152,8 @@ func TestEveryBatchMemberMatchesTheSchema(t *testing.T) {
 // root object delivers nothing, because the record would be refused before its
 // unknown field was ever reached. So the schema says `"minimum": 1` now, and
 // the pinning that used to be a side effect of the const is this test.
+//
+// Holds: This build writes record shape 1.
 func TestThisBuildWritesShapeOne(t *testing.T) {
 	t.Parallel()
 

@@ -31,6 +31,9 @@ const (
 // comparing the log's own sentence against the literal "reenlistment denied",
 // so editing the wording changed the domain outcome. Only the goldens held
 // it, and a golden holds an invariant by accident of who is on the roster.
+//
+// Holds: A departure below term 5 is forced out if the service refused him,
+// discharged if he chose to go.
 func TestADepartureIsDecidedByTheTermCount(t *testing.T) {
 	t.Parallel()
 
@@ -133,6 +136,8 @@ func lastReenlistment(character *chargen.Character) (bool, bool) {
 // carried Navy in a Service field and only a Served flag beside it kept him
 // from reading as a sailor. ServedIn folds the Enlistment instead, and there
 // is no second field left to disagree with it.
+//
+// Holds: A civilian entered no service, and the record names none.
 func TestACivilianEnteredNoService(t *testing.T) {
 	t.Parallel()
 

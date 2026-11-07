@@ -1470,10 +1470,11 @@ navy-captain.transcript.md
 
 ## The gates
 
-`internal/docsgate`, a package with no non-test code, holds `POLICY.md`,
-`COVERAGE.md` and the stamping conditions of `rules/data/ERRATA.md` to the code
-in both directions; that document's entries and the `Erratum` constants are
-held to each other by the `rules` lift instead. The gate also holds the
+`internal/docsgate`, a package with no non-test code, holds `POLICY.md` and
+the stamping conditions of `rules/data/ERRATA.md` to the code in both
+directions; that document's entries and the `Erratum` constants are held to
+each other by the `rules` lift instead, and `COVERAGE.md` is generated from
+markers beside the code by `internal/coverage`. The gate also holds the
 schema's three strategy enums to the strategies the code takes, and the exported Go API to a checked-in
 baseline:
 
@@ -1487,8 +1488,6 @@ TestEveryChoicePointIsReachedByARecord
 TestThePolicyVersionMatchesTheDocument
 TestPolicyRowsMatchTheDecider
 TestChoicePointsMatchTheDecider
-TestCoverageCitesTestsThatExist
-TestCoverageCitesGoldensThatExist
 TestTheSchemaNamesEveryStrategy
 ```
 

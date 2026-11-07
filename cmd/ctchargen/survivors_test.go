@@ -34,6 +34,8 @@ const (
 // holds this file's reading of which departures are fatal to the one the
 // record carries, so the two transcriptions of that rule are checked against
 // each other rather than only against themselves.
+//
+// Holds: A batch says how many it wrote and how many died.
 func TestABatchSaysHowManyDied(t *testing.T) {
 	t.Parallel()
 
@@ -60,6 +62,8 @@ func TestABatchSaysHowManyDied(t *testing.T) {
 }
 
 // --survivors writes the number asked for, and all of them are living.
+//
+// Holds: `--survivors` writes only the living, and generates another.
 func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 	t.Parallel()
 
@@ -90,6 +94,8 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 // approaches. It is reachable here because eachMember takes the bound rather
 // than reading the constant, so a test can ask for the living twenty times in
 // twenty draws from a service that kills three in four.
+//
+// Holds: `--survivors` gives up rather than drawing forever.
 func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	t.Parallel()
 
@@ -145,6 +151,8 @@ func livingCount(t *testing.T, jsonl string) census {
 // The whole of #33 is that a run which said nothing was a trap. Reporting
 // success when the closing line could not be written would be the same trap
 // with an extra step, so the write is checked like any other.
+//
+// Holds: A batch says how many it wrote and how many died.
 func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 	t.Parallel()
 
@@ -169,6 +177,9 @@ func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 // roster, which passes just as well if a case is misread in a way the dice
 // happen not to reach. Fold makes a new case a compile error here; this makes
 // a wrong answer for an existing one a test failure.
+//
+// Holds: Which departures are deaths is said in one place.
+// Holds: Only the two deaths count as dying.
 func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 	t.Parallel()
 
@@ -196,6 +207,9 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 // files the batch writes: 1 through count, whoever fills them. The check can
 // key on those without generating anyone, and a file one past the count is
 // nobody's to refuse over or to touch.
+//
+// Holds: A refused batch writes none of itself, on the members it will actually
+// write.
 func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 	t.Parallel()
 
@@ -266,6 +280,9 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 // and naming a decision table that decided none of it is a claim the record
 // cannot support - the same reason a civilian carries no service and no
 // departure.
+//
+// Holds: A record names the policy that answered it, and the document says so
+// too.
 func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 	t.Parallel()
 
@@ -337,6 +354,8 @@ func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 // buffered run reaches as well, so both designs leave the same two files.
 // What holds the memory property is plannedPaths' signature - no policy, no
 // roller, so it cannot generate - and the test below holds that.
+//
+// Holds: A directory batch that cannot write a member leaves what came before.
 func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	t.Parallel()
 
@@ -391,6 +410,8 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 // That is its signature, not its body: plannedPaths takes a count and a
 // directory, and no policy and no roller. It is the whole of why checking a
 // batch for collisions costs arithmetic and not a run (#99).
+//
+// Holds: A batch checks for collisions without generating anybody.
 func TestTheCollisionCheckNeedsNoCharacters(t *testing.T) {
 	t.Parallel()
 

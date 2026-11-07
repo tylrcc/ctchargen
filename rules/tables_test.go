@@ -24,6 +24,8 @@ import (
 // A wrong number here does not misplay a character - the effects are the same
 // either side - it misreports which readings a record rests on, and only this
 // would notice.
+//
+// Holds: The table's last printed term, which decides where E014 governs.
 func TestTheAgingTablesLastPrintedTerm(t *testing.T) {
 	t.Parallel()
 
@@ -38,6 +40,10 @@ func TestTheAgingTablesLastPrintedTerm(t *testing.T) {
 // Intelligence row, whose "no effect before age 66" ends where age 66 - the
 // term 12 column - begins. Education and Social Standing carry "unaffected
 // by aging" across the whole width.
+//
+// Holds: Read off the table's term row, not its age row.
+// Holds: Education and Social Standing are unaffected by aging.
+// Holds: Intelligence is unaffected before age 66.
 func TestAgingTable(t *testing.T) {
 	t.Parallel()
 
@@ -102,6 +108,8 @@ func TestAgingTable(t *testing.T) {
 // The medical crisis (pp. 7-8): "A basic saving throw of 8+ applies ... The
 // characteristic which was reduced to zero automatically becomes one. The
 // character ages (one die equals the number of months in added age)."
+//
+// Holds: Saving throw 8+, with no modifier during generation.
 func TestMedicalCrisis(t *testing.T) {
 	t.Parallel()
 
@@ -280,6 +288,9 @@ func TestRankAndServiceSkills(t *testing.T) {
 }
 
 // Annual Retirement Pay (p. 21), and who draws it.
+//
+// Holds: Retirement pay from term 5, not for Scouts or Other.
+// Holds: The pension table says whether it prices a term at all.
 func TestRetirementPay(t *testing.T) {
 	t.Parallel()
 
@@ -317,6 +328,10 @@ func TestRetirementPay(t *testing.T) {
 }
 
 // The Basic Skill Eligibility box (p. 6) and the Education 8+ gate (p. 11).
+//
+// Holds: A commission or promotion confers one skill eligibility.
+// Holds: Two eligibilities for the initial term, one thereafter.
+// Holds: The fourth table needs Education 8+.
 func TestEligibility(t *testing.T) {
 	t.Parallel()
 
@@ -342,6 +357,9 @@ func TestEligibility(t *testing.T) {
 }
 
 // The mustering out notes (pp. 7, 9) and the passages (pp. 21-22).
+//
+// Holds: One roll per term, plus rank extras.
+// Holds: The +1 with gambling on Table 2.
 func TestMusterRollsAndPassages(t *testing.T) {
 	t.Parallel()
 
@@ -400,6 +418,8 @@ func TestMusterRollsAndPassages(t *testing.T) {
 // The two starships a mustering out benefit delivers (Book 2 pp. 18-19).
 // The Scout/Courier "using the type 100 hull"; the Free Trader "using the
 // type 200 hull".
+//
+// Holds: The ships the two benefits name: Type S, Type A.
 func TestShipHulls(t *testing.T) {
 	t.Parallel()
 
@@ -416,6 +436,8 @@ func TestShipHulls(t *testing.T) {
 }
 
 // The Nobility table (Book 3 p. 22).
+//
+// Holds: The five ranks of nobility.
 func TestNobility(t *testing.T) {
 	t.Parallel()
 
@@ -443,6 +465,8 @@ func TestNobility(t *testing.T) {
 // greater, and DM of +2 is allowed for education of 9 or greater. Assuming a
 // character has intelligence of 6 and education of 10 ... he would be
 // allowed a DM of +2 (for his education)." (p. 5).
+//
+// Holds: Cumulative characteristic DMs.
 func TestModifierIsCumulative(t *testing.T) {
 	t.Parallel()
 
@@ -486,6 +510,8 @@ func TestModifierIsCumulative(t *testing.T) {
 }
 
 // The draft is one die, and each service prints its own number (p. 5).
+//
+// Holds: One die, entering the service with that draft number.
 func TestDraft(t *testing.T) {
 	t.Parallel()
 
@@ -510,6 +536,8 @@ func TestDraft(t *testing.T) {
 }
 
 // E012's normalizations, applied by the lift.
+//
+// Holds: Names normalized to their description headings.
 func TestNormalization(t *testing.T) {
 	t.Parallel()
 

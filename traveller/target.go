@@ -47,6 +47,9 @@ var errTarget = errors.New("malformed target")
 // Target is a throw's target: a number and the modality that says how to
 // meet it. It is parsed once, when a table lifts, and never re-parsed at
 // throw time.
+//
+// Implements: Die roll conventions: `N+`, `N−`, exact [1:2–3] in
+// Characteristics and the record.
 type Target struct {
 	number   int
 	modality Modality

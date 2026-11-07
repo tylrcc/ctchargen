@@ -5,6 +5,17 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `docs/COVERAGE.md`'s tables are generated from markers beside the code (#218).
+  Each implementation carries an `Implements:` line with its rule, page and
+  section, and each test or golden that holds a rule carries a `Holds:` line;
+  `internal/coverage` joins them and fails, naming the rule, on one with only
+  one side. Regenerate with `go test ./internal/coverage -regenerate`. The set
+  of rules mapped is unchanged. Cells name code the way the generator does:
+  module-relative, methods with their receivers, and one cell that named a
+  function no longer in the tree now names `traveller.Fatal`, which carries
+  the rule. The two rules both called "The table is designated before the
+  die" are told apart. A `Holds:` is refused anywhere but a `Test` function or
+  a golden. docsgate's two coverage-citation tests are gone.
 - The readings document moves to `rules/data/ERRATA.md`, beside the tables,
   and is embedded and lifted by `rules` once at startup (#217). Each entry's
   pages, the page's words, the gap, the reading, its rationale and its

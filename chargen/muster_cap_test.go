@@ -18,6 +18,8 @@ const printedCap = 3
 // and indexes no printed table. The check moved with it, and became a check
 // of the rule rather than of the number: asserting that a field equals 3 says
 // nothing about whether anything stops at 3.
+//
+// Holds: At most three rolls on Table 2.
 func TestAtMostThreeRollsGoOnTableTwo(t *testing.T) {
 	t.Parallel()
 

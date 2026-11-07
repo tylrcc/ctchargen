@@ -29,6 +29,8 @@ func unusableFirst() io.Reader {
 
 // A bare new walks the procedure, asking at every choice point and showing
 // what happened between the questions.
+//
+// Holds: Every question the player is asked is one the engine asked.
 func TestInteractiveWalksACharacter(t *testing.T) {
 	t.Parallel()
 
@@ -83,6 +85,8 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 }
 
 // An answer it cannot read is asked again rather than guessed at.
+//
+// Holds: An unreadable answer is asked again, never guessed at.
 func TestInteractiveReAsksWhatItCannotRead(t *testing.T) {
 	t.Parallel()
 
@@ -199,6 +203,8 @@ func TestTheTwoAdvancedEducationTablesReadDifferently(t *testing.T) {
 
 // The input ending is an error, not a default. A character finished by a
 // decision nobody made is not the character anybody asked for.
+//
+// Holds: The input ending is an error, not a default.
 func TestInteractiveRefusesToInventAnAnswer(t *testing.T) {
 	t.Parallel()
 
@@ -223,6 +229,8 @@ func TestInteractiveRefusesToInventAnAnswer(t *testing.T) {
 
 // The observer shows the procedure. Without it the player would answer
 // blind, which is most of what a guided run is for.
+//
+// Holds: The procedure is shown between the questions.
 func TestInteractiveShowsWhatAutoDoesNot(t *testing.T) {
 	t.Parallel()
 
@@ -248,6 +256,8 @@ func TestInteractiveShowsWhatAutoDoesNot(t *testing.T) {
 // serves seven terms to a rank and a title. Each prompt below is asserted
 // rather than merely walked past, so a change to what the procedure asks
 // fails here instead of quietly leaving these branches unasked.
+//
+// Holds: The alternatives offered are exactly the engine's.
 func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 	t.Parallel()
 
@@ -275,6 +285,8 @@ func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 // The gambling modifier is offered only to someone who has the expertise, so
 // reaching it takes a walk that draws the skill: the gambler, taking the
 // Service Skills Table every time.
+//
+// Holds: The gambling modifier is offered only to one who has the expertise.
 func TestInteractiveOffersTheGamblingModifier(t *testing.T) {
 	t.Parallel()
 
@@ -297,6 +309,8 @@ var errClosedPipe = errors.New("the other end closed")
 // A player nobody can be shown anything is not asked anything either. The
 // failure is remembered and reported at the next question, rather than being
 // swallowed once per line for the length of a career.
+//
+// Holds: A player nobody can be shown anything is not asked.
 func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 	t.Parallel()
 
@@ -316,6 +330,9 @@ func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 // A guided run still writes JSON to stdout, so `ctchargen new | jq`
 // has to receive a record and not a conversation. The two channels are
 // separate arguments for that reason, and this is what holds them apart.
+//
+// Holds: The questions go to stderr, not into the record.
+// Holds: A guided run's choices are recorded as the player's, not the policy's.
 func TestTheQuestionsStayOutOfTheRecord(t *testing.T) {
 	t.Parallel()
 
@@ -365,6 +382,8 @@ func TestTheQuestionsStayOutOfTheRecord(t *testing.T) {
 // schema, and there is no way back to the question it stopped on (ADR 0001).
 // The message is honest about the loss rather than silent, and it offers
 // nothing the tool cannot honour.
+//
+// Holds: A stopped session says what was answered and that nothing was written.
 func TestAStoppedSessionSaysWhatWasLost(t *testing.T) {
 	t.Parallel()
 
@@ -404,6 +423,8 @@ func TestAStoppedSessionSaysWhatWasLost(t *testing.T) {
 // bufio.Scanner returns false for both, and only one of them is the reader
 // running out. A line past its 64KB bound comes back the same way, and
 // blaming the input for ending sends the reader looking in the wrong place.
+//
+// Holds: A read that fails is not the input ending.
 func TestAFailedReadIsNotTheInputEnding(t *testing.T) {
 	t.Parallel()
 

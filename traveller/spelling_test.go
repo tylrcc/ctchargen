@@ -32,6 +32,9 @@ import (
 // "Every" is a claim, so it is held rather than asserted in a comment: the
 // test below reads this package's own source for the alphabets it declares
 // and fails on one nobody checks here.
+//
+// Holds: The spellings that gate rests on tell every value of an alphabet
+// apart.
 func TestNoTwoValuesOfAnAlphabetShareASpelling(t *testing.T) {
 	t.Parallel()
 

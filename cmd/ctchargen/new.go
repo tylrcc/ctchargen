@@ -115,6 +115,9 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 // sheet and no reason (#58). Neither flag is in the PRD's CLI sketch; what
 // settles it is that preferring one silently is the same defect as swallowing
 // a word after a help flag, and this command refuses that.
+//
+// Implements: A character is written one way, not two [CLI sketch] in The
+// record.
 func flagsThatContradict(sheet, history bool) error {
 	if sheet && history {
 		return fmt.Errorf(

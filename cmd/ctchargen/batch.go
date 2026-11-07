@@ -23,6 +23,9 @@ import (
 //
 // It always says what it did. A run that wrote seventy-four corpses and
 // printed nothing was the trap the report named.
+//
+// Implements: Every batch member matches the schema [JSON conventions] in The
+// record.
 func batch(args []string, out, asking io.Writer, dice source) error {
 	flags := declareBatchFlags()
 
@@ -140,6 +143,9 @@ func member(base chargen.Inputs, policy chargen.Policy, i int, dice source) (*ch
 }
 
 // tally is what a batch did, for the line it prints when it is done.
+//
+// Implements: A batch says how many it wrote and how many died [CLI sketch] in
+// The record.
 type tally struct {
 	written int
 	died    int
@@ -191,6 +197,9 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 // in 100 under the default strategy - about four generated a survivor - so a
 // hundred is a margin of twenty-five over the worst case anyone has seen, and
 // reaching it means something is wrong rather than unlucky.
+//
+// Implements: `--survivors` gives up rather than drawing forever [CLI sketch]
+// in The record.
 const survivorAttempts = 100
 
 // eachMember walks the batch, handing each member that is to be written to
@@ -200,6 +209,9 @@ const survivorAttempts = 100
 // character is passed over and another generated, so a written member is
 // still exactly what the dice made. What changes is who fills a slot, not
 // what any member means (#33).
+//
+// Implements: `--survivors` writes only the living, and generates another [CLI
+// sketch] in The record.
 func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors bool,
 	attempts int, dice source, take func(index int, character *chargen.Character) error,
 ) (tally, error) {
@@ -251,6 +263,9 @@ func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors
 // all of them (#44). The atomicity that justifies buffering is about not
 // leaving a file half-written and not clobbering one on a retry, and there is
 // no file to clobber on standard output (#64).
+//
+// Implements: A batch to standard output arrives a record at a time [CLI
+// sketch] in The record.
 func intoStream(out io.Writer, base chargen.Inputs, policy chargen.Policy,
 	count int, path string, force, survivors bool, dice source,
 ) (tally, error) {
@@ -265,6 +280,9 @@ func intoStream(out io.Writer, base chargen.Inputs, policy chargen.Policy,
 //
 // A failure names the member by its position among those written, which is
 // the one name a streamed member has.
+//
+// Implements: A write that fails partway stops the batch, naming the member
+// [CLI sketch] in The record.
 func writingTo(out io.Writer) func(int, *chargen.Character) error {
 	return func(index int, character *chargen.Character) error {
 		encoded, err := render.JSONLine(character)
@@ -287,6 +305,9 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 // It is the same walk: buffering is streaming to somewhere that cannot be
 // half-read. What differs is only where it writes and when the file is
 // opened, which is the whole of the distinction #64 drew.
+//
+// Implements: A batch to a file is written all at once, never a record at a
+// time [CLI sketch] in The record.
 func buffered(base chargen.Inputs, policy chargen.Policy,
 	count int, path string, force, survivors bool, dice source,
 ) (tally, error) {
@@ -318,6 +339,9 @@ func buffered(base chargen.Inputs, policy chargen.Policy,
 // A batch that fails partway leaves what it has written. The guarantee here is
 // that a run never silently replaces a file, not that a directory is written
 // atomically.
+//
+// Implements: A directory batch that cannot write a member leaves what came
+// before [CLI sketch] in The record.
 func intoDirectory(base chargen.Inputs, policy chargen.Policy,
 	count int, dir string, force, survivors bool, dice source,
 ) (tally, error) {
@@ -356,6 +380,9 @@ func intoDirectory(base chargen.Inputs, policy chargen.Policy,
 // checking for collisions costs nothing but arithmetic (#99), with or without
 // --survivors, because a member is named by its position among the files
 // written and not by who survived to fill it.
+//
+// Implements: A batch checks for collisions without generating anybody [CLI
+// sketch] in The record.
 func plannedPaths(count int, dir string) []string {
 	paths := make([]string, 0, count)
 	for i := range count {
@@ -370,6 +397,9 @@ func plannedPaths(count int, dir string) []string {
 // It takes the paths the run will write, which are the same with and without
 // --survivors: members are named by position, so passing a dead character
 // over changes who fills a file and never which files are filled.
+//
+// Implements: A refused batch writes none of itself, on the members it will
+// actually write [CLI sketch] in The record.
 func noMemberExists(paths []string) error {
 	for _, path := range paths {
 		_, err := os.Stat(path)

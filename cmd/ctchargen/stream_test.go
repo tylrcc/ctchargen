@@ -33,6 +33,8 @@ func (c *countingWriter) Write(text []byte) (int, error) {
 // nothing until the run finished and held the run in memory while it did
 // (#44). What distinguishes the two is not the bytes - they are the same
 // bytes - but when they leave, and the count of writes is what says so.
+//
+// Holds: A batch to standard output arrives a record at a time.
 func TestABatchToStandardOutputArrivesARecordAtATime(t *testing.T) {
 	t.Parallel()
 
@@ -63,6 +65,8 @@ func TestABatchToStandardOutputArrivesARecordAtATime(t *testing.T) {
 // clobbered on the retry; standard output has no such file, which is the
 // whole of why the two paths differ now (#64). This holds the half that did
 // not change: nothing is opened until the run has finished generating.
+//
+// Holds: A batch to a file is written all at once, never a record at a time.
 func TestABatchToAFileIsStillWrittenAtOnce(t *testing.T) {
 	t.Parallel()
 
@@ -123,6 +127,8 @@ func (c *failsAfter) Write(text []byte) (int, error) {
 // head -1` dies by SIGPIPE before Write ever returns an error, which is what
 // a tool in a pipeline should do; what reaches here is a failure the runtime
 // hands back, such as a redirected file that has run out of room.
+//
+// Holds: A write that fails partway stops the batch, naming the member.
 func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 	t.Parallel()
 

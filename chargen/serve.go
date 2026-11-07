@@ -31,6 +31,13 @@ func (r *run) serve() error {
 // term runs one term of service in the exposition's order (E002): survival,
 // commission, promotion, skills, reenlistment, and then the aging round at
 // the end of the term (E006). It reports whether the service ended.
+//
+// Implements: Per-term order is the exposition's [1:5–6 (E002)] in Terms of
+// service.
+// Implements: The dead character's age and term [1:5, 9 (E004)] in Terms of
+// service.
+// Implements: The example's per-term order is not followed [1:24 (E002)] in The
+// book's own character.
 func (r *run) term(term traveller.Term) (bool, error) {
 	r.log.step(fmt.Sprintf("term %d", term), "pp. 5-7")
 
@@ -87,6 +94,8 @@ func (r *run) term(term traveller.Term) (bool, error) {
 
 // survive makes the term's survival throw. P. 5: "Failure to successfully
 // achieve the survival throw results in death."
+//
+// Implements: Survival throw; failure is death [1:5] in Terms of service.
 func (r *run) survive(term traveller.Term) bool {
 	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.char.Profile))
 	seq := r.log.throw("survival", throw)
@@ -108,6 +117,9 @@ func (r *run) survive(term traveller.Term) bool {
 
 // grantEligibility adds the term's skill eligibilities, per the Basic Skill
 // Eligibility box (p. 6): two for the initial term, one per subsequent term.
+//
+// Implements: Two eligibilities for the initial term, one thereafter [1:6] in
+// Skills and training.
 func (r *run) grantEligibility(term traveller.Term) {
 	if term == 1 {
 		r.eligible += r.tables.Eligibility().InitialTerm
@@ -139,6 +151,8 @@ func (r *run) trainSkills() error {
 	return nil
 }
 
+// Implements: The skills table is designated before the die [1:11] in Skills
+// and training.
 func (r *run) trainOnce() error {
 	offered := r.offeredTables()
 
@@ -172,6 +186,9 @@ func (r *run) trainOnce() error {
 
 // offeredTables is the three tables always available, and the fourth while
 // the character's Education stands at 8 or greater (p. 11).
+//
+// Implements: The fourth table needs Education 8+ [1:11] in Skills and
+// training.
 func (r *run) offeredTables() []traveller.SkillTable {
 	offered := make([]traveller.SkillTable, 0, len(traveller.SkillTables))
 

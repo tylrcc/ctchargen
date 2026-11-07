@@ -77,6 +77,11 @@ type Profile [len(Characteristics)]int
 // the new profile. It caps at 15 and floors at 1 (p. 4).
 //
 // Aging does not go through here. See AgeReduce.
+//
+// Implements: Values 2–12 initially; never above 15 [1:4] in Characteristics
+// and the record.
+// Implements: Floor of 1 for every ordinary alteration [1:4 (E010)] in
+// Characteristics and the record.
 func (p Profile) Alter(c Characteristic, delta int) Profile {
 	p[c] = clamp(p[c]+delta, MinCharacteristic, maxCharacteristic)
 
@@ -89,6 +94,9 @@ func (p Profile) Alter(c Characteristic, delta int) Profile {
 // This is the one path that floors at 0 rather than 1 (E010). A profile that
 // clamped at 1 unconditionally would make the medical crisis of pp. 7-8
 // unreachable, and with it every path that puts months on a character's age.
+//
+// Implements: Floor of 0 for an aging reduction [1:4, 7–9 (E010)] in
+// Characteristics and the record.
 func (p Profile) AgeReduce(c Characteristic, delta int) Profile {
 	p[c] = clamp(p[c]-delta, minUnderAging, maxCharacteristic)
 
@@ -97,6 +105,9 @@ func (p Profile) AgeReduce(c Characteristic, delta int) Profile {
 
 // UPP renders the Universal Personality Profile: the six characteristics as
 // hexadecimal digits in rolled order, 0-9 then A-F for 10-15 (p. 8).
+//
+// Implements: UPP as hexadecimal, in rolled order [1:8] in Characteristics and
+// the record.
 func (p Profile) UPP() string {
 	var b strings.Builder
 

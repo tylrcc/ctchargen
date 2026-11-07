@@ -263,6 +263,8 @@ func checkColumns(headings []string, what string) error {
 	return nil
 }
 
+// Implements: A data file broken two ways reports the same one every run [JSON
+// conventions] in The record.
 func (r *Rules) liftPriorService(wire wireServices) error {
 	err := checkColumns(wire.Services, "prior service table")
 	if err != nil {
@@ -577,6 +579,10 @@ func (r *Rules) liftMustering(wire wireMustering) error {
 }
 
 // liftBenefits lifts Mustering Out Table 1, Material Benefits (p. 9).
+//
+// Implements: The dash rows deliver nothing [1:9] in Mustering out.
+// Implements: A printed table governs over the example's stated result [1:9, 25
+// (E015)] in The book's own character.
 func (r *Rules) liftBenefits(wire wireMustering) error {
 	names := withoutNotes(wire.Names)
 
@@ -642,6 +648,9 @@ func (r *Rules) liftPassages(wire wireMustering) error {
 	return nil
 }
 
+// Implements: Education and Social Standing are unaffected by aging [1:9] in
+// Aging.
+// Implements: Intelligence is unaffected before age 66 [1:9] in Aging.
 func (r *Rules) liftAging(wire wireAging) error {
 	for _, band := range wire.Bands {
 		lifted := agingBand{fromTerm: traveller.Term(band.FromTerm)}

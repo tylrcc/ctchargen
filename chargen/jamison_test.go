@@ -283,6 +283,8 @@ func replayJamison(t *testing.T) *chargen.Character {
 
 // P. 25: "Captain Jamison is now a 38 year old retired merchant captain, UPP
 // 779C99."
+//
+// Holds: The worked example reproduces.
 func TestTheWorkedExampleReproduces(t *testing.T) {
 	t.Parallel()
 
@@ -322,6 +324,8 @@ func TestTheWorkedExampleReproduces(t *testing.T) {
 }
 
 // The skills inset on p. 25.
+//
+// Holds: Its skills, as its inset lists them.
 func TestTheWorkedExamplesSkills(t *testing.T) {
 	t.Parallel()
 
@@ -345,6 +349,8 @@ func TestTheWorkedExamplesSkills(t *testing.T) {
 // retirement income of CR 4,000 yearly, and has already collected the first
 // year's benefit, which, when added to his other monies, gives him a balance
 // of CR 24,000."
+//
+// Holds: Its ship, cash and pension.
 func TestTheWorkedExamplesPossessions(t *testing.T) {
 	t.Parallel()
 
@@ -382,6 +388,10 @@ func TestTheWorkedExamplesPossessions(t *testing.T) {
 // The three places the engine and the page part company, each asserted
 // rather than merely noted. A departure that is only described is a
 // departure nothing would notice closing.
+//
+// Holds: A printed table governs over the example's stated result.
+// Holds: The example's per-term order is not followed.
+// Holds: The example's batched aging is not followed.
 func TestTheWorkedExamplesDepartures(t *testing.T) {
 	t.Parallel()
 

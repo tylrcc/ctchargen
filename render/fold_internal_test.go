@@ -20,6 +20,9 @@ import (
 // One mapping is not enough on its own, because flat is still assigned field
 // by field. This is what holds it: unmarshal what was written and compare.
 // A field dropped from flat fails here, naming the kind.
+//
+// Holds: A roll with nothing to meet is not recorded as a throw that succeeded.
+// Holds: The shape a reader gets back is the shape that was written.
 func TestTheFlatShapeIsWhatWasWritten(t *testing.T) {
 	t.Parallel()
 

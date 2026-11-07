@@ -9,6 +9,7 @@ import (
 // The two term counts p. 7 prints: "A character may serve up to 7 terms
 // voluntarily, and retire any time after the end of the 5th term."
 const (
+	// Implements: Seven terms of voluntary service [1:7] in Terms of service.
 	lastVoluntaryTerm = 7
 	firstRetiringTerm = 5
 )
@@ -25,6 +26,11 @@ const forcedByTwelve = 12
 // The throw is made every term, whether or not the character means to stay
 // (p. 6). It is made before the intent is asked because a failed throw and a
 // 12 both settle the question, and a choice with one answer is not a choice.
+//
+// Implements: Reenlistment throw every term, no DMs [1:6] in Terms of service.
+// Implements: A 12 exactly forces another term [1:6] in Terms of service.
+// Implements: A 12 recurs past the seventh term [1:6–7, 21 (E003)] in Terms
+// of service.
 func (r *run) reenlist(term traveller.Term) (traveller.Intent, bool, error) {
 	attempt := roll(r.roll, r.service.Reenlist, 0)
 	seq := r.log.throw("reenlistment", attempt)
@@ -114,6 +120,11 @@ func (r *run) settle(seq int, term traveller.Term, intent traveller.Intent) {
 // than inferred from why (#45): why is also the sentence the log prints, so
 // choosing by comparing it against a literal would let a change of wording
 // change the domain outcome. The type carries that invariant.
+//
+// Implements: Leaving at the end of term 5 or later is retirement [1:21] in
+// Terms of service.
+// Implements: A departure below term 5 is forced out if the service refused
+// him, discharged if he chose to go [1:6, 21] in Terms of service.
 func (r *run) depart(
 	seq int, term traveller.Term, earlyDeparture traveller.Departure, why string,
 ) {
@@ -131,6 +142,10 @@ func (r *run) depart(
 
 // pension records the annual retirement pay, for a departure at the end of
 // the fifth term or later from a service that pays one (p. 21).
+//
+// Implements: Retirement pay from term 5, not for Scouts or Other [1:7, 21] in
+// Mustering out.
+// Implements: Its ship, cash and pension [1:25] in The book's own character.
 func (r *run) pension() {
 	if !r.service.PaysPension {
 		return

@@ -10,10 +10,16 @@ import (
 
 // startingAge is where every character begins. P. 4: "All characters begin
 // the game the same way, untrained, inexperienced, about 18 years of age."
+//
+// Implements: All characters begin at 18 [1:4] in Characteristics and the
+// record.
 const startingAge = 18
 
 // Ruleset names the text this tool implements. All page cites in a record's
 // generation log are to these three books and nothing else.
+//
+// Implements: The record names its ruleset and the build that wrote it
+// [Determinism] in The record.
 const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 
 // An Option is an optional input to a generation: dice of the caller's own,
@@ -35,6 +41,9 @@ func WithRoller(roller Roller) Option {
 // is how interactive mode shows the procedure between its questions.
 //
 // It returns nothing, so a watcher cannot change what it watches.
+//
+// Implements: The procedure is shown between the questions [FR11] in The
+// record.
 func WithObserver(watch func(traveller.Event)) Option {
 	return func(r *run) { r.log.watch = watch }
 }
@@ -43,6 +52,9 @@ func WithObserver(watch func(traveller.Event)) Option {
 // then records (FR9). A run says the policy answered unless it is told that
 // a person did, so a record read back names the kind of thing that made
 // each choice rather than assuming the automatic one.
+//
+// Implements: A guided run's choices are recorded as the player's, not the
+// policy's [FR9] in The record.
 func WithAnswerer(who traveller.DecidedBy) Option {
 	return func(r *run) { r.by = who }
 }
@@ -55,6 +67,11 @@ func WithAnswerer(who traveller.DecidedBy) Option {
 // the aging round at the end of the term (E006). That order is what every
 // fixture's script walks, so it is a fixed choice rather than an incidental
 // one.
+//
+// Implements: A fixture generates one golden, and the same one twice
+// [Determinism] in The record.
+// Implements: The worked example reproduces [1:23–25] in The book's own
+// character.
 func Generate(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	tables, err := rules.Load()
 	if err != nil {
@@ -160,6 +177,8 @@ func (r *run) generate() error {
 }
 
 // rollProfile rolls the six characteristics in the order p. 4 rolls them.
+//
+// Implements: Six 2D rolls, in order [1:4] in Characteristics and the record.
 func (r *run) rollProfile() {
 	r.log.step("characteristics", "p. 4")
 

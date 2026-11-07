@@ -16,6 +16,8 @@ func profile(values ...int) traveller.Profile {
 
 // P. 4: values "may never exceed 15, and do not go below 1 except for
 // calamitous injury or aging." Alter is every alteration that is not aging.
+//
+// Holds: Values 2–12 initially; never above 15.
 func TestAlterHoldsTheOrdinaryFloorAndTheCeiling(t *testing.T) {
 	t.Parallel()
 
@@ -44,6 +46,8 @@ func TestAlterHoldsTheOrdinaryFloorAndTheCeiling(t *testing.T) {
 // E010: aging alone may carry a characteristic to 0, which is a medical
 // crisis (pp. 7-8). A profile that floored at 1 here would make the crisis
 // unreachable, and with it the one path that puts months on an age.
+//
+// Holds: Floor of 0 for an aging reduction.
 func TestAgeReduceFloorsAtZero(t *testing.T) {
 	t.Parallel()
 
@@ -68,6 +72,8 @@ func TestAgeReduceFloorsAtZero(t *testing.T) {
 }
 
 // The two floors are the whole of E010, so they must differ.
+//
+// Holds: Floor of 1 for every ordinary alteration.
 func TestTheTwoFloorsDiffer(t *testing.T) {
 	t.Parallel()
 
@@ -108,6 +114,8 @@ func TestAlterTouchesOneCharacteristicAndCopies(t *testing.T) {
 // P. 8: the UPP is "a string of 6 digits, in the order originally rolled",
 // hexadecimal, "the digits 10 through 15 are represented by the letters A
 // through F."
+//
+// Holds: UPP as hexadecimal, in rolled order.
 func TestUPP(t *testing.T) {
 	t.Parallel()
 

@@ -19,6 +19,9 @@ import (
 // weighing them. It is not a test of the draw's distribution - that is
 // math/rand's business - but of the property the report was about: a roster
 // that reads as copies.
+//
+// Holds: The weapon for a Blade or Gun result is drawn, not always the first
+// printed.
 func TestTheAutoPolicyNamesMoreThanOneWeapon(t *testing.T) {
 	t.Parallel()
 
@@ -53,6 +56,8 @@ func TestTheAutoPolicyNamesMoreThanOneWeapon(t *testing.T) {
 // this test counted across all fixtures and passed under the old ranking too:
 // three strategies between them reach all four tables however each one
 // chooses, so the roster says nothing about what any character did.
+//
+// Holds: The skills table designated is the one he has trained on least.
 func TestOneCharacterTrainsOnMoreThanOneTable(t *testing.T) {
 	t.Parallel()
 

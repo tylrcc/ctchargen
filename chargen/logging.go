@@ -14,6 +14,9 @@ import (
 // point of the shape: a choice point cannot reach the engine without
 // reaching the log. Adding a method to Decider breaks this type until the
 // log learns to record it.
+//
+// Implements: Each choice names who decided and what was offered [FR11] in The
+// record.
 type logging struct {
 	to  Decider
 	by  traveller.DecidedBy
@@ -228,6 +231,9 @@ func (d *describeWeaponBenefit) TakeExpertise(weapon traveller.WeaponName) error
 // spelled the same would let a decider answer with one and have the other
 // recorded, and nothing would notice. It holds, and
 // traveller.TestNoTwoValuesOfAnAlphabetShareASpelling holds it (#48).
+//
+// Implements: An answer outside the offered set is refused, not applied [FR9]
+// in The record.
 func (l logging) record(point traveller.ChoicePoint, from []string, chosen string) error {
 	if !slices.Contains(from, chosen) {
 		return fmt.Errorf("%w: %v offered %v, and was answered %q",

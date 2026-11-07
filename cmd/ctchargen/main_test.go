@@ -85,6 +85,8 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 }
 
 // The three renderings, and that each writes something recognisable.
+//
+// Holds: The record names its ruleset and the build that wrote it.
 func TestRunWritesEachRendering(t *testing.T) {
 	t.Parallel()
 

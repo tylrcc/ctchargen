@@ -295,6 +295,8 @@ func TestVersionAnswersHelp(t *testing.T) {
 // exited 0 (#84). The flag package returns ErrHelp before a command reaches
 // its own NArg check, so the word was never looked at; `version` has no flag
 // set and tested args[0] alone.
+//
+// Holds: A word after a help flag is refused, not discarded.
 func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 	t.Parallel()
 
@@ -325,6 +327,8 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 // rendered() took the sheet and said nothing, so a referee who asked for the
 // transcript got a sheet and no reason (#58). Preferring one silently is the
 // same defect as swallowing a word, and this command refuses that.
+//
+// Holds: A character is written one way, not two.
 func TestTheTwoRenderingsCannotBothBeAskedFor(t *testing.T) {
 	t.Parallel()
 

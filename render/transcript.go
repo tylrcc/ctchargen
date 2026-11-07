@@ -77,6 +77,8 @@ func transcriptOf(r record) (string, error) {
 	return out.String(), nil
 }
 
+// Implements: An event kind this build does not know is said to be unknown
+// [FR11] in The record.
 func writeEvent(out *strings.Builder, event eventJSON) {
 	switch event.Kind {
 	case kindStep:

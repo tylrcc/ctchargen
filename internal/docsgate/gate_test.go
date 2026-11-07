@@ -13,17 +13,22 @@
 // to know about both traveller and chargen and about the documents beside
 // them; the readings document is the exception, read by the rules package
 // that lifts it.
+//
+// Implements: The errata a record stamps are exactly those whose condition
+// ERRATA.md states [Documents] in The record.
+// Implements: Every step the errata conditions read is found, as the kind they
+// read it as [Documents] in The record.
+// Implements: Every choice point the engine offers is reached by a record
+// [Documents] in The record.
 package docsgate_test
 
 import (
-	"io/fs"
 	"os"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"slices"
 	"strconv"
-	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/chargen"
@@ -111,6 +116,9 @@ var policyVersion = regexp.MustCompile(`(?m)^\*\*Version (\d+)\.\*\*`)
 // the one that answered it, which is worse than carrying no number at all.
 // This milestone has found a document and a constant disagreeing four times;
 // this is the one place it would be unfalsifiable from the record alone.
+//
+// Holds: A record names the policy that answered it, and the document says so
+// too.
 func TestThePolicyVersionMatchesTheDocument(t *testing.T) {
 	t.Parallel()
 
@@ -176,90 +184,3 @@ func TestChoicePointsMatchTheDecider(t *testing.T) {
 // takes the engine and the golden roster, and both live there. It owes
 // nothing now: every reading but E012 is carried by some generated or
 // scripted character, and E012 by design names no record.
-
-// coverageTest matches a test COVERAGE.md cites, as `package.TestName`.
-var coverageTest = regexp.MustCompile("`([a-z]+)\\.(Test[A-Za-z0-9]+)`")
-
-// coverageGolden matches a fixture COVERAGE.md cites, as golden `name`.
-var coverageGolden = regexp.MustCompile("golden `([a-z0-9-]+)`")
-
-// testFunctions is every test in the module, keyed by the package directory
-// that declares it.
-func testFunctions(t *testing.T) map[string]map[string]bool {
-	t.Helper()
-
-	declaration := regexp.MustCompile(`(?m)^func (Test[A-Za-z0-9]+)\(`)
-	found := map[string]map[string]bool{}
-
-	err := filepath.WalkDir("../..", func(path string, entry fs.DirEntry, err error) error {
-		if err != nil || entry.IsDir() || !strings.HasSuffix(path, "_test.go") {
-			return err
-		}
-
-		text, err := os.ReadFile(path) //nolint:gosec // a path the walk produced
-		if err != nil {
-			return err //nolint:wrapcheck // the walk's own error, unchanged
-		}
-
-		pkg := filepath.Base(filepath.Dir(path))
-		for _, m := range declaration.FindAllStringSubmatch(string(text), -1) {
-			if found[pkg] == nil {
-				found[pkg] = map[string]bool{}
-			}
-
-			found[pkg][m[1]] = true
-		}
-
-		return nil
-	})
-	if err != nil {
-		t.Fatalf("looking for tests: %v", err)
-	}
-
-	return found
-}
-
-// Every test COVERAGE.md names exists.
-//
-// The document's own preamble says a row with no test is a defect, and it has
-// twice carried a citation that named a test which does not hold the rule
-// beside it - once a golden that covered nothing, once a test that checked
-// the wrong thing. A citation nothing checks is how that happens: the rest of
-// the file is held to the code and this column was held to nothing.
-func TestCoverageCitesTestsThatExist(t *testing.T) {
-	t.Parallel()
-
-	tests := testFunctions(t)
-	cited := coverageTest.FindAllStringSubmatch(read(t, "COVERAGE.md"), -1)
-
-	if len(cited) == 0 {
-		t.Fatal("COVERAGE.md cites no tests; the gate's pattern no longer matches the document")
-	}
-
-	for _, citation := range cited {
-		pkg, name := citation[1], citation[2]
-		if !tests[pkg][name] {
-			t.Errorf("COVERAGE.md cites %s.%s, which no test file declares", pkg, name)
-		}
-	}
-}
-
-// Every golden COVERAGE.md names exists.
-func TestCoverageCitesGoldensThatExist(t *testing.T) {
-	t.Parallel()
-
-	cited := coverageGolden.FindAllStringSubmatch(read(t, "COVERAGE.md"), -1)
-
-	if len(cited) == 0 {
-		t.Fatal("COVERAGE.md cites no goldens; the gate's pattern no longer matches the document")
-	}
-
-	for _, citation := range cited {
-		fixture := filepath.Join("..", "..", "chargen", "testdata", citation[1]+".json")
-
-		_, err := os.Stat(fixture)
-		if err != nil {
-			t.Errorf("COVERAGE.md cites golden %q, which is not in chargen/testdata", citation[1])
-		}
-	}
-}

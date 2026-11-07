@@ -63,6 +63,9 @@ var documented = map[string]string{
 
 // documentedExample writes or checks one of the two examples that sit beside
 // the schema, by the same path that writes the goldens.
+//
+// Implements: The two documented examples are generated, not written
+// [Documents] in The record.
 func documentedExample(t *testing.T, name string, encoded []byte) {
 	t.Helper()
 
@@ -88,6 +91,24 @@ func documentedExample(t *testing.T, name string, encoded []byte) {
 }
 
 // Every fixture's JSON, sheet and transcript, pinned.
+//
+// Holds: Six 2D rolls, in order.
+// Holds: All characters begin at 18.
+// Holds: One enlistment attempt, against the Prior Service Table.
+// Holds: Per-term order is the exposition's.
+// Holds: Reenlistment throw every term, no DMs.
+// Holds: A commission or promotion confers one skill eligibility.
+// Holds: The skills table is designated before the die.
+// Holds: Blade and gun combat name a weapon at once.
+// Holds: Skills accumulate as Skill-1, Skill-2, with no cap.
+// Holds: Saving throws in the table's row order.
+// Holds: The mustering-out table is designated before the die.
+// Holds: The +1 with gambling on Table 2.
+// Holds: Every step, throw, choice and consequence, in order.
+// Holds: Each choice names who decided and what was offered.
+// Holds: A record names the shape it is, so the v1 freeze has something to
+// attach to.
+// Holds: The two documented examples are generated, not written.
 func TestGoldens(t *testing.T) {
 	t.Parallel()
 
@@ -142,6 +163,8 @@ func TestGoldens(t *testing.T) {
 // which compares against the file on disk - written by an earlier process,
 // in an earlier build. The pair is adequate; the claim was on the wrong half
 // of it.
+//
+// Holds: A fixture generates one golden, and the same one twice.
 func TestGoldensRegenerate(t *testing.T) {
 	t.Parallel()
 
@@ -170,6 +193,8 @@ func TestGoldensRegenerate(t *testing.T) {
 // and changes nothing about a character; and E015, which settles the worked
 // example against the table it illustrates, and which only the replay of
 // that example depends on.
+//
+// Holds: Every reading that governed a record is named on it.
 func TestEveryReadingIsReachable(t *testing.T) {
 	t.Parallel()
 

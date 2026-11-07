@@ -14,6 +14,11 @@ import (
 // stops at term 8, and without the second there is no row to read for term
 // 15. The fixture that walks it is on the roster, so its golden carries the
 // stamps and this test holds the arithmetic.
+//
+// Holds: A term is four years.
+// Holds: A 12 exactly forces another term.
+// Holds: A 12 recurs past the seventh term.
+// Holds: The last column is terminal.
 func TestACareerPastTheTablesLastColumn(t *testing.T) {
 	t.Parallel()
 
@@ -49,6 +54,9 @@ func TestACareerPastTheTablesLastColumn(t *testing.T) {
 // A voluntary career stops at seven terms. P. 7: "A character may serve up
 // to 7 terms voluntarily, and retire any time after the end of the 5th
 // term", and "Service beyond the seventh term is normally impossible".
+//
+// Holds: Seven terms of voluntary service.
+// Holds: Leaving at the end of term 5 or later is retirement.
 func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 	t.Parallel()
 
@@ -123,6 +131,8 @@ func (a answeringOutsideTheOffer) MusterWeapon(
 // on a table his Education closes to him, or holding expertise in a weapon he
 // never received. The mutation that found this had the interactive loop
 // designate a closed table, and the engine consulted it.
+//
+// Holds: An answer outside the offered set is refused, not applied.
 func TestAnAnswerOutsideTheOfferIsRefused(t *testing.T) {
 	t.Parallel()
 

@@ -12,6 +12,9 @@ import (
 //
 // It is wired in from the first step rather than added afterwards, because a
 // log that is added afterwards records what the author remembered.
+//
+// Implements: Every step, throw, choice and consequence, in order [FR11] in The
+// record.
 type log struct {
 	events []traveller.Event
 	errata map[traveller.Erratum]bool
@@ -114,6 +117,9 @@ func (l *log) outcomef(because int, errata []traveller.Erratum, format string, a
 }
 
 // stamped is every erratum that governed this generation, in id order.
+//
+// Implements: Every reading that governed a record is named on it [Authority]
+// in The record.
 func (l *log) stamped() []traveller.Erratum {
 	var stamped []traveller.Erratum
 

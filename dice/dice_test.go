@@ -30,6 +30,8 @@ func TestDieStaysInRangeAndReachesEveryFace(t *testing.T) {
 }
 
 // A 2D throw is two dice, each 1 through 6.
+//
+// Holds: Two-die throws except the draft.
 func TestTwoDiceIsTwoDice(t *testing.T) {
 	t.Parallel()
 

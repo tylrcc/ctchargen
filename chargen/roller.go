@@ -51,6 +51,9 @@ type throw struct {
 func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
 
 // roll makes a 2D throw against a target and reports whether it was met.
+//
+// Implements: Two-die throws except the draft [1:10] in Characteristics and the
+// record.
 func roll(r Roller, target traveller.Target, modifier int) throw {
 	first, second := r.TwoDice()
 	t := throw{dice: [2]int{first, second}, modifier: modifier, target: target}

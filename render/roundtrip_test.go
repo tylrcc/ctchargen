@@ -17,6 +17,8 @@ import (
 // rather than assuming: the two go through one renderer precisely so they
 // cannot disagree, and this is the test that would notice if a second one
 // appeared.
+//
+// Holds: A record renders to what generating it rendered.
 func TestARecordRendersToWhatGeneratedItRendered(t *testing.T) {
 	t.Parallel()
 
@@ -97,6 +99,8 @@ func minimalRecord(body string) []byte {
 // Free Trader received and never paid down carries years 0 and paymentYears
 // 0, and is owned - not held in constructive possession, which is the scout
 // ship's arrangement (p. 23).
+//
+// Holds: A ship's terms follow its kind, not its numbers.
 func TestAShipsTermsFollowItsKind(t *testing.T) {
 	t.Parallel()
 
@@ -134,6 +138,8 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 // rendered as an outcome - which would print a blank numbered line and claim
 // the transcript was complete. Reading another build's record is the whole
 // reason the render subcommand exists.
+//
+// Holds: An event kind this build does not know is said to be unknown.
 func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 	t.Parallel()
 
@@ -225,6 +231,8 @@ const unchanged = "Navy, 2 terms"
 // Everything turns on the service ATTEMPTED, not on who named it. The draft
 // can override either decider, and crediting one with an outcome it did not
 // pick is worse than saying nothing.
+//
+// Holds: The headline names the service attempted, not the one the draft gave.
 func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 	t.Parallel()
 
@@ -312,6 +320,8 @@ func checkHeadline(t *testing.T, name string, tc headlineCase) {
 //
 // "1 term" is a substring of "1 terms", so the singular case is pinned by what
 // must NOT appear. Asserting only the positive would pass on the bug.
+//
+// Holds: A one-term character reads as one term.
 func TestOneTermIsSingular(t *testing.T) {
 	t.Parallel()
 
@@ -348,6 +358,8 @@ func TestOneTermIsSingular(t *testing.T) {
 // On a sheet handed to a player they are codes he cannot expand; beside the
 // outcome they governed they are how a reading is checked against the page,
 // which is what the transcript is for.
+//
+// Holds: The errata are on the transcript and not the sheet.
 func TestTheErrataAreOnTheTranscriptAndNotTheSheet(t *testing.T) {
 	t.Parallel()
 

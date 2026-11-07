@@ -140,6 +140,9 @@ func (s *serviceCodec) DeclinedTheDraft() error { return nil }
 // already says all of it, and a Service field kept separately would sit at
 // its zero value, which is Navy, for a civilian, with only one more field to
 // keep him from reading as a sailor.
+//
+// Implements: A civilian entered no service, and the record names none [1:5
+// (E001)] in Enlistment and the draft.
 func (c *Character) ServedIn() (traveller.ServiceName, bool) {
 	if c.Enlistment == nil {
 		var none traveller.ServiceName
@@ -158,6 +161,11 @@ func (c *Character) ServedIn() (traveller.ServiceName, bool) {
 // addSkill records a skill, raising its level if it is already held. P. 12:
 // "Each time an already acquired skill is again acquired, the level of the
 // skill is increased by 1."
+//
+// Implements: Skills accumulate as Skill-1, Skill-2, with no cap [1:12] in
+// Skills and training.
+// Implements: Its skills, as its inset lists them [1:25] in The book's own
+// character.
 func (c *Character) addSkill(name traveller.SkillName) int {
 	for i := range c.Skills {
 		if c.Skills[i].Name == name {

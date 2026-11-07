@@ -71,6 +71,10 @@ type reading struct {
 // passes it. Both directions are checked here, because an erratum stamped
 // that should not be is as much a defect as one missing - a record's errata
 // list is the tool's claim about which readings its character rests on.
+//
+// Holds: E011 is stamped only where the reading changed the answer.
+// Holds: The errata a record stamps are exactly those whose condition ERRATA.md
+// states.
 func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 	t.Parallel()
 
@@ -131,6 +135,9 @@ func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 //
 // The pairing is asserted too, since a step is read as one kind or the other
 // and reading it as the wrong one is exactly how the above went unnoticed.
+//
+// Holds: Every step the errata conditions read is found, as the kind they read
+// it as.
 func TestEveryStepTheConditionsReadIsFound(t *testing.T) {
 	t.Parallel()
 
@@ -498,6 +505,8 @@ func serviceNamed(printed string) (traveller.ServiceName, bool) {
 // A row nothing reaches is the same defect as a rule with no test, one level
 // up: the document, the code and the gate all agree, and none of them has
 // seen the answer.
+//
+// Holds: Every choice point the engine offers is reached by a record.
 func TestEveryChoicePointIsReachedByARecord(t *testing.T) {
 	t.Parallel()
 
