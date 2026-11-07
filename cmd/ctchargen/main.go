@@ -161,7 +161,7 @@ func version(args []string, out io.Writer) error {
 // machine.
 //
 // Implements: The record names its ruleset and the build that wrote it
-// [FR8] in The record.
+// [ADR 0002] in The record.
 func stamp(character *chargen.Character) {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {

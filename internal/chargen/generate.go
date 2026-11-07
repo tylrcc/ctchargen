@@ -19,7 +19,7 @@ const startingAge = 18
 // generation log are to these three books and nothing else.
 //
 // Implements: The record names its ruleset and the build that wrote it
-// [FR8] in The record.
+// [ADR 0002] in The record.
 const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 
 // An Option is an optional input to a generation: dice of the caller's own,

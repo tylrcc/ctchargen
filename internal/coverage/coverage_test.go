@@ -19,8 +19,11 @@
 // opens with book:page and may name readings, "1:5; 3:22 (E011)"; a reading
 // alone, "(E011)", that ERRATA.md has a heading for; "ADR 0001", naming a file
 // in docs/adr; or a "## " heading or FRn requirement of docs/PRD.md, which
-// governs nothing and keeps its labels as names. The set is read from those
-// documents, and a cite outside it fails the generator, naming the rule.
+// governs nothing and keeps its labels as names. The PRD is never edited, so a
+// label withdrawn from it is named by the ADR that withdrew it, on a line
+// "Withdraws from `docs/PRD.md`: Determinism.", and is refused as a cite. The
+// set is read from those documents, and a cite outside it fails the
+// generator, naming the rule.
 //
 // A marker runs on to the following comment lines until a blank comment line,
 // the next marker or the end of the comment, so a long one wraps like prose.
@@ -122,6 +125,9 @@ var (
 	prdRequirement = regexp.MustCompile(`(?m)^\*\*(FR\d+) — `)
 	adrFile        = regexp.MustCompile(`^(\d{4})-.+\.md$`)
 	readingHeading = regexp.MustCompile(`(?m)^### (E\d{3}) — `)
+
+	// adrWithdraws is an ADR's line naming the PRD labels it withdrew.
+	adrWithdraws = regexp.MustCompile("(?m)^Withdraws from `docs/PRD.md`: (.+)\\.$")
 )
 
 // implementation is one Implements marker and the declaration carrying it.
@@ -239,7 +245,8 @@ func TestAMarkerRemovedFailsNamingTheRule(t *testing.T) {
 
 // A cite that is not a page names an authority that exists: a reading, an ADR,
 // or a heading or requirement of the PRD, whose labels stay citable though it
-// governs nothing (#232). Anything else fails, naming the rule.
+// governs nothing (#232), unless an ADR withdrew that label. Anything else
+// fails, naming the rule.
 func TestACiteNamesAnAuthority(t *testing.T) {
 	t.Parallel()
 
@@ -253,15 +260,19 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, cite := range []string{"(E011)", "ADR 0001", "Domain model", "FR8"} {
-		if !known[cite] {
+	for _, cite := range []string{"(E011)", "ADR 0001", "ADR 0002", "Domain model", "FR8"} {
+		if !known.cites[cite] {
 			t.Errorf("[%s] names an authority that exists, and is refused", cite)
 		}
 	}
 
 	victim := found.implementations[0]
 
-	for _, cite := range []string{"Nonsense", "ADR 0099", "(E099)", "FR99", "Domain"} {
+	if known.withdrawn["Determinism"] != "ADR 0001" {
+		t.Errorf("ADR 0001 withdrew [Determinism], and the generator does not know it")
+	}
+
+	for _, cite := range []string{"Nonsense", "ADR 0099", "(E099)", "FR99", "Domain", "Determinism"} {
 		t.Run(cite, func(t *testing.T) {
 			t.Parallel()
 
@@ -1034,55 +1045,104 @@ func joined(found markers) (map[string]row, []error) {
 }
 
 // authorities is every cite that is not a page and names something that
-// exists, read from the documents themselves rather than listed here.
-type authorities map[string]bool
+// exists, and every PRD label an ADR withdrew, with the ADR that did, read
+// from the documents themselves rather than listed here.
+type authorities struct {
+	cites     map[string]bool
+	withdrawn map[string]string
+}
 
 func readAuthorities(dir string) (authorities, error) {
-	known := make(authorities)
+	known := authorities{cites: make(map[string]bool), withdrawn: make(map[string]string)}
 
 	text, err := os.ReadFile(filepath.Join(dir, prd))
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", errMarker, err)
+		return authorities{}, fmt.Errorf("%w: %w", errMarker, err)
 	}
 
 	for _, match := range prdHeading.FindAllStringSubmatch(string(text), -1) {
-		known[match[1]] = true
+		known.cites[match[1]] = true
 	}
 
 	for _, match := range prdRequirement.FindAllStringSubmatch(string(text), -1) {
-		known[match[1]] = true
+		known.cites[match[1]] = true
 	}
 
-	entries, err := os.ReadDir(filepath.Join(dir, adrDir))
+	err = known.readADRs(dir)
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", errMarker, err)
-	}
-
-	for _, entry := range entries {
-		if match := adrFile.FindStringSubmatch(entry.Name()); match != nil {
-			known["ADR "+match[1]] = true
-		}
+		return authorities{}, err
 	}
 
 	text, err = os.ReadFile(filepath.Join(dir, readings))
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", errMarker, err)
+		return authorities{}, fmt.Errorf("%w: %w", errMarker, err)
 	}
 
 	for _, match := range readingHeading.FindAllStringSubmatch(string(text), -1) {
-		known["("+match[1]+")"] = true
+		known.cites["("+match[1]+")"] = true
 	}
 
-	return known, nil
+	var withdrawals []error
+
+	for _, label := range slices.Sorted(maps.Keys(known.withdrawn)) {
+		if !known.cites[label] {
+			withdrawals = append(withdrawals, fmt.Errorf("%w: %s withdraws [%s], which is no PRD heading or requirement",
+				errMarker, known.withdrawn[label], label))
+		}
+	}
+
+	return known, errors.Join(withdrawals...)
+}
+
+// readADRs adds each ADR in docs/adr as a cite, and each PRD label one says
+// it withdrew.
+func (known authorities) readADRs(dir string) error {
+	entries, err := os.ReadDir(filepath.Join(dir, adrDir))
+	if err != nil {
+		return fmt.Errorf("%w: %w", errMarker, err)
+	}
+
+	for _, entry := range entries {
+		match := adrFile.FindStringSubmatch(entry.Name())
+		if match == nil {
+			continue
+		}
+
+		adr := "ADR " + match[1]
+
+		known.cites[adr] = true
+
+		record, err := os.ReadFile(filepath.Join(dir, adrDir, entry.Name()))
+		if err != nil {
+			return fmt.Errorf("%w: %w", errMarker, err)
+		}
+
+		for _, line := range adrWithdraws.FindAllStringSubmatch(string(record), -1) {
+			for label := range strings.SplitSeq(line[1], ", ") {
+				known.withdrawn[label] = adr
+			}
+		}
+	}
+
+	return nil
 }
 
 // check refuses every implementation whose cite is neither a page nor an
-// authority that exists. A page cite's form is the page's own business.
+// authority that exists and is in force. A page cite's form is the page's own
+// business.
 func (known authorities) check(found markers) error {
 	var errs []error
 
 	for _, impl := range found.implementations {
-		if !pageCite.MatchString(impl.page) && !known[impl.page] {
+		if pageCite.MatchString(impl.page) {
+			continue
+		}
+
+		switch by, withdrawn := known.withdrawn[impl.page]; {
+		case withdrawn:
+			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], which %s withdrew",
+				errMarker, impl.rule, impl.site, impl.page, by))
+		case !known.cites[impl.page]:
 			errs = append(errs, fmt.Errorf(
 				"%w: %q: %s cites [%s], which is no page, reading, ADR, or PRD heading or requirement",
 				errMarker, impl.rule, impl.site, impl.page,

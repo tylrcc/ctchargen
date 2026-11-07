@@ -11,3 +11,5 @@ their dice rather than a seed that reaches them. The cost is that a stopped
 interactive session is lost and a referee who keeps only the sheet cannot
 recover the character. A `replay` that re-walks a record stays possible and
 is deliberately not built until a referee asks.
+
+Withdraws from `docs/PRD.md`: Determinism.

@@ -609,16 +609,16 @@ rather than live authority, and I read them that way — but a maintainer could
 reasonably read them as the PRD still governing. For those three comments,
 nothing is wrong and the fix would be a wording preference.
 
-The coverage map's cites name something that exists (#232). The PRD's headings
-and requirement ids stay as the citation labels for the tool's own promises,
-and `CLAUDE.md`'s document table says so; the generator reads them from the PRD
-and refuses a cite that names nothing (idea 7). It checks that a cite exists,
-not that it is in force: `## Determinism`, the seed contract ADR 0001
-withdrew, is still a PRD heading, and a new `[Determinism]` cite would pass.
-The three that cited it were moved by hand. `chargen.Generate`'s fixture rule
-cites ADR 0001, which says fixtures state their dice. The ruleset and build
-stamp cites FR8, the record's requirement, though FR8 lists neither field: no
-text in force promises them, and FR8 is the nearest. `ERRATA.md` still argues
+The coverage map's cites name something that exists and is in force (#232).
+The PRD's headings and requirement ids stay as the citation labels for the
+tool's own promises, and `CLAUDE.md`'s document table says so; the generator
+reads them from the PRD and refuses a cite that names nothing (idea 7). The PRD
+is never edited, so a withdrawal is stated by the ADR that made it: ADR 0001's
+"Withdraws from `docs/PRD.md`: Determinism." is read by the generator, which
+refuses a `[Determinism]` cite naming ADR 0001. `chargen.Generate`'s fixture
+rule cites ADR 0001, which says fixtures state their dice. The ruleset and
+build stamp cites ADR 0002, which records why a record names what wrote it,
+once the seed it was provenance for was gone. `ERRATA.md` still argues
 partly from PRD sections, in its preamble and in E002, E004 and E014, as
 historical rationale.
 

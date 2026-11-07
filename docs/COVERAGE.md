@@ -8,7 +8,7 @@ the tool makes of its own — the record, the choice points, the command line
 that holds it. A rule of the book cites its page. A promise of the tool's
 cites an ADR, a reading, or the heading or requirement of `PRD.md` it was
 stated under: the PRD governs nothing now, and its labels stay as names. The
-generator refuses any other cite. A rule with no row here is a rule that is
+generator refuses any other cite, and a PRD label an ADR withdrew. A rule with no row here is a rule that is
 not implemented, and no row is without a test: the generator refuses a rule
 an implementation names and no test holds.
 
@@ -189,7 +189,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | The procedure is shown between the questions                                  | FR11             | `internal/chargen.WithObserver`, `internal/render.EventLine` | `cmd/ctchargen.TestInteractiveShowsWhatAutoDoesNot`                                                               |
 | The questions go to stderr, not into the record                               | CLI sketch       | `cmd/ctchargen.run`                                          | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord`                                                                |
 | The record matches the schema that describes it                               | JSON conventions | `docs/character.schema.json`                                 | `internal/render.TestEveryGoldenMatchesTheSchema`                                                                 |
-| The record names its ruleset and the build that wrote it                      | FR8              | `cmd/ctchargen.stamp`, `internal/chargen.Ruleset`            | `cmd/ctchargen.TestRunWritesEachRendering`                                                                        |
+| The record names its ruleset and the build that wrote it                      | ADR 0002         | `cmd/ctchargen.stamp`, `internal/chargen.Ruleset`            | `cmd/ctchargen.TestRunWritesEachRendering`                                                                        |
 | The shape a reader gets back is the shape that was written                    | FR11             | `internal/render.eventCodec`                                 | `internal/render.TestTheFlatShapeIsWhatWasWritten`                                                                |
 | The spellings that gate rests on tell every value of an alphabet apart        | FR9              | `internal/traveller`                                         | `internal/traveller.TestNoTwoValuesOfAnAlphabetShareASpelling`                                                    |
 | The two documented examples are generated, not written                        | Documents        | `internal/chargen.documentedExample`                         | `internal/chargen.TestGoldens`                                                                                    |

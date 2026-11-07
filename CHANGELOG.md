@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A coverage cite to a withdrawn PRD section fails, naming the ADR that
+  withdrew it. An ADR states a withdrawal on a line the generator reads, and
+  ADR 0001 now says it withdrew Determinism. ADR 0002 records why a record
+  names its ruleset and build, and the coverage map cites it for that rule,
+  in place of FR8, which lists neither field.
 - Each `Erratum` constant's comment is its id and its reading's title, as
   `ERRATA.md`'s heading prints it, and a test in `rules` holds the two
   together (#234). The one-line paraphrases of each reading are gone: they
