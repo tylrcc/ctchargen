@@ -74,9 +74,9 @@ Read that as four layers:
 - **`render`** — projections: JSON, a character sheet, a transcript.
 - **`cmd/ctchargen`** — flag parsing, the interactive player, file output.
 
-`internal/docsgate` has no non-test code at all. It exists to hold the documents
-in `docs/` and the code to each other, and it is the one package allowed to know
-about both `traveller` and `chargen` and about the documents beside them.
+`internal/docsgate` has no non-test code at all. It holds the exported API to
+its baseline and the schema's strategy enums to the code. `internal/coverage`
+has none either; it generates `docs/COVERAGE.md` from markers beside the code.
 
 ## Layer one: the domain
 
@@ -717,7 +717,7 @@ A transcript of `grep -nE '^	[A-Z][A-Za-z0-9]*\(' chargen/decider.go | sed 's/(.
 
 Twelve, and the enum `traveller.ChoicePoint` has twelve constants whose
 `String()` is each method's name. That is unavoidably a second list kept
-parallel to the interface, so a reflection gate in `internal/docsgate` holds the
+parallel to the interface, so a reflection check in `chargen`'s tests holds the
 two together. What the auto policy answers at each is in the doc comment of
 `Policy`'s method of the same name.
 
@@ -1471,22 +1471,19 @@ navy-captain.transcript.md
 
 ## The gates
 
-`internal/docsgate`, a package with no non-test code, holds the stamping
-conditions of `rules/data/ERRATA.md` to the goldens in both directions, and
-every choice point to a golden that reaches it; that document's entries and the `Erratum` constants are held to
-each other by the `rules` lift instead, and `COVERAGE.md` is generated from
-markers beside the code by `internal/coverage`. The gate also holds the
-schema's three strategy enums to the strategies the code takes, and the exported Go API to a checked-in
-baseline:
+`chargen`'s tests hold the readings and the choice points to the goldens,
+beside the roster that generates them: the stamping conditions of
+`rules/data/ERRATA.md` both ways, and every choice point to a golden that
+reaches it. The readings document's entries and the `Erratum` constants are
+held to each other by the `rules` lift, and `COVERAGE.md` is generated from
+markers beside the code by `internal/coverage`. `internal/docsgate`, a package
+with no non-test code, holds the schema's three strategy enums to the
+strategies the code takes, and the exported Go API to a checked-in baseline:
 
 A transcript of `grep -h '^func Test' internal/docsgate/*.go | sed 's/func //; s/(t \*testing.T) {//'`, run while writing:
 
 ```text
 TestTheExportedAPIIsTheBaseline
-TestEveryReadingIsStampedWhereItsConditionHolds
-TestEveryStepTheConditionsReadIsFound
-TestEveryChoicePointIsReachedByARecord
-TestChoicePointsMatchTheDecider
 TestTheSchemaNamesEveryStrategy
 ```
 
@@ -1507,9 +1504,9 @@ TestEveryBaselineFlagIsStillDeclared
 TestTheExitStatusIsZeroOrOne
 ```
 
-The sharpest of the docsgate tests is
+The sharpest of these checks is chargen's
 `TestEveryReadingIsStampedWhereItsConditionHolds`. `ERRATA.md` states each
-reading's stamping condition as a predicate over the finished record; the gate
+reading's stamping condition as a predicate over the finished record; the check
 re-states that predicate in Go and checks every golden both ways — a record whose
 condition holds must stamp the erratum, and one whose condition does not must
 not. The predicate is written from the document's prose and never from the

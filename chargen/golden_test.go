@@ -188,11 +188,8 @@ func TestGoldensRegenerate(t *testing.T) {
 // Every recorded reading is reachable by some fixture.
 //
 // This is the gate the PRD asks for, and until the engine walked the ranked
-// services it could not hold. Two readings are stamped on no record by
-// design: E012, a spelling, which is a transcription rather than a reading
-// and changes nothing about a character; and E015, which settles the worked
-// example against the table it illustrates, and which only the replay of
-// that example depends on.
+// services it could not hold. The readings stamped on no record by design are
+// namesNoRecord's, and one stamped anyway fails here.
 //
 // Holds: Every reading that governed a record is named on it.
 func TestEveryReadingIsReachable(t *testing.T) {
@@ -206,15 +203,12 @@ func TestEveryReadingIsReachable(t *testing.T) {
 		}
 	}
 
-	// The two readings that name no record. E012 is a spelling, which
-	// changes nothing about a character; E015 settles the worked example
-	// against a table, and only the replay of that example depends on it.
-	namesNoRecord := []traveller.Erratum{traveller.E012, traveller.E015}
+	unstamped := namesNoRecord()
 
 	for _, erratum := range traveller.Errata {
-		if slices.Contains(namesNoRecord, erratum) {
+		if slices.Contains(unstamped, erratum) {
 			if stamped[erratum] {
-				t.Errorf("%v is stamped on a record; ERRATA.md says it names none", erratum)
+				t.Errorf("%v is stamped on a record; namesNoRecord pins it as stamped on none", erratum)
 			}
 
 			continue

@@ -236,11 +236,15 @@ watches live.
 `decode.go`. Where the domain shape and the wire shape disagree, the codec
 absorbs it and the domain type keeps its shape.
 
-**`internal/docsgate`** has no non-test code. It is the one package allowed to
-know about `traveller`, `chargen` and the documents at once, and it holds
-`ERRATA.md`'s stamping conditions to the goldens in both directions, and every
-choice point to a golden that reaches it. It reads the checked-in goldens rather than generating records, so
-it reads what a referee would be handed.
+**`internal/docsgate`** has no non-test code. It holds the exported Go API to
+its baseline and the schema's strategy enums to the strategies the code takes.
+
+`chargen`'s tests hold the readings to the goldens, beside the roster that
+generates them: each reading's stamping predicate is checked over every
+golden in both directions, every choice point must be reached by some golden,
+and the readings no golden stamps by design are pinned by name in one list,
+`namesNoRecord`. They read the checked-in goldens rather than generating
+records, so they read what a referee would be handed.
 
 **`internal/coverage`** has no non-test code and is nothing but the generator
 of `docs/COVERAGE.md`. An implementation carries
@@ -311,8 +315,9 @@ go run ./cmd/ctchargen new --auto --sheet
 - **A new invariant is not done until a deliberate mutation has been shown to
   kill it**, and the failure names what was broken.
 - **An erratum's stamping condition is machine-checked, not just reachable**
-  (#66). `ERRATA.md` states each as a predicate over the finished record, and a
-  gate holds what a record stamps to what the document says it should. Write the
+  (#66). `ERRATA.md` states each as a predicate over the finished record, and
+  `chargen/stamping_test.go` holds what a record stamps to what the document
+  says it should, quoting the lifted stamped-on prose when it fails. Write the
   predicate from the document's prose, never from the stamping code: a condition
   transcribed from the thing it checks is one reading written twice, which is
   the same trap rule 3 above exists for.

@@ -1,4 +1,4 @@
-package docsgate_test
+package chargen_test
 
 import (
 	"encoding/json"
@@ -14,8 +14,8 @@ const twelve = 12
 
 // record is as much of the written record as the fifteen conditions need.
 //
-// It is decoded from the golden files rather than generated, because
-// ERRATA.md states every condition over a record - "records where the
+// It is decoded from the golden files rather than generated, because the
+// readings state every condition over a record - "records where the
 // enlistment throw failed" - and a record is what this reads.
 type record struct {
 	name string
@@ -85,6 +85,10 @@ func (r record) rolls(step string) []event {
 	return r.dice(step, aRoll)
 }
 
+// dice is every event of the named step and kind.
+//
+// Implements: Every step the errata conditions read is found, as the kind they
+// read it as [Documents] in The record.
 func (r record) dice(step, kind string) []event {
 	var found []event
 
@@ -127,7 +131,7 @@ func (r record) departedBy(how string) bool {
 func (r record) died() bool { return r.Departure != nil && r.Departure.Fatal }
 
 // readRecords decodes every golden record, and refuses to run on none: a
-// gate over an empty roster passes by saying nothing.
+// check over an empty roster passes by saying nothing.
 func readRecords(t *testing.T) []record {
 	t.Helper()
 

@@ -83,9 +83,9 @@ type EnlistmentOffer struct {
 //
 // The PRD calls this "a rendering of that interface, never a second list
 // kept parallel to it" — and an enum is, unavoidably, a second list. What
-// makes it honest is the gate in internal/docsgate, which holds these
-// constants and the interface's methods to each other by reflection, so the
-// list cannot drift.
+// makes it honest is a check in chargen's tests, which holds these constants
+// and the interface's methods to each other by reflection, so the list cannot
+// drift.
 type ChoicePoint int
 
 // One per Decider method.

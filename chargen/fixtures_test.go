@@ -111,6 +111,9 @@ func (s *scripted) Among(n int) int {
 //
 // The comments name the path; the lists are the dice that walk it.
 //
+// Implements: Every choice point the engine offers is reached by a record
+// [Documents] in The record.
+//
 //nolint:gochecknoglobals // an immutable roster, and Go has no const slice.
 var fixtures = []fixture{
 	// Holds: A round at the end of term 4 and every term after.

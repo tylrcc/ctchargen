@@ -217,17 +217,21 @@ forgery is not in what `record` checks, and is refused.
 
 ### 7. The documents are code, and each gate is verified by breaking it
 
-`internal/docsgate` has no non-test code and is the one package allowed to know
-about `traveller`, `chargen`, and the documents at once. It holds, by reflection
-and regex over the documents' own heading forms:
+`chargen`'s tests, beside the fixture roster, hold:
 
-- every `ChoicePoint` ↔ every `Decider` method;
-- in `errata_test.go`, **each erratum's stamping condition as a predicate over
-  a finished record** — written from the document's prose, never from the stamping
-  code, because "a condition transcribed from the thing it checks is one reading
-  written twice."
+- every `ChoicePoint` ↔ every `Decider` method, and every choice point reached
+  by some golden;
+- in `stamping_test.go`, **each erratum's stamping condition as a predicate over
+  a finished record**, checked over every golden both ways — written from the
+  reading's prose, never from the stamping code, because "a condition
+  transcribed from the thing it checks is one reading written twice." A failure
+  quotes the lifted stamped-on prose, and the readings no golden stamps by
+  design are pinned in one list.
 
-- and, in `api_test.go`'s `TestTheExportedAPIIsTheBaseline`, **the exported Go
+`internal/docsgate` has no non-test code. It holds:
+
+- in `strategy_test.go`, the schema's strategy enums ↔ the code's strategies;
+- in `api_test.go`'s `TestTheExportedAPIIsTheBaseline`, **the exported Go
   API of `traveller`, `dice`, `rules`, `chargen` and `render` against
   `testdata/api.txt`**, one line per exported declaration, field and method, read
   through `go/importer`'s source importer. Both ways: a line gone is a removed
@@ -381,15 +385,15 @@ the status a script sees.
 **A new erratum.** Add the constant to `traveller/erratum.go`, add it to `Errata`,
 write the `### E0NN` entry in `rules/data/ERRATA.md` with its page cite and its stamping
 condition as a predicate over the finished record, stamp it at the outcome it
-governs, and write the predicate into `internal/docsgate/errata_test.go` **from the
+governs, and write the predicate into `chargen/stamping_test.go` **from the
 document's prose**. The gates will tell you what you forgot in both directions.
 
 **A new choice point.** Add the `Decider` method; the compiler names every
 implementation that must learn it, `Policy` among them, whose new method's doc
 comment says when it is asked and what each strategy answers. Add the
-`ChoicePoint` constant; `docsgate` holds it to the interface. The schema's `point` enum
+`ChoicePoint` constant; `chargen`'s tests hold it to the interface. The schema's `point` enum
 is the part the compiler cannot reach, and it is held by a chain of tests instead:
-`docsgate`'s `TestEveryChoicePointIsReachedByARecord` demands a golden that
+`chargen`'s `TestEveryChoicePointIsReachedByARecord` demands a golden that
 reaches the new point, and `render/schema_test.go`'s
 `TestEveryGoldenMatchesTheSchema` refuses that golden until the enum learns the
 name. The exported-API baseline will also report `Decider` as changed, which is

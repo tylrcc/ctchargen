@@ -1,24 +1,29 @@
-package docsgate_test
+package chargen_test
 
 import (
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/rules"
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-// goldens is where the records this gate reads live. They are the tool's own
-// output, regenerated from the engine and checked in, so reading them here
-// reads what a referee would be handed.
-const goldens = "../../chargen/testdata"
+// The stamping predicates, and the checks that the roster reaches every
+// choice point. They read the checked-in goldens rather than generating
+// records, so they read what a referee would be handed.
+
+// goldens is where the records these checks read live: the tool's own output,
+// regenerated from the fixtures and checked in.
+const goldens = "testdata"
 
 // nobility is the Social Standing at which Book 3 p. 22 confers a title, as
-// ERRATA.md's E011 states it: "final Social Standing is 11 or greater".
+// the readings document's E011 states it: "final Social Standing is 11 or
+// greater".
 const nobility = 11
 
 // The step names the engine logs its dice under, throws and rolls alike. They
-// are the transcript's own words, so this gate is coupled to them - a
+// are the transcript's own words, so these checks are coupled to them - a
 // rewording breaks it loudly and names the reading, which is the half of that
 // worth having.
 const (
@@ -39,22 +44,23 @@ const (
 	aRoll  = "roll"
 )
 
-// A reading, and the condition ERRATA.md states for it.
+// A reading, and the condition the readings document states for it.
 //
-// The predicate is written from the document's prose, quoted above it, and
+// The predicate is written by hand from the reading's stamped-on prose, and
 // never from the code that does the stamping. A condition transcribed from
-// the thing it checks is one reading written twice, which would make this
-// gate decorative (CLAUDE.md, and #77).
+// the thing it checks is one reading written twice, which would make the
+// check decorative (CLAUDE.md, and #77). A failure quotes the prose itself,
+// lifted by rules, rather than a copy typed beside the predicate; the
+// comments below quote it only where a predicate needs its reason shown.
 type reading struct {
 	id    traveller.Erratum
-	quote string
 	holds func(record) bool
 
 	// parked names the issue where this reading's document and its code
 	// disagree and neither has yet been ruled wrong. A parked reading is
 	// measured but not judged: shipping it as a failure would make the gate
 	// red for something undecided, and dropping it would hide the
-	// disagreement the gate exists to surface.
+	// disagreement the check exists to surface.
 	//
 	// disagreeOn is how many records they differ on. It is asserted, so the
 	// predicate keeps running and the number stays true.
@@ -113,9 +119,11 @@ func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 
 			switch {
 			case want && !got:
-				t.Errorf("%s: satisfies %v but does not stamp it — %s", rec.name, r.id, r.quote)
+				t.Errorf("%s: satisfies %v but does not stamp it. Stamped on: %s",
+					rec.name, r.id, stampedOn(tables, r.id))
 			case got && !want:
-				t.Errorf("%s: stamps %v but does not satisfy it — %s", rec.name, r.id, r.quote)
+				t.Errorf("%s: stamps %v but does not satisfy it. Stamped on: %s",
+					rec.name, r.id, stampedOn(tables, r.id))
 			}
 		}
 	}
@@ -128,7 +136,7 @@ func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 //
 // A predicate keyed on a step that matches nothing does not fail - it answers
 // "no" about every record, quietly, and the gate stays green while a reading
-// goes unchecked. That is the failure this whole file exists to catch, and it
+// goes unchecked. That is the failure these checks exist to catch, and it
 // happened here: splitting the event kinds (#50) made "Social Standing" a
 // roll rather than a throw, E011's predicate started reading nothing, and
 // nothing said so, because the count it is measured by did not move.
@@ -200,13 +208,13 @@ func TestEveryStepTheConditionsReadIsFound(t *testing.T) {
 	}
 }
 
-// Every entry of ERRATA.md has exactly one condition, and every condition
-// names an entry.
+// Every reading has exactly one condition, and every condition names a
+// reading.
 //
 // This was a comparison of lengths, which is not the same claim and does not
 // hold it: giving one reading another's id leaves the count right, compares
 // that id twice against agreeing predicates, and drops the other reading
-// entirely - and the gate stayed green. Adding a sixteenth erratum and
+// entirely - and the check stayed green. Adding a sixteenth erratum and
 // copying a block without changing its id is the way that happens for real.
 func oneConditionEach(t *testing.T, readings []reading) {
 	t.Helper()
@@ -220,7 +228,7 @@ func oneConditionEach(t *testing.T, readings []reading) {
 		switch conditions[id] {
 		case 1:
 		case 0:
-			t.Errorf("%v has no condition; every entry of ERRATA.md needs one", id)
+			t.Errorf("%v has no condition; every reading needs one", id)
 		default:
 			t.Errorf("%v has %d conditions, so some other reading has none", id, conditions[id])
 		}
@@ -233,7 +241,7 @@ func oneConditionEach(t *testing.T, readings []reading) {
 	}
 }
 
-// The readings this gate lists but does not compare, pinned so the list
+// The readings this check lists but does not compare, pinned so the list
 // cannot grow quietly.
 //
 // Parking one is how a disagreement between a reading and its code gets
@@ -270,13 +278,21 @@ func stillParked(t *testing.T, readings []reading, disagreements map[traveller.E
 	}
 }
 
-// The readings no golden record stamps, pinned so the gap is visible.
+// namesNoRecord is the readings no golden stamps by design, and the one
+// list of them.
 //
-// Both are correct and permanent: E012 and E015 say "No record" in so many
-// words, and this gate is the only thing that would notice if one were
-// stamped anyway. E003 and E014 were on this list while fixtures were seeds
-// found by search, because no seed produced the run of 12s they turn on;
-// since #205 the roster scripts its dice and two goldens carry them.
+// Both are correct and permanent: E012 is a spelling, which is a
+// transcription rather than a reading and changes nothing about a character;
+// E015 settles the worked example against the table it illustrates, and only
+// the replay of that example depends on it. Each says "No record" in its own
+// stamped-on prose. E003 and E014 were on this list while fixtures were
+// seeds found by search, because no seed produced the run of 12s they turn
+// on; since #205 the roster scripts its dice and two goldens carry them.
+func namesNoRecord() []traveller.Erratum {
+	return []traveller.Erratum{traveller.E012, traveller.E015}
+}
+
+// unreached holds the readings no golden stamps to namesNoRecord.
 //
 // The set is asserted rather than logged so that a change in either
 // direction is a finding: a golden that stamps one of these is wrong, and a
@@ -284,25 +300,32 @@ func stillParked(t *testing.T, readings []reading, disagreements map[traveller.E
 func unreached(t *testing.T, readings []reading, stamped map[traveller.Erratum]bool) {
 	t.Helper()
 
-	want := []string{"E012", "E015"}
-
-	var got []string
+	var got []traveller.Erratum
 
 	for _, r := range readings {
 		if !stamped[r.id] {
-			got = append(got, r.id.String())
+			got = append(got, r.id)
 		}
 	}
 
 	slices.Sort(got)
 
-	if !slices.Equal(got, want) {
-		t.Errorf("no golden stamps %v; the roster reached %v last time this was checked", got, want)
+	if want := namesNoRecord(); !slices.Equal(got, want) {
+		t.Errorf("no golden stamps %v; namesNoRecord pins %v", got, want)
 	}
 }
 
-// conditions is ERRATA.md's fifteen "Stamped on" lines as predicates over a
-// finished record. Each quote is the document's own sentence.
+// stampedOn is a reading's stamped-on prose as the readings document states
+// it, on one line.
+func stampedOn(tables *rules.Rules, id traveller.Erratum) string {
+	return strings.Join(strings.Fields(tables.Reading(id).StampedOn), " ")
+}
+
+// conditions is the readings' stamped-on prose as predicates over a finished
+// record, one per reading.
+//
+// Implements: The errata a record stamps are exactly those whose condition
+// ERRATA.md states [Documents] in The record.
 func conditions(tables *rules.Rules) []reading {
 	return slices.Concat(
 		enlistmentAndService(),
@@ -314,19 +337,15 @@ func conditions(tables *rules.Rules) []reading {
 func enlistmentAndService() []reading {
 	return []reading{
 		{
-			id: traveller.E001,
-			quote: "records where the enlistment throw failed, whether he then submitted to " +
-				"the draft or declined",
+			id:    traveller.E001,
 			holds: func(r record) bool { return r.threw(enlistmentThrow, failed) },
 		},
 		{
 			id:    traveller.E002,
-			quote: "records in which at least one term proceeded past its survival throw",
 			holds: func(r record) bool { return r.threw(survivalThrow, passed) },
 		},
 		{
-			id:    traveller.E003,
-			quote: "records in which a 12 was thrown on a reenlistment throw at the end of term 8 or later",
+			id: traveller.E003,
 			holds: func(r record) bool {
 				const firstRecurrence = 8
 
@@ -341,12 +360,10 @@ func enlistmentAndService() []reading {
 		},
 		{
 			id:    traveller.E004,
-			quote: "records ending in death by a failed survival throw",
 			holds: func(r record) bool { return r.departedBy("killed by the survival throw") },
 		},
 		{
-			id:    traveller.E005,
-			quote: "records in a service with a service-wide entry: Marines, Army, Scouts",
+			id: traveller.E005,
 			holds: func(r record) bool {
 				return slices.Contains([]string{"Marines", "Army", "Scouts"}, r.Service)
 			},
@@ -356,7 +373,7 @@ func enlistmentAndService() []reading {
 
 func agingAndCrisis() []reading {
 	// E006 and E007 name the same records, and E008, E009 and E010 name
-	// another same three. ERRATA.md says so itself: E007 is "stamped
+	// another same three. The readings say so themselves: E007 is "stamped
 	// alongside E006", E009 alongside E008, and E010's set is "every
 	// reduction that reaches 0, and so every medical crisis that aging
 	// caused" - which during generation is every crisis there is, since
@@ -367,28 +384,22 @@ func agingAndCrisis() []reading {
 	return []reading{
 		{
 			id:    traveller.E006,
-			quote: "records in which at least one aging round was run",
 			holds: ranAnAgingRound,
 		},
 		{
 			id:    traveller.E007,
-			quote: "records in which at least one aging round was run",
 			holds: ranAnAgingRound,
 		},
 		{
 			id:    traveller.E008,
-			quote: "records in which a medical-crisis saving throw was made, whether it succeeded or failed",
 			holds: madeACrisisThrow,
 		},
 		{
 			id:    traveller.E009,
-			quote: "records in which a medical-crisis saving throw was made",
 			holds: madeACrisisThrow,
 		},
 		{
-			id: traveller.E010,
-			quote: "records in which an aging reduction carried a characteristic below 1, " +
-				"which is every medical crisis that aging caused",
+			id:    traveller.E010,
 			holds: madeACrisisThrow,
 		},
 	}
@@ -401,9 +412,6 @@ func rankAndTitle(tables *rules.Rules) []reading {
 			// the document was right and assessTitle over-stamped, naming
 			// the reading on nine records it did nothing to.
 			id: traveller.E011,
-			quote: "records where eligibility on the rolled Social Standing and on the final one " +
-				"differ in either direction, and every record ending in death whose final " +
-				"Social Standing is 11 or more",
 			holds: func(r record) bool {
 				rolled, threw := r.firstTotal(socialThrow)
 				final := r.Characteristics[socialThrow]
@@ -417,18 +425,14 @@ func rankAndTitle(tables *rules.Rules) []reading {
 		},
 		{
 			id:    traveller.E012,
-			quote: "no record: a spelling is a transcription, not a reading",
 			holds: func(record) bool { return false },
 		},
 		{
-			id: traveller.E013,
-			quote: "records in which a character reached the highest rank his service prints and " +
-				"then proceeded past the survival throw of at least one further term",
+			id:    traveller.E013,
 			holds: func(r record) bool { return reachedTheTopAndServedOn(r, tables) },
 		},
 		{
-			id:    traveller.E014,
-			quote: "records with fifteen or more terms of service",
+			id: traveller.E014,
 			holds: func(r record) bool {
 				const pastThePrintedTerms = 15
 
@@ -437,7 +441,6 @@ func rankAndTitle(tables *rules.Rules) []reading {
 		},
 		{
 			id:    traveller.E015,
-			quote: "no record: nothing but the worked example claims a result the table does not print",
 			holds: func(record) bool { return false },
 		},
 	}
@@ -456,7 +459,7 @@ func reachedTheTopAndServedOn(r record, tables *rules.Rules) bool {
 	// A service printing no ranks has no highest rank to reach. Scouts and
 	// Other print none, and an unranked character's rank is 0 - so without
 	// this every one of them "reached the top", which is what the first run
-	// of this gate reported.
+	// of this check reported.
 	top := int(tables.Service(service).MaxRank())
 	if top == 0 || r.Rank != top {
 		return false
@@ -491,41 +494,4 @@ func serviceNamed(printed string) (traveller.ServiceName, bool) {
 	var none traveller.ServiceName
 
 	return none, false
-}
-
-// Every choice point the engine offers is reached by some golden record.
-//
-// Until #34 nothing held the choice points to the roster, and Weapon was the
-// result: eleven of the twelve points were exercised by a golden and that one
-// was not, so what the policy answered there was covered by no character at
-// all - before it changed and after.
-//
-// A choice point nothing reaches is the same defect as a rule with no test,
-// one level up: the policy says what it answers, the code answers it, and
-// nothing has seen the answer.
-//
-// Holds: Every choice point the engine offers is reached by a record.
-func TestEveryChoicePointIsReachedByARecord(t *testing.T) {
-	t.Parallel()
-
-	reached := map[string]bool{}
-
-	for _, rec := range readRecords(t) {
-		for _, e := range rec.Events {
-			if e.Kind == "choice" {
-				reached[e.Point] = true
-			}
-		}
-	}
-
-	if len(reached) == 0 {
-		t.Fatal("no record answers any choice point")
-	}
-
-	for _, point := range traveller.ChoicePoints {
-		if !reached[point.String()] {
-			t.Errorf("no golden record reaches %v, so what the policy answers there is untested",
-				point)
-		}
-	}
 }

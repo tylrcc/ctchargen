@@ -5,6 +5,14 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The stamping predicates, the record reader they use, the step-name check
+  and both choice-point checks move from `internal/docsgate` to `chargen`'s
+  tests, beside the fixture roster (#220). They read the goldens as before and
+  hold what they held. A failing predicate quotes the reading's stamped-on
+  prose as `rules` lifts it, rather than a copy typed beside it, and the
+  readings no golden stamps by design (E012 and E015) are pinned in one list
+  that both the stamping check and the reachability check read. docsgate
+  keeps the exported API baseline and the schema's strategy check.
 - `docs/POLICY.md` is gone, and the `--auto` policy describes itself (#219).
   Each `chargen.Policy` method's doc comment says when the choice is asked and
   what each of the three strategies answers, carrying what the document's row
