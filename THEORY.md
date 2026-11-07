@@ -277,12 +277,13 @@ either are that statement or are generated from it:
   labels stay as the names those promises were first stated under; a cite
   that names nothing fails the generator, naming the rule.
 
-Two second copies survive that sweep. Each `Erratum` constant in
-`internal/traveller/erratum.go` carries a one-line paraphrase of its reading,
-and the lift holds the ids to `ERRATA.md` but not that prose. Each choice point
-says when it is asked twice, once on the `Decider` method and again on the
-`Policy` method, and the engine's own conditions are a third statement. Read
-the paraphrases as pointers to the readings, not as the readings.
+One second copy survives that sweep. Each choice point says when it is asked
+twice, once on the `Decider` method and again on the `Policy` method, and the
+engine's own conditions are a third statement. The `Erratum` constants in
+`internal/traveller/erratum.go` state nothing about their readings: each
+carries only its id and its entry's title, as the heading prints it, and
+`rules`' `TestEachErratumIsCommentedWithItsTitle` holds the one to the other
+(#234).
 
 `chargen`'s tests, beside the fixture roster, hold:
 

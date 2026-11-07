@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Each `Erratum` constant's comment is its id and its reading's title, as
+  `ERRATA.md`'s heading prints it, and a test in `rules` holds the two
+  together (#234). The one-line paraphrases of each reading are gone: they
+  were a second statement of the readings that nothing checked, and E004's
+  had drifted (#233).
 - A coverage cite names an authority that exists (#232). An `Implements:`
   marker cites a page, a reading, an ADR, or a heading or requirement the
   PRD defines, read from those documents; anything else fails the

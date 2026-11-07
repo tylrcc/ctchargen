@@ -20,66 +20,49 @@ type Erratum int
 
 // The fifteen readings of internal/rules/data/ERRATA.md.
 const (
-	// E001: p. 5 prints both "may submit to the draft" and "must submit to
-	// the draft"; may governs, so declining ends generation with a
-	// civilian.
+	// E001 — The draft is _may_, not _must_.
 	E001 Erratum = iota + 1
 
-	// E002: the exposition's per-term order governs over the Jamison
-	// example's, which rolls reenlistment before that term's skills.
+	// E002 — The per-term order is the exposition's, not the example's.
 	E002
 
-	// E003: a 12 on the reenlistment throw recurs without limit past
-	// term 7, not once as p. 7's singular "an additional term" reads.
+	// E003 — A 12 on the reenlistment throw recurs past term 7.
 	E003
 
-	// E004: the fatal term counts, so a character who dies in term N is
-	// recorded at N terms, and the term's four years go onto the character's
-	// own age, months from an earlier crisis included.
+	// E004 — The age of a character who dies in service.
 	E004
 
-	// E005: a service-wide rank and service skill is granted once, on
-	// entering the service, not once per term.
+	// E005 — When service-wide rank and service skills are granted.
 	E005
 
-	// E006: the aging round is the last step of the term, after the
-	// reenlistment throw, and is read off the table's term row.
+	// E006 — Where the aging round sits within the term.
 	E006
 
-	// E007: aging saving throws are thrown in the table's row order, and a
-	// characteristic reaching zero resolves its crisis inline.
+	// E007 — The order of saving throws within an aging round.
 	E007
 
-	// E008: failing the medical crisis saving throw is death.
+	// E008 — The outcome of a failed medical-crisis saving throw.
 	E008
 
-	// E009: no DM applies to the medical crisis throw during generation —
-	// there is no attending medical personnel to modify it.
+	// E009 — The medical-expertise DM during solo generation.
 	E009
 
-	// E010: aging reductions floor at 0; every other alteration floors
-	// at 1.
+	// E010 — How far below 1 aging may carry a characteristic.
 	E010
 
-	// E011: title eligibility is assessed once at the end of generation
-	// against final Social Standing, for every character including the
-	// dead, who are assessed but not asked.
+	// E011 — When title eligibility is assessed.
 	E011
 
-	// E012: printed names are normalized to the headings their
-	// descriptions carry. Stamped on no record.
+	// E012 — Printed names normalized to the descriptions' headings.
 	E012
 
-	// E013: no promotion throw is made at the top of a service's Table of
-	// Ranks.
+	// E013 — No promotion throw at the top of the Table of Ranks.
 	E013
 
-	// E014: the Aging Table's last column is terminal, governing every
-	// term from the fourteenth on.
+	// E014 — The Aging Table's last column is terminal.
 	E014
 
-	// E015: where the worked example's stated result contradicts the table
-	// it illustrates, the table governs.
+	// E015 — A printed table governs over the worked example's stated result.
 	E015
 )
 

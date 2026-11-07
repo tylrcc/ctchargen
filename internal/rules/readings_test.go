@@ -2,6 +2,9 @@ package rules //nolint:testpackage // the lift is tested on mutated text, which 
 
 import (
 	"errors"
+	"go/ast"
+	"go/parser"
+	"go/token"
 	"strings"
 	"testing"
 
@@ -82,6 +85,62 @@ func TestTheReadingsLift(t *testing.T) {
 	// P. 23's box prints "Page." for an entry with one page.
 	if got := tables.Reading(traveller.E005).Pages; !strings.HasPrefix(got, "Book 1 p. 23") {
 		t.Errorf("E005 pages is %q", got)
+	}
+}
+
+// Each Erratum constant's comment is its id and its entry's title, as the
+// heading prints it, closed with the period a doc comment ends in: "E001 —
+// The draft is _may_, not _must_." and nothing more, above the constant or
+// beside it. A paraphrase of the reading beside the constant was a second
+// statement of it that nothing held, and E004's drifted from the document
+// (#233, #234). The title is compared verbatim, Markdown emphasis included,
+// so the comment is the heading and not a rendering of it.
+func TestEachErratumIsCommentedWithItsTitle(t *testing.T) {
+	t.Parallel()
+
+	tables, err := Load()
+	if err != nil {
+		t.Fatalf("loading the rules: %v", err)
+	}
+
+	const source = "../traveller/erratum.go"
+
+	file, err := parser.ParseFile(token.NewFileSet(), source, nil, parser.ParseComments)
+	if err != nil {
+		t.Fatalf("parsing %s: %v", source, err)
+	}
+
+	commented := make(map[string]string)
+
+	for _, decl := range file.Decls {
+		gen, ok := decl.(*ast.GenDecl)
+		if !ok || gen.Tok != token.CONST {
+			continue
+		}
+
+		for _, spec := range gen.Specs {
+			value, ok := spec.(*ast.ValueSpec)
+			if !ok {
+				continue
+			}
+
+			for _, name := range value.Names {
+				commented[name.Name] = strings.Join(strings.Fields(value.Doc.Text()+" "+value.Comment.Text()), " ")
+			}
+		}
+	}
+
+	for _, e := range traveller.Errata {
+		want := e.String() + " — " + tables.Reading(e).Title + "."
+
+		got, ok := commented[e.String()]
+
+		switch {
+		case !ok:
+			t.Errorf("%v: no constant of that name in %s", e, source)
+		case got != want:
+			t.Errorf("%v is commented %q, and its entry is titled %q", e, got, want)
+		}
 	}
 }
 
