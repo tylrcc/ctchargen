@@ -279,6 +279,14 @@ rules: Muster.Table2DMFromGambling int
 rules: Muster.Table2ModifierFrom traveller.SkillName
 rules: Nobility.SocialStanding int
 rules: Nobility.Title traveller.Title
+rules: Reading.Gap string
+rules: Reading.ID traveller.Erratum
+rules: Reading.PageSays string
+rules: Reading.Pages string
+rules: Reading.Reading string
+rules: Reading.StampedOn string
+rules: Reading.Title string
+rules: Reading.Why string
 rules: Retirement.Pay func(terms int) (traveller.Credits, bool)
 rules: Retirement.PerAdditionalTerm traveller.Credits
 rules: Rules.Aging func() rules.Aging
@@ -291,6 +299,7 @@ rules: Rules.Hull func(kind traveller.ShipKind) int
 rules: Rules.Muster func() rules.Muster
 rules: Rules.Normalize func(printed string) traveller.SkillName
 rules: Rules.Passage func(c traveller.PassageClass) traveller.Credits
+rules: Rules.Reading func(e traveller.Erratum) rules.Reading
 rules: Rules.Retirement func() rules.Retirement
 rules: Rules.Service func(name traveller.ServiceName) rules.Service
 rules: Rules.TitleFor func(social int) (traveller.Title, bool)
@@ -327,6 +336,7 @@ rules: type Gate struct
 rules: type Grant struct
 rules: type Muster struct
 rules: type Nobility struct
+rules: type Reading struct
 rules: type Retirement struct
 rules: type Rules struct
 rules: type Service struct

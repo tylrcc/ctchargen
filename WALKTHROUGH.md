@@ -1326,7 +1326,7 @@ Development. Under pure ranking all four would have been the 8+ table.
 
 `[E002]` is an erratum stamp. Every skill taken this term names the reading that
 put the training step where it is — the exposition's per-term order rather than
-the worked example's. Fifteen such readings are recorded in `docs/ERRATA.md`, and
+the worked example's. Fifteen such readings are recorded in `rules/data/ERRATA.md`, and
 a record names every one that governed it.
 
 The term ends on a failed reenlistment throw, which is `traveller.ForcedOut` —
@@ -1470,10 +1470,11 @@ navy-captain.transcript.md
 
 ## The gates
 
-Three of the documents in `docs/` — `ERRATA.md`, `POLICY.md` and `COVERAGE.md`
-— are held to the code in both directions by `internal/docsgate`,
-a package with no non-test code. It also holds the schema's three strategy
-enums to the strategies the code takes, and the exported Go API to a checked-in
+`internal/docsgate`, a package with no non-test code, holds `POLICY.md`,
+`COVERAGE.md` and the stamping conditions of `rules/data/ERRATA.md` to the code
+in both directions; that document's entries and the `Erratum` constants are
+held to each other by the `rules` lift instead. The gate also holds the
+schema's three strategy enums to the strategies the code takes, and the exported Go API to a checked-in
 baseline:
 
 A transcript of `grep -h '^func Test' internal/docsgate/*.go | sed 's/func //; s/(t \*testing.T) {//'`, run while writing:
@@ -1483,7 +1484,6 @@ TestTheExportedAPIIsTheBaseline
 TestEveryReadingIsStampedWhereItsConditionHolds
 TestEveryStepTheConditionsReadIsFound
 TestEveryChoicePointIsReachedByARecord
-TestErrataMatchTheDocument
 TestThePolicyVersionMatchesTheDocument
 TestPolicyRowsMatchTheDecider
 TestChoicePointsMatchTheDecider

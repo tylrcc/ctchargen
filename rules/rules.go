@@ -7,6 +7,10 @@
 // use, a table that will not lift is a build defect that surfaces
 // immediately rather than a runtime condition some path might reach.
 //
+// The readings document, data/ERRATA.md, is embedded and lifted the same
+// way. It stays hand-written prose; only its entries are parsed, and an
+// erratum with no entry or an entry with no erratum fails the lift.
+//
 // Every table is transcribed twice: once into data/, and once into this
 // package's tests, from the same visual reading of the page. The two must
 // agree. That is what the reprint's font requires — its glyph substitutions
@@ -25,7 +29,7 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-//go:embed data/*.json
+//go:embed data/*.json data/ERRATA.md
 var files embed.FS
 
 // Sizes the printed tables fix.
@@ -54,6 +58,7 @@ type Rules struct {
 	eligibility Eligibility
 	education   Gate
 	retirement  Retirement
+	readings    [len(traveller.Errata)]Reading
 }
 
 // Load returns the lifted rules, loading and validating them once.

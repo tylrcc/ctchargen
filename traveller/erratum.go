@@ -2,7 +2,7 @@ package traveller
 
 import "fmt"
 
-// Erratum identifies one recorded reading from docs/ERRATA.md.
+// Erratum identifies one recorded reading from rules/data/ERRATA.md.
 //
 // Every place the held text is silent, ambiguous, or self-contradictory has
 // a reading recorded there with its page cite and its stamping condition,
@@ -13,11 +13,12 @@ import "fmt"
 // Ids are stable: never reused, never renumbered. A withdrawn reading keeps
 // its constant and its heading.
 //
-// The gate in internal/docsgate holds these constants and ERRATA.md's
-// headings to each other in both directions.
+// The rules package lifts ERRATA.md and holds its entries and these
+// constants to each other in both directions: a constant with no entry, or
+// an entry with no constant, fails the lift.
 type Erratum int
 
-// The fifteen readings of docs/ERRATA.md.
+// The fifteen readings of rules/data/ERRATA.md.
 const (
 	// E001: p. 5 prints both "may submit to the draft" and "must submit to
 	// the draft"; may governs, so declining ends generation with a

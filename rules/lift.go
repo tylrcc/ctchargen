@@ -203,6 +203,7 @@ func load() (*Rules, error) {
 		func() error { return rules.liftWeapons(weapons) },
 		func() error { return rules.liftNobility(nobility) },
 		func() error { return rules.liftShips(ships) },
+		rules.liftReadings,
 	} {
 		err := lift()
 		if err != nil {

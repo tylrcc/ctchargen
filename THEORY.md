@@ -221,8 +221,6 @@ forgery is not in what `record` checks, and is refused.
 about `traveller`, `chargen`, and the documents at once. It holds, by reflection
 and regex over the documents' own heading forms:
 
-- every `Erratum` constant ↔ every `### E0NN` heading in `ERRATA.md`, both ways,
-  with repeats reported before they are compacted away;
 - every `Decider` method ↔ every `### \`Method(\``row in`POLICY.md`, both ways;
 - every `ChoicePoint` ↔ every `Decider` method;
 - `chargen.PolicyVersion` ↔ the version `POLICY.md` names;
@@ -239,6 +237,12 @@ and regex over the documents' own heading forms:
   name or a changed signature, which breaks a caller; a line arrived is a new
   promise, which Go's rules allow but only on purpose. Either is answered by
   `go test ./internal/docsgate -regenerate` and reading the diff.
+
+The readings document is held by a lift, not by `docsgate`.
+`rules/data/ERRATA.md` is embedded beside the tables and lifted once with them,
+and every `Erratum` constant ↔ every `### E0NN` entry both ways: a constant
+with no entry, an entry with no constant, or an id twice fails the lift naming
+the id (`rules.TestMalformedReadings`).
 
 The command line has the same kind of baseline, beside the code it holds rather
 than in `docsgate`. `cmd/ctchargen/cli_test.go` types out each subcommand's
@@ -378,7 +382,7 @@ the status a script sees.
 ## What the system is shaped to accommodate
 
 **A new erratum.** Add the constant to `traveller/erratum.go`, add it to `Errata`,
-write the `### E0NN` heading in `ERRATA.md` with its page cite and its stamping
+write the `### E0NN` entry in `rules/data/ERRATA.md` with its page cite and its stamping
 condition as a predicate over the finished record, stamp it at the outcome it
 governs, and write the predicate into `internal/docsgate/errata_test.go` **from the
 document's prose**. The gates will tell you what you forgot in both directions.
@@ -497,7 +501,7 @@ Marked because you should know which claims to trust.
 
 **Inferred from code alone.** I did not open the Traveller PDFs — they are outside
 this repository and outside the review's scope. Every page citation above is
-repeated from the code's own comments and `docs/ERRATA.md`. I verified that the
+repeated from the code's own comments and `rules/data/ERRATA.md`. I verified that the
 citations are internally consistent and that the gates hold them to the documents;
 I did **not** verify any of them against the printed page. If a transcription is
 wrong, nothing in this document would catch it, and the twice-transcribed

@@ -201,7 +201,7 @@
     },
     "errata": {
       "type": "array",
-      "description": "Every recorded reading of docs/ERRATA.md that governed this record, in id order. A reading applied without appearing here is the one defect no gate catches.",
+      "description": "Every recorded reading of rules/data/ERRATA.md that governed this record, in id order. A reading applied without appearing here is the one defect no gate catches.",
       "items": { "type": "string", "pattern": "^E[0-9]{3}$" }
     },
     "ruleset": {

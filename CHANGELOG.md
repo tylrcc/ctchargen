@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The readings document moves to `rules/data/ERRATA.md`, beside the tables,
+  and is embedded and lifted by `rules` once at startup (#217). Each entry's
+  pages, the page's words, the gap, the reading, its rationale and its
+  stamping condition are carried as text on `rules.Reading`. An erratum with
+  no entry, or an entry with no erratum, fails the lift naming the id. No
+  reading's text changed.
 - `--seed` and `--answers` are gone (#209). The dice are not seeded, a record
   carries no `inputs.seed`, and no character can be brought back by running
   the tool again: the record, which logs every die, is the only way back (ADR
@@ -556,7 +562,7 @@ The JSON record is canonical; the Markdown is a render of it. Every record carri
 
 ### What is verified
 
-Every rule carries a printed-page cite, and every interpretation is recorded in [`docs/ERRATA.md`](docs/ERRATA.md) with its cite and **stamped on the records it governed** — E001 through E009, so a record says which readings shaped it.
+Every rule carries a printed-page cite, and every interpretation is recorded in [`rules/data/ERRATA.md`](rules/data/ERRATA.md) with its cite and **stamped on the records it governed** — E001 through E009, so a record says which readings shaped it.
 
 The rule data was checked cell by cell against the held pages: the Prior Service Table, the Table of Ranks, all 24 acquired-skills tables, both mustering-out tables, the Aging Table, the Rank and Service Skills box, the retirement pay table, both weapons lists, and Book 3's Nobility table.
 

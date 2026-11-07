@@ -148,7 +148,7 @@ standard error after `ctchargen:`.
 | File                                                     | What it holds                                                                    |
 | -------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [docs/PRD.md](docs/PRD.md)                               | The delivered v1 contract — historical, kept for why the tree has this shape.    |
-| [docs/ERRATA.md](docs/ERRATA.md)                         | Every recorded reading, with its page cite and its stamping condition.           |
+| [rules/data/ERRATA.md](rules/data/ERRATA.md)             | Every recorded reading, with its page cite and its stamping condition.           |
 | [docs/POLICY.md](docs/POLICY.md)                         | The `--auto` decision table, one row per choice point.                           |
 | [docs/COVERAGE.md](docs/COVERAGE.md)                     | Every implemented rule mapped to its page cite, its implementation and its test. |
 | [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it.           |

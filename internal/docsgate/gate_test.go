@@ -1,14 +1,18 @@
 // Package docsgate holds the documents to the code, in both directions.
 //
-// The PRD's testing section asks for three of these, and they exist for a
-// failure mode nothing else catches: a reading applied in code with no entry
-// in ERRATA.md, or an entry no code reaches, or a choice point the engine
-// grew without POLICY.md noticing. Each gate is verified by breaking it; a
-// gate never seen to fail has not been shown to hold.
+// They exist for a failure mode nothing else catches: a reading stamped on a
+// record its condition does not describe, or a choice point the engine grew
+// without POLICY.md noticing. Each gate is verified by breaking it; a gate
+// never seen to fail has not been shown to hold.
+//
+// That every erratum has an entry in the readings document, and every entry
+// an erratum, is not held here: the rules package lifts the document, and a
+// lift that fails either way is a build defect.
 //
 // The package has no non-test code on purpose. It is the one place allowed
 // to know about both traveller and chargen and about the documents beside
-// them.
+// them; the readings document is the exception, read by the rules package
+// that lifts it.
 package docsgate_test
 
 import (
@@ -28,9 +32,6 @@ import (
 
 // docs is where the governing documents live, relative to this package.
 const docs = "../../docs"
-
-// erratumHeading matches ERRATA.md's own heading form: "### E001 — ..."
-var erratumHeading = regexp.MustCompile(`(?m)^### (E\d{3}) `)
 
 // policyRow matches POLICY.md's own row form, a level-three heading whose
 // text is the Go method it describes: "### `SubmitToDraft() (bool, error)`".
@@ -54,10 +55,9 @@ func read(t *testing.T, name string) string {
 // found returns the first capture of every match, sorted and deduplicated.
 //
 // A repeat is reported before it is compacted away. Comparing sets cannot
-// notice one — two headings for the same id agree with the code as well as
-// one does — and this is the only place positioned to: an erratum id is
-// documented as never reused, and a second POLICY.md row for a method is a
-// second answer to a question that has one.
+// notice one — two rows for the same method agree with the code as well as
+// one does — and this is the only place positioned to: a second POLICY.md
+// row for a method is a second answer to a question that has one.
 func found(t *testing.T, re *regexp.Regexp, text, what string) []string {
 	t.Helper()
 
@@ -98,23 +98,6 @@ func compare(t *testing.T, inCode, inDoc []string, code, doc string) {
 			t.Errorf("%s is in %s but does not exist in %s", name, doc, code)
 		}
 	}
-}
-
-// Every erratum the code can stamp resolves to a heading, and every heading
-// is reachable from the code.
-func TestErrataMatchTheDocument(t *testing.T) {
-	t.Parallel()
-
-	inCode := make([]string, 0, len(traveller.Errata))
-	for _, e := range traveller.Errata {
-		inCode = append(inCode, e.String())
-	}
-
-	slices.Sort(inCode)
-
-	inDoc := found(t, erratumHeading, read(t, "ERRATA.md"), "erratum headings")
-
-	compare(t, inCode, inDoc, "the Erratum enum", "ERRATA.md")
 }
 
 // policyVersion matches POLICY.md's own way of stating it: "**Version 3.**"

@@ -102,7 +102,7 @@ counted here, because a count is one more thing to get wrong.
    in `COVERAGE.md`.
 
 5. **Where the text is silent or ambiguous, the reading goes in
-   `docs/ERRATA.md`** with its page cite and its stamping condition, and is
+   `rules/data/ERRATA.md`** with its page cite and its stamping condition, and is
    named on every record it governed. Never applied silently.
 
 6. **A number that indexes a printed table is data; a bare procedural bound is
@@ -137,7 +137,7 @@ overrides a higher one:
 1. **The held page.** Book 1, and Books 2–3 where Book 1 points at them. If
    the page settles it, nothing else is consulted — not memory, not an
    erratum, not the past.
-2. **`docs/ERRATA.md`, the readings decided here.** Each was decided against
+2. **`rules/data/ERRATA.md`, the readings decided here.** Each was decided against
    the page and carries its cite, so it governs wherever the page is silent
    or self-contradictory.
 3. **The errata of the implementation removed at `41a213a`.** Last resort,
@@ -146,7 +146,7 @@ overrides a higher one:
 
 A third-rank answer is never applied as it stands. Take it as a **pointer to
 a page**, go read that page, and decide the reading here: it earns an id in
-`docs/ERRATA.md`, its own rationale, and its own stamping condition, at which
+`rules/data/ERRATA.md`, its own rationale, and its own stamping condition, at which
 point it is a rank-2 reading like any other and its origin is history. A
 reading inherited unread has an authority it never earned — that is the whole
 reason the ordering puts it third rather than first.
@@ -172,7 +172,7 @@ its list of places the book is silent, and the readings it reached there.
 | File                         | Governs                                                                                                                                                                                              |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docs/PRD.md`                | Nothing now. The delivered v1 contract, kept as the record of why the tree has this shape.                                                                                                           |
-| `docs/ERRATA.md`             | Every recorded reading, with its page cite and stamping condition.                                                                                                                                   |
+| `rules/data/ERRATA.md`       | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                        |
 | `docs/POLICY.md`             | The `--auto` decision table: one row per `Decider` method.                                                                                                                                           |
 | `docs/COVERAGE.md`           | Every implemented rule of pp. 4–25, mapped to its page cite, its implementation and its test. A rule with no row is not implemented; a row with no test is a defect.                                 |
 | `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
@@ -182,8 +182,8 @@ its list of places the book is silent, and the readings it reached there.
 | `CLAUDE.md`                  | This file.                                                                                                                                                                                           |
 
 The documents are held to the code in both directions once code exists: every
-erratum id stamped in code resolves to an `ERRATA.md` heading and every
-heading is reachable by some path; every `POLICY.md` row names a `Decider`
+`Erratum` constant has an `ERRATA.md` entry and every entry a constant, which
+the `rules` lift holds; every `POLICY.md` row names a `Decider`
 method and every method has a row; every `COVERAGE.md` row names a test that
 exists. Each gate is verified by breaking it.
 
@@ -210,6 +210,10 @@ that will not lift is a build defect that surfaces immediately rather than a
 runtime condition some path might reach. Each table is transcribed twice —
 into `data/`, and into `transcription_test.go` and `tables_test.go` — from one
 visual reading. That is authority rule 3, and `rules` is where it lives.
+The readings document, `data/ERRATA.md`, is embedded and lifted the same way:
+only its entries are parsed, into `Reading` values that carry the document's
+prose, and an `Erratum` constant with no entry or an entry with no constant
+fails the lift naming the id.
 
 **`dice`** draws from an unseeded stream and never judges a throw against a
 target; that is `traveller.Target`. No character can be brought back by running
@@ -232,7 +236,8 @@ absorbs it and the domain type keeps its shape.
 
 **`internal/docsgate`** has no non-test code. It is the one package allowed to
 know about `traveller`, `chargen` and the documents at once, and it holds
-`ERRATA.md`, `POLICY.md` and `COVERAGE.md` to the code in both directions. It
+`POLICY.md`, `COVERAGE.md` and `ERRATA.md`'s stamping conditions to the code
+in both directions. It
 reads the checked-in goldens rather than generating records, so it reads what a
 referee would be handed.
 

@@ -129,7 +129,7 @@ Service Table's column order and nothing else.
 ### `SubmitToDraft() (bool, error)`
 
 **Asked when** the enlistment throw failed. The offer exists at all because
-of [E001](ERRATA.md#e001--the-draft-is-may-not-must) — the page prints both
+of [E001](../rules/data/ERRATA.md#e001--the-draft-is-may-not-must) — the page prints both
 _may_ and _must_, and _may_ governs.
 
 | Strategy          | Answer                                                |
@@ -159,7 +159,7 @@ declined would be modelling a preference the book does not price.
 
 **Asked when** the character is commissioned and holds a rank below the
 highest his service prints
-([E013](ERRATA.md#e013--no-promotion-throw-at-the-top-of-the-table-of-ranks)).
+([E013](../rules/data/ERRATA.md#e013--no-promotion-throw-at-the-top-of-the-table-of-ranks)).
 One attempt per term (p. 6).
 
 | Strategy  | Answer |
@@ -173,7 +173,7 @@ succeeded, **and** more than one intent is legal. The engine does not ask
 otherwise: a 12 forces another term "regardless of his desires" (p. 6), a
 failed throw ends the service, and at the end of term 7 or later the only
 remaining intent is to leave
-([E003](ERRATA.md#e003--a-12-on-the-reenlistment-throw-recurs-past-term-7)).
+([E003](../rules/data/ERRATA.md#e003--a-12-on-the-reenlistment-throw-recurs-past-term-7)).
 
 **Alphabet.** `Continue` | `Discharge` | `Retire`. The engine offers:
 
@@ -203,7 +203,7 @@ opportunity.
 
 **Asked when** the character survived generation and his final Social
 Standing is 11 or greater — once, at the end of generation
-([E011](ERRATA.md#e011--when-title-eligibility-is-assessed)). Eligibility is
+([E011](../rules/data/ERRATA.md#e011--when-title-eligibility-is-assessed)). Eligibility is
 assessed for the dead too, but they are not asked. `t` is the Book 3 p. 22
 title the value confers.
 
@@ -354,7 +354,7 @@ only from outside the policy.
 
 **Asked when** a Table 1 roll is a weapon benefit (p. 9's Blade and Gun
 rows). `from` is the category's printed list, column-major
-([ERRATA.md](ERRATA.md#checked-and-found-determinate)). `received` is the
+([ERRATA.md](../rules/data/ERRATA.md#checked-and-found-determinate)). `received` is the
 weapons **of this category** this character has already taken **as
 benefits** — doubly narrower than the weapons he holds: p. 22 says
 "Expertise may only be taken in a weapon received as a benefit", which
