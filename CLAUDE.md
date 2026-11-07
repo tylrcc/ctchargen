@@ -174,7 +174,6 @@ its list of places the book is silent, and the readings it reached there.
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docs/PRD.md`                | Nothing now. The delivered v1 contract, kept as the record of why the tree has this shape.                                                                                                           |
 | `rules/data/ERRATA.md`       | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                        |
-| `docs/POLICY.md`             | The `--auto` decision table: one row per `Decider` method.                                                                                                                                           |
 | `docs/COVERAGE.md`           | Every implemented rule of pp. 4–25, mapped to its page cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
 | `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
 | `docs/PRERELEASE.md`         | One section per tag: what it ships with open and why, and the review that preceded it where there was one. A finding is recorded before it is fixed.                                                 |
@@ -184,8 +183,7 @@ its list of places the book is silent, and the readings it reached there.
 
 The documents are held to the code in both directions once code exists: every
 `Erratum` constant has an `ERRATA.md` entry and every entry a constant, which
-the `rules` lift holds; every `POLICY.md` row names a `Decider`
-method and every method has a row; `COVERAGE.md` is generated from markers,
+the `rules` lift holds; `COVERAGE.md` is generated from markers,
 and a rule an implementation names and no test holds, or the reverse, fails
 the generator. Each gate is verified by breaking it.
 
@@ -225,9 +223,11 @@ generated from a fixture that scripts its dice.
 **`chargen`** walks the procedure. `Generate(Inputs, Decider, ...Option)` is
 the entry point: it throws through a `Roller` and asks through a `Decider`, and
 it cannot tell auto mode from a person from a test. `Decider` has one method
-per choice point — that is what closes the set, and what `docs/POLICY.md`
-carries a row apiece for. `Policy` is the `--auto` implementation: total,
-deterministic, and a pure function of what it is handed. The run writes an
+per choice point — that is what closes the set. `Policy` is the `--auto`
+implementation: total, deterministic, and a pure function of what it is
+handed. It describes itself: each method's doc comment says when the choice
+is asked and what each of the three strategies answers, and `PolicyVersion`'s
+says what bumps it. The run writes an
 event log as it goes, which is what `--history` prints and what an observer
 watches live.
 
@@ -238,8 +238,8 @@ absorbs it and the domain type keeps its shape.
 
 **`internal/docsgate`** has no non-test code. It is the one package allowed to
 know about `traveller`, `chargen` and the documents at once, and it holds
-`POLICY.md` and `ERRATA.md`'s stamping conditions to the code in both
-directions. It reads the checked-in goldens rather than generating records, so
+`ERRATA.md`'s stamping conditions to the goldens in both directions, and every
+choice point to a golden that reaches it. It reads the checked-in goldens rather than generating records, so
 it reads what a referee would be handed.
 
 **`internal/coverage`** has no non-test code and is nothing but the generator

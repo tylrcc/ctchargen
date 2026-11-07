@@ -19,7 +19,7 @@ const (
 )
 
 // Intents is the three, for iteration. The order is the declaration's, and
-// deliberately not a preference: POLICY.md gives each auto strategy its own
+// deliberately not a preference: the auto policy gives each strategy its own
 // ranking of the three, so no single order here could be the policy's. A
 // preference is a rule, and rules are not what these types carry.
 var Intents = [...]Intent{Continue, Discharge, Retire}
@@ -88,7 +88,7 @@ type EnlistmentOffer struct {
 // list cannot drift.
 type ChoicePoint int
 
-// One per Decider method (POLICY.md).
+// One per Decider method.
 const (
 	ChoiceService ChoicePoint = iota
 	ChoiceSubmitToDraft

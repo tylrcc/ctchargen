@@ -207,8 +207,8 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 // The policy is the one characterFlags.inputs parsed beside the inputs, so
 // that what is checked and what is written into the record cannot name
 // different strategies. They are parsed in both modes: an interactive run
-// records them too, and a record naming a strategy that is not a POLICY.md
-// row is one its own schema refuses.
+// records them too, and a record naming a word that is not one of the
+// policy's strategies is one its own schema refuses.
 //
 // Interactive mode watches the record as it is written, so the throws and
 // their consequences reach the player between his questions; --auto passes

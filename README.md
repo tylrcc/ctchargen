@@ -118,8 +118,11 @@ enlistment throw sends the character to the draft, which may put him somewhere
 else entirely — the sheet says that too.
 
 **Three flags steer `--auto`** where the procedure offers a choice, on both
-`new` and `batch`. [`docs/POLICY.md`](docs/POLICY.md) carries a row per choice
-point saying what each one does:
+`new` and `batch`. `--career` governs enlistment, the draft, commission and
+promotion attempts, reenlistment and the title; `--skills` the skills table
+and the weapon a combat result names; `--muster` the mustering-out table, its
+two DMs and repeated weapons. What each strategy answers at each choice is in
+the doc comment of the `chargen.Policy` method that asks it.
 
 | Flag       | Values                                        |
 | ---------- | --------------------------------------------- |
@@ -149,7 +152,6 @@ standard error after `ctchargen:`.
 | -------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [docs/PRD.md](docs/PRD.md)                               | The delivered v1 contract — historical, kept for why the tree has this shape.    |
 | [rules/data/ERRATA.md](rules/data/ERRATA.md)             | Every recorded reading, with its page cite and its stamping condition.           |
-| [docs/POLICY.md](docs/POLICY.md)                         | The `--auto` decision table, one row per choice point.                           |
 | [docs/COVERAGE.md](docs/COVERAGE.md)                     | Every implemented rule mapped to its page cite, its implementation and its test. |
 | [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it.           |
 | [docs/PRERELEASE.md](docs/PRERELEASE.md)                 | What each tag ships with open, and the review that preceded it.                  |

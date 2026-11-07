@@ -12,5 +12,5 @@ import "errors"
 // refuses rather than applying it.
 var errNotOffered = errors.New("answered outside what was offered")
 
-// errNoSuchStrategy reports a strategy name no row of POLICY.md carries.
+// errNoSuchStrategy reports a word that names none of a flag's strategies.
 var errNoSuchStrategy = errors.New("no such strategy")

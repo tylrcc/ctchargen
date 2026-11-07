@@ -718,8 +718,8 @@ A transcript of `grep -nE '^	[A-Z][A-Za-z0-9]*\(' chargen/decider.go | sed 's/(.
 Twelve, and the enum `traveller.ChoicePoint` has twelve constants whose
 `String()` is each method's name. That is unavoidably a second list kept
 parallel to the interface, so a reflection gate in `internal/docsgate` holds the
-two together — and holds both to `docs/POLICY.md`, which carries one row per
-method.
+two together. What the auto policy answers at each is in the doc comment of
+`Policy`'s method of the same name.
 
 Every decider — the auto policy, the interactive player, the scripted test
 deciders — reaches the engine through one decorator, `chargen/logging.go`. It
@@ -815,14 +815,15 @@ mustering out constants and the three strategy sets:
 `chargen/policy.go` — `Skills`
 
 ```go
-// The skills strategies of docs/POLICY.md, in its order.
+// The skills strategies, in their listed order; the first is the default.
 const (
 	SkillsAdvanced Skills = iota
 	SkillsService
 	SkillsPersonal
 )
 
-// The mustering out strategies of docs/POLICY.md, in its order.
+// The mustering out strategies, in their listed order; the first is the
+// default.
 const (
 	MusterCash Muster = iota
 	MusterGoods
@@ -1470,9 +1471,9 @@ navy-captain.transcript.md
 
 ## The gates
 
-`internal/docsgate`, a package with no non-test code, holds `POLICY.md` and
-the stamping conditions of `rules/data/ERRATA.md` to the code in both
-directions; that document's entries and the `Erratum` constants are held to
+`internal/docsgate`, a package with no non-test code, holds the stamping
+conditions of `rules/data/ERRATA.md` to the goldens in both directions, and
+every choice point to a golden that reaches it; that document's entries and the `Erratum` constants are held to
 each other by the `rules` lift instead, and `COVERAGE.md` is generated from
 markers beside the code by `internal/coverage`. The gate also holds the
 schema's three strategy enums to the strategies the code takes, and the exported Go API to a checked-in
@@ -1485,8 +1486,6 @@ TestTheExportedAPIIsTheBaseline
 TestEveryReadingIsStampedWhereItsConditionHolds
 TestEveryStepTheConditionsReadIsFound
 TestEveryChoicePointIsReachedByARecord
-TestThePolicyVersionMatchesTheDocument
-TestPolicyRowsMatchTheDecider
 TestChoicePointsMatchTheDecider
 TestTheSchemaNamesEveryStrategy
 ```

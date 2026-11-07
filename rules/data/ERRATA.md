@@ -700,8 +700,8 @@ pages settle them. Recorded so they are not re-litigated as silences.
   Automatic Pistol, Revolver, Carbine, Rifle before Laser Carbine, Laser
   Rifle, Automatic Rifle, Submachine Gun, Shotgun, conventional arms before
   advanced. Row-major interleaves both groups into nonsense. The order
-  matters because it fixes what "first in the printed list" names in
-  POLICY.md.
+  matters because it fixes what "first in the printed list" names in the
+  auto policy's answers.
 - **Mustering-out expertise stays inside the benefit's own category.**
   P. 22: a repeat weapon benefit may be taken as "+1 expertise **in lieu of
   receiving a second or subsequent weapon of exactly the same type**", and

@@ -8,24 +8,22 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-// Words POLICY.md does not carry. They are strings and not strategies,
-// which is the point of #41: past the parser there is no way to write one.
+// Words that name no strategy. They are strings and not strategies, which is
+// the point of #41: past the parser there is no way to write one.
 const (
 	noSuchCareer = "dawdle"
 	noSuchSkills = "osmosis"
 	noSuchMuster = "gold"
 )
 
-// Words it does carry, for the two strategies a case is not about.
+// Words that do, for the two strategies a case is not about.
 const (
 	anyCareer = "serve"
 	anySkills = "advanced"
 	anyMuster = "cash"
 )
 
-// Every row of POLICY.md, checked against what the document says. The gate
-// in internal/docsgate holds the row set to the interface; this holds each
-// row's answer to what the row promises.
+// Every career answer, checked against what the method's doc says.
 func TestCareerStrategies(t *testing.T) {
 	t.Parallel()
 
@@ -220,15 +218,15 @@ func TestServicePicksTheLikeliestEnlistment(t *testing.T) {
 	}
 }
 
-// A word no row of POLICY.md carries never becomes a strategy.
+// A word that names no strategy never becomes one.
 //
 // This is the whole of what Policy.Validate and the engine's validate() used
 // to do, moved to the one place a string is supposed to become a domain
 // value. Past the parser the type carries it, which is why nothing downstream
 // checks any more (#41).
 //
-// Holds: A strategy no row of POLICY.md carries never becomes one.
-func TestAWordNoRowCarriesIsNotAStrategy(t *testing.T) {
+// Holds: A word that names no strategy never becomes one.
+func TestAWordThatNamesNoStrategyIsNotOne(t *testing.T) {
 	t.Parallel()
 
 	_, career := chargen.ParsePolicy(noSuchCareer, anySkills, anyMuster)
@@ -239,15 +237,15 @@ func TestAWordNoRowCarriesIsNotAStrategy(t *testing.T) {
 		"career": career, "skills": skills, "muster": muster,
 	} {
 		if err == nil {
-			t.Errorf("%s: a word no row carries was accepted", name)
+			t.Errorf("%s: a word that names no strategy was accepted", name)
 		}
 	}
 }
 
-// Every strategy POLICY.md does carry parses, and parses back to its own
-// spelling. The round trip is what holds the parser to String: the record
-// writes the one and the flag reads the other, and a disagreement would make
-// a record name a strategy the flag refuses.
+// Every strategy parses, and parses back to its own spelling. The round trip
+// is what holds the parser to String: the record writes the one and the flag
+// reads the other, and a disagreement would make a record name a strategy the
+// flag refuses.
 func TestEveryStrategyParsesBackToItsSpelling(t *testing.T) {
 	t.Parallel()
 
@@ -282,9 +280,10 @@ func TestEveryStrategyParsesBackToItsSpelling(t *testing.T) {
 // The rejection tells the reader what to type, and names no file.
 //
 // The reader most likely to see it is the one who typed `go install`: he has
-// a binary and no tree, so a message pointing at POLICY.md - which this one
-// used to do - names a document he cannot open. The values come from the
-// same function the --help text reads, so the two cannot disagree.
+// a binary and no tree, so a message pointing at a repository document -
+// which this one used to do - names a document he cannot open. The values
+// come from the same function the --help text reads, so the two cannot
+// disagree.
 func TestTheRejectionNamesTheValuesAndNoDocument(t *testing.T) {
 	t.Parallel()
 

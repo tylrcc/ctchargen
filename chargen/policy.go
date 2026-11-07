@@ -8,43 +8,64 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-// Policy is the auto decider of docs/POLICY.md. It is total - it answers
-// every method of Decider - and deterministic, tie-breaking by first-listed
-// order in Book 1.
+// Policy is the --auto decider: it answers every question the procedure asks,
+// under three named strategies, each over one group of choice points. Career
+// (--career) answers Service, SubmitToDraft, AttemptCommission,
+// AttemptPromotion, ReenlistIntent and AssumeTitle; Skills (--skills) answers
+// SkillTable and Weapon; Muster (--muster) answers MusterTable,
+// MusterTable1DM, MusterTable2DM and MusterWeapon. Each method's doc says when
+// the engine asks it and what each strategy answers, and those are the whole
+// of what --auto decides.
 //
-// Every strategy is a pure function of what it is handed. Where a strategy
-// needs to know that an option is legal, the engine supplies that by what it
-// puts in the offered set, never by the strategy reaching into the
-// character.
+// It is total - it answers every method of Decider - and deterministic. Every
+// strategy is a pure function of what it is handed. Where a strategy needs to
+// know that an option is legal, the engine supplies that by what it puts in
+// the offered set, never by the strategy reaching into the character.
 //
-// Every offered set must be non-empty. The engine never offers an empty
-// one, so nothing here checks; a caller handing a Policy one directly gets
-// the panic of indexing it (#131).
+// Ranked preferences are written best-first. A strategy takes the first of its
+// ranking that is on offer; where its ranking is silent, the tie-break is
+// first-listed order in Book 1 - the Prior Service Table's column order for
+// services (p. 10), the Acquired Skills Table's block order for skill tables
+// (p. 11) - which is the order the engine builds an offered set in.
+//
+// It never returns an error. An offered set it cannot answer from would mean
+// the engine offered something the rules do not contain, which is an engine
+// defect and fails there rather than being absorbed here. Every offered set
+// must be non-empty: the engine never offers an empty one, so nothing here
+// checks, and a caller handing a Policy one directly gets the panic of
+// indexing it (#131).
+//
+// It decides nothing a flag already decides - --service forces the enlistment
+// attempt and suppresses Service, and --name is not a choice point - and
+// nothing after generation: selling a passage at 90% (p. 22), buying
+// Travellers' Aid membership for CR 1,000,000 (p. 22) and flying the ship are
+// play, and the record carries the assets and stops.
+// Interactive mode implements the same Decider and asks the player instead.
 type Policy struct {
 	Career Career
 	Skills Skills
 	Muster Muster
 }
 
-// PolicyVersion is the version of docs/POLICY.md that this build applies.
+// PolicyVersion is the version of what --auto answers.
 //
-// Every record carries it, beside the ruleset that governed the rules and the
-// build that wrote the file. Those two move for reasons that have nothing to
-// do with what --auto answers; this moves only when an answer does.
+// Every record the policy answered carries it, beside the ruleset that
+// governed the rules and the build that wrote the file. Those two move for
+// reasons that have nothing to do with what --auto answers; this moves only
+// when an answer does.
 //
-// It is what a referee reading a record consults to tell which decision
-// table answered it. Without it he can see only what was answered, and
-// `build` cannot tell him which table did - it changes when a comment
-// changes.
+// It is what a referee reading a record consults to tell which answers made
+// it. Without it he can see only what was answered, and `build` cannot tell
+// him which policy did - it changes when a comment changes.
 //
-// Bumping it is a decision recorded in POLICY.md, and docsgate holds the two
-// to each other. Adding a row for a question that was never asked is not a
-// bump: no record was answered differently under the old table.
-// Version 2 draws the weapon rather than taking the first name; version 3
-// designates the skills table he has trained on least (#34).
+// Changing what any Policy method answers is a bump, because it changes every
+// character --auto makes. A new choice point is not: no record was answered
+// differently before it, because the question was never asked. Version 2
+// draws the weapon rather than taking the first name; version 3 designates
+// the skills table he has trained on least (#34).
 //
-// Implements: A record names the policy that answered it, and the document says
-// so too [JSON conventions] in The record.
+// Implements: A record names the policy that answered it [JSON conventions] in
+// The record.
 const PolicyVersion = 3
 
 // Career is the --auto career strategy: continue, retire, or take one term.
@@ -64,22 +85,22 @@ type Skills int
 // with a repeated weapon. A closed set, for the reason Career is.
 type Muster int
 
-// The career strategies of docs/POLICY.md, in the order that document lists
-// them - the first is the default.
+// The career strategies, in their listed order; the first is the default.
 const (
 	CareerServe Career = iota
 	CareerRetire
 	CareerOneTerm
 )
 
-// The skills strategies of docs/POLICY.md, in its order.
+// The skills strategies, in their listed order; the first is the default.
 const (
 	SkillsAdvanced Skills = iota
 	SkillsService
 	SkillsPersonal
 )
 
-// The mustering out strategies of docs/POLICY.md, in its order.
+// The mustering out strategies, in their listed order; the first is the
+// default.
 const (
 	MusterCash Muster = iota
 	MusterGoods
@@ -188,12 +209,12 @@ func DefaultPolicy() Policy {
 
 // parsed finds the one strategy of an alphabet that a word spells.
 //
-// The rejection names the values and not the document. POLICY.md is a
-// repository file, and the reader most likely to be told his strategy is
-// wrong is the one who typed `go install` and has never seen this tree.
+// The rejection names the values the flag takes. The reader most likely to be
+// told his strategy is wrong is the one who typed `go install` and has never
+// seen this tree.
 //
-// Implements: A strategy no row of POLICY.md carries never becomes one [FR9] in
-// The record.
+// Implements: A word that names no strategy never becomes one [FR9] in The
+// record.
 func parsed[T fmt.Stringer](word, flag string, all []T) (T, error) {
 	for _, want := range all {
 		if word == want.String() {
@@ -235,8 +256,18 @@ func prefer[T comparable](offered, ranked []T) T {
 	return offered[0]
 }
 
-// Service takes the offer whose throw is likeliest to succeed, ties going to
-// the first listed - which is the Prior Service Table's column order (p. 10).
+// Service is asked when no --service flag was given. With --service the
+// attempt is forced to the named service and this is not called; the throw is
+// still made, and a failed throw still goes to the draft. It is offered one
+// EnlistmentOffer per service of the Prior Service Table (p. 10), in book
+// order - Navy, Marines, Army, Scouts, Merchants, Other - each carrying the
+// printed enlistment target and the cumulative DM this character earns
+// against it.
+//
+// serve, retire and oneterm all take the offer whose throw is likeliest to
+// succeed: the 2D probability of meeting its target after its DM. Ties go to
+// the first listed, which is the Prior Service Table's column order and
+// nothing else.
 func (p Policy) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
 	best := from[0]
 	bestOdds := odds(best)
@@ -269,21 +300,59 @@ func odds(offer traveller.EnlistmentOffer) float64 {
 	return float64(ways) / float64(faces*faces)
 }
 
-// SubmitToDraft is answered no only by oneterm, which is what reaches the civilian
-// record at all (E001).
+// SubmitToDraft is asked when the enlistment throw failed. The question
+// exists at all because of E001: p. 5 prints both may and must, and may
+// governs.
+//
+// serve and retire answer yes. oneterm answers no, and generation ends with
+// an 18-year-old civilian; it is the strategy that reaches the civilian record
+// at all, and the only one whose golden can.
 func (p Policy) SubmitToDraft() (bool, error) { return p.Career != CareerOneTerm, nil }
 
-// AttemptCommission is always yes: nothing in the rules costs a character a failed
-// attempt, and a commission carries a skill eligibility (p. 6).
+// AttemptCommission is asked when the service has commissions (not Scouts,
+// not Other; pp. 6, 10), the character is not yet commissioned, and it is not
+// a draftee's first term (p. 5).
+//
+// All three strategies answer yes. Nothing in the rules costs a character a
+// failed commission throw, and a commission carries a skill eligibility
+// (p. 6); a strategy that declined would be modelling a preference the book
+// does not price.
 func (p Policy) AttemptCommission() (bool, error) { return true, nil }
 
-// AttemptPromotion is always yes, for the same reason (p. 6).
+// AttemptPromotion is asked when the character is commissioned and holds a
+// rank below the highest his service prints (E013), once per term (p. 6).
+//
+// All three strategies answer yes, for the reason AttemptCommission does.
 func (p Policy) AttemptPromotion() (bool, error) { return true, nil }
 
-// AssumeTitle is always yes: every strategy assumes the title.
+// AssumeTitle is asked when the character survived generation and his final
+// Social Standing is 11 or greater - once, at the end of generation (E011).
+// The dead are assessed but not asked. The title is the one Book 3 p. 22
+// confers at that value.
+//
+// All three strategies answer yes.
 func (p Policy) AssumeTitle(traveller.Title) (bool, error) { return true, nil }
 
-// ReenlistIntent ranks the three by career strategy.
+// ReenlistIntent is asked when the reenlistment throw was made, was not a 12,
+// and succeeded, and more than one intent is legal. A 12 forces another term
+// "regardless of his desires" (p. 6), a failed throw ends the service, and at
+// the end of term 7 or later the only remaining intent is to leave (E003) and
+// the departure is Retire, so none of those asks. After terms 1-4 the engine
+// offers Continue and Discharge; after terms 5-6, Continue and Retire.
+// Discharge and Retire never coexist: p. 21 makes leaving at the end of the
+// 5th term or later retirement by definition ("is considered to have
+// retired"), and p. 7 caps voluntary service at seven terms. A Retire from
+// the Scouts or Other is a retirement that pays nothing (p. 21).
+//
+// Ranked best-first:
+//
+//   - serve: Continue, Retire, Discharge. It takes the full seven terms
+//     whenever the throws allow.
+//   - retire: Retire, Continue, Discharge. It leaves the moment leaving counts
+//     as retirement, the end of term 5 (p. 21), whether or not the service
+//     pays a pension.
+//   - oneterm: Discharge, Retire, Continue. It leaves at the first
+//     opportunity.
 func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error) {
 	var ranked []traveller.Intent
 
@@ -299,22 +368,44 @@ func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error
 	return prefer(from, ranked), nil
 }
 
-// SkillTable designates the table the character has trained on least,
-// breaking ties by the skills strategy.
+// SkillTable is asked once per skill eligibility, before the die is rolled
+// (p. 11: "must specify the table being consulted prior to the die throw").
+// It is offered Personal Development, Service Skills, Advanced Education, and
+// Advanced Education (Education 8+) - the fourth only while the character's
+// Education stands at 8 or greater at the moment of the designation.
+//
+// It designates the table the character has trained on least, and the skills
+// strategy decides among those, ranked best-first:
+//
+//   - advanced: Advanced Education (8+), Advanced Education, Service Skills,
+//     Personal Development.
+//   - service: Service Skills, Advanced Education (8+), Advanced Education,
+//     Personal Development.
+//   - personal: Personal Development, Service Skills, Advanced Education (8+),
+//     Advanced Education.
 //
 // taken is parallel to from: how many results he has already had off each
 // offered table. It is engine-computed and never recorded, so this weighs
 // where he is thin without reaching into him (#34).
 //
-// Ranking alone designated Advanced Education every time it was offered and
-// Personal Development never - ninety times to none over thirty characters -
-// so a character generated under the default never raised a characteristic,
-// though p. 11's first table is how that is done.
+// Version 2 followed the ranking alone, so advanced designated Advanced
+// Education every time it was offered and Personal Development never - ninety
+// times to none over thirty characters - and a character generated under the
+// default never raised a characteristic, though p. 11's first table is how
+// that is done. A first designation, when every count is zero, is still
+// exactly what the ranking says.
 //
-// The strategy still decides, and still decides everything on a first
-// designation, when every count is zero. advanced remains the default because
-// it is the one ranking that reaches the Education 8+ gate the instant it
-// opens.
+// Where Weapon admits that the page gives no basis, this one does not need
+// to: the page gives a basis, in that a character trains where he is thin,
+// and the strategy still says which way he leans.
+//
+// advanced is the default because it is the one ranking that makes the
+// Education 8+ gate visible in a default run: it takes the fourth table the
+// instant it opens. The gate never closes again once open - p. 9's Aging
+// Table prints "unaffected by aging" across Education, and the procedure's one
+// negative table result is Other's -1 Social (p. 11) - so no strategy needs an
+// answer for an Education that falls back below 8. personal is the ranking
+// that reaches that one negative result.
 //
 // Implements: The skills table designated is the one he has trained on least
 // [1:11] in The record.
@@ -366,23 +457,29 @@ func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
 	return thin
 }
 
-// Weapon draws among the names on the category's printed list.
+// Weapon is asked when a skills-table result is Blade Cbt or Gun Cbt,
+// immediately (pp. 11-13). It is offered the blades and polearms list (p. 12)
+// or the guns list (p. 13), whichever the category names, in printed order.
 //
-// Taking the first every time arms every auto-generated character from the
-// head of the list: thirty of them carried twenty-two Body Pistols and
-// seventeen Daggers and nothing else, though every name on both lists was
-// offered (#34).
+// All three strategies draw a name from the list, uniformly. The draw comes
+// from the run's own dice, so a fixture that scripts its draws still walks the
+// same path; it is the only variation any strategy takes.
 //
 // It draws rather than ranks because the book names no basis. Where p. 11
 // makes the player designate a table, or p. 21 decides a departure by the
 // term count, the page supplies something to decide on and the policy decides
 // on it. Here the page supplies a list in printed order, and printed order is
 // not a preference: taking the first is as invented as drawing, and drawing
-// admits it.
+// admits it. Version 1 took the first every time, and thirty auto-generated
+// characters carried twenty-two Body Pistols and seventeen Daggers and nothing
+// else, though every name on both lists was offered (#34). No strategy reached
+// past it, so no flag could change it either.
 //
-// Repeats can still take the same weapon again, which raises its level
-// (p. 12) and is the branch that produces a level above 1, by drawing the
-// same name twice.
+// A later combat result draws again, and a draw that names a weapon he
+// already has raises its level (p. 12: "Additional acquisitions of expertise
+// in the same weapon increase the present level by one"); that is the branch
+// that produces a level above 1 from the skills tables. Diversifying on
+// purpose is spartan's MusterWeapon.
 //
 // Implements: The weapon for a Blade or Gun result is drawn, not always the
 // first printed [1:11-13] in The record.
@@ -392,8 +489,16 @@ func (p Policy) Weapon(
 	return from[vary.Among(len(from))], nil
 }
 
-// MusterTable is ranked by muster strategy. cash reaches the three-roll cap, which is the only way the
-// cap is exercised; goods is what reaches the ships and the dash rows.
+// MusterTable is asked once per benefit roll, before the die (p. 9: "The
+// player must designate the table before the die is rolled"). Table 2 is
+// offered only while fewer than three rolls have been taken on it (p. 9: "A
+// maximum of three rolls on table 2 are allowed per character"); once the cap
+// is reached Table 1 is the only option and this is not called.
+//
+// cash ranks Table 2 over Table 1; goods and spartan rank Table 1 over
+// Table 2. cash reaches the three-roll cap in any run with three or more
+// rolls, which is the only way the cap is exercised; goods is what reaches the
+// ship benefits, Travellers' Aid, and Table 1's dash rows.
 func (p Policy) MusterTable(from []traveller.MusterTable) (traveller.MusterTable, error) {
 	if p.Muster == MusterCash {
 		return prefer(from, []traveller.MusterTable{traveller.TableTwo, traveller.TableOne}), nil
@@ -402,15 +507,45 @@ func (p Policy) MusterTable(from []traveller.MusterTable) (traveller.MusterTable
 	return prefer(from, []traveller.MusterTable{traveller.TableOne, traveller.TableTwo}), nil
 }
 
-// MusterTable1DM is declined only by spartan, which declines both, so that the
-// declined branch of each is reachable by a generated golden.
+// MusterTable1DM is asked when the character's final rank is 5 or 6 (p. 9:
+// "Characters with rank 5 or 6 may add +1 to their rolls on this table") and
+// the roll is on Table 1.
+//
+// cash and goods answer yes; spartan answers no. The declined branch is
+// reached by the golden navy-spartan-declines: spartan prefers Table 1, so a
+// spartan character who reaches rank 5 is asked and refuses.
 func (p Policy) MusterTable1DM() (bool, error) { return p.Muster != MusterSpartan, nil }
 
-// MusterTable2DM is declined only by spartan, for the same reason (p. 9).
+// MusterTable2DM is asked when the character has Gambling skill (p. 9:
+// "Individuals with gambling expertise are allowed a DM of +1 on table 2") and
+// the roll is on Table 2.
+//
+// cash and goods answer yes; spartan answers no, and no strategy reaches that
+// no. spartan is the only strategy that would decline and also the only one
+// that never rolls on Table 2, because it prefers Table 1 and Table 1 is
+// always on offer. The declined branch is reachable only from outside the
+// policy, where a person is asked and answers no
+// (cmd/ctchargen.TestInteractiveOffersTheGamblingModifier).
 func (p Policy) MusterTable2DM() (bool, error) { return p.Muster != MusterSpartan, nil }
 
-// MusterWeapon converts a repeat into expertise, except under spartan, which
-// diversifies - the branch that fills a benefit list with distinct weapons.
+// MusterWeapon is asked when a Table 1 roll is a weapon benefit (p. 9's Blade
+// and Gun rows). from is the category's printed list, read column-major (the
+// readings document's Checked and found determinate). received is the weapons
+// of this category the character has already taken as benefits - narrower
+// twice over than the weapons he holds: p. 22 says "Expertise may only be
+// taken in a weapon received as a benefit", which excludes weapons from
+// skills-table results, and offers the expertise "in lieu of receiving a
+// second or subsequent weapon of exactly the same type", which keeps it inside
+// the benefit's own category. It is offered TakeWeapon on any name in the
+// list, and TakeExpertise on a name in received once received is non-empty.
+//
+//   - cash and goods: TakeExpertise on the first name in received when it is
+//     offered; otherwise TakeWeapon on the first name in the printed list. They
+//     convert repeats into expertise, the branch p. 22's worked sentence
+//     describes.
+//   - spartan: TakeWeapon on the first name in the printed list not already in
+//     received, or the first name in the list if every one is. It diversifies,
+//     the branch that fills a benefit list with distinct weapons.
 func (p Policy) MusterWeapon(
 	_ traveller.WeaponCategory, from, received []traveller.WeaponName,
 ) (traveller.WeaponBenefit, error) {

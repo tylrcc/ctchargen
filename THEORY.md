@@ -221,9 +221,7 @@ forgery is not in what `record` checks, and is refused.
 about `traveller`, `chargen`, and the documents at once. It holds, by reflection
 and regex over the documents' own heading forms:
 
-- every `Decider` method ↔ every `### \`Method(\``row in`POLICY.md`, both ways;
 - every `ChoicePoint` ↔ every `Decider` method;
-- `chargen.PolicyVersion` ↔ the version `POLICY.md` names;
 - in `errata_test.go`, **each erratum's stamping condition as a predicate over
   a finished record** — written from the document's prose, never from the stamping
   code, because "a condition transcribed from the thing it checks is one reading
@@ -387,8 +385,9 @@ governs, and write the predicate into `internal/docsgate/errata_test.go` **from 
 document's prose**. The gates will tell you what you forgot in both directions.
 
 **A new choice point.** Add the `Decider` method; the compiler names every
-implementation that must learn it. Add the `ChoicePoint` constant and the
-`POLICY.md` row; `docsgate` holds the three together. The schema's `point` enum
+implementation that must learn it, `Policy` among them, whose new method's doc
+comment says when it is asked and what each strategy answers. Add the
+`ChoicePoint` constant; `docsgate` holds it to the interface. The schema's `point` enum
 is the part the compiler cannot reach, and it is held by a chain of tests instead:
 `docsgate`'s `TestEveryChoicePointIsReachedByARecord` demands a golden that
 reaches the new point, and `render/schema_test.go`'s
@@ -398,7 +397,8 @@ true — see the freeze, below.
 
 **A new `--auto` strategy for an existing question.** Add the constant, the
 `String()` case, the entry in the unexported strategy slice (`careerStrategies`,
-`skillsStrategies`, `musterStrategies`), the `POLICY.md` row, the schema's
+`skillsStrategies`, `musterStrategies`), its answer in each affected
+`Policy` method's doc comment, the schema's
 `inputs` enum, and bump `PolicyVersion` if an existing answer moved.
 `docsgate.TestTheSchemaNamesEveryStrategy` holds the schema's enum to the
 strategy slice in both directions, so the enum cannot be left behind.

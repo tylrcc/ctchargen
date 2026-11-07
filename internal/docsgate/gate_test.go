@@ -1,8 +1,8 @@
 // Package docsgate holds the documents to the code, in both directions.
 //
 // They exist for a failure mode nothing else catches: a reading stamped on a
-// record its condition does not describe, or a choice point the engine grew
-// without POLICY.md noticing. Each gate is verified by breaking it; a gate
+// record its condition does not describe, or a choice point no record
+// reaches. Each gate is verified by breaking it; a gate
 // never seen to fail has not been shown to hold.
 //
 // That every erratum has an entry in the readings document, and every entry
@@ -26,9 +26,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
-	"regexp"
 	"slices"
-	"strconv"
 	"testing"
 
 	"github.com/philoserf/ctchargen/chargen"
@@ -37,10 +35,6 @@ import (
 
 // docs is where the governing documents live, relative to this package.
 const docs = "../../docs"
-
-// policyRow matches POLICY.md's own row form, a level-three heading whose
-// text is the Go method it describes: "### `SubmitToDraft() (bool, error)`".
-var policyRow = regexp.MustCompile("(?m)^### `([A-Z][A-Za-z0-9]*)\\(")
 
 func read(t *testing.T, name string) string {
 	t.Helper()
@@ -55,37 +49,6 @@ func read(t *testing.T, name string) string {
 	}
 
 	return string(text)
-}
-
-// found returns the first capture of every match, sorted and deduplicated.
-//
-// A repeat is reported before it is compacted away. Comparing sets cannot
-// notice one — two rows for the same method agree with the code as well as
-// one does — and this is the only place positioned to: a second POLICY.md
-// row for a method is a second answer to a question that has one.
-func found(t *testing.T, re *regexp.Regexp, text, what string) []string {
-	t.Helper()
-
-	matches := re.FindAllStringSubmatch(text, -1)
-
-	names := make([]string, 0, len(matches))
-	for _, m := range matches {
-		names = append(names, m[1])
-	}
-
-	if len(names) == 0 {
-		t.Fatalf("no %s found; the gate's pattern no longer matches the document", what)
-	}
-
-	slices.Sort(names)
-
-	for i := 1; i < len(names); i++ {
-		if names[i] == names[i-1] {
-			t.Errorf("%s: %s appears more than once; an id is never reused", what, names[i])
-		}
-	}
-
-	return slices.Compact(names)
 }
 
 // compare reports every disagreement between two sets, not only the first.
@@ -105,39 +68,6 @@ func compare(t *testing.T, inCode, inDoc []string, code, doc string) {
 	}
 }
 
-// policyVersion matches POLICY.md's own way of stating it: "**Version 3.**"
-// on a line of its own near the top.
-var policyVersion = regexp.MustCompile(`(?m)^\*\*Version (\d+)\.\*\*`)
-
-// POLICY.md's version is the one every record carries.
-//
-// The document decides what a bump means and the code writes the number, so
-// the two can disagree - and a record would then name a policy that is not
-// the one that answered it, which is worse than carrying no number at all.
-// This milestone has found a document and a constant disagreeing four times;
-// this is the one place it would be unfalsifiable from the record alone.
-//
-// Holds: A record names the policy that answered it, and the document says so
-// too.
-func TestThePolicyVersionMatchesTheDocument(t *testing.T) {
-	t.Parallel()
-
-	found := policyVersion.FindStringSubmatch(read(t, "POLICY.md"))
-	if found == nil {
-		t.Fatal("POLICY.md states no version; every record carries one")
-	}
-
-	stated, err := strconv.Atoi(found[1])
-	if err != nil {
-		t.Fatalf("POLICY.md's version %q is not a number: %v", found[1], err)
-	}
-
-	if stated != chargen.PolicyVersion {
-		t.Errorf("POLICY.md is version %d and the records say %d",
-			stated, chargen.PolicyVersion)
-	}
-}
-
 // deciderMethods is every method of the Decider interface, by name.
 func deciderMethods() []string {
 	iface := reflect.TypeFor[chargen.Decider]()
@@ -150,17 +80,6 @@ func deciderMethods() []string {
 	slices.Sort(names)
 
 	return names
-}
-
-// Every POLICY.md row names a Decider method, and every method has a row.
-// This is what makes the auto policy total: a method with no row is a
-// question the policy was never told how to answer.
-func TestPolicyRowsMatchTheDecider(t *testing.T) {
-	t.Parallel()
-
-	inDoc := found(t, policyRow, read(t, "POLICY.md"), "policy rows")
-
-	compare(t, deciderMethods(), inDoc, "the Decider interface", "POLICY.md")
 }
 
 // ChoicePoint is meant to be a rendering of the Decider interface rather

@@ -13,7 +13,7 @@ const (
 	cmdRender      = "render"
 	cmdVersion     = "version"
 	wantUsage      = "usage"
-	wantNoRow      = "no such strategy"
+	wantNoStrategy = "no such strategy"
 	wantUnknown    = "unknown command"
 	wantOneLine    = "more than one line"
 	flagSheet      = "--sheet"
@@ -62,16 +62,16 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		// boundary rather than by one loop over a map. A test of one used
 		// to reach the branch the other two take; it no longer does, and a
 		// strategy flag nobody refuses is a word that reaches a record.
-		"no such career": {[]string{cmdNew, flagAuto, flagCareer, "dawdle"}, wantNoRow},
-		"no such skills": {[]string{cmdNew, flagAuto, flagSkills, "osmosis"}, wantNoRow},
-		"no such muster": {[]string{cmdNew, flagAuto, flagMuster, "gold"}, wantNoRow},
+		"no such career": {[]string{cmdNew, flagAuto, flagCareer, "dawdle"}, wantNoStrategy},
+		"no such skills": {[]string{cmdNew, flagAuto, flagSkills, "osmosis"}, wantNoStrategy},
+		"no such muster": {[]string{cmdNew, flagAuto, flagMuster, "gold"}, wantNoStrategy},
 		"no such batch muster": {
-			[]string{cmdBatch, flagAuto, flagCount, "1", flagMuster, "gold"}, wantNoRow,
+			[]string{cmdBatch, flagAuto, flagCount, "1", flagMuster, "gold"}, wantNoStrategy,
 		},
 		// The strategies are recorded whichever mode runs, and the schema
-		// restricts them to POLICY.md's rows, so an unknown one is refused
+		// restricts them to the policy's strategies, so an unknown one is refused
 		// without --auto too rather than being written into a record.
-		"no such strategy, asking": {[]string{cmdNew, flagCareer, "dawdle"}, wantNoRow},
+		"no such strategy, asking": {[]string{cmdNew, flagCareer, "dawdle"}, wantNoStrategy},
 	} {
 		err := run(tc.args, nil, io.Discard, io.Discard)
 

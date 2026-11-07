@@ -5,6 +5,16 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `docs/POLICY.md` is gone, and the `--auto` policy describes itself (#219).
+  Each `chargen.Policy` method's doc comment says when the choice is asked and
+  what each of the three strategies answers, carrying what the document's row
+  said, and `PolicyVersion`'s says what bumps it. The answers are unchanged,
+  the version stays 3, and no golden moved. The README keeps its table of
+  flags and strategies. docsgate's two tests that held the document's version
+  and rows to the code are gone; the compiler holds the policy total, and the
+  reachability check holds that every choice point is exercised.
+- `docs/COVERAGE.md.rows`, a scratch dump of the old coverage
+  table, was committed by mistake in #224 and is removed.
 - `docs/COVERAGE.md`'s tables are generated from markers beside the code (#218).
   Each implementation carries an `Implements:` line with its rule, page and
   section, and each test or golden that holds a rule carries a `Holds:` line;

@@ -275,14 +275,13 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 
 // A record names the policy that answered it, and only then.
 //
-// The field exists so a referee reading a record can tell which table
-// answered it. On a record he walked by hand the policy answered nothing,
-// and naming a decision table that decided none of it is a claim the record
-// cannot support - the same reason a civilian carries no service and no
+// The field exists so a referee reading a record can tell which version of
+// the policy's answers made it. On a record he walked by hand the policy
+// answered nothing, and naming a policy that decided none of it is a claim
+// the record cannot support - the same reason a civilian carries no service and no
 // departure.
 //
-// Holds: A record names the policy that answered it, and the document says so
-// too.
+// Holds: A record names the policy that answered it.
 func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 	t.Parallel()
 

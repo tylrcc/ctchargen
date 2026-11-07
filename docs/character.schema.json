@@ -214,7 +214,7 @@
     "policy": {
       "type": "integer",
       "minimum": 1,
-      "description": "The version of docs/POLICY.md that answered this record's choice points. Absent from a record the policy answered nothing in - one walked by hand - because naming a table that decided none of it is a claim the record cannot support. It moves only when an answer in that table changes, which is what a referee reads to tell which decision table answered a record; ruleset names the rules and build names the writer, and neither moves for that reason."
+      "description": "The version of the --auto policy that answered this record's choice points. Absent from a record the policy answered nothing in - one walked by hand - because naming a policy that decided none of it is a claim the record cannot support. It moves only when one of the policy's answers changes, which is what a referee reads to tell which answers made a record; ruleset names the rules and build names the writer, and neither moves for that reason."
     },
     "build": {
       "type": "string",
@@ -316,7 +316,7 @@
             "SkillTable", "Weapon", "ReenlistIntent", "MusterTable",
             "MusterTable1DM", "MusterTable2DM", "MusterWeapon", "AssumeTitle"
           ],
-          "description": "One per method of the Decider interface, which is what closes the set. docs/POLICY.md carries one row per method."
+          "description": "One per method of the Decider interface, which is what closes the set."
         },
         "by": { "enum": ["player", "policy"] },
         "alternatives": { "type": "array", "items": { "type": "string" } },

@@ -15,9 +15,8 @@ import "github.com/philoserf/ctchargen/traveller"
 // implementation at compile time. Spelling it as one method over a label
 // would lose exactly that.
 //
-// docs/POLICY.md carries one row per method — what the offered set is, when
-// the engine asks, and what each named auto strategy answers — and the gate
-// in internal/docsgate holds the two to each other in both directions.
+// Policy, the --auto implementation, says on each of its methods what the
+// offered set is, when the engine asks, and what each named strategy answers.
 //
 // A method is called only when more than one answer is legal. A question
 // with one answer is not a choice, and asking it would put an entry in the

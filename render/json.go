@@ -155,10 +155,10 @@ type inputsRecord struct {
 // policyThatAnswered is the policy version, on a record the policy answered
 // something in, and nothing on one it did not.
 //
-// The field exists so a referee reading a record can tell which decision
-// table answered it. On a record he walked by hand the policy answered nothing,
-// and naming a decision table that decided none of it is a claim the record
-// cannot support - the same reason a civilian carries no service and no
+// The field exists so a referee reading a record can tell which version of
+// the policy's answers made it. On a record he walked by hand the policy
+// answered nothing, and naming a policy that decided none of it is a claim
+// the record cannot support - the same reason a civilian carries no service and no
 // departure.
 func policyThatAnswered(character *chargen.Character) int {
 	for _, event := range character.Events {
