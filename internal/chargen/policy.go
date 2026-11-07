@@ -301,8 +301,7 @@ func odds(offer traveller.EnlistmentOffer) float64 {
 }
 
 // SubmitToDraft is asked when the enlistment throw failed. The question
-// exists at all because of E001: p. 5 prints both may and must, and may
-// governs.
+// exists at all because the draft is declinable (E001).
 //
 // serve and retire answer yes. oneterm answers no, and generation ends with
 // an 18-year-old civilian; it is the strategy that reaches the civilian record

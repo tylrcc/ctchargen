@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Three code comments that restated a reading's own argument now say what
+  their code does and cite the reading's id: `Policy.SubmitToDraft` and
+  `traveller.Enlistment` (E001), and `Aging.LastPrintedTerm` (E014). The
+  argument lives in `ERRATA.md` alone, as #234 left the constants.
 - A coverage cite to a withdrawn PRD section fails, naming the ADR that
   withdrew it. An ADR states a withdrawal on a line the generator reads, and
   ADR 0001 now says it withdrew Determinism. ADR 0002 records why a record

@@ -203,9 +203,7 @@ case of the type rather than a nil service with a flag beside it.
 // Enlistment is how — or whether — a character entered a service (p. 5).
 //
 // The civilian who declined the draft is a case of the type, not a nil
-// service with a flag beside it. The draft is declinable per E001: p. 5
-// prints both "he may submit to the draft" and "the character must submit to
-// the draft", and the may reading governs.
+// service with a flag beside it. The draft is declinable (E001).
 type Enlistment interface {
 	Fold(cases EnlistmentCases) error
 	sealedEnlistment()

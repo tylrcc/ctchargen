@@ -475,10 +475,7 @@ func (a Aging) At(term traveller.Term) []AgingEffect {
 
 // LastPrintedTerm is the last term the table's own header row names (p. 9).
 //
-// Past it a term is read off the last band's column anyway, which is E014:
-// the Age row's 74+ is the only cell in either header carrying a plus, so
-// the column it labels is open-ended and the term row's 14 is simply the
-// term that first arrives there.
+// Past it a term is read off the last band's column anyway (E014).
 //
 // The number lives in the data because it indexes the printed table's header
 // row, and because it is E014's stamping condition (#43). Held as a Go
