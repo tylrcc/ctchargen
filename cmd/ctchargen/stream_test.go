@@ -41,7 +41,7 @@ func TestABatchToStandardOutputArrivesARecordAtATime(t *testing.T) {
 	var out countingWriter
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagSeed, "7", flagService, other,
+		cmdBatch, flagCount, "5", flagAuto, flagService, other,
 	}, nil, &out, io.Discard)
 	if err != nil {
 		t.Fatalf("generating: %v", err)
@@ -71,7 +71,7 @@ func TestABatchToAFileIsStillWrittenAtOnce(t *testing.T) {
 	var out countingWriter
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagSeed, "7", flagService, other,
+		cmdBatch, flagCount, "5", flagAuto, flagService, other,
 		flagOutput, path,
 	}, nil, &out, io.Discard)
 	if err != nil {
@@ -129,18 +129,17 @@ func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 	out := failsAfter{left: 2}
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagSeed, "7", flagService, other,
+		cmdBatch, flagCount, "5", flagAuto, flagService, other,
 	}, nil, &out, io.Discard)
 
-	// A streamed member has no file name, so the failure names its seed,
-	// which is what its record carries. Members here run from --seed 7, so
-	// the third is seed 9.
+	// A streamed member has no file name, so the failure names its position
+	// among those written: the write fails on the third.
 	switch {
 	case err == nil:
 		t.Fatal("a batch hit a failing write and reported success")
 	case !errors.Is(err, errClosedPipe):
 		t.Errorf("error %q does not carry the write failure", err)
-	case !strings.Contains(err.Error(), "seed 9"):
+	case !strings.Contains(err.Error(), "member 3"):
 		t.Errorf("error %q does not name the member it stopped on", err)
 	}
 

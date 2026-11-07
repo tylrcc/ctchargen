@@ -26,15 +26,15 @@ const (
 // Each is held both ways. TestHelpNamesEveryFlag notices a flag the printer
 // stopped writing; TestEveryDeclaredFlagIsListed notices a flag the set
 // gained without the list learning it, which is the direction the list
-// actually drifted - `new` gained --answers and this list stayed at eleven
+// actually drifted - `new` once gained a flag and this list stayed at eleven
 // (#133).
 var (
 	newFlags = []string{
-		flagSeed, flagAuto, flagService, flagName, flagCareer, flagSkills,
-		flagMuster, flagSheet, flagHistory, flagOutput, flagForce, flagAnswers,
+		flagAuto, flagService, flagName, flagCareer, flagSkills,
+		flagMuster, flagSheet, flagHistory, flagOutput, flagForce,
 	}
 	batchFlags = []string{
-		flagCount, flagSeed, flagAuto, flagService, flagName, flagCareer,
+		flagCount, flagAuto, flagService, flagName, flagCareer,
 		flagSkills, flagMuster, flagOutput, flagForce, flagSurvivors,
 	}
 	renderFlags = []string{flagHistory, flagOutput, flagForce}
@@ -175,7 +175,7 @@ func TestTopLevelHelpNamesEverySubcommand(t *testing.T) {
 }
 
 // A positional argument is refused rather than ignored. `new extra-arg` used
-// to start an interactive session on a drawn seed, so a typo became a
+// to start an interactive session nobody asked for, so a typo became a
 // session; and because the flag package stops at the first non-flag word,
 // `new foo --auto` was an interactive session too.
 func TestAPositionalArgumentIsRefused(t *testing.T) {
@@ -328,7 +328,7 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 func TestTheTwoRenderingsCannotBothBeAskedFor(t *testing.T) {
 	t.Parallel()
 
-	err := run([]string{cmdNew, flagAuto, flagSeed, "7", flagSheet, flagHistory},
+	err := run([]string{cmdNew, flagAuto, flagSheet, flagHistory},
 		nil, io.Discard, io.Discard)
 	if err == nil {
 		t.Fatal("a character was asked for as a sheet and a transcript at once")

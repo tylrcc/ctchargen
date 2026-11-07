@@ -20,7 +20,7 @@ const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 // or somebody watching the record as it is written.
 //
 // Options rather than a function per combination, so that the default -
-// seeded dice and nobody watching - stays the shortest call, and the engine
+// dice of its own and nobody watching - stays the shortest call, and the engine
 // does not grow an entry point every time it gains an optional input.
 type Option func(*run)
 
@@ -48,12 +48,13 @@ func WithAnswerer(who traveller.DecidedBy) Option {
 }
 
 // Generate walks Book 1's character generation procedure, pp. 4-25, rolling
-// from the seed the inputs carry unless a roller is given.
+// dice of its own unless a roller is given.
 //
 // The order within a term is the exposition's, not the worked example's
 // (E002): survival, commission, promotion, skills, reenlistment, and then
-// the aging round at the end of the term (E006). That order is what a seed
-// means, so it is a fixed choice rather than an incidental one.
+// the aging round at the end of the term (E006). That order is what every
+// fixture's script walks, so it is a fixed choice rather than an incidental
+// one.
 func Generate(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	tables, err := rules.Load()
 	if err != nil {
@@ -64,7 +65,7 @@ func Generate(in Inputs, decider Decider, options ...Option) (*Character, error)
 
 	run := &run{
 		tables: tables,
-		roll:   dice.New(in.Seed),
+		roll:   dice.New(),
 		log:    record,
 		by:     traveller.ByPolicy,
 		char: &Character{

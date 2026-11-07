@@ -78,7 +78,6 @@
     "assumed": true
   },
   "inputs": {
-    "seed": 4,
     "service": "Army",
     "career": "serve",
     "skills": "advanced",

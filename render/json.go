@@ -140,7 +140,6 @@ type nobilityRecord struct {
 }
 
 type inputsRecord struct {
-	Seed    uint64 `json:"seed"`
 	Name    string `json:"name,omitempty"`
 	Service string `json:"service,omitempty"`
 	Career  string `json:"career"`
@@ -151,8 +150,8 @@ type inputsRecord struct {
 // policyThatAnswered is the policy version, on a record the policy answered
 // something in, and nothing on one it did not.
 //
-// The field exists so a referee holding two records from one seed can tell
-// why they differ. On a record he walked by hand the policy answered nothing,
+// The field exists so a referee reading a record can tell which decision
+// table answered it. On a record he walked by hand the policy answered nothing,
 // and naming a decision table that decided none of it is a claim the record
 // cannot support - the same reason a civilian carries no service and no
 // departure.
@@ -229,7 +228,7 @@ func project(character *chargen.Character) (record, error) {
 
 func projectInputs(in chargen.Inputs) inputsRecord {
 	out := inputsRecord{
-		Seed: in.Seed, Name: in.Name,
+		Name:   in.Name,
 		Career: in.Career.String(), Skills: in.Skills.String(), Muster: in.Muster.String(),
 	}
 	if in.Forced {

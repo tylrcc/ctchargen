@@ -3,7 +3,7 @@
   "$id": "https://github.com/philoserf/ctchargen/docs/character.schema.json",
   "title": "Classic Traveller character record",
 
-  "description": "What ctchargen writes, as this build writes it. A description of the output, kept honest by the gate - not a promise to records already written. Across builds nothing is promised: changing the procedure, the dice-stream consumption order, or an event's wording changes the output for a given seed, and that is an ordinary change. What makes that affordable is that a record is regenerable from its seed and its inputs, and nothing in it is hand-written.\n\nTwo of the optional benefit fields cannot appear together in any character this tool can generate. Book 1 p. 9 prints Travellers' Aid only in the Navy and Marines columns of Mustering Out Table 1, and the two starships only in the Scout and Merchant columns, and a character serves one service. So no valid record carries both travellersAid and ships. That is a fact about the rules rather than a gap in the fixtures, which is why character.complete.json shows the ships and not the membership.\n\nThe root object accepts a field it does not know; every object inside it does not. That is the narrower half of the v1.0.0 freeze, and it is deliberate (#76, #113). A later build may add a top-level section, and a reader holding this schema will load the record and render what it understands. A key added inside an existing object is still refused, and so is an event of a kind this build does not write, because those are the structures a sheet is rendered from and pinning them is what keeps this schema worth validating against.",
+  "description": "What ctchargen writes, as this build writes it. A description of the output, kept honest by the gate - not a promise to records already written. Nothing in it is hand-written, and nothing in it can be brought back by running the tool again: the dice are not seeded, so the record is the only way back to a character (ADR 0001). It carries every die of every roll and throw in order, and a draw that is not a throw appears as the choice it produced, so every number on a sheet can be checked against the page from the record alone.\n\nTwo of the optional benefit fields cannot appear together in any character this tool can generate. Book 1 p. 9 prints Travellers' Aid only in the Navy and Marines columns of Mustering Out Table 1, and the two starships only in the Scout and Merchant columns, and a character serves one service. So no valid record carries both travellersAid and ships. That is a fact about the rules rather than a gap in the fixtures, which is why character.complete.json shows the ships and not the membership.\n\nThe root object accepts a field it does not know; every object inside it does not. That is the narrower half of the v1.0.0 freeze, and it is deliberate (#76, #113). A later build may add a top-level section, and a reader holding this schema will load the record and render what it understands. A key added inside an existing object is still refused, and so is an event of a kind this build does not write, because those are the structures a sheet is rendered from and pinning them is what keeps this schema worth validating against.",
 
   "type": "object",
   "additionalProperties": true,
@@ -186,14 +186,9 @@
     "inputs": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["seed", "career", "skills", "muster"],
+      "required": ["career", "skills", "muster"],
       "description": "Everything the generation was given, so that a record says what made it.",
       "properties": {
-        "seed": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The one recorded seed, filling both words of the PCG state. A seed the tool draws for itself is bounded to 2^53-1, above which a reader parsing JSON numbers as doubles would round it silently; an explicit --seed is the operator's own number and is written as given."
-        },
         "name": { "type": "string" },
         "service": {
           "$ref": "#/$defs/service",
@@ -216,11 +211,11 @@
     "policy": {
       "type": "integer",
       "minimum": 1,
-      "description": "The version of docs/POLICY.md that answered this record's choice points. Absent from a record the policy answered nothing in - one walked by hand - because naming a table that decided none of it is a claim the record cannot support. It moves only when an answer in that table changes, which is what a referee reads to tell why two records from one seed differ; ruleset names the rules and build names the writer, and neither moves for that reason."
+      "description": "The version of docs/POLICY.md that answered this record's choice points. Absent from a record the policy answered nothing in - one walked by hand - because naming a table that decided none of it is a claim the record cannot support. It moves only when an answer in that table changes, which is what a referee reads to tell which decision table answered a record; ruleset names the rules and build names the writer, and neither moves for that reason."
     },
     "build": {
       "type": "string",
-      "description": "The build that wrote the record, from debug.ReadBuildInfo - the same source the version subcommand reports. With cross-build reproduction unpromised, naming the build is the whole of what makes a record reasonable about.\n\nThe command fills it, and only the command: a record generated in-process by a test carries none, because a test binary's build info is not the build of a released tool and would make a golden differ by machine. So the goldens and the two examples beside this schema have no build, and a record written by ctchargen does."
+      "description": "The build that wrote the record, from debug.ReadBuildInfo - the same source the version subcommand reports. Naming the build is what lets a referee say which code wrote the record he is reading or filing a report against.\n\nThe command fills it, and only the command: a record generated in-process by a test carries none, because a test binary's build info is not the build of a released tool and would make a golden differ by machine. So the goldens and the two examples beside this schema have no build, and a record written by ctchargen does."
     },
     "events": {
       "type": "array",

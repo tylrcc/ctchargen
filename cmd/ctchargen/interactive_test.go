@@ -32,7 +32,8 @@ func unusableFirst() io.Reader {
 func TestInteractiveWalksACharacter(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "7", flagService, other, flagSheet}, answers("1", 200))
+	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("1", 200),
+		withDice(otherWalked.roller(t)))
 
 	shown := out
 
@@ -85,7 +86,8 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 func TestInteractiveReAsksWhatItCannotRead(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "7", flagService, other, flagSheet}, unusableFirst())
+	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, unusableFirst(),
+		withDice(otherWalked.roller(t)))
 
 	shown := out
 
@@ -120,7 +122,7 @@ func TestInteractiveReAsksWhatItCannotRead(t *testing.T) {
 func TestABadAnswerDoesNotReprintTheMenu(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "7", flagSheet}, unusableFirst())
+	out := mustRunTogether(t, []string{cmdNew, flagSheet}, unusableFirst())
 
 	shown := out
 
@@ -144,7 +146,8 @@ func TestABadAnswerDoesNotReprintTheMenu(t *testing.T) {
 func TestTheNumbersAPlayerWatchesDoNotSkip(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "7", flagService, other, flagSheet}, answers("1", 200))
+	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("1", 200),
+		withDice(otherWalked.roller(t)))
 
 	numbered := regexp.MustCompile(`(?m)^\s*(?:## )?(\d+)\. `)
 
@@ -179,9 +182,10 @@ func TestTheNumbersAPlayerWatchesDoNotSkip(t *testing.T) {
 func TestTheTwoAdvancedEducationTablesReadDifferently(t *testing.T) {
 	t.Parallel()
 
-	// Seed 4 in the Navy reaches a term offering all four tables, which
-	// needs the education 8+ gate open.
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "4", flagService, navy, flagSheet}, answers("1", 200))
+	// The Navy walk reaches a term offering all four tables, which needs
+	// the education 8+ gate open.
+	out := mustRunTogether(t, []string{cmdNew, flagService, navy, flagSheet}, answers("1", 200),
+		withDice(navyWalked.roller(t)))
 
 	shown := out
 	if !strings.Contains(shown, "Advanced Education Table\n") {
@@ -203,7 +207,10 @@ func TestInteractiveRefusesToInventAnAnswer(t *testing.T) {
 		"nil reader":      nil,
 		"answers run out": answers("1", 2),
 	} {
-		err := run([]string{cmdNew, flagSeed, "7", flagService, other}, script, io.Discard, io.Discard)
+		// A walk that lives to be asked: random dice can kill a character in
+		// his first survival throw, before any question is put.
+		err := run([]string{cmdNew, flagService, other}, script, io.Discard, io.Discard,
+			withDice(otherWalked.roller(t)))
 
 		switch {
 		case err == nil:
@@ -219,9 +226,11 @@ func TestInteractiveRefusesToInventAnAnswer(t *testing.T) {
 func TestInteractiveShowsWhatAutoDoesNot(t *testing.T) {
 	t.Parallel()
 
-	asked := mustRunTogether(t, []string{cmdNew, flagSeed, "7", flagService, other, flagSheet}, answers("1", 200))
+	asked := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("1", 200),
+		withDice(otherWalked.roller(t)))
 
-	automatic := mustRunTogether(t, []string{cmdNew, flagAuto, flagSeed, "7", flagService, other, flagSheet}, nil)
+	automatic := mustRunTogether(t, []string{cmdNew, flagAuto, flagService, other, flagSheet}, nil,
+		withDice(otherByPolicy.roller(t)))
 
 	if strings.Contains(automatic, "survival: rolled") {
 		t.Error("--auto showed the procedure; nobody is reading, so it passes no observer")
@@ -235,14 +244,15 @@ func TestInteractiveShowsWhatAutoDoesNot(t *testing.T) {
 // The yes-or-no points, which the walk through Other never reaches: it is
 // never rejected, holds no rank, and ends nobody's noble.
 //
-// Seed 45 into the Navy is rejected, drafted into the Marines, and serves
-// seven terms to Colonel and a ducal title. Each prompt below is asserted
-// rather than merely walked past, so a change to the dice stream fails here
-// instead of quietly leaving these branches unasked.
+// The drafted walk is rejected by the Navy, drafted into the Marines, and
+// serves seven terms to a rank and a title. Each prompt below is asserted
+// rather than merely walked past, so a change to what the procedure asks
+// fails here instead of quietly leaving these branches unasked.
 func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "45", flagService, navy, flagSheet}, answers("1", 300))
+	out := mustRunTogether(t, []string{cmdNew, flagService, navy, flagSheet}, answers("1", 300),
+		withDice(draftedWalked.roller(t)))
 
 	shown := out
 
@@ -263,12 +273,13 @@ func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 }
 
 // The gambling modifier is offered only to someone who has the expertise, so
-// reaching it takes a run that draws the skill: seed 3 through Other, taking
-// the Service Skills Table every time.
+// reaching it takes a walk that draws the skill: the gambler, taking the
+// Service Skills Table every time.
 func TestInteractiveOffersTheGamblingModifier(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSeed, "3", flagService, other, flagSheet}, answers("2", 300))
+	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("2", 300),
+		withDice(gamblerWalked.roller(t)))
 
 	if !strings.Contains(out, "Your gambling expertise allows +1 on this table") {
 		t.Error("a character with Gambling was never offered the modifier p. 9 gives him")
@@ -289,8 +300,8 @@ var errClosedPipe = errors.New("the other end closed")
 func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 	t.Parallel()
 
-	err := run([]string{cmdNew, flagSeed, "7", flagService, other, flagSheet},
-		answers("1", 300), io.Discard, brokenPipe{})
+	err := run([]string{cmdNew, flagService, other, flagSheet},
+		answers("1", 300), io.Discard, brokenPipe{}, withDice(otherWalked.roller(t)))
 
 	switch {
 	case err == nil:
@@ -302,13 +313,14 @@ func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 
 // The questions do not go where the record goes.
 //
-// A guided run still writes JSON to stdout, so `ctchargen new --seed 7 | jq`
+// A guided run still writes JSON to stdout, so `ctchargen new | jq`
 // has to receive a record and not a conversation. The two channels are
 // separate arguments for that reason, and this is what holds them apart.
 func TestTheQuestionsStayOutOfTheRecord(t *testing.T) {
 	t.Parallel()
 
-	record, asked := mustRun(t, []string{cmdNew, flagSeed, "7", flagService, other}, answers("1", 300))
+	record, asked := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 300),
+		withDice(otherWalked.roller(t)))
 
 	var written map[string]any
 
@@ -365,8 +377,8 @@ func TestAStoppedSessionSaysWhatWasLost(t *testing.T) {
 
 			var asking strings.Builder
 
-			err := run([]string{cmdNew, flagSeed, "7", flagService, other},
-				strings.NewReader(tc.typed), io.Discard, &asking)
+			err := run([]string{cmdNew, flagService, other},
+				strings.NewReader(tc.typed), io.Discard, &asking, withDice(otherWalked.roller(t)))
 			if !errors.Is(err, errNoAnswer) {
 				t.Fatalf("stopping short gave %v, want the input ending", err)
 			}
@@ -387,60 +399,6 @@ func TestAStoppedSessionSaysWhatWasLost(t *testing.T) {
 	}
 }
 
-// Replaying every answer reproduces the character that was typed.
-//
-// This is the property the offer promises. Anything weaker - that it does not
-// crash, that it reaches the end - would pass on a replay that consumed the
-// list and then answered for itself.
-func TestAReplayReproducesTheTypedCharacter(t *testing.T) {
-	t.Parallel()
-
-	typed, _ := mustRun(t, []string{cmdNew, flagSeed, "7", flagService, other}, answers("1", 200))
-
-	// One "1" per choice the run made, which is what the operator typed.
-	made := strings.Count(typed, `"kind": "choice"`)
-	if made == 0 {
-		t.Fatal("the run made no choices, so a replay proves nothing")
-	}
-
-	replayed, _ := mustRun(t, []string{
-		cmdNew, flagSeed, "7", flagService, other,
-		flagAnswers, strings.TrimSuffix(strings.Repeat("1,", made), ","),
-	}, nil)
-
-	if typed != replayed {
-		t.Error("the replayed character is not the one that was typed")
-	}
-}
-
-// An answer no question could take belongs to another run, and is refused
-// rather than spent on the question in front of it.
-func TestAnAnswerOutOfRangeIsRefused(t *testing.T) {
-	t.Parallel()
-
-	err := run([]string{cmdNew, flagSeed, "7", flagService, other, flagAnswers, "1,99"},
-		nil, io.Discard, io.Discard)
-
-	switch {
-	case err == nil:
-		t.Fatal("an answer of 99 was accepted")
-	case !errors.Is(err, errUsage):
-		t.Errorf("error %q is not a usage error", err)
-	case !strings.Contains(err.Error(), "answer 2 of --answers is 99"):
-		t.Errorf("error %q does not name which answer was wrong", err)
-	}
-}
-
-// A list that is not numbers is refused before a die is thrown.
-func TestAMalformedAnswerListIsRefused(t *testing.T) {
-	t.Parallel()
-
-	err := run([]string{cmdNew, flagSeed, "7", flagAnswers, "1,two"}, nil, io.Discard, io.Discard)
-	if err == nil || !strings.Contains(err.Error(), `"two" is not one`) {
-		t.Errorf("a malformed list was refused as %v", err)
-	}
-}
-
 // A read that fails is not the input ending.
 //
 // bufio.Scanner returns false for both, and only one of them is the reader
@@ -455,8 +413,8 @@ func TestAFailedReadIsNotTheInputEnding(t *testing.T) {
 
 	var asking strings.Builder
 
-	err := run([]string{cmdNew, flagSeed, "7", flagService, other},
-		strings.NewReader(huge), io.Discard, &asking)
+	err := run([]string{cmdNew, flagService, other},
+		strings.NewReader(huge), io.Discard, &asking, withDice(otherWalked.roller(t)))
 
 	switch {
 	case err == nil:
@@ -473,48 +431,5 @@ func TestAFailedReadIsNotTheInputEnding(t *testing.T) {
 		if !strings.Contains(asking.String(), want) {
 			t.Errorf("a failed read was not told what was lost, %q:\n%s", want, asking.String())
 		}
-	}
-}
-
-// A list longer than the run had questions for belongs to another run.
-//
-// The same signal as an answer out of range: the questions a seed asks are
-// fixed, so a list typed against this seed is spent to its end.
-// Half a list quietly applied builds a character wrong in a way nothing on
-// the sheet shows.
-func TestAnswersLeftOverBelongToAnotherRun(t *testing.T) {
-	t.Parallel()
-
-	err := run([]string{
-		cmdNew, flagSeed, "7", flagService, other,
-		flagAnswers, strings.TrimSuffix(strings.Repeat("1,", 400), ","),
-	}, nil, io.Discard, io.Discard)
-
-	switch {
-	case err == nil:
-		t.Fatal("a list longer than the procedure had questions for was accepted")
-	case !errors.Is(err, errUsage):
-		t.Errorf("error %q is not a usage error", err)
-	case !strings.Contains(err.Error(), "belongs to another run"):
-		t.Errorf("error %q does not say the list came from elsewhere", err)
-	}
-}
-
-// --auto has nobody to give answers for, and says so rather than dropping
-// them: a character the answers had no part in would read as one they shaped,
-// and nothing on the sheet would say otherwise.
-func TestAnswersAndAutoCannotBothBeGiven(t *testing.T) {
-	t.Parallel()
-
-	err := run([]string{cmdNew, flagSeed, "7", flagAuto, flagAnswers, "1"},
-		nil, io.Discard, io.Discard)
-
-	switch {
-	case err == nil:
-		t.Fatal("--answers was accepted alongside --auto and then ignored")
-	case !errors.Is(err, errUsage):
-		t.Errorf("error %q is not a usage error", err)
-	case !strings.Contains(err.Error(), "--auto"):
-		t.Errorf("error %q does not name the flag it conflicts with", err)
 	}
 }

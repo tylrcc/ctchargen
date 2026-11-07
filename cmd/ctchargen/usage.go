@@ -35,7 +35,7 @@ const (
 const topLevelUsage = "usage: ctchargen <command> [flags]\n" +
 	"\n" +
 	"  new      generate one character, asking at every choice unless --auto\n" +
-	"  batch    generate many characters from one base seed, under --auto\n" +
+	"  batch    generate many characters, under --auto\n" +
 	"  render   write a record saved earlier as a sheet or as a transcript\n" +
 	"  version  write the build\n" +
 	"\n" +
@@ -49,15 +49,6 @@ const (
 	skillsFlag = "skills"
 	musterFlag = "muster"
 )
-
-// seedFlag is named once too, because `new` and `batch` each define it and
-// then ask the set whether it was given.
-const seedFlag = "seed"
-
-// answersFlag is named here because the flag is defined in one file and the
-// usage errors that name it are in another, and a flag the tool refuses under
-// one spelling and reads under another would be worse than none.
-const answersFlag = "answers"
 
 // shortFlag is the length of a flag name written with one dash. There is one
 // of them, `-o`, and it is written that way everywhere else.
@@ -165,7 +156,7 @@ func writeFlags(out io.Writer, flags *flag.FlagSet) error {
 	return nil
 }
 
-// dashed writes a flag the way this command line writes it: -o, --seed. The
+// dashed writes a flag the way this command line writes it: -o, --auto. The
 // flag package accepts either spelling for either name; this is about what
 // the reader is shown.
 func dashed(name string) string {

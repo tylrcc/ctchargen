@@ -53,7 +53,7 @@ func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 	t.Parallel()
 
 	inputs := chargen.Inputs{
-		Seed: 0, Service: traveller.Other, Forced: true,
+		Service: traveller.Other, Forced: true,
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 
@@ -127,33 +127,29 @@ func TestAnAnswerOutsideTheOfferIsRefused(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]struct {
-		inputs  chargen.Inputs
+		fixture string
 		decider answeringOutsideTheOffer
 	}{
-		// Seed 7 through Other stands at Education 7 for the whole career,
-		// so p. 11 never opens the fourth table to him.
+		// other-serve stands at Education 7 for the whole career, so p. 11
+		// never opens the fourth table to him.
 		"a skills table his Education closes": {
-			inputs: chargen.Inputs{
-				Seed: 7, Service: traveller.Other, Forced: true,
-				Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
-			},
+			fixture: "other-serve",
 			decider: answeringOutsideTheOffer{Decider: chargen.DefaultPolicy(), table: true},
 		},
-		// Seed 4 through the Scouts draws weapon benefits, so the choice
-		// point is reached - and the first time it is, nothing of that
-		// category has been received yet.
+		// scouts-expertise draws weapon benefits, so the choice point is
+		// reached - and the first time it is, nothing of that category has
+		// been received yet.
 		"expertise in a weapon never received": {
-			inputs: chargen.Inputs{
-				Seed: 4, Service: traveller.Scouts, Forced: true,
-				Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods,
-			},
+			fixture: "scouts-expertise",
 			decider: answeringOutsideTheOffer{Decider: chargen.DefaultPolicy(), expertise: true},
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			_, err := chargen.Generate(tc.inputs, tc.decider)
+			f := byName(t, tc.fixture)
+
+			_, err := chargen.Generate(f.inputs(), tc.decider, chargen.WithRoller(f.roller(t)))
 			if err == nil {
 				t.Fatal("the engine applied an answer it had not offered")
 			}

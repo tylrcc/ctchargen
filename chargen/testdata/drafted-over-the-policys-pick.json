@@ -59,7 +59,6 @@
     "fatal": true
   },
   "inputs": {
-    "seed": 150,
     "career": "serve",
     "skills": "advanced",
     "muster": "cash"

@@ -267,9 +267,9 @@ func stillParked(t *testing.T, readings []reading, disagreements map[traveller.E
 //
 // Both are correct and permanent: E012 and E015 say "No record" in so many
 // words, and this gate is the only thing that would notice if one were
-// stamped anyway. E003 and E014 were on this list while the roster was seeds,
-// because no seed produces the run of 12s they turn on; since #205 the roster
-// scripts its dice and two goldens carry them.
+// stamped anyway. E003 and E014 were on this list while fixtures were seeds
+// found by search, because no seed produced the run of 12s they turn on;
+// since #205 the roster scripts its dice and two goldens carry them.
 //
 // The set is asserted rather than logged so that a change in either
 // direction is a finding: a golden that stamps one of these is wrong, and a

@@ -55,7 +55,6 @@
     "assumed": true
   },
   "inputs": {
-    "seed": 4,
     "service": "Marines",
     "career": "serve",
     "skills": "advanced",

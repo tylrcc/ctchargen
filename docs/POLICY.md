@@ -5,14 +5,14 @@
 **Version 3.** Every record `--auto` writes carries it, in the `policy` field.
 
 Changing what any row below answers is a version bump, because it changes
-every character `--auto` has ever made from a given seed — and a referee
-holding two records from the same seed can otherwise see only that they
-differ, not why. `build` names the writer and moves for reasons that have
-nothing to do with the answers; this moves only when an answer does.
+every character `--auto` makes — and a referee reading a record can
+otherwise see only what was answered, not which table answered it. `build`
+names the writer and moves for reasons that have nothing to do with the
+answers; this moves only when an answer does.
 
-Adding a row for a choice point that did not exist is not a bump: no seed
-produced a different character under the old table, because the question was
-never asked. `docsgate` holds the number here to the constant in the code.
+Adding a row for a choice point that did not exist is not a bump: no record
+was answered differently under the old table, because the question was never
+asked. `docsgate` holds the number here to the constant in the code.
 
 `--auto` answers every question the procedure asks. This document is the
 whole of what it answers, one row per `Decider` method. The gate holds the
@@ -279,8 +279,8 @@ characters carry twenty-two Body Pistols and seventeen Daggers and nothing
 else (#34), though every name on both lists was offered. No strategy reached
 it, so no flag could change it either.
 
-The draw comes from the run's own dice, so the same seed still makes the same
-character. It is the only variation any strategy takes.
+The draw comes from the run's own dice, so a fixture that scripts its draws
+still walks the same path. It is the only variation any strategy takes.
 
 Repeat receipts take the same weapon again, which raises its level (p. 12:
 "Additional acquisitions of expertise in the same weapon increase the present

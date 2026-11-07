@@ -108,7 +108,7 @@ func (r reaching) Weapon(
 //
 // The narrowing was by static type alone, so vary.(chargen.Roller) gave a
 // decider Die and TwoDice back, and the dice it threw reached no event: a
-// different character from the same seed, recorded as an honest one (#136).
+// different character from the same dice, recorded as an honest one (#136).
 func TestADeciderCannotReachTheRollerThroughVary(t *testing.T) {
 	t.Parallel()
 

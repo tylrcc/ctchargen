@@ -59,7 +59,6 @@
     "fatal": true
   },
   "inputs": {
-    "seed": 52,
     "service": "Merchants",
     "career": "serve",
     "skills": "advanced",

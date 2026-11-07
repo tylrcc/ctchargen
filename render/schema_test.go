@@ -15,7 +15,7 @@ import (
 // docs/character.schema.json describes what this build writes, and CI is what
 // keeps it honest. It is not a promise to records already written: the PRD
 // rules out cross-version record compatibility, because a record is
-// regenerable from its seed and nothing in it is hand-written.
+// the only way back to its character, and nothing in it is hand-written.
 //
 // Every golden and both documented examples are validated here. A schema
 // nothing validates is a description that drifts away from the thing it

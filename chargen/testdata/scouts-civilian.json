@@ -22,7 +22,6 @@
     "cash": 0
   },
   "inputs": {
-    "seed": 6,
     "service": "Scouts",
     "career": "oneterm",
     "skills": "personal",

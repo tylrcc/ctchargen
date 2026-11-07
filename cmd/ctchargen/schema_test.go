@@ -84,29 +84,37 @@ func TestWhatTheCommandWritesMatchesTheSchema(t *testing.T) {
 	for name, tc := range map[string]struct {
 		args []string
 		in   string
+		dice func(*testing.T) source
 	}{
 		// The automatic path, which is what a batch member and most runs are.
 		"an automatic run": {
-			args: []string{cmdNew, flagAuto, flagSeed, "4", flagService, navy},
+			args: []string{cmdNew, flagAuto, flagService, navy},
 		},
 		// A name from the flag, which no golden carries.
 		"a named character": {
-			args: []string{cmdNew, flagAuto, flagSeed, "4", flagService, other, flagName, "Alexander Jamison"},
+			args: []string{cmdNew, flagAuto, flagService, other, flagName, "Alexander Jamison"},
 		},
 		// A death, whose record carries a departure the living do not.
 		"a character killed in service": {
-			args: []string{cmdNew, flagAuto, flagSeed, "5", flagService, other},
+			args: []string{cmdNew, flagAuto, flagService, other},
+			dice: otherKilled.roller,
 		},
 		// The guided path, whose choices are recorded as the player's.
 		"a guided run": {
-			args: []string{cmdNew, flagSeed, "7", flagService, other},
+			args: []string{cmdNew, flagService, other},
 			in:   strings.Repeat("1\n", 300),
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			out, _ := mustRun(t, tc.args, strings.NewReader(tc.in))
+			var dice source
+
+			if tc.dice != nil {
+				dice = tc.dice(t)
+			}
+
+			out, _ := mustRun(t, tc.args, strings.NewReader(tc.in), withDice(dice))
 
 			mustMatch(t, compiled, name, out)
 		})
@@ -119,7 +127,7 @@ func TestEveryBatchMemberMatchesTheSchema(t *testing.T) {
 
 	compiled := schema(t)
 
-	out, _ := mustRun(t, []string{cmdBatch, flagCount, "5", flagAuto, flagSeed, "145", flagService, merchants}, nil)
+	out, _ := mustRun(t, []string{cmdBatch, flagCount, "5", flagAuto, flagService, merchants}, nil)
 
 	lines := strings.Split(strings.TrimSpace(out), "\n")
 	if len(lines) != 5 {
@@ -143,7 +151,7 @@ func TestEveryBatchMemberMatchesTheSchema(t *testing.T) {
 func TestThisBuildWritesShapeOne(t *testing.T) {
 	t.Parallel()
 
-	out, _ := mustRun(t, []string{cmdNew, flagAuto, flagSeed, "4", flagService, navy}, nil)
+	out, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, navy}, nil)
 
 	// Into a field of the right type rather than a map, whose numbers are
 	// float64 and would compare against an untyped 1 for the wrong reason.

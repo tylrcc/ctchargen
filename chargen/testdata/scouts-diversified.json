@@ -73,7 +73,6 @@
     "assumed": true
   },
   "inputs": {
-    "seed": 4,
     "service": "Scouts",
     "career": "serve",
     "skills": "advanced",

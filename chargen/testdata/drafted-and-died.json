@@ -28,7 +28,6 @@
     "fatal": true
   },
   "inputs": {
-    "seed": 2,
     "service": "Navy",
     "career": "retire",
     "skills": "service",

@@ -13,18 +13,17 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-// batch generates many characters from one base seed.
+// batch generates many characters.
 //
 // It emits what it rolled. Death is an outcome and not an error, so a
 // character killed by a survival throw is written like anyone else and no
-// flag rerolls him.
-// --survivors does not reroll either: it passes over a dead character and
-// goes on to the next seed, so every character written is still the character
-// that seed makes. What changes is which seeds appear (#33).
+// flag rerolls him. --survivors does not reroll either: it passes over a dead
+// character and generates another, so every character written is one the
+// dice made. What changes is who fills a slot (#33).
 //
 // It always says what it did. A run that wrote seventy-four corpses and
 // printed nothing was the trap the report named.
-func batch(args []string, out, asking io.Writer) error {
+func batch(args []string, out, asking io.Writer, dice source) error {
 	flags := declareBatchFlags()
 
 	err := flags.set.Parse(args)
@@ -56,7 +55,7 @@ func batch(args []string, out, asking io.Writer) error {
 		return err
 	}
 
-	return write(out, asking, base, policy, *flags.count, *flags.output, *flags.force, *flags.survivors)
+	return write(out, asking, base, policy, *flags.count, *flags.output, *flags.force, *flags.survivors, dice)
 }
 
 // batchFlagSet is batch's flag set, declared apart from running the command so
@@ -75,7 +74,6 @@ func declareBatchFlags() batchFlagSet {
 
 	return batchFlagSet{
 		characterFlags: declareCharacterFlags(set, characterHelp{
-			seed:    "the base seed, drawn if absent; member i is generated from it plus i",
 			service: "attempt every enlistment in this service: ",
 			name:    "the name to give every character",
 			career:  "the career `strategy`: ",
@@ -95,7 +93,7 @@ func declareBatchFlags() batchFlagSet {
 // write sends the batch where it was asked for, and says what it did either
 // way. A directory takes one file per character; anything else is JSONL.
 func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
-	count int, path string, force, survivors bool,
+	count int, path string, force, survivors bool, dice source,
 ) error {
 	var (
 		done tally
@@ -103,9 +101,9 @@ func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
 	)
 
 	if namesDirectory(path) {
-		done, err = intoDirectory(base, policy, count, path, force, survivors)
+		done, err = intoDirectory(base, policy, count, path, force, survivors, dice)
 	} else {
-		done, err = intoStream(out, base, policy, count, path, force, survivors)
+		done, err = intoStream(out, base, policy, count, path, force, survivors, dice)
 	}
 
 	// A run that stopped partway has left records on disk, and the tally is
@@ -126,34 +124,14 @@ func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
 	return done.report(asking)
 }
 
-// memberSeed is the seed of batch member i.
+// member generates one member of the batch, from dice of its own.
 //
-// Members number from zero, so `batch --count 1 --seed N` produces exactly
-// what `new --seed N` produces, and every seed a referee can type is
-// reachable as a member. The addition wraps, because a base near the top of
-// the range is a seed like any other and must not be an error.
-//
-// The 2^53 bound is not applied here. It covers only a seed the tool draws
-// for itself; an explicit seed above it, and a derived seed that passes it
-// because the base landed within --count of the bound, are written to the
-// record as given rather than silently re-bounded.
-func memberSeed(base uint64, i int) uint64 { return base + uint64(i) } //nolint:gosec // i is a count
-
-// member generates one member of the batch, carrying its own derived seed -
-// not the base - so that its record regenerates it.
-//
-// A failure names the seed and not the position i, for the reason writingTo
-// does: under --survivors the two differ, i is an index into seeds drawn
-// rather than into records written, and the seed is the one a referee can
-// hand back to `new`.
-func member(base chargen.Inputs, policy chargen.Policy, i int) (*chargen.Character, error) {
-	inputs := base
-
-	inputs.Seed = memberSeed(base.Seed, i)
-
-	character, err := chargen.Generate(inputs, policy)
+// A failure names the attempt, which under --survivors counts the dead the
+// run passed over as well as the living it wrote.
+func member(base chargen.Inputs, policy chargen.Policy, i int, dice source) (*chargen.Character, error) {
+	character, err := chargen.Generate(base, policy, dice.options()...)
 	if err != nil {
-		return nil, fmt.Errorf("seed %d: %w", inputs.Seed, err)
+		return nil, fmt.Errorf("attempt %d: %w", i+1, err)
 	}
 
 	stamp(character)
@@ -203,14 +181,14 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 	return nil
 }
 
-// survivorAttempts bounds how many seeds --survivors draws per character
+// survivorAttempts bounds how many characters --survivors generates per one
 // asked for. It is a parameter of eachMember rather than read from there, so
 // that a test can reach the bound without needing a hundred deaths per
 // character to do it.
 //
 // It bounds a loop that would otherwise have none, which is the shape of
 // defect #54 names elsewhere. The referee who reported #33 measured 74 dead
-// in 100 under the default strategy - about four seeds a survivor - so a
+// in 100 under the default strategy - about four generated a survivor - so a
 // hundred is a margin of twenty-five over the worst case anyone has seen, and
 // reaching it means something is wrong rather than unlucky.
 const survivorAttempts = 100
@@ -219,12 +197,11 @@ const survivorAttempts = 100
 // take with its one-based position among them, and reports what it did.
 //
 // Without --survivors every member is written, dead or alive. With it a dead
-// character is passed over and the next seed tried - so a written member is
-// still exactly the character his own seed makes, and `new --seed <that>`
-// brings him back. What changes is which seeds appear, not what any of them
-// means (#33).
+// character is passed over and another generated, so a written member is
+// still exactly what the dice made. What changes is who fills a slot, not
+// what any member means (#33).
 func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors bool,
-	attempts int, take func(index int, character *chargen.Character) error,
+	attempts int, dice source, take func(index int, character *chargen.Character) error,
 ) (tally, error) {
 	var done tally
 
@@ -235,12 +212,12 @@ func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors
 			// reaching it means something is wrong rather than unlucky,
 			// and that is a run-time condition and not a misuse.
 			return done, fmt.Errorf(
-				"%w: --survivors drew %d seeds for %d living characters and found %d",
+				"%w: --survivors generated %d characters for %d living and found %d",
 				errSearch, i, count, done.written,
 			)
 		}
 
-		character, err := member(base, policy, i)
+		character, err := member(base, policy, i, dice)
 		if err != nil {
 			return done, err
 		}
@@ -275,29 +252,29 @@ func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors
 // leaving a file half-written and not clobbering one on a retry, and there is
 // no file to clobber on standard output (#64).
 func intoStream(out io.Writer, base chargen.Inputs, policy chargen.Policy,
-	count int, path string, force, survivors bool,
+	count int, path string, force, survivors bool, dice source,
 ) (tally, error) {
 	if path == "" {
-		return eachMember(base, policy, count, survivors, survivorAttempts, writingTo(out))
+		return eachMember(base, policy, count, survivors, survivorAttempts, dice, writingTo(out))
 	}
 
-	return buffered(base, policy, count, path, force, survivors)
+	return buffered(base, policy, count, path, force, survivors, dice)
 }
 
 // writingTo is the take a streamed run uses: encode the member and write it.
 //
-// A failure names the member by its seed, because a streamed member has no
-// file name and the seed is what its record carries.
+// A failure names the member by its position among those written, which is
+// the one name a streamed member has.
 func writingTo(out io.Writer) func(int, *chargen.Character) error {
-	return func(_ int, character *chargen.Character) error {
+	return func(index int, character *chargen.Character) error {
 		encoded, err := render.JSONLine(character)
 		if err != nil {
-			return fmt.Errorf("seed %d: %w", character.Inputs.Seed, err)
+			return fmt.Errorf("member %d: %w", index, err)
 		}
 
 		_, err = out.Write(encoded)
 		if err != nil {
-			return fmt.Errorf("seed %d: %w", character.Inputs.Seed, err)
+			return fmt.Errorf("member %d: %w", index, err)
 		}
 
 		return nil
@@ -311,11 +288,11 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 // half-read. What differs is only where it writes and when the file is
 // opened, which is the whole of the distinction #64 drew.
 func buffered(base chargen.Inputs, policy chargen.Policy,
-	count int, path string, force, survivors bool,
+	count int, path string, force, survivors bool, dice source,
 ) (tally, error) {
 	var lines strings.Builder
 
-	done, err := eachMember(base, policy, count, survivors, survivorAttempts, writingTo(&lines))
+	done, err := eachMember(base, policy, count, survivors, survivorAttempts, dice, writingTo(&lines))
 	if err != nil {
 		return done, err
 	}
@@ -342,7 +319,7 @@ func buffered(base chargen.Inputs, policy chargen.Policy,
 // that a run never silently replaces a file, not that a directory is written
 // atomically.
 func intoDirectory(base chargen.Inputs, policy chargen.Policy,
-	count int, dir string, force, survivors bool,
+	count int, dir string, force, survivors bool, dice source,
 ) (tally, error) {
 	err := os.MkdirAll(dir, recordDirMode)
 	if err != nil {
@@ -356,11 +333,11 @@ func intoDirectory(base chargen.Inputs, policy chargen.Policy,
 		}
 	}
 
-	return eachMember(base, policy, count, survivors, survivorAttempts,
+	return eachMember(base, policy, count, survivors, survivorAttempts, dice,
 		func(index int, character *chargen.Character) error {
 			encoded, err := render.JSON(character)
 			if err != nil {
-				return fmt.Errorf("seed %d: %w", character.Inputs.Seed, err)
+				return fmt.Errorf("member %d: %w", index, err)
 			}
 
 			where, err := openDestination(nil, memberPath(dir, index, count), force)
@@ -378,7 +355,7 @@ func intoDirectory(base chargen.Inputs, policy chargen.Policy,
 // generate a character even by accident. That signature is the guarantee:
 // checking for collisions costs nothing but arithmetic (#99), with or without
 // --survivors, because a member is named by its position among the files
-// written and not by which seed survived to fill it.
+// written and not by who survived to fill it.
 func plannedPaths(count int, dir string) []string {
 	paths := make([]string, 0, count)
 	for i := range count {

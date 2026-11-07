@@ -126,22 +126,27 @@ in one line: "Being printed is not the test; indexing a printed table is."
 If you find yourself moving a number, this is the rule you are arguing with. A
 number on the wrong side of it is a finding, not a preference.
 
-### 4. The dice stream is the meaning of a seed
+### 4. The record is the only way back to a character
 
-`dice` depends on nothing and judges nothing. The die is `IntN(6) + 1`; a 2D throw
-is two of those in sequence, first then second; `Among(n)` is `IntN(n)` from the
-same stream, used only where the book hands a choice to a player and names no basis
-for it. `Stream.Drawn()` exists so a test can pin that **a throw the procedure does
-not make consumes nothing**.
+`dice` depends on nothing and judges nothing, and it is not seeded (ADR 0001). The
+die is one of six faces; a 2D throw is two of those in sequence, first then second;
+`Among(n)` is one index in n, used only where the book hands a choice to a player
+and names no basis for it. No run can be repeated: what a referee keeps is the
+record, which logs every die of every roll and throw, and every draw as the choice
+it produced. Every golden is generated from a fixture that scripts its dice, and
+the fixture is strict: **a throw the procedure does not make consumes nothing**,
+and a throw it makes beyond the script fails the test naming it.
 
 Three corollaries you must hold:
 
-- Changing the consumption order changes every seeded character. That is an
-  ordinary change — regenerate the goldens and read the diff — but never an
-  accidental one.
+- Changing the consumption order changes which path every fixture walks. That is
+  an ordinary change — the fixture that felt it fails naming the throw that moved,
+  and its dice are re-scripted from a record that walks the new path — but never
+  an accidental one.
 - A `Decider` gets `Vary`, not `Roller`. A decider handed the whole roller could
-  throw dice the procedure never makes, moving a seed's meaning somewhere no page
-  governs. `Vary` is `interface{ Among(n int) int }` and that is the only variation
+  throw dice the procedure never makes, and a die thrown there reaches no event,
+  so the record would stop carrying every die. `Vary` is
+  `interface{ Among(n int) int }` and that is the only variation
   a decider may take. The narrowing is the value's and not only the parameter's:
   the one site that hands a decider a `Vary` (`chargen/enlist.go`, `applyResult`'s
   `WeaponPick`) passes `varyOnly{a.run.roll}`, a wrapper with nothing on it but
@@ -356,7 +361,7 @@ carries.
 
 The two output channels are separated deliberately: `out` carries the record, the
 sheet, the transcript; `asking` carries everything the tool says to the person
-driving it, so that `ctchargen new --seed 7 | jq` pipes a record and not a
+driving it, so that `ctchargen new | jq` pipes a record and not a
 conversation. `batch`'s closing tally goes to `asking` for the same reason — "a
 summary on standard output would be a line of JSONL that is not JSON." A batch
 that stops partway still says what it wrote: the tally goes to `asking`, worded
@@ -413,8 +418,8 @@ same visual reading pass. Retyping the second copy from the first checks nothing
 **Concurrency.** `rules.Load()` is `sync.OnceValues` over one `*Rules` shared
 process-wide, and that value now hands out nothing that can write to it, so the
 ruleset is no longer the obstacle. Generation is single-threaded everywhere today;
-`batch` is a sequential loop, and each member's seed is a function of its index
-(`memberSeed`). I did not audit the rest of the tree for shared state, so I claim
+`batch` is a sequential loop, and each member rolls from a stream of its own. I
+did not audit the rest of the tree for shared state, so I claim
 only that the ruleset would not stand in the way of parallelising it.
 
 **The routine extensions, after `v1.0.0`.** The tag freezes the exported Go API

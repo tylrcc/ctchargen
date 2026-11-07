@@ -46,33 +46,37 @@ ctchargen new --help      # one command's flags, with their values and defaults
 
 ## Using it
 
-Four commands. `new` generates one character; `batch` generates many from one
-base seed; `render` reads a record back as a sheet or as the transcript; and
-`version` writes the build.
+Four commands. `new` generates one character; `batch` generates many; `render`
+reads a record back as a sheet or as the transcript; and `version` writes the
+build.
 
 ```sh
-ctchargen new --auto --seed 145 --service merchants --sheet
+ctchargen new --auto --service merchants --sheet
 ctchargen new --auto --name "Alexander Jamison" -o jamison.json
 ctchargen new --auto --history                  # the transcript, throw by throw
-ctchargen new --seed 145 --sheet                # asks at every choice point
+ctchargen new --sheet                           # asks at every choice point
 
-ctchargen batch --count 20 --auto --seed 145 --service merchants
-ctchargen batch --count 20 --auto --seed 145 --service merchants -o characters/
+ctchargen batch --count 20 --auto --service merchants
+ctchargen batch --count 20 --auto --service merchants -o characters/
 
 ctchargen render characters/01.json
 ctchargen render --history characters/01.json
 ```
 
+**The dice are not seeded, and the record is the only way back to a
+character.** Every run rolls fresh dice; nothing brings a character back but
+the JSON record, which carries every die thrown and every choice made, and
+which every sheet ends by telling you to keep. `render` reads one back.
+
 Batch members are named by their position, `01.json` through `20.json`, padded
-to the width of the batch. The first of that batch is the character the first
-`new` above generated, and `render` shows the same sheet.
+to the width of the batch.
 
 **`batch` with no `-o` writes NDJSON to standard output**, one record to the
 line, which is the shape that pipes — and it streams, so the first record
 reaches the pipe before the run finishes rather than after:
 
 ```sh
-ctchargen batch --count 100 --auto --seed 145 | jq -r '[.upp, .service, .terms] | @tsv'
+ctchargen batch --count 100 --auto | jq -r '[.upp, .service, .terms] | @tsv'
 ```
 
 `batch` requires `--auto`, because it has nobody to ask.
@@ -80,39 +84,32 @@ ctchargen batch --count 100 --auto --seed 145 | jq -r '[.upp, .service, .terms] 
 **A batch says what it did**, on standard error so it cannot corrupt the JSONL:
 
 ```sh
-$ ctchargen batch --count 100 --auto --seed 1000 --service scouts > roster.jsonl
+$ ctchargen batch --count 100 --auto --service scouts > roster.jsonl
 100 written, 76 died
 ```
 
 That is the rules working — the default `serve` strategy re-enlists until the
 service throws him out, so the survival throw eventually gets most of them.
 When what you want is twenty scouts for the starport rather than a hundred
-outcomes, **`--survivors`** passes over the dead and goes on to the next seed:
+outcomes, **`--survivors`** passes over the dead and generates another:
 
 ```sh
-$ ctchargen batch --count 20 --auto --seed 1000 --service scouts --survivors > roster.jsonl
+$ ctchargen batch --count 20 --auto --service scouts --survivors > roster.jsonl
 20 written, 68 passed over for dying
 ```
 
-It does not reroll anybody. Each character written is still exactly the
-character his own seed makes, so `new --seed <that>` brings him back — the
-seeds are simply no longer consecutive.
+It does not reroll anybody: a dead character is written nowhere and another is
+generated in his place, so every record in the roster is one the dice made.
 
 **A session that stops before the end is lost.** A half-built character is
 not a record, so nothing is written; the tool says what was answered and that
 it was lost:
 
 ```sh
-$ ctchargen new --seed 7 --service other
+$ ctchargen new --service other
 ...
 Answered 1, 2, 1; the session is lost and nothing was written.
 ```
-
-`--answers 1,2,1` gives a list of answers before asking the next question as
-normal. An answer is a number in the list a question offered, so the run has
-to put the same questions: a list longer than the run has questions for is
-refused rather than half-applied, and `--answers` cannot be given with
-`--auto`, which answers every question itself.
 
 **Without `--service` the tool picks one**, and with `--auto` that pick is the
 policy's rather than yours. The sheet says so on its headline, and so does the

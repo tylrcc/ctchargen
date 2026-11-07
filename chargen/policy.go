@@ -32,13 +32,14 @@ type Policy struct {
 // build that wrote the file. Those two move for reasons that have nothing to
 // do with what --auto answers; this moves only when an answer does.
 //
-// It is what a referee holding two records from one seed reads to tell why
-// they differ. Without it he can see only that they do, and `build` cannot
-// tell him - it changes when a comment changes.
+// It is what a referee reading a record consults to tell which decision
+// table answered it. Without it he can see only what was answered, and
+// `build` cannot tell him which table did - it changes when a comment
+// changes.
 //
 // Bumping it is a decision recorded in POLICY.md, and docsgate holds the two
 // to each other. Adding a row for a question that was never asked is not a
-// bump: no seed made a different character under the old table.
+// bump: no record was answered differently under the old table.
 // Version 2 draws the weapon rather than taking the first name; version 3
 // designates the skills table he has trained on least (#34).
 const PolicyVersion = 3

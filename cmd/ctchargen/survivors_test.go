@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"reflect"
 	"slices"
 	"strconv"
 	"strings"
@@ -41,7 +40,7 @@ func TestABatchSaysHowManyDied(t *testing.T) {
 	const wanted = 100
 
 	out, asking := mustRun(t, []string{
-		cmdBatch, flagCount, strconv.Itoa(wanted), flagAuto, flagSeed, "1000", flagService, scouts,
+		cmdBatch, flagCount, strconv.Itoa(wanted), flagAuto, flagService, scouts,
 	}, nil)
 
 	written := livingCount(t, out)
@@ -67,7 +66,7 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 	const wanted = 20
 
 	out, asking := mustRun(t, []string{
-		cmdBatch, flagCount, "20", flagAuto, flagSeed, "1000", flagService, scouts,
+		cmdBatch, flagCount, "20", flagAuto, flagService, scouts,
 		flagSurvivors,
 	}, nil)
 
@@ -85,44 +84,9 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 	}
 }
 
-// A survivor is still the character his own seed makes.
-//
-// This is the whole of what --survivors had to answer. The roster is no
-// longer members 0..N-1, it is whichever of 0..M lived - so the seeds written
-// are not contiguous, and every one of them has to bring its character back
-// on its own. A flag that rerolled, or that renumbered, would break that.
-func TestASurvivorRegeneratesFromItsOwnSeed(t *testing.T) {
-	t.Parallel()
-
-	batched, _ := mustRun(t, []string{
-		cmdBatch, flagCount, "5", flagAuto, flagSeed, "1000", flagService, scouts, flagSurvivors,
-	}, nil)
-
-	lines := strings.Split(strings.TrimSpace(batched), "\n")
-
-	seeds := seedsWritten(t, batched)
-	if len(seeds) != len(lines) || len(seeds) < 2 {
-		t.Fatalf("%d members written", len(seeds))
-	}
-
-	for i, line := range lines {
-		alone, _ := mustRun(t, []string{
-			cmdNew, flagAuto, flagSeed, strconv.FormatUint(seeds[i], 10), flagService, scouts,
-		}, nil)
-
-		// Compared as records and not as text: batch writes JSONL and `new`
-		// writes indented JSON, so the bytes differ by formatting alone.
-		// The first version of this compared the strings and failed, which
-		// was the test being wrong about what it meant, not the tool.
-		if !sameRecord(t, line, alone) {
-			t.Errorf("seed %d does not regenerate the member the batch wrote", seeds[i])
-		}
-	}
-}
-
 // --survivors gives up rather than drawing forever.
 //
-// The bound is a hundred seeds per character asked for, which no measured run
+// The bound is a hundred attempts per character asked for, which no measured run
 // approaches. It is reachable here because eachMember takes the bound rather
 // than reading the constant, so a test can ask for the living twenty times in
 // twenty draws from a service that kills three in four.
@@ -130,11 +94,11 @@ func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	t.Parallel()
 
 	base := chargen.Inputs{
-		Seed: 1000, Service: traveller.Scouts, Forced: true,
+		Service: traveller.Scouts, Forced: true,
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 
-	_, err := eachMember(base, chargen.DefaultPolicy(), 20, true, 1,
+	_, err := eachMember(base, chargen.DefaultPolicy(), 20, true, 1, scoutKilled.roller(t),
 		func(int, *chargen.Character) error { return nil })
 	if err == nil {
 		t.Fatal("a bounded search reported success without finding the living")
@@ -176,26 +140,6 @@ func livingCount(t *testing.T, jsonl string) census {
 	return found
 }
 
-// sameRecord reports two encodings of the same record, whatever their
-// whitespace.
-func sameRecord(t *testing.T, a, b string) bool {
-	t.Helper()
-
-	var first, second any
-
-	err := json.Unmarshal([]byte(a), &first)
-	if err != nil {
-		t.Fatalf("reading a record: %v", err)
-	}
-
-	err = json.Unmarshal([]byte(b), &second)
-	if err != nil {
-		t.Fatalf("reading a record: %v", err)
-	}
-
-	return reflect.DeepEqual(first, second)
-}
-
 // A summary nobody received is not a summary that was given.
 //
 // The whole of #33 is that a run which said nothing was a trap. Reporting
@@ -207,7 +151,7 @@ func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 	var out strings.Builder
 
 	err := run([]string{
-		cmdBatch, flagCount, "2", flagAuto, flagSeed, "7", flagService, other,
+		cmdBatch, flagCount, "2", flagAuto, flagService, other,
 	}, nil, &out, brokenPipe{})
 	if err == nil {
 		t.Fatal("a summary nobody received was reported as written")
@@ -222,7 +166,7 @@ func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 //
 // --survivors rests entirely on this classification, and until now nothing
 // asserted it directly: the flag was checked by counting fatal records in a
-// roster, which passes just as well if a case is misread in a way the seeds
+// roster, which passes just as well if a case is misread in a way the dice
 // happen not to reach. Fold makes a new case a compile error here; this makes
 // a wrong answer for an existing one a test failure.
 func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
@@ -248,7 +192,7 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 // A --survivors batch is refused over a member it would write, and not over a
 // file beyond the batch.
 //
-// Members are named by index, so which seeds survive does not change which
+// Members are named by index, so who survives does not change which
 // files the batch writes: 1 through count, whoever fills them. The check can
 // key on those without generating anyone, and a file one past the count is
 // nobody's to refuse over or to touch.
@@ -283,7 +227,7 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 
 		err = run([]string{
 			cmdBatch, flagCount, strconv.Itoa(wanted), flagAuto,
-			flagSeed, strconv.FormatUint(base, 10), flagService, scouts,
+			flagService, scouts,
 			flagSurvivors, flagOutput, dir,
 		}, nil, &out, io.Discard)
 
@@ -291,7 +235,7 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 		case tc.refuses && err == nil:
 			t.Errorf("%s: the batch replaced a member that was already there", name)
 		case !tc.refuses && err != nil:
-			t.Errorf("%s: the batch was refused over a seed it never writes: %v", name, err)
+			t.Errorf("%s: the batch was refused over a name it never writes: %v", name, err)
 		}
 
 		found, err := filepath.Glob(filepath.Join(dir, "*.json"))
@@ -315,55 +259,34 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 	}
 }
 
-// seedsWritten reads the seed off every member of a JSONL batch.
-func seedsWritten(t *testing.T, jsonl string) []uint64 {
-	t.Helper()
-
-	seeds := []uint64{}
-
-	for line := range strings.SplitSeq(strings.TrimSpace(jsonl), "\n") {
-		var member struct {
-			Inputs struct {
-				Seed uint64 `json:"seed"`
-			} `json:"inputs"`
-		}
-
-		err := json.Unmarshal([]byte(line), &member)
-		if err != nil {
-			t.Fatalf("reading a member: %v", err)
-		}
-
-		seeds = append(seeds, member.Inputs.Seed)
-	}
-
-	return seeds
-}
-
 // A record names the policy that answered it, and only then.
 //
-// The field exists so a referee holding two records from one seed can tell
-// why they differ. On a record he walked by hand the policy answered nothing,
+// The field exists so a referee reading a record can tell which table
+// answered it. On a record he walked by hand the policy answered nothing,
 // and naming a decision table that decided none of it is a claim the record
 // cannot support - the same reason a civilian carries no service and no
 // departure.
 func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 	t.Parallel()
 
+	// Each walks a scripted path that lives to be asked: random dice can kill
+	// a character in his first survival throw, before any choice is put.
 	for name, tc := range map[string]struct {
 		args  []string
 		in    io.Reader
+		walk  walk
 		wants bool
 	}{
 		"the policy answered": {
-			[]string{cmdNew, flagAuto, flagSeed, "7", flagService, other}, nil, true,
+			[]string{cmdNew, flagAuto, flagService, other}, nil, otherByPolicy, true,
 		},
 		"the player answered": {
-			[]string{cmdNew, flagSeed, "7", flagService, other}, answers("1", 300), false,
+			[]string{cmdNew, flagService, other}, answers("1", 300), otherWalked, false,
 		},
 	} {
 		var out strings.Builder
 
-		err := run(tc.args, tc.in, &out, io.Discard)
+		err := run(tc.args, tc.in, &out, io.Discard, withDice(tc.walk.roller(t)))
 		if err != nil {
 			t.Errorf("%s: %v", name, err)
 
@@ -430,7 +353,7 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "6", flagAuto, flagSeed, "7", flagService, other,
+		cmdBatch, flagCount, "6", flagAuto, flagService, other,
 		flagOutput, dir, flagForce,
 	}, nil, io.Discard, io.Discard)
 	if err == nil {

@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `--seed` and `--answers` are gone (#209). The dice are not seeded, a record
+  carries no `inputs.seed`, and no character can be brought back by running
+  the tool again: the record, which logs every die, is the only way back (ADR
+  0001). `batch` generates each member from dice of its own, and a member that
+  fails to write is named by its position rather than a seed.
 - Every golden is generated from its own fixture, a scripted list of dice and
   draws, rather than from a seed found by search (#205). The roster gains two
   goldens for the readings only a run of 12s reaches, E003 and E014.

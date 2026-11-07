@@ -43,20 +43,51 @@ func exitStatus(err error) int {
 	return 1
 }
 
+// A source is where a run's dice come from, one roller per character. Nil is
+// the engine's own: an unseeded stream, so no two characters are alike and
+// none can be brought back (ADR 0001). A test hands in a scripted one through
+// withDice, so that a run walks a known path; nothing else does.
+type source func() chargen.Roller
+
+// options is what a source adds to a generation: nothing, or a roller.
+func (s source) options() []chargen.Option {
+	if s == nil {
+		return nil
+	}
+
+	return []chargen.Option{chargen.WithRoller(s())}
+}
+
+// An option is a setting a caller of run may change. There is one.
+type option func(*settings)
+
+type settings struct{ dice source }
+
+// withDice rolls every character of the run from the given source.
+func withDice(dice source) option {
+	return func(s *settings) { s.dice = dice }
+}
+
 // run takes the two output channels apart. `out` is the data channel - the
 // record, the sheet, the transcript - and `asking` is where the tool talks to
 // the person driving it. Interactive mode writes its questions to the second,
-// so that `ctchargen new --seed 7 | jq` pipes a record and not a conversation.
-func run(args []string, in io.Reader, out, asking io.Writer) error {
+// so that `ctchargen new | jq` pipes a record and not a conversation.
+func run(args []string, in io.Reader, out, asking io.Writer, options ...option) error {
+	var chosen settings
+
+	for _, apply := range options {
+		apply(&chosen)
+	}
+
 	if len(args) == 0 {
 		return fmt.Errorf("%w: ctchargen %s; run `ctchargen --help`", errUsage, commandList)
 	}
 
 	switch args[0] {
 	case "new":
-		return newCharacter(args[1:], in, out, asking)
+		return newCharacter(args[1:], in, out, asking, chosen.dice)
 	case "batch":
-		return batch(args[1:], out, asking)
+		return batch(args[1:], out, asking, chosen.dice)
 	case "render":
 		return renderRecord(args[1:], out)
 	case "version":

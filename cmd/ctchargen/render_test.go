@@ -15,13 +15,15 @@ import (
 // findings against this change lived in the branches no test reached.
 
 // writeRecord generates a character into a temporary file and returns its
-// path, which is what render is given.
+// path, which is what render is given. It walks otherByPolicy, so a test
+// that generates the same character again gets the same one.
 func writeRecord(t *testing.T) string {
 	t.Helper()
 
 	path := filepath.Join(t.TempDir(), "character.json")
 
-	mustRun(t, []string{cmdNew, flagAuto, flagSeed, "145", flagService, merchants, flagOutput, path}, nil)
+	mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagOutput, path}, nil,
+		withDice(otherByPolicy.roller(t)))
 
 	return path
 }
@@ -32,7 +34,7 @@ func TestRenderReadsARecordBack(t *testing.T) {
 
 	path := writeRecord(t)
 
-	// Read from the record rather than typed here. The UPP a seed makes is
+	// Read from the record rather than typed here. The UPP a walk makes is
 	// not a fact about rendering, and #34 moved it - a hand-typed one is a
 	// golden kept somewhere goldens are not regenerated.
 	for name, tc := range map[string]struct {
@@ -56,8 +58,10 @@ func TestRenderReadsARecordBack(t *testing.T) {
 		}
 	}
 
-	// And the sheet render matches what generating it produced.
-	direct, _ := mustRun(t, []string{cmdNew, flagAuto, flagSeed, "145", flagService, merchants, flagSheet}, nil)
+	// And the sheet render matches what generating it produced, which is the
+	// same walk generated again.
+	direct, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagSheet}, nil,
+		withDice(otherByPolicy.roller(t)))
 
 	viaFile, _ := mustRun(t, []string{cmdRender, path}, nil)
 
@@ -134,7 +138,7 @@ func TestOutputRefusesAPathItCannotOpen(t *testing.T) {
 
 	unwritable := filepath.Join(t.TempDir(), "no-such-directory", "character.json")
 
-	err := run([]string{cmdNew, flagAuto, flagSeed, "1", flagService, other, flagOutput, unwritable},
+	err := run([]string{cmdNew, flagAuto, flagService, other, flagOutput, unwritable},
 		nil, io.Discard, io.Discard)
 	if err == nil {
 		t.Error("new wrote to a path whose directory does not exist")

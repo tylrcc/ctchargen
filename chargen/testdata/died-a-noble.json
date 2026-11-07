@@ -50,7 +50,6 @@
     "assumed": false
   },
   "inputs": {
-    "seed": 39,
     "service": "Navy",
     "career": "serve",
     "skills": "advanced",

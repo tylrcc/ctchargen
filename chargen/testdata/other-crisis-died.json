@@ -42,7 +42,6 @@
     "characteristic": "Dexterity"
   },
   "inputs": {
-    "seed": 106,
     "service": "Other",
     "career": "serve",
     "skills": "advanced",

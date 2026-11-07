@@ -1,10 +1,8 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
-	"math"
 	"os"
 	"path/filepath"
 	"slices"
@@ -13,93 +11,10 @@ import (
 	"testing"
 )
 
-// The seed arithmetic, which is what a batch means.
-
 const (
 	cmdBatch  = "batch"
 	flagCount = "--count"
 )
-
-// P. of the PRD's Determinism section: "Members number from zero, so
-// `batch --count 1 --seed N` produces exactly what `new --seed N` produces,
-// and every seed a referee can type is reachable as a member."
-//
-// Asserted rather than assumed: it is the one property that makes a batch
-// member no different from a character generated on its own.
-func TestOneMemberIsTheSameCharacterAsNew(t *testing.T) {
-	t.Parallel()
-
-	const seed = "42"
-
-	alone, _ := mustRun(t, []string{cmdNew, flagAuto, flagSeed, seed, flagService, other}, nil)
-
-	batched, _ := mustRun(t, []string{cmdBatch, flagCount, "1", flagAuto, flagSeed, seed, flagService, other}, nil)
-
-	if compact(t, alone) != compact(t, strings.TrimSpace(batched)) {
-		t.Error("batch --count 1 --seed 42 is not the character new --seed 42 produces")
-	}
-}
-
-// Each member carries its own derived seed, not the base, so that its record
-// regenerates it.
-func TestEachMemberCarriesItsOwnSeed(t *testing.T) {
-	t.Parallel()
-
-	const base = 1000
-
-	members := generateBatch(t, strconv.Itoa(base), 5)
-
-	for i, member := range members {
-		want := uint64(base + i)
-		if member.Inputs.Seed != want {
-			t.Errorf("member %d carries seed %d, want %d", i, member.Inputs.Seed, want)
-		}
-	}
-
-	// Regenerating a member from its own recorded seed reproduces it.
-	again, _ := mustRun(t, []string{
-		cmdNew, flagAuto, flagSeed, strconv.FormatUint(members[3].Inputs.Seed, 10), flagService, other,
-	}, nil)
-
-	var reproduced batchMember
-
-	err := json.Unmarshal([]byte(again), &reproduced)
-	if err != nil {
-		t.Fatalf("reading the regenerated member: %v", err)
-	}
-
-	if reproduced.UPP != members[3].UPP {
-		t.Errorf("member 3 regenerated as %s, want %s", reproduced.UPP, members[3].UPP)
-	}
-}
-
-// "an explicit --seed above [2^53], and a derived base + i that passes it
-// because the base landed within --count of the bound, are both written to
-// the record as given, not silently re-bounded."
-func TestAnExplicitSeedIsNeverReBounded(t *testing.T) {
-	t.Parallel()
-
-	const bound = uint64(1)<<53 - 1
-
-	base := bound - 1
-	members := generateBatch(t, strconv.FormatUint(base, 10), 3)
-
-	for i, member := range members {
-		want := base + uint64(i)
-		if member.Inputs.Seed != want {
-			t.Errorf("member %d carries seed %d, want %d: a derived seed past the bound is written as given",
-				i, member.Inputs.Seed, want)
-		}
-	}
-
-	// And the addition wraps rather than failing: a base at the very top of
-	// the range is a seed like any other.
-	wrapped := generateBatch(t, strconv.FormatUint(math.MaxUint64, 10), 2)
-	if wrapped[1].Inputs.Seed != 0 {
-		t.Errorf("the member after the largest seed is %d, want 0: the addition wraps",
-			wrapped[1].Inputs.Seed)
-	}
-}
 
 // batch writes what it rolled: the dead are written like anyone else.
 func TestBatchRefusesWithoutAuto(t *testing.T) {
@@ -124,7 +39,7 @@ func TestBatchIntoADirectory(t *testing.T) {
 	dir := t.TempDir()
 
 	mustRun(t, []string{
-		cmdBatch, flagCount, "3", flagAuto, flagSeed, "7", flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir,
 	}, nil)
 
 	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
@@ -138,73 +53,18 @@ func TestBatchIntoADirectory(t *testing.T) {
 
 	// A second run refuses to replace them, and --force replaces them.
 	err = run([]string{
-		cmdBatch, flagCount, "3", flagAuto, flagSeed, "7", flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir,
 	}, nil, io.Discard, io.Discard)
 	if err == nil {
 		t.Error("a second batch overwrote the first without --force")
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "3", flagAuto, flagSeed, "7", flagService, other, flagOutput, dir, flagForce,
+		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir, flagForce,
 	}, nil, io.Discard, io.Discard)
 	if err != nil {
 		t.Errorf("--force did not replace the members: %v", err)
 	}
-}
-
-// batchMember is as much of a record as these tests read.
-type batchMember struct {
-	UPP    string `json:"upp"`
-	Inputs struct {
-		Seed uint64 `json:"seed"`
-	} `json:"inputs"`
-}
-
-func generateBatch(t *testing.T, seed string, count int) []batchMember {
-	t.Helper()
-
-	out, _ := mustRun(t, []string{
-		cmdBatch, flagCount, strconv.Itoa(count), flagAuto, flagSeed, seed, flagService, other,
-	}, nil)
-
-	var members []batchMember
-
-	for line := range strings.SplitSeq(strings.TrimSpace(out), "\n") {
-		var m batchMember
-
-		err := json.Unmarshal([]byte(line), &m)
-		if err != nil {
-			t.Fatalf("reading a member: %v", err)
-		}
-
-		members = append(members, m)
-	}
-
-	if len(members) != count {
-		t.Fatalf("read %d members, want %d", len(members), count)
-	}
-
-	return members
-}
-
-// compact removes the formatting difference between an indented record and a
-// JSONL line, which is the only way the two are allowed to differ.
-func compact(t *testing.T, text string) string {
-	t.Helper()
-
-	var record any
-
-	err := json.Unmarshal([]byte(text), &record)
-	if err != nil {
-		t.Fatalf("reading a record: %v", err)
-	}
-
-	encoded, err := json.Marshal(record)
-	if err != nil {
-		t.Fatalf("re-encoding a record: %v", err)
-	}
-
-	return string(encoded)
 }
 
 // `-o dir/` names a directory that need not already exist. Without the
@@ -217,7 +77,7 @@ func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "characters") + string(filepath.Separator)
 
 	mustRun(t, []string{
-		cmdBatch, flagCount, "3", flagAuto, flagSeed, "7", flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir,
 	}, nil)
 
 	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
@@ -246,7 +106,7 @@ func TestARefusedBatchWritesNothing(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "4", flagAuto, flagSeed, "7", flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "4", flagAuto, flagService, other, flagOutput, dir,
 	}, nil, io.Discard, io.Discard)
 	if err == nil {
 		t.Fatal("a batch overwrote an existing member without --force")
@@ -276,7 +136,7 @@ func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "2", flagAuto, flagSeed, "7", flagService, other,
+		cmdBatch, flagCount, "2", flagAuto, flagService, other,
 		flagOutput, filepath.Join(blocking, "members") + string(filepath.Separator),
 	}, nil, io.Discard, io.Discard)
 	if err == nil {
@@ -348,7 +208,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 	var asking strings.Builder
 
 	err = run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagSeed, "100", flagService, other,
+		cmdBatch, flagCount, "5", flagAuto, flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
 	}, nil, io.Discard, &asking)
 	if err == nil {
@@ -373,7 +233,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagSeed, "100", flagService, other,
+		cmdBatch, flagCount, "5", flagAuto, flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
 	}, nil, io.Discard, refusingWriter{})
 	if err == nil {
@@ -511,8 +371,7 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 			dir := t.TempDir()
 
 			mustRun(t, []string{
-				cmdBatch, flagCount, strconv.Itoa(tc.count), flagAuto, flagSeed, "7",
-				flagService, other, flagOutput, dir,
+				cmdBatch, flagCount, strconv.Itoa(tc.count), flagAuto, flagService, other, flagOutput, dir,
 			}, nil)
 
 			found, err := filepath.Glob(filepath.Join(dir, "*.json"))

@@ -211,9 +211,10 @@ runtime condition some path might reach. Each table is transcribed twice —
 into `data/`, and into `transcription_test.go` and `tables_test.go` — from one
 visual reading. That is authority rule 3, and `rules` is where it lives.
 
-**`dice`** draws from a seeded PCG and never judges a throw against a target;
-that is `traveller.Target`. One seed reproduces one character, which is what
-`--seed`, `--answers`, `batch` and every golden rest on.
+**`dice`** draws from an unseeded stream and never judges a throw against a
+target; that is `traveller.Target`. No character can be brought back by running
+the tool again: the record is the only way back (ADR 0001), and every golden is
+generated from a fixture that scripts its dice.
 
 **`chargen`** walks the procedure. `Generate(Inputs, Decider, ...Option)` is
 the entry point: it throws through a `Roller` and asks through a `Decider`, and
@@ -238,7 +239,7 @@ referee would be handed.
 **`cmd/ctchargen`** is the subcommands and their flag sets. It splits the data
 channel from the asking channel: the record, the sheet and the transcript to
 stdout, every question, count and warning to stderr — so
-`ctchargen new --seed 7 | jq` pipes a record and not a conversation.
+`ctchargen new | jq` pipes a record and not a conversation.
 
 ## Commands
 
@@ -250,7 +251,7 @@ go test ./chargen                     # one package
 go test ./chargen -run TestGoldens    # one test
 go test ./chargen -regenerate         # rewrite the goldens
 go test ./internal/docsgate -regenerate  # rewrite the exported API baseline
-go run ./cmd/ctchargen new --auto --seed 145 --sheet
+go run ./cmd/ctchargen new --auto --sheet
 ```
 
 - **A package that passes on its own can still move the gate.** `-race`, the
@@ -280,11 +281,12 @@ go run ./cmd/ctchargen new --auto --seed 145 --sheet
   and a test that holds nothing is not kept.
 - **The toolchain is deliberately unpinned.** A red gate on untouched code is
   the signal working. Answer the finding; do not pin a tool to silence it.
-- **Dice-stream consumption order is load-bearing.** The die is `IntN(6) + 1`
-  and a 2D throw is two of those in sequence. A throw the procedure does not
-  make consumes nothing. Changing the order changes every seeded character;
-  that is an ordinary change, not a breaking one — regenerate the goldens and
-  read the diff.
+- **Dice-stream consumption order is load-bearing for the fixtures.** A 2D
+  throw is two dice in sequence, and a throw the procedure does not make
+  consumes nothing. Changing the order changes which path every fixture
+  walks; that is an ordinary change, not a breaking one — the fixture that
+  felt it fails naming the throw that moved, and its dice are re-scripted
+  from a record that walks the new path.
 - **Goldens are regenerated, never hand-edited.**
 - **The exported Go API and the CLI are held to a baseline (#126).** The API
   is `internal/docsgate/testdata/api.txt`, held both ways: a line gone is a

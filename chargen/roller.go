@@ -25,15 +25,17 @@ type Roller interface {
 // among the alternatives it was offered, and nothing else.
 //
 // A decider handed the whole Roller could throw dice the procedure never
-// makes, which would move a seed's meaning from somewhere no page governs.
-// This is the only variation a decider may take.
+// makes, and a die thrown there reaches no event: the record would stop
+// carrying every die, and the record is the only way back to a character
+// (ADR 0001). This is the only variation a decider may take.
 type Vary interface{ Among(n int) int }
 
 // varyOnly is the Vary a decider is handed: a Roller with everything but
 // Among taken off it, so the narrowing is the value's and not only the
 // parameter's. Passing the Roller itself as a Vary would leave its dynamic
 // type behind it, and one type assertion would hand a decider the dice back
-// (#136).
+// (#136), and a die thrown there reaches no event: the log would stop
+// carrying every die, and the log is the only way back to the character.
 type varyOnly struct{ roller Roller }
 
 func (v varyOnly) Among(n int) int { return v.roller.Among(n) }

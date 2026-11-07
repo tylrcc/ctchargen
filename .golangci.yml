@@ -90,9 +90,8 @@ linters:
 
     gosec:
       excludes:
-        # The dice are meant to be predictable from a seed: that is the
-        # whole determinism contract. A cryptographic source would defeat
-        # the tool rather than harden it.
+        # The dice are game dice, not secrets. math/rand is the right source
+        # for them, and a cryptographic one would harden nothing.
         - G404
         # Every caller uses a path it was given - render and the -o flag
         # from the command line, the document gates from a constant joined

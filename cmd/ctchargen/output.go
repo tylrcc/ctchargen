@@ -26,7 +26,7 @@ const recordDirMode = 0o700
 // path was given, or a file it opens.
 //
 // A path that exists is never written over without --force. That refusal is
-// the whole reason the flag exists: a referee who regenerates a character
+// the whole reason the flag exists: a referee who writes a new character
 // into the file holding last week's has lost last week's, and the tool that
 // did it said nothing.
 //

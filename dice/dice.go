@@ -1,21 +1,21 @@
 // Package dice draws the die rolls Classic Traveller's character generation
-// procedure calls for, from a seeded stream.
+// procedure calls for.
 //
 // It rolls and it never judges. Whether a throw meets its target is the
 // business of a Target (Book 1 pp. 2-3), which lives in the traveller
 // package; keeping that out of here is what lets dice depend on nothing.
 //
-// These properties of this package are load-bearing, in the sense that a
-// seed means nothing without them:
+// The stream is not seeded. No two are alike and none can be brought back:
+// the record is the only way back to a character (ADR 0001), and it logs
+// every die this hands out. Three properties are load-bearing all the same,
+// because every fixture's script and every reader of a record rest on them:
 //
-//   - The die is IntN(6) + 1. An IntN(36), or a masked Uint64, is the same
-//     PCG under the same seed and an entirely different character.
-//   - A 2D throw is two of those in sequence, first die then second.
-//   - Among is IntN(n), drawn from the same stream, for the choices the book
-//     leaves to a player without naming a basis.
-//
-// Changing any of them changes every seeded character. That is an ordinary
-// change, not a breaking one, but it is never an accidental one.
+//   - The die is one of six faces, each as likely as the others.
+//   - A 2D throw is two of those in sequence, first die then second, and
+//     both are handed back because the record logs the dice and not only
+//     their total.
+//   - Among is one index in n, each as likely as the others, for the
+//     choices the book leaves to a player without naming a basis.
 package dice
 
 import "math/rand/v2"
@@ -23,16 +23,14 @@ import "math/rand/v2"
 // faces is a die's faces. Book 1 throws six-sided dice and nothing else.
 const faces = 6
 
-// Stream is a seeded source of dice. The zero value is not usable; call New.
+// Stream is a source of dice. The zero value is not usable; call New.
 type Stream struct {
-	r     *rand.Rand
-	drawn int
+	r *rand.Rand
 }
 
-// New returns a Stream seeded by seed. The seed fills both words of the PCG
-// state, so a single recorded number reproduces the whole stream.
-func New(seed uint64) *Stream {
-	return &Stream{r: rand.New(rand.NewPCG(seed, seed))}
+// New returns a Stream of its own, drawn from the runtime's random source.
+func New() *Stream {
+	return &Stream{r: rand.New(rand.NewPCG(rand.Uint64(), rand.Uint64()))}
 }
 
 // Die returns one six-sided die: 1 through 6.
@@ -42,8 +40,6 @@ func New(seed uint64) *Stream {
 // age a medical crisis recovery adds (pp. 7-8 — the sentence granting them
 // begins on one page and ends on the other).
 func (s *Stream) Die() int {
-	s.drawn++
-
 	return s.r.IntN(faces) + 1
 }
 
@@ -55,12 +51,8 @@ func (s *Stream) Die() int {
 // modulo would not do: the weapon lists of pp. 12-13 are longer than six, and
 // even where they are not, 6 mod n makes the first names likelier.
 //
-// It draws from the same stream, so a varied choice consumes like a throw
-// does and the same seed still makes the same character. n must be positive;
-// IntN says so itself.
+// n must be positive; IntN says so itself.
 func (s *Stream) Among(n int) int {
-	s.drawn++
-
 	return s.r.IntN(n)
 }
 
@@ -70,8 +62,8 @@ func (s *Stream) Among(n int) int {
 // them; both are returned because the generation record logs the dice, not
 // only their total.
 //
-// The results are named because the order is what a seed means: first die,
-// then second. Unlabelled, two ints say nothing about which is which.
+// The results are named because the order is the record's: first die, then
+// second. Unlabelled, two ints say nothing about which is which.
 //
 //nolint:nonamedreturns // the names carry the order
 func (s *Stream) TwoDice() (first, second int) {
@@ -79,13 +71,4 @@ func (s *Stream) TwoDice() (first, second int) {
 	second = s.Die()
 
 	return first, second
-}
-
-// Drawn reports how many dice have been taken from the stream.
-//
-// Dice-stream consumption order is what a seed means, so a test that means
-// to pin an order pins this count alongside the values: a throw the
-// procedure does not make must consume nothing.
-func (s *Stream) Drawn() int {
-	return s.drawn
 }

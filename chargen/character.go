@@ -51,9 +51,9 @@ type Character struct {
 	Ruleset string
 
 	// Build is what wrote the record, from debug.ReadBuildInfo - the same
-	// source the version subcommand reports. With cross-build reproduction
-	// unpromised, naming the build is the whole of what makes a record
-	// reasonable about.
+	// source the version subcommand reports. Naming the build is what lets a
+	// referee say which code wrote the record he is reading or filing a
+	// report against.
 	//
 	// The command fills it. A record generated in-process by a test does
 	// not carry one, because the build info of a test binary is not the
@@ -99,7 +99,6 @@ type Benefits struct {
 // Inputs is everything a generation was given, so that a record says what
 // made it.
 type Inputs struct {
-	Seed uint64
 	Name string
 
 	// Service is the service enlistment was attempted in, when one was

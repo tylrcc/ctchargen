@@ -246,9 +246,8 @@ traveller: var traveller.Titles [5]traveller.Title
 traveller: var traveller.WeaponCategories [2]traveller.WeaponCategory
 dice: Stream.Among func(n int) int
 dice: Stream.Die func() int
-dice: Stream.Drawn func() int
 dice: Stream.TwoDice func() (first int, second int)
-dice: func dice.New(seed uint64) *dice.Stream
+dice: func dice.New() *dice.Stream
 dice: type Stream struct
 rules: Aging.At func(term traveller.Term) []rules.AgingEffect
 rules: Aging.Crisis rules.Crisis
@@ -361,7 +360,6 @@ chargen: Inputs.Career chargen.Career
 chargen: Inputs.Forced bool
 chargen: Inputs.Muster chargen.Muster
 chargen: Inputs.Name string
-chargen: Inputs.Seed uint64
 chargen: Inputs.Service traveller.ServiceName
 chargen: Inputs.Skills chargen.Skills
 chargen: Muster.String func() string

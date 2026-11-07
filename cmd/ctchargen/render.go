@@ -13,11 +13,9 @@ import (
 // renderRecord reads a record written earlier and writes it as a character
 // sheet, or as the generation transcript with --history.
 //
-// It reads the record rather than regenerating it. Regenerating from the
-// recorded seed would produce the same character within this build and a
-// different one across builds, which is precisely the promise the PRD does
-// not make; reading is what lets a record written by another build still be
-// shown.
+// It reads the record, which is the only way back to a character (ADR
+// 0001): nothing in it can be brought back by running the tool again, and
+// reading is what lets a record written by another build still be shown.
 func renderRecord(args []string, out io.Writer) error {
 	flags := declareRenderFlags()
 

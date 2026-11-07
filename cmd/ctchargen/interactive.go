@@ -20,7 +20,7 @@ var errNoAnswer = errors.New("the input ended while the procedure was still aski
 
 // player is the Decider a person drives: the third implementation, after the
 // auto policy and the scripted deciders the tests use, and the only one that
-// cannot be replayed.
+// answers at a keyboard.
 //
 // It never invents an answer. Every question it asks is one the engine
 // asked, with exactly the alternatives the engine offered, and an answer it
@@ -28,11 +28,6 @@ var errNoAnswer = errors.New("the input ended while the procedure was still aski
 type player struct {
 	in  *bufio.Scanner
 	out io.Writer
-
-	// replay is what --answers supplied, taken before the input is read.
-	// When it runs out the procedure asks the next question as normal. The
-	// flag only means anything while --seed exists, and leaves with it.
-	replay []int
 
 	// given is every answer accepted so far, in order, which is what a
 	// stopped session is told it loses and what nothing else records: the
@@ -45,14 +40,14 @@ type player struct {
 	wrote error
 }
 
-func newPlayer(in io.Reader, out io.Writer, replay []int) *player {
+func newPlayer(in io.Reader, out io.Writer) *player {
 	if in == nil {
 		// Nothing to read from is not a reason to invent answers; the first
 		// question asked will report that the input ended.
 		in = strings.NewReader("")
 	}
 
-	return &player{in: bufio.NewScanner(in), out: out, replay: replay}
+	return &player{in: bufio.NewScanner(in), out: out}
 }
 
 // pick asks which of a list the player wants and hands back the thing
@@ -220,17 +215,6 @@ func (p *player) choose(question string, options []string) (int, error) {
 	}
 
 	for {
-		replayed, ok, err := p.next(len(options))
-		if err != nil {
-			return 0, err
-		}
-
-		if ok {
-			p.sayf("> %d\n\n", replayed)
-
-			return replayed - 1, p.wroteErr()
-		}
-
 		p.sayf("> ")
 
 		if p.wrote != nil {
@@ -255,52 +239,6 @@ func (p *player) choose(question string, options []string) (int, error) {
 		p.sayf("  %q is not one of them; answer with a number from 1 to %d\n",
 			typed, len(options))
 	}
-}
-
-// next takes the head of a replayed list, if there is one left.
-//
-// A replayed answer is echoed at the prompt as though it had been typed, so
-// that the session reads the same as one typed from the start rather than
-// jumping to a question with no visible answers above it.
-func (p *player) next(options int) (int, bool, error) {
-	if len(p.replay) == 0 {
-		return 0, false, nil
-	}
-
-	chosen := p.replay[0]
-
-	p.replay = p.replay[1:]
-
-	// Out of range for this question, which means the list belongs to some
-	// other run. Saying so beats answering the question with it, and beats
-	// falling through to the prompt, which would spend the next answer on
-	// the retry.
-	if chosen < 1 || chosen > options {
-		return 0, false, fmt.Errorf(
-			"%w: answer %d of --%s is %d, and this question offers 1 to %d",
-			errUsage, len(p.given)+1, answersFlag, chosen, options,
-		)
-	}
-
-	p.given = append(p.given, chosen)
-
-	return chosen, true, nil
-}
-
-// leftover refuses a list longer than the run had questions for.
-//
-// The same signal as an answer out of range, and the same answer to it: the
-// questions a seed asks are fixed, so a list typed against this seed is
-// consumed to its end. Anything left means the list came from another run,
-// and a character built from the first half of it is wrong in a way nothing
-// on the sheet shows.
-func (p *player) leftover() error {
-	if len(p.replay) == 0 {
-		return nil
-	}
-
-	return fmt.Errorf("%w: the procedure ran out of questions with %d of --%s unspent, "+
-		"so the list belongs to another run", errUsage, len(p.replay), answersFlag)
 }
 
 func (p *player) wroteErr() error {

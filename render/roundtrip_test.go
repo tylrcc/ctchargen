@@ -209,7 +209,7 @@ func served(service, how, fields string) string {
 
 // chose is a Service choice event answered by whoever the case names.
 func chose(by string) string {
-	return fmt.Sprintf(`"inputs":{"seed":1},"events":[{"seq":1,"kind":"choice",`+
+	return fmt.Sprintf(`"inputs":{},"events":[{"seq":1,"kind":"choice",`+
 		`"point":"Service","by":%q,"alternatives":["Navy","Other"],"chosen":"Navy"}]`, by)
 }
 
@@ -230,11 +230,11 @@ func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 
 	for name, tc := range map[string]headlineCase{
 		"asked for one service and got another": {
-			body:  served("Navy", "drafted", `"inputs":{"seed":1,"service":"Marines"}`),
+			body:  served("Navy", "drafted", `"inputs":{"service":"Marines"}`),
 			wants: "Navy (drafted after the Marines refused him)",
 		},
 		"asked for a service and got it": {
-			body:  served("Navy", "enlisted", `"inputs":{"seed":1,"service":"Navy"}`),
+			body:  served("Navy", "enlisted", `"inputs":{"service":"Navy"}`),
 			wants: unchanged, does: "refused",
 		},
 		"asked for nothing and the policy picked": {
@@ -262,7 +262,7 @@ func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 		// none, but the renderer is handed records rather than generating
 		// them, and inventing a decider is worse than saying nothing.
 		"nothing recorded about the service at all": {
-			body:  served("Navy", "enlisted", `"inputs":{"seed":1}`),
+			body:  served("Navy", "enlisted", `"inputs":{}`),
 			wants: unchanged, does: "(",
 		},
 	} {
@@ -324,7 +324,7 @@ func TestOneTermIsSingular(t *testing.T) {
 		"none": {0, "0 terms", ""},
 	} {
 		sheet, err := render.SheetFrom(minimalRecord(fmt.Sprintf(
-			`"service":"Navy","terms":%d,"enlistment":{"how":"enlisted"},"inputs":{"seed":1,"service":"Navy"}`,
+			`"service":"Navy","terms":%d,"enlistment":{"how":"enlisted"},"inputs":{"service":"Navy"}`,
 			tc.terms,
 		)))
 		if err != nil {
@@ -384,7 +384,7 @@ func TestBothRenderingsEndBySayingToKeepTheRecord(t *testing.T) {
 
 	const keep = "---\n\nKeep the JSON record: it is the only way back to this character.\n"
 
-	body := minimalRecord(`"inputs":{"seed":1,"career":"serve","skills":"advanced","muster":"cash"}`)
+	body := minimalRecord(`"inputs":{"career":"serve","skills":"advanced","muster":"cash"}`)
 
 	sheet, err := render.SheetFrom(body)
 	if err != nil {

@@ -26,13 +26,13 @@ const (
 
 var cliBaseline = map[string][]string{
 	cmdNew: {
-		"answers string ", "auto bool false", "career string serve", baseForce,
+		"auto bool false", "career string serve", baseForce,
 		baseHistory, "muster string cash", "name string ", baseOutput,
-		"seed uint64 0", "service string ", "sheet bool false", "skills string advanced",
+		"service string ", "sheet bool false", "skills string advanced",
 	},
 	cmdBatch: {
 		"auto bool false", "career string serve", "count int 0", baseForce,
-		"muster string cash", "name string ", baseOutput, "seed uint64 0",
+		"muster string cash", "name string ", baseOutput,
 		"service string ", "skills string advanced", "survivors bool false",
 	},
 	cmdRender: {baseForce, baseHistory, baseOutput},
@@ -80,15 +80,16 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 	t.Parallel()
 
 	_, searched := eachMember(chargen.Inputs{
-		Seed: 1000, Service: traveller.Scouts, Forced: true,
+		Service: traveller.Scouts, Forced: true,
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
-	}, chargen.DefaultPolicy(), 20, true, 1, func(int, *chargen.Character) error { return nil })
+	}, chargen.DefaultPolicy(), 20, true, 1, scoutKilled.roller(t), func(int, *chargen.Character) error { return nil })
 
 	var record strings.Builder
 
-	died := run([]string{cmdNew, flagAuto, flagSeed, "1000", flagService, "scouts"}, nil, &record, io.Discard)
+	died := run([]string{cmdNew, flagAuto, flagService, "scouts"}, nil, &record, io.Discard,
+		withDice(scoutKilled.roller(t)))
 	if !strings.Contains(record.String(), `"fatal": true`) {
-		t.Fatal("seed 1000 no longer dies in the Scouts, so the death case checks nothing")
+		t.Fatal("the scout walk no longer dies, so the death case checks nothing")
 	}
 
 	for name, tc := range map[string]struct {

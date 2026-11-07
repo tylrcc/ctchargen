@@ -83,7 +83,6 @@
     "assumed": true
   },
   "inputs": {
-    "seed": 316,
     "service": "Merchants",
     "career": "serve",
     "skills": "advanced",

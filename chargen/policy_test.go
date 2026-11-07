@@ -245,7 +245,7 @@ func TestAWordNoRowCarriesIsNotAStrategy(t *testing.T) {
 // Every strategy POLICY.md does carry parses, and parses back to its own
 // spelling. The round trip is what holds the parser to String: the record
 // writes the one and the flag reads the other, and a disagreement would make
-// a printed regenerate line fail to reproduce its own character.
+// a record name a strategy the flag refuses.
 func TestEveryStrategyParsesBackToItsSpelling(t *testing.T) {
 	t.Parallel()
 

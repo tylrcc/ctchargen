@@ -54,7 +54,6 @@
     "how": "forced out"
   },
   "inputs": {
-    "seed": 7,
     "service": "Navy",
     "career": "serve",
     "skills": "advanced",

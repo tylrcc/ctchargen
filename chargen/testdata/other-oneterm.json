@@ -40,7 +40,6 @@
     "assumed": true
   },
   "inputs": {
-    "seed": 19,
     "career": "oneterm",
     "skills": "personal",
     "muster": "goods"
