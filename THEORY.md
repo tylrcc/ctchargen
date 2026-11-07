@@ -269,12 +269,13 @@ either are that statement or are generated from it:
 - **`docs/COVERAGE.md`'s tables are generated** by `internal/coverage` from an
   `Implements:` marker on each implementation and a `Holds:` marker on each
   test or golden; a rule with only one side fails the generator naming it.
-  The bracket in a marker is the rule's authority. For the book's rules it is
-  a page, `[1:5]`. For the tool's own promises it is nearly always a PRD
-  section name: `[FR9]`, `[CLI sketch]`, `[JSON conventions]`, `[FR11]`,
-  `[Determinism]`. The generator checks none of them. So the PRD, which
-  governs nothing, is still the cited authority for about fifty rows of the
-  map.
+  The bracket in a marker is the rule's authority, from a closed set the
+  generator checks (#232). For the book's rules it is a page, `[1:5]`. For
+  the tool's own promises it is a reading `[(E011)]`, an ADR `[ADR 0001]`,
+  or a PRD heading or requirement read from the PRD itself: `[FR9]`,
+  `[CLI sketch]`, `[JSON conventions]`. The PRD governs nothing, and its
+  labels stay as the names those promises were first stated under; a cite
+  that names nothing fails the generator, naming the rule.
 
 Two second copies survive that sweep. Each `Erratum` constant in
 `internal/traveller/erratum.go` carries a one-line paraphrase of its reading,
@@ -607,17 +608,15 @@ rather than live authority, and I read them that way — but a maintainer could
 reasonably read them as the PRD still governing. For those three comments,
 nothing is wrong and the fix would be a wording preference.
 
-The coverage map's cites are a different matter, and they make the PRD's status
-less settled than `CLAUDE.md` says. About fifty `Implements:` markers name a PRD
-section as their rule's authority (idea 7). Three of them cite
-`[Determinism]`: `chargen.Generate`, `chargen.Ruleset` and
-`cmd/ctchargen.stamp`. That section is the seed contract ADR 0001 withdrew: one
-recorded seed, `base + i` batch members, a character that "can be regenerated".
-`ERRATA.md` does the same in places. Its preamble calls it a "Companion to
-`PRD.md`", and E002, E004 and E014 argue partly from PRD sections. I cannot tell
-from the tree whether the PRD's section names are meant to stay as the citation
-vocabulary for the tool's own promises, or are leftovers no sweep has reached.
-The withdrawn `[Determinism]` cite is wrong either way.
+The coverage map's cites are settled (#232). The PRD's headings and
+requirement ids stay as the citation labels for the tool's own promises, and
+`CLAUDE.md`'s document table says so; the generator reads them from the PRD
+and refuses a cite that names nothing (idea 7). The three markers that cited
+`[Determinism]`, the seed contract ADR 0001 withdrew, cite something in force
+now: `chargen.Generate`'s fixture rule cites ADR 0001, and the ruleset and
+build stamp cites FR8, the record's own requirement. `ERRATA.md` still argues
+partly from PRD sections, in its preamble and in E002, E004 and E014, as
+historical rationale.
 
 **Settled: the strategy vocabulary is part of the record's shape.** The schema
 describes the rules this build has, so `inputs.career`/`skills`/`muster`, the

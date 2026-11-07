@@ -19,7 +19,7 @@ const startingAge = 18
 // generation log are to these three books and nothing else.
 //
 // Implements: The record names its ruleset and the build that wrote it
-// [Determinism] in The record.
+// [FR8] in The record.
 const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 
 // An Option is an optional input to a generation: dice of the caller's own,
@@ -72,7 +72,7 @@ func WithAnswerer(who traveller.DecidedBy) Option {
 // one.
 //
 // Implements: A fixture generates one golden, and the same one twice
-// [Determinism] in The record.
+// [ADR 0001] in The record.
 // Implements: The worked example reproduces [1:23–25] in The book's own
 // character.
 func Generate(in Inputs, decider Decider, options ...Option) (*Character, error) {

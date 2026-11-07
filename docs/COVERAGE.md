@@ -1,11 +1,16 @@
 # COVERAGE: the procedure, mapped to the code
 
-2026-09-03. Every milestone complete. Companion to `PRD.md`.
+2026-09-03. Every milestone complete.
 
-Every rule of Book 1 pp. 4–25 that this tool implements, with the page that
-governs it, the code that carries it, and the test that holds it. A rule with
-no row here is a rule that is not implemented, and no row is without a test:
-the generator refuses a rule an implementation names and no test holds.
+Every rule of Book 1 pp. 4–25 that this tool implements, and every promise
+the tool makes of its own — the record, the choice points, the command line
+— with the authority that governs it, the code that carries it, and the test
+that holds it. A rule of the book cites its page. A promise of the tool's
+cites an ADR, a reading, or the heading or requirement of `PRD.md` it was
+stated under: the PRD governs nothing now, and its labels stay as names. The
+generator refuses any other cite. A rule with no row here is a rule that is
+not implemented, and no row is without a test: the generator refuses a rule
+an implementation names and no test holds.
 
 The tables are generated from markers beside the code: an implementation
 carries an `Implements:` line naming its rule, page and section, and the test
@@ -104,24 +109,24 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 
 ## Mustering out
 
-| Rule                                                                | Page       | Implementation                                | Test                                                                         |
-| ------------------------------------------------------------------- | ---------- | --------------------------------------------- | ---------------------------------------------------------------------------- |
-| One roll per term, plus rank extras                                 | 1:7, 9     | `internal/rules.Muster.Rolls`                 | `internal/rules.TestMusterRollsAndPassages`                                  |
-| Retirement pay from term 5, not for Scouts or Other                 | 1:7, 21    | `internal/chargen.run.pension`                | `internal/rules.TestRetirementPay`, golden `navy-captain`                    |
-| At most three rolls on Table 2                                      | 1:9        | `internal/chargen.run.chooseMusterTable`      | `internal/chargen.TestAtMostThreeRollsGoOnTableTwo`                          |
-| The +1 at rank 5 or 6 on Table 1                                    | 1:9        | `internal/chargen.run.musterModifier`         | golden `merchants-table1-modifier`                                           |
-| The +1 on Table 1 may be declined                                   | 1:9        | `internal/chargen.run.musterModifier`         | golden `navy-spartan-declines`                                               |
-| The +1 with gambling on Table 2                                     | 1:9        | `internal/chargen.run.musterModifier`         | `internal/chargen.TestGoldens`, `internal/rules.TestMusterRollsAndPassages`  |
-| The dash rows deliver nothing                                       | 1:9        | `internal/rules.Rules.liftBenefits`           | `internal/rules.TestTheDashCellsAreNothing`                                  |
-| The mustering-out table is designated before the die                | 1:9        | `internal/chargen.run.chooseMusterTable`      | `internal/chargen.TestGoldens`                                               |
-| The seven kinds of Table 1 row                                      | 1:9, 21–23 | `internal/chargen.applyBenefit`               | `internal/traveller.TestBenefitRowFolds`                                     |
-| The pension table says whether it prices a term at all              | 1:21       | `internal/rules.Retirement.Pay`               | `internal/rules.TestRetirementPay`                                           |
-| A repeat weapon may be taken as expertise, or as a different weapon | 1:22       | `internal/chargen.takeWeapon`                 | goldens `scouts-diversified`, `scouts-expertise`                             |
-| Free Trader: 40 years of payments, 10 off per repeat                | 1:22–23    | `internal/chargen.run.receiveShipAgain`       | golden `merchants-captain`                                                   |
-| Travellers' Aid only once; duplicates wasted                        | 1:22       | `internal/chargen.applyBenefit.TravellersAid` | `internal/traveller.TestBenefitRowFolds`                                     |
-| Scout ship: duplicates lost                                         | 1:23       | `internal/chargen.run.receiveShipAgain`       | golden `scouts-second-ship`                                                  |
-| The ships the two benefits name: Type S, Type A                     | 2:18–19    | `internal/rules.Rules.Hull`                   | `internal/rules.TestShipHulls`                                               |
-| Which departures are deaths is said in one place                    | (sums)     | `internal/traveller.Fatal`                    | `cmd/ctchargen.TestOnlyTheTwoDeathsCountAsDying`, golden `other-crisis-died` |
+| Rule                                                                | Page         | Implementation                                | Test                                                                         |
+| ------------------------------------------------------------------- | ------------ | --------------------------------------------- | ---------------------------------------------------------------------------- |
+| One roll per term, plus rank extras                                 | 1:7, 9       | `internal/rules.Muster.Rolls`                 | `internal/rules.TestMusterRollsAndPassages`                                  |
+| Retirement pay from term 5, not for Scouts or Other                 | 1:7, 21      | `internal/chargen.run.pension`                | `internal/rules.TestRetirementPay`, golden `navy-captain`                    |
+| At most three rolls on Table 2                                      | 1:9          | `internal/chargen.run.chooseMusterTable`      | `internal/chargen.TestAtMostThreeRollsGoOnTableTwo`                          |
+| The +1 at rank 5 or 6 on Table 1                                    | 1:9          | `internal/chargen.run.musterModifier`         | golden `merchants-table1-modifier`                                           |
+| The +1 on Table 1 may be declined                                   | 1:9          | `internal/chargen.run.musterModifier`         | golden `navy-spartan-declines`                                               |
+| The +1 with gambling on Table 2                                     | 1:9          | `internal/chargen.run.musterModifier`         | `internal/chargen.TestGoldens`, `internal/rules.TestMusterRollsAndPassages`  |
+| The dash rows deliver nothing                                       | 1:9          | `internal/rules.Rules.liftBenefits`           | `internal/rules.TestTheDashCellsAreNothing`                                  |
+| The mustering-out table is designated before the die                | 1:9          | `internal/chargen.run.chooseMusterTable`      | `internal/chargen.TestGoldens`                                               |
+| The seven kinds of Table 1 row                                      | 1:9, 21–23   | `internal/chargen.applyBenefit`               | `internal/traveller.TestBenefitRowFolds`                                     |
+| The pension table says whether it prices a term at all              | 1:21         | `internal/rules.Retirement.Pay`               | `internal/rules.TestRetirementPay`                                           |
+| A repeat weapon may be taken as expertise, or as a different weapon | 1:22         | `internal/chargen.takeWeapon`                 | goldens `scouts-diversified`, `scouts-expertise`                             |
+| Free Trader: 40 years of payments, 10 off per repeat                | 1:22–23      | `internal/chargen.run.receiveShipAgain`       | golden `merchants-captain`                                                   |
+| Travellers' Aid only once; duplicates wasted                        | 1:22         | `internal/chargen.applyBenefit.TravellersAid` | `internal/traveller.TestBenefitRowFolds`                                     |
+| Scout ship: duplicates lost                                         | 1:23         | `internal/chargen.run.receiveShipAgain`       | golden `scouts-second-ship`                                                  |
+| The ships the two benefits name: Type S, Type A                     | 2:18–19      | `internal/rules.Rules.Hull`                   | `internal/rules.TestShipHulls`                                               |
+| Which departures are deaths is said in one place                    | Domain model | `internal/traveller.Fatal`                    | `cmd/ctchargen.TestOnlyTheTwoDeathsCountAsDying`, golden `other-crisis-died` |
 
 ## Titles
 
@@ -150,10 +155,10 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A character is written one way, not two                                       | CLI sketch       | `cmd/ctchargen.flagsThatContradict`                          | `cmd/ctchargen.TestTheTwoRenderingsCannotBothBeAskedFor`                                                          |
 | A data file broken two ways reports the same one every run                    | JSON conventions | `internal/rules.Rules.liftPriorService`                      | `internal/rules.TestABrokenServiceNamesTheSameColumnEveryRun`                                                     |
 | A directory batch that cannot write a member leaves what came before          | CLI sketch       | `cmd/ctchargen.intoDirectory`                                | `cmd/ctchargen.TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction`                                           |
-| A fixture generates one golden, and the same one twice                        | Determinism      | `internal/chargen.Generate`                                  | `internal/chargen.TestGoldensRegenerate`                                                                          |
+| A fixture generates one golden, and the same one twice                        | ADR 0001         | `internal/chargen.Generate`                                  | `internal/chargen.TestGoldensRegenerate`                                                                          |
 | A guided run's choices are recorded as the player's, not the policy's         | FR9              | `internal/chargen.WithAnswerer`                              | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord`                                                                |
 | A key a later build adds inside an existing object is still refused           | JSON conventions | `docs/character.schema.json`                                 | `internal/render.TestAnUnknownKeyInsideAnEventDoesNotValidate`                                                    |
-| A one-term character reads as one term                                        | Presentation     | `internal/render.terms`                                      | `internal/render.TestOneTermIsSingular`                                                                           |
+| A one-term character reads as one term                                        | FR8              | `internal/render.terms`                                      | `internal/render.TestOneTermIsSingular`                                                                           |
 | A player nobody can be shown anything is not asked                            | FR9              | `cmd/ctchargen.player.sayf`                                  | `cmd/ctchargen.TestInteractiveStopsWhenItCannotBeRead`                                                            |
 | A read that fails is not the input ending                                     | FR9              | `cmd/ctchargen.player.stopped`                               | `cmd/ctchargen.TestAFailedReadIsNotTheInputEnding`                                                                |
 | A record from a later build validates and renders, which is what v1 promises  | JSON conventions | `docs/character.schema.json`                                 | `internal/render.TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders`                                       |
@@ -184,7 +189,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | The procedure is shown between the questions                                  | FR11             | `internal/chargen.WithObserver`, `internal/render.EventLine` | `cmd/ctchargen.TestInteractiveShowsWhatAutoDoesNot`                                                               |
 | The questions go to stderr, not into the record                               | CLI sketch       | `cmd/ctchargen.run`                                          | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord`                                                                |
 | The record matches the schema that describes it                               | JSON conventions | `docs/character.schema.json`                                 | `internal/render.TestEveryGoldenMatchesTheSchema`                                                                 |
-| The record names its ruleset and the build that wrote it                      | Determinism      | `cmd/ctchargen.stamp`, `internal/chargen.Ruleset`            | `cmd/ctchargen.TestRunWritesEachRendering`                                                                        |
+| The record names its ruleset and the build that wrote it                      | FR8              | `cmd/ctchargen.stamp`, `internal/chargen.Ruleset`            | `cmd/ctchargen.TestRunWritesEachRendering`                                                                        |
 | The shape a reader gets back is the shape that was written                    | FR11             | `internal/render.eventCodec`                                 | `internal/render.TestTheFlatShapeIsWhatWasWritten`                                                                |
 | The spellings that gate rests on tell every value of an alphabet apart        | FR9              | `internal/traveller`                                         | `internal/traveller.TestNoTwoValuesOfAnAlphabetShareASpelling`                                                    |
 | The two documented examples are generated, not written                        | Documents        | `internal/chargen.documentedExample`                         | `internal/chargen.TestGoldens`                                                                                    |

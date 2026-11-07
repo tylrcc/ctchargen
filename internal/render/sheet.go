@@ -148,8 +148,7 @@ func headline(r record) (string, error) {
 // terms is the count and the word, so a one-term character does not read
 // "1 terms".
 //
-// Implements: A one-term character reads as one term [Presentation] in The
-// record.
+// Implements: A one-term character reads as one term [FR8] in The record.
 func terms(count int) string {
 	if count == oneTerm {
 		return "1 term"

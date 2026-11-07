@@ -15,6 +15,13 @@
 //
 //	// Holds: Six 2D rolls, in order.
 //
+// The bracket is the rule's authority, from a closed set: a page cite, which
+// opens with book:page and may name readings, "1:5; 3:22 (E011)"; a reading
+// alone, "(E011)", that ERRATA.md has a heading for; "ADR 0001", naming a file
+// in docs/adr; or a "## " heading or FRn requirement of docs/PRD.md, which
+// governs nothing and keeps its labels as names. The set is read from those
+// documents, and a cite outside it fails the generator, naming the rule.
+//
 // A marker runs on to the following comment lines until a blank comment line,
 // the next marker or the end of the comment, so a long one wraps like prose.
 // The rows are joined on the rule's name, which is therefore unique across the
@@ -89,6 +96,11 @@ const (
 	document = "docs/COVERAGE.md"
 	schema   = "docs/character.schema.json"
 
+	// The documents a cite that is not a page may name.
+	prd      = "docs/PRD.md"
+	adrDir   = "docs/adr"
+	readings = "internal/rules/data/ERRATA.md"
+
 	// rosterDir and rosterVar are where chargen's fixture roster is declared.
 	rosterDir = "internal/chargen"
 	rosterVar = "fixtures"
@@ -103,6 +115,13 @@ var (
 
 	// pageCite is a page cite's leading book and page, "1:4" or "3:22".
 	pageCite = regexp.MustCompile(`^(\d+):(\d+)`)
+
+	// The labels the other cites are drawn from, as each document writes
+	// them: a PRD heading or requirement, an ADR's file, a reading's heading.
+	prdHeading     = regexp.MustCompile(`(?m)^## (.+)$`)
+	prdRequirement = regexp.MustCompile(`(?m)^\*\*(FR\d+) — `)
+	adrFile        = regexp.MustCompile(`^(\d{4})-.+\.md$`)
+	readingHeading = regexp.MustCompile(`(?m)^### (E\d{3}) — `)
 )
 
 // implementation is one Implements marker and the declaration carrying it.
@@ -134,6 +153,16 @@ func TestTheCoverageMapIsGenerated(t *testing.T) {
 	t.Parallel()
 
 	found, err := collect(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	known, err := readAuthorities(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = known.check(found)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -204,6 +233,45 @@ func TestAMarkerRemovedFailsNamingTheRule(t *testing.T) {
 
 			_, err := generate(committed, breaks(found))
 			refused(t, err, victim)
+		})
+	}
+}
+
+// A cite that is not a page names an authority that exists: a reading, an ADR,
+// or a heading or requirement of the PRD, whose labels stay citable though it
+// governs nothing (#232). Anything else fails, naming the rule.
+func TestACiteNamesAnAuthority(t *testing.T) {
+	t.Parallel()
+
+	found, err := collect(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	known, err := readAuthorities(root)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for _, cite := range []string{"(E011)", "ADR 0001", "Domain model", "FR8"} {
+		if !known[cite] {
+			t.Errorf("[%s] names an authority that exists, and is refused", cite)
+		}
+	}
+
+	victim := found.implementations[0]
+
+	for _, cite := range []string{"Nonsense", "ADR 0099", "(E099)", "FR99", "Domain"} {
+		t.Run(cite, func(t *testing.T) {
+			t.Parallel()
+
+			implementations := slices.Clone(found.implementations)
+
+			implementations[0].page = cite
+
+			broken := markers{implementations: implementations, holdings: found.holdings}
+
+			refused(t, known.check(broken), victim.rule)
 		})
 	}
 }
@@ -963,6 +1031,66 @@ func joined(found markers) (map[string]row, []error) {
 	}
 
 	return rules, errs
+}
+
+// authorities is every cite that is not a page and names something that
+// exists, read from the documents themselves rather than listed here.
+type authorities map[string]bool
+
+func readAuthorities(dir string) (authorities, error) {
+	known := make(authorities)
+
+	text, err := os.ReadFile(filepath.Join(dir, prd))
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", errMarker, err)
+	}
+
+	for _, match := range prdHeading.FindAllStringSubmatch(string(text), -1) {
+		known[match[1]] = true
+	}
+
+	for _, match := range prdRequirement.FindAllStringSubmatch(string(text), -1) {
+		known[match[1]] = true
+	}
+
+	entries, err := os.ReadDir(filepath.Join(dir, adrDir))
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", errMarker, err)
+	}
+
+	for _, entry := range entries {
+		if match := adrFile.FindStringSubmatch(entry.Name()); match != nil {
+			known["ADR "+match[1]] = true
+		}
+	}
+
+	text, err = os.ReadFile(filepath.Join(dir, readings))
+	if err != nil {
+		return nil, fmt.Errorf("%w: %w", errMarker, err)
+	}
+
+	for _, match := range readingHeading.FindAllStringSubmatch(string(text), -1) {
+		known["("+match[1]+")"] = true
+	}
+
+	return known, nil
+}
+
+// check refuses every implementation whose cite is neither a page nor an
+// authority that exists. A page cite's form is the page's own business.
+func (known authorities) check(found markers) error {
+	var errs []error
+
+	for _, impl := range found.implementations {
+		if !pageCite.MatchString(impl.page) && !known[impl.page] {
+			errs = append(errs, fmt.Errorf(
+				"%w: %q: %s cites [%s], which is no page, reading, ADR, or PRD heading or requirement",
+				errMarker, impl.rule, impl.site, impl.page,
+			))
+		}
+	}
+
+	return errors.Join(errs...)
 }
 
 // byPage orders rows Book 1 before 2 before 3, by page within a book, and

@@ -5,6 +5,13 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A coverage cite names an authority that exists (#232). An `Implements:`
+  marker cites a page, a reading, an ADR, or a heading or requirement the
+  PRD defines, read from those documents; anything else fails the
+  generator, naming the rule. The PRD governs nothing and keeps its labels
+  as names. The three rows that cited the withdrawn `[Determinism]` cite
+  ADR 0001 or FR8, and `[Presentation]` and `[(sums)]`, which named
+  nothing, cite FR8 and `Domain model`.
 - A fixture's script is consumed exactly (#231). A fixture that finishes
   with dice or draws its path never asked for fails, naming the fixture,
   how many were left and where they start, so a change that throws fewer
