@@ -132,9 +132,9 @@ func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 		cmdBatch, flagCount, "5", flagAuto, flagSeed, "7", flagService, other,
 	}, nil, &out, io.Discard)
 
-	// The member is named by seed and not by position: under --survivors the
-	// two differ, and the seed is the one that brings the character back.
-	// Members here run from --seed 7, so the third is seed 9.
+	// A streamed member has no file name, so the failure names its seed,
+	// which is what its record carries. Members here run from --seed 7, so
+	// the third is seed 9.
 	switch {
 	case err == nil:
 		t.Fatal("a batch hit a failing write and reported success")

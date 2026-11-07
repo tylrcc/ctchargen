@@ -216,7 +216,7 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 const survivorAttempts = 100
 
 // eachMember walks the batch, handing each member that is to be written to
-// take, and reports what it did.
+// take with its one-based position among them, and reports what it did.
 //
 // Without --survivors every member is written, dead or alive. With it a dead
 // character is passed over and the next seed tried - so a written member is
@@ -224,7 +224,7 @@ const survivorAttempts = 100
 // brings him back. What changes is which seeds appear, not what any of them
 // means (#33).
 func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors bool,
-	attempts int, take func(*chargen.Character) error,
+	attempts int, take func(index int, character *chargen.Character) error,
 ) (tally, error) {
 	var done tally
 
@@ -255,7 +255,7 @@ func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors
 			done.died++
 		}
 
-		err = take(character)
+		err = take(done.written+1, character)
 		if err != nil {
 			return done, err
 		}
@@ -286,10 +286,10 @@ func intoStream(out io.Writer, base chargen.Inputs, policy chargen.Policy,
 
 // writingTo is the take a streamed run uses: encode the member and write it.
 //
-// It names the member by its own seed rather than by its position, because
-// under --survivors those differ and the seed is the one that brings him back.
-func writingTo(out io.Writer) func(*chargen.Character) error {
-	return func(character *chargen.Character) error {
+// A failure names the member by its seed, because a streamed member has no
+// file name and the seed is what its record carries.
+func writingTo(out io.Writer) func(int, *chargen.Character) error {
+	return func(_ int, character *chargen.Character) error {
 		encoded, err := render.JSONLine(character)
 		if err != nil {
 			return fmt.Errorf("seed %d: %w", character.Inputs.Seed, err)
@@ -330,17 +330,13 @@ func buffered(base chargen.Inputs, policy chargen.Policy,
 	return done, where.write(lines.String())
 }
 
-// intoDirectory writes one file per character, named for its own seed.
+// intoDirectory writes one file per character, named by its index.
 //
 // One record is held at a time (#99). The collision check needs every path
-// the batch will write before it writes any, and under --survivors those are
-// not simply base through base+count-1 (#98) - but it is the check that needs
-// the paths, not the writing, so only the check pays. Without --survivors the
-// paths are base through base+count-1 and no character need exist to know
-// them: plannedPaths takes no policy and no roller, so it cannot generate, and
-// the common case is free. With the flag, survivingPaths walks once
-// keeping seeds - eight bytes each, not thirteen kilobytes - and the write
-// walks again, which generation being deterministic makes the same characters.
+// the batch will write before it writes any, and because members are named by
+// index those are 1 through count whether or not --survivors passes anyone
+// over: plannedPaths takes a count and a directory, no policy and no roller,
+// so it cannot generate, and the check is arithmetic.
 //
 // A batch that fails partway leaves what it has written. The guarantee here is
 // that a run never silently replaces a file, not that a directory is written
@@ -354,20 +350,20 @@ func intoDirectory(base chargen.Inputs, policy chargen.Policy,
 	}
 
 	if !force {
-		err = noMemberExists(plannedOrSurviving(base, policy, count, survivors, dir))
+		err = noMemberExists(plannedPaths(count, dir))
 		if err != nil {
 			return tally{}, err
 		}
 	}
 
 	return eachMember(base, policy, count, survivors, survivorAttempts,
-		func(character *chargen.Character) error {
+		func(index int, character *chargen.Character) error {
 			encoded, err := render.JSON(character)
 			if err != nil {
 				return fmt.Errorf("seed %d: %w", character.Inputs.Seed, err)
 			}
 
-			where, err := openDestination(nil, memberPath(dir, character.Inputs.Seed), force)
+			where, err := openDestination(nil, memberPath(dir, index, count), force)
 			if err != nil {
 				return err
 			}
@@ -376,61 +372,27 @@ func intoDirectory(base chargen.Inputs, policy chargen.Policy,
 		})
 }
 
-// plannedOrSurviving is the paths the run will write, by whichever route the
-// flags allow.
-func plannedOrSurviving(base chargen.Inputs, policy chargen.Policy,
-	count int, survivors bool, dir string,
-) []string {
-	if survivors {
-		return survivingPaths(base, policy, count, dir)
-	}
-
-	return plannedPaths(base.Seed, count, dir)
-}
-
-// plannedPaths is where members 0 through count-1 will be written.
+// plannedPaths is where members 1 through count will be written.
 //
-// It takes a seed, a count and a directory, and no policy and no roller, so
-// it cannot generate a character even by accident. That signature is the
-// guarantee: without --survivors, checking for collisions costs nothing but
-// arithmetic (#99).
-func plannedPaths(base uint64, count int, dir string) []string {
+// It takes a count and a directory, and no policy and no roller, so it cannot
+// generate a character even by accident. That signature is the guarantee:
+// checking for collisions costs nothing but arithmetic (#99), with or without
+// --survivors, because a member is named by its position among the files
+// written and not by which seed survived to fill it.
+func plannedPaths(count int, dir string) []string {
 	paths := make([]string, 0, count)
 	for i := range count {
-		paths = append(paths, memberPath(dir, memberSeed(base, i)))
+		paths = append(paths, memberPath(dir, i+1, count))
 	}
-
-	return paths
-}
-
-// survivingPaths is where the members that live will be written.
-//
-// Under --survivors which seeds are written depends on which characters
-// survive, so this walks once to find out. It keeps the paths and lets each
-// character go, because holding the run is what #99 is about; the write walks
-// again, and generation being deterministic it makes the same characters.
-func survivingPaths(base chargen.Inputs, policy chargen.Policy, count int, dir string) []string {
-	var paths []string
-
-	// An error here is not reported: the walk that writes makes the same
-	// calls in the same order and will meet the same one, where it can say
-	// what was written before it.
-	_, _ = eachMember(base, policy, count, true, survivorAttempts,
-		func(character *chargen.Character) error {
-			paths = append(paths, memberPath(dir, character.Inputs.Seed))
-
-			return nil
-		})
 
 	return paths
 }
 
 // noMemberExists refuses the batch if any member's file is already there.
 //
-// It takes the paths the run will write, and how those are arrived at differs
-// by flag: without --survivors they are arithmetic, and with it they are the
-// seeds a walk found living. A check derived from the arithmetic alone would
-// look at files the run will never write and miss the ones it will.
+// It takes the paths the run will write, which are the same with and without
+// --survivors: members are named by position, so passing a dead character
+// over changes who fills a file and never which files are filled.
 func noMemberExists(paths []string) error {
 	for _, path := range paths {
 		_, err := os.Stat(path)

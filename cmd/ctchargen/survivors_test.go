@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -134,7 +135,7 @@ func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	}
 
 	_, err := eachMember(base, chargen.DefaultPolicy(), 20, true, 1,
-		func(*chargen.Character) error { return nil })
+		func(int, *chargen.Character) error { return nil })
 	if err == nil {
 		t.Fatal("a bounded search reported success without finding the living")
 	}
@@ -244,17 +245,14 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 	}
 }
 
-// A refused batch under --survivors keys on the seeds it will actually write.
+// A --survivors batch is refused over a member it would write, and not over a
+// file beyond the batch.
 //
-// The check used to be arithmetic - the seeds base through base+count-1 - and
-// under --survivors that set is neither what the run writes nor a superset of
-// it. Both halves of the difference matter, so both are here: a file named
-// for a seed the run writes must refuse the batch, and a file named for a
-// seed the run only drew and passed over must not. The old arithmetic gets
-// the first right for the wrong reason - O_EXCL catches it halfway through
-// the directory, which is the very thing the check exists to prevent - and
-// the second wrong outright, so a one-sided test would not have caught it.
-func TestARefusedSurvivorBatchKeysOnTheSeedsItWrites(t *testing.T) {
+// Members are named by index, so which seeds survive does not change which
+// files the batch writes: 1 through count, whoever fills them. The check can
+// key on those without generating anyone, and a file one past the count is
+// nobody's to refuse over or to touch.
+func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 	t.Parallel()
 
 	const (
@@ -262,18 +260,19 @@ func TestARefusedSurvivorBatchKeysOnTheSeedsItWrites(t *testing.T) {
 		wanted = 5
 	)
 
-	live, passedOver := survivorRun(t, base, wanted)
-
+	// The names are typed out rather than asked of memberPath, so a roster
+	// that started counting from zero would be caught here and not only in
+	// the plain batch's test.
 	for name, tc := range map[string]struct {
-		plant   uint64
+		plant   string
 		refuses bool
 		left    int
 	}{
-		"a seed it writes":      {live[len(live)-1], true, 1},
-		"a seed it passes over": {passedOver, false, len(live) + 1},
+		"the last member it writes": {"5.json", true, 1},
+		"a name past the end":       {"6.json", false, wanted + 1},
 	} {
 		dir := t.TempDir()
-		planted := memberPath(dir, tc.plant)
+		planted := filepath.Join(dir, tc.plant)
 
 		err := os.WriteFile(planted, []byte("{}\n"), 0o600)
 		if err != nil {
@@ -314,45 +313,6 @@ func TestARefusedSurvivorBatchKeysOnTheSeedsItWrites(t *testing.T) {
 			t.Errorf("%s: the planted file was written over", name)
 		}
 	}
-}
-
-// survivorRun reports what one --survivors batch writes: the seeds it wrote,
-// and one it drew and passed over.
-//
-// Both are read off a run rather than typed in, because which seeds live is
-// the dice-stream order's to change and a literal here would be a golden kept
-// by hand.
-func survivorRun(t *testing.T, base uint64, count int) ([]uint64, uint64) {
-	t.Helper()
-
-	out, _ := mustRun(t, []string{
-		cmdBatch, flagCount, strconv.Itoa(count), flagAuto,
-		flagSeed, strconv.FormatUint(base, 10), flagService, scouts, flagSurvivors,
-	}, nil)
-
-	live := seedsWritten(t, out)
-	if len(live) < 2 {
-		t.Fatalf("%d members written", len(live))
-	}
-
-	written := make(map[uint64]bool, len(live))
-	for _, seed := range live {
-		written[seed] = true
-	}
-
-	// Every seed from the base up to the last member written was drawn, so
-	// those not written are the ones passed over. The scan starts at the base
-	// and not at the first member, because a seed below the first member is
-	// exactly the one the old arithmetic would have looked at.
-	for seed := base; seed <= live[len(live)-1]; seed++ {
-		if !written[seed] {
-			return live, seed
-		}
-	}
-
-	t.Fatal("this batch passed nobody over, so there is nothing here to check")
-
-	return nil, 0
 }
 
 // seedsWritten reads the seed off every member of a JSONL batch.
@@ -459,10 +419,10 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 
 	dir := t.TempDir()
 
-	// Member 2 of a --seed 7 run, by the arithmetic the batch uses.
+	// The third member of six, so two are written before the obstruction.
 	const blockedMember = 2
 
-	blocked := memberPath(dir, memberSeed(7, blockedMember))
+	blocked := filepath.Join(dir, "3.json")
 
 	err := os.Mkdir(blocked, recordDirMode)
 	if err != nil {
@@ -503,24 +463,23 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	}
 }
 
-// The collision check for a plain batch cannot generate a character.
+// The collision check cannot generate a character.
 //
-// That is its signature, not its body: plannedPaths takes a seed, a count and
-// a directory, and no policy and no roller. It is the whole of why checking a
-// non-survivors batch costs arithmetic and not a run (#99).
-func TestThePlainCollisionCheckNeedsNoCharacters(t *testing.T) {
+// That is its signature, not its body: plannedPaths takes a count and a
+// directory, and no policy and no roller. It is the whole of why checking a
+// batch for collisions costs arithmetic and not a run (#99).
+func TestTheCollisionCheckNeedsNoCharacters(t *testing.T) {
 	t.Parallel()
 
 	dir := t.TempDir()
 
-	paths := plannedPaths(7, 3, dir)
-	if len(paths) != 3 {
-		t.Fatalf("%d paths for 3 members", len(paths))
+	paths := plannedPaths(3, dir)
+
+	want := []string{
+		filepath.Join(dir, "1.json"), filepath.Join(dir, "2.json"), filepath.Join(dir, "3.json"),
 	}
 
-	for i, path := range paths {
-		if want := memberPath(dir, memberSeed(7, i)); path != want {
-			t.Errorf("member %d is planned at %s, want %s", i, path, want)
-		}
+	if !slices.Equal(paths, want) {
+		t.Errorf("3 members are planned at %v, want %v", paths, want)
 	}
 }

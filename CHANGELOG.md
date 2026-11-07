@@ -8,6 +8,10 @@ release turns out to be.
 - Every golden is generated from its own fixture, a scripted list of dice and
   draws, rather than from a seed found by search (#205). The roster gains two
   goldens for the readings only a run of 12s reaches, E003 and E014.
+- `batch -o <dir>` names each member by its position in the batch, `01.json`
+  through `20.json` for a batch of twenty, padded to the batch's width, rather
+  than by its seed (#208). A directory now sorts in generation order and its
+  names say nothing about seeds.
 - A stopped interactive session says what was answered and that nothing was
   written (#207). It no longer offers a `--seed` and `--answers` line to pick
   up where it stopped, because the record is the only way back to a character

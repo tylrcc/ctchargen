@@ -59,12 +59,13 @@ ctchargen new --seed 145 --sheet                # asks at every choice point
 ctchargen batch --count 20 --auto --seed 145 --service merchants
 ctchargen batch --count 20 --auto --seed 145 --service merchants -o characters/
 
-ctchargen render characters/00000000000000000145.json
-ctchargen render --history characters/00000000000000000145.json
+ctchargen render characters/01.json
+ctchargen render --history characters/01.json
 ```
 
-Batch members number from zero, so the first of that batch is the character
-the first `new` above generated, and `render` shows the same sheet.
+Batch members are named by their position, `01.json` through `20.json`, padded
+to the width of the batch. The first of that batch is the character the first
+`new` above generated, and `render` shows the same sheet.
 
 **`batch` with no `-o` writes NDJSON to standard output**, one record to the
 line, which is the shape that pipes — and it streams, so the first record

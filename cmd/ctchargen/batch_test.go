@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -116,7 +117,7 @@ func TestBatchRefusesWithoutAuto(t *testing.T) {
 	}
 }
 
-// -o naming a directory writes one file per character, named for its seed.
+// -o naming a directory writes one file per character, named by its index.
 func TestBatchIntoADirectory(t *testing.T) {
 	t.Parallel()
 
@@ -237,7 +238,7 @@ func TestARefusedBatchWritesNothing(t *testing.T) {
 	dir := t.TempDir()
 
 	// The second member's file, already there.
-	blocked := filepath.Join(dir, "00000000000000000008.json")
+	blocked := filepath.Join(dir, "2.json")
 
 	err := os.WriteFile(blocked, []byte("{}\n"), 0o600)
 	if err != nil {
@@ -339,7 +340,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 
 	dir := t.TempDir()
 
-	err := os.Mkdir(filepath.Join(dir, "00000000000000000102.json"), 0o700)
+	err := os.Mkdir(filepath.Join(dir, "3.json"), 0o700)
 	if err != nil {
 		t.Fatalf("planting the directory: %v", err)
 	}
@@ -366,7 +367,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 
 	dir := t.TempDir()
 
-	err := os.Mkdir(filepath.Join(dir, "00000000000000000102.json"), 0o700)
+	err := os.Mkdir(filepath.Join(dir, "3.json"), 0o700)
 	if err != nil {
 		t.Fatalf("planting the directory: %v", err)
 	}
@@ -485,5 +486,48 @@ func TestForceThatCannotStageLeavesTheOldRecord(t *testing.T) {
 
 	if got := mustRead(t, path); got != oldRecord {
 		t.Errorf("a --force that could not stage left the old record as %q", got)
+	}
+}
+
+// Members are named by their one-based index, zero-padded to the width of
+// the batch, so a directory sorts in generation order and says nothing about
+// seeds.
+func TestBatchMembersAreNamedByIndex(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range map[string]struct {
+		count int
+		wants []string
+	}{
+		"a batch of three": {count: 3, wants: []string{"1.json", "2.json", "3.json"}},
+		"a batch of twelve": {count: 12, wants: []string{
+			"01.json", "02.json", "03.json", "04.json", "05.json", "06.json",
+			"07.json", "08.json", "09.json", "10.json", "11.json", "12.json",
+		}},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			dir := t.TempDir()
+
+			mustRun(t, []string{
+				cmdBatch, flagCount, strconv.Itoa(tc.count), flagAuto, flagSeed, "7",
+				flagService, other, flagOutput, dir,
+			}, nil)
+
+			found, err := filepath.Glob(filepath.Join(dir, "*.json"))
+			if err != nil {
+				t.Fatalf("looking for the members: %v", err)
+			}
+
+			got := make([]string, 0, len(found))
+			for _, path := range found {
+				got = append(got, filepath.Base(path))
+			}
+
+			if !slices.Equal(got, tc.wants) {
+				t.Errorf("the members are named %v, want %v", got, tc.wants)
+			}
+		})
 	}
 }

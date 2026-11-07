@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"strconv"
 	"syscall"
 )
 
@@ -166,7 +167,9 @@ func (d destination) done() error {
 	return nil
 }
 
-// memberPath is where batch writes one character when -o names a directory.
-func memberPath(dir string, seed uint64) string {
-	return filepath.Join(dir, fmt.Sprintf("%020d.json", seed))
+// memberPath is where batch writes member index of count when -o names a
+// directory: the one-based index, zero-padded to the width of the count, so a
+// directory sorts in generation order and its names say nothing about seeds.
+func memberPath(dir string, index, count int) string {
+	return filepath.Join(dir, fmt.Sprintf("%0*d.json", len(strconv.Itoa(count)), index))
 }

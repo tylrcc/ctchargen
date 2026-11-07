@@ -82,7 +82,7 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 	_, searched := eachMember(chargen.Inputs{
 		Seed: 1000, Service: traveller.Scouts, Forced: true,
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
-	}, chargen.DefaultPolicy(), 20, true, 1, func(*chargen.Character) error { return nil })
+	}, chargen.DefaultPolicy(), 20, true, 1, func(int, *chargen.Character) error { return nil })
 
 	var record strings.Builder
 
