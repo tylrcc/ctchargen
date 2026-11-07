@@ -8,6 +8,10 @@ release turns out to be.
 - Every golden is generated from its own fixture, a scripted list of dice and
   draws, rather than from a seed found by search (#205). The roster gains two
   goldens for the readings only a run of 12s reaches, E003 and E014.
+- A stopped interactive session says what was answered and that nothing was
+  written (#207). It no longer offers a `--seed` and `--answers` line to pick
+  up where it stopped, because the record is the only way back to a character
+  and a session that stopped has none.
 - The sheet and the transcript end with one line, "Keep the JSON record: it is
   the only way back to this character" (#206). The "Regenerate with …" footer,
   its different-build warning and the player-answered variant are gone, and so

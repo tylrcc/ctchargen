@@ -83,7 +83,7 @@ func declareNewFlags() newFlagSet {
 		output:  set.String("o", "", "write to this file rather than to standard output"),
 		force:   set.Bool("force", false, "replace the output file if it already exists"),
 		replay: set.String(answersFlag, "",
-			"answers to replay before asking, as 1,2,1; what a stopped session prints"),
+			"answers to give before asking, as 1,2,1"),
 	}
 }
 
@@ -133,8 +133,7 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer) error {
 //
 // --auto decides at every choice, so there is nobody for a replayed answer to
 // stand in for: taking the list and never consulting it would hand back a
-// character the answers had no part in, which reads as a resumption that went
-// wrong somewhere unnameable.
+// character the answers had no part in, and nothing on the sheet would say so.
 //
 // --sheet and --history are one character asked for two ways. rendered() took
 // the sheet and said nothing, so a referee who asked for the transcript got a
@@ -264,7 +263,7 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 // answersFrom reads --answers, which is a list of the numbers a player typed.
 //
 // Empty is not an error and not an empty run: it is the ordinary case, a
-// session nobody is resuming.
+// session with nothing typed in advance.
 func answersFrom(list string) ([]int, error) {
 	if list == "" {
 		return nil, nil
@@ -310,7 +309,7 @@ func generate(inputs chargen.Inputs, policy chargen.Policy, auto bool, answers [
 		return character, nil
 	}
 
-	asked := newPlayer(in, asking, inputs.Seed, answers)
+	asked := newPlayer(in, asking, answers)
 
 	character, err := chargen.Generate(inputs, asked,
 		chargen.WithObserver(asked.watch), chargen.WithAnswerer(traveller.ByPlayer))

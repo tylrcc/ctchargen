@@ -347,41 +347,43 @@ func TestTheQuestionsStayOutOfTheRecord(t *testing.T) {
 	}
 }
 
-// A session cut short offers the way back to the question it stopped on.
+// A session cut short says what was answered and that nothing was written.
 //
-// The half-built character is lost either way - it is not a record and does
-// not match the schema - but the seed and the answers are what a long session
-// cannot retype, and losing those to a stray Ctrl-D is what was reported.
-func TestAStoppedSessionOffersTheWayBackIn(t *testing.T) {
+// The half-built character is lost: it is not a record and does not match the
+// schema, and there is no way back to the question it stopped on (ADR 0001).
+// The message is honest about the loss rather than silent, and it offers
+// nothing the tool cannot honour.
+func TestAStoppedSessionSaysWhatWasLost(t *testing.T) {
 	t.Parallel()
 
-	var asking strings.Builder
+	for name, tc := range map[string]struct{ typed, wants string }{
+		"after some answers": {typed: "1\n2\n1\n", wants: "Answered 1, 2, 1;"},
+		"before any answer":  {typed: "", wants: "Nothing was answered"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
 
-	err := run([]string{cmdNew, flagSeed, "7", flagService, other},
-		strings.NewReader("1\n2\n1\n"), io.Discard, &asking)
-	if !errors.Is(err, errNoAnswer) {
-		t.Fatalf("stopping short gave %v, want the input ending", err)
-	}
+			var asking strings.Builder
 
-	if want := "--seed 7 --answers 1,2,1"; !strings.Contains(asking.String(), want) {
-		t.Errorf("the offer does not read %q:\n%s", want, asking.String())
-	}
-}
+			err := run([]string{cmdNew, flagSeed, "7", flagService, other},
+				strings.NewReader(tc.typed), io.Discard, &asking)
+			if !errors.Is(err, errNoAnswer) {
+				t.Fatalf("stopping short gave %v, want the input ending", err)
+			}
 
-// And nothing answered says so, rather than offering an empty list.
-func TestANeverStartedSessionSaysSo(t *testing.T) {
-	t.Parallel()
+			for _, want := range []string{tc.wants, "nothing was written"} {
+				if !strings.Contains(asking.String(), want) {
+					t.Errorf("the message does not say %q:\n%s", want, asking.String())
+				}
+			}
 
-	var asking strings.Builder
-
-	err := run([]string{cmdNew, flagSeed, "7", flagService, other},
-		strings.NewReader(""), io.Discard, &asking)
-	if !errors.Is(err, errNoAnswer) {
-		t.Fatalf("stopping short gave %v, want the input ending", err)
-	}
-
-	if !strings.Contains(asking.String(), "Nothing was answered") {
-		t.Errorf("the offer invents a resumption:\n%s", asking.String())
+			for _, gone := range []string{"--seed", "--answers", "Re-run", "re-run", "same command"} {
+				if strings.Contains(asking.String(), gone) {
+					t.Errorf("the message offers a way back in, %q, that nothing honours:\n%s",
+						gone, asking.String())
+				}
+			}
+		})
 	}
 }
 
@@ -465,17 +467,19 @@ func TestAFailedReadIsNotTheInputEnding(t *testing.T) {
 		t.Errorf("error %q does not say the read failed", err)
 	}
 
-	// The stop the operator did not choose is the one that most needs the
-	// way back in, so the offer is made whichever way the answers ran out.
-	if want := "--seed 7 --answers 1"; !strings.Contains(asking.String(), want) {
-		t.Errorf("a failed read was not offered the way back in:\n%s", asking.String())
+	// The stop the operator did not choose is the one that most needs telling
+	// what it cost, so the loss is reported whichever way the answers ran out.
+	for _, want := range []string{"Answered 1;", "nothing was written"} {
+		if !strings.Contains(asking.String(), want) {
+			t.Errorf("a failed read was not told what was lost, %q:\n%s", want, asking.String())
+		}
 	}
 }
 
 // A list longer than the run had questions for belongs to another run.
 //
 // The same signal as an answer out of range: the questions a seed asks are
-// fixed, so a resumption replaying its own answers spends every one of them.
+// fixed, so a list typed against this seed is spent to its end.
 // Half a list quietly applied builds a character wrong in a way nothing on
 // the sheet shows.
 func TestAnswersLeftOverBelongToAnotherRun(t *testing.T) {
@@ -496,9 +500,9 @@ func TestAnswersLeftOverBelongToAnotherRun(t *testing.T) {
 	}
 }
 
-// --auto has nobody to replay answers for, and says so rather than dropping
-// them: a character the answers had no part in reads as a resumption that
-// went wrong somewhere unnameable.
+// --auto has nobody to give answers for, and says so rather than dropping
+// them: a character the answers had no part in would read as one they shaped,
+// and nothing on the sheet would say otherwise.
 func TestAnswersAndAutoCannotBothBeGiven(t *testing.T) {
 	t.Parallel()
 

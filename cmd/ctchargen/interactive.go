@@ -29,20 +29,14 @@ type player struct {
 	in  *bufio.Scanner
 	out io.Writer
 
-	// seed is carried only so that the line offered when the input ends can
-	// name it. A drawn seed is otherwise nowhere the player can reach, and
-	// it is the half of a resumption he cannot retype from memory.
-	seed uint64
-
 	// replay is what --answers supplied, taken before the input is read.
-	// When it runs out the procedure asks the next question as normal -
-	// that is the whole point, and a resumption that stopped at the end of
-	// the list would be a replay rather than a way back in.
+	// When it runs out the procedure asks the next question as normal. The
+	// flag only means anything while --seed exists, and leaves with it.
 	replay []int
 
 	// given is every answer accepted so far, in order, which is what a
-	// resumption needs and what nothing else records: the log holds what was
-	// chosen, not which number was typed to choose it.
+	// stopped session is told it loses and what nothing else records: the
+	// log holds what was chosen, not which number was typed to choose it.
 	given []int
 
 	// wrote is the first failure writing to the player, kept so that a
@@ -51,14 +45,14 @@ type player struct {
 	wrote error
 }
 
-func newPlayer(in io.Reader, out io.Writer, seed uint64, replay []int) *player {
+func newPlayer(in io.Reader, out io.Writer, replay []int) *player {
 	if in == nil {
 		// Nothing to read from is not a reason to invent answers; the first
 		// question asked will report that the input ended.
 		in = strings.NewReader("")
 	}
 
-	return &player{in: bufio.NewScanner(in), out: out, seed: seed, replay: replay}
+	return &player{in: bufio.NewScanner(in), out: out, replay: replay}
 }
 
 // pick asks which of a list the player wants and hands back the thing
@@ -266,7 +260,7 @@ func (p *player) choose(question string, options []string) (int, error) {
 // next takes the head of a replayed list, if there is one left.
 //
 // A replayed answer is echoed at the prompt as though it had been typed, so
-// that a resumed session reads the same as the one it continues rather than
+// that the session reads the same as one typed from the start rather than
 // jumping to a question with no visible answers above it.
 func (p *player) next(options int) (int, bool, error) {
 	if len(p.replay) == 0 {
@@ -296,10 +290,10 @@ func (p *player) next(options int) (int, bool, error) {
 // leftover refuses a list longer than the run had questions for.
 //
 // The same signal as an answer out of range, and the same answer to it: the
-// questions a seed asks are fixed, so a resumption that replays its own
-// answers consumes every one of them. Anything left means the list came from
-// another run, and a character built from the first half of it is wrong in a
-// way nothing on the sheet shows.
+// questions a seed asks are fixed, so a list typed against this seed is
+// consumed to its end. Anything left means the list came from another run,
+// and a character built from the first half of it is wrong in a way nothing
+// on the sheet shows.
 func (p *player) leftover() error {
 	if len(p.replay) == 0 {
 		return nil
@@ -317,20 +311,20 @@ func (p *player) wroteErr() error {
 	return fmt.Errorf("asking the player: %w", p.wrote)
 }
 
-// stopped reports why the answers ran out, and offers the way back in.
+// stopped reports why the answers ran out, and says what was lost.
 //
 // A scanner returns false for two different reasons and only one of them is
 // the input ending: a line past bufio's 64KB bound, or a read failure on the
 // reader beneath, both come back the same way. Blaming the input for ending
 // sends the reader looking in the wrong place.
 //
-// Either way the half-built character is lost - it is not a record, and does
-// not match the schema - but the seed and the answers are enough to walk back
-// to the same question, and those are what a long session cannot retype. So
-// the offer is made before the two are told apart: a read that failed is the
-// stop the operator did not choose, and the one that most needs the way back.
+// Either way the half-built character is lost: it is not a record, does not
+// match the schema, and there is no way back to the question it stopped on
+// (ADR 0001). The message says so, and lists what was answered, before the
+// two are told apart: a read that failed is the stop the operator did not
+// choose, and the one that most needs telling what it cost.
 func (p *player) stopped() error {
-	p.sayf("\n%s\n", p.resumeLine())
+	p.sayf("\n%s\n", p.lostLine())
 
 	err := p.in.Err()
 	if err != nil {
@@ -340,21 +334,12 @@ func (p *player) stopped() error {
 	return errNoAnswer
 }
 
-// resumeLine is the flags that walk back to the question the input ended on.
-//
-// It names flags to add rather than a whole command line, because the
-// operator's own is in his shell history and this one cannot know what else
-// he typed - and it says "the same command" for that reason. An answer is an
-// index into the list a question offered, so a re-run that drops --service
-// or --name asks a different sequence and spends the answers on it. Both
-// values are digits, so neither needs quoting and neither can carry
-// anything.
-func (p *player) resumeLine() string {
+// lostLine says what the stopped session answered and that none of it was
+// kept. It offers no way back in: the tool has withdrawn replay (ADR 0001),
+// and a half-built character is not a record.
+func (p *player) lostLine() string {
 	if len(p.given) == 0 {
-		return fmt.Sprintf(
-			"Nothing was answered. The same command with --seed %d walks the same character again.",
-			p.seed,
-		)
+		return "Nothing was answered; the session is lost and nothing was written."
 	}
 
 	answered := make([]string, 0, len(p.given))
@@ -362,10 +347,8 @@ func (p *player) resumeLine() string {
 		answered = append(answered, strconv.Itoa(chosen))
 	}
 
-	return fmt.Sprintf(
-		"Re-run the same command with --seed %d --answers %s to pick up at this question.",
-		p.seed, strings.Join(answered, ","),
-	)
+	return fmt.Sprintf("Answered %s; the session is lost and nothing was written.",
+		strings.Join(answered, ", "))
 }
 
 // confirm asks a question the procedure puts as yes or no.

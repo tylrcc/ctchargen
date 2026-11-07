@@ -1172,7 +1172,7 @@ A transcript of `ctchargen new --help`, run while writing:
 ```text
 usage: ctchargen new [flags]
 
-  --answers string   answers to replay before asking, as 1,2,1; what a stopped session prints
+  --answers string   answers to give before asking, as 1,2,1
   --auto             decide by the policy at every choice, rather than asking
   --career strategy  the --auto career strategy: serve, retire, oneterm (default serve)
   --force            replace the output file if it already exists
