@@ -1,6 +1,7 @@
 package chargen_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
@@ -53,7 +54,9 @@ func (f fixture) run(t *testing.T, options ...chargen.Option) (*chargen.Characte
 
 	roller := f.roller(t)
 
-	character, err := chargen.Generate(f.inputs(), f.policy, append(options, chargen.WithRoller(roller))...)
+	options = append(slices.Clip(options), chargen.WithRoller(roller))
+
+	character, err := chargen.Generate(f.inputs(), f.policy, options...)
 	if err != nil {
 		return nil, err //nolint:wrapcheck // the engine's own error, for the caller to judge
 	}

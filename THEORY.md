@@ -567,7 +567,7 @@ record's event reaches that event and no other question's offer.
 - **Hoisting the yes-or-no pair back into a package-level slice.** It reads
   like a harmless allocation saved, and it is the slice every later character
   would be offered and checked against, reachable through every record (#230).
-- **Generating a fixture's character around `fixture.run`.** Calling
+- **Generating a fixture's character without `fixture.run`.** Calling
   `chargen.Generate` with `fixture.roller` directly skips the check that the
   script was read to its end, and a fixture can again carry dice its path
   never throws (#231).
