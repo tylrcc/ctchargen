@@ -305,6 +305,11 @@ go run ./cmd/ctchargen new --auto --sheet
 
 ## Working conventions
 
+- **A removal is swept by its vocabulary, not only its names.** Grep for the
+  words the code and documents used to describe the thing — what it did, what
+  it promised — as well as its identifiers and file names, and rewrite every
+  comment and sentence still telling the old story. A name-only sweep left
+  stale prose in every ticket of #203; the reviewers caught it each time.
 - Markdown written here is reflowed by `bun fmt` immediately after the write
   (a user-level `PostToolUse` hook, not repo config). The reflow is expected;
   leave it alone rather than reverting it.
