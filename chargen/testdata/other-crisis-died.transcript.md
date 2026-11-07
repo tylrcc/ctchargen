@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 106 --service other --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 1+1
@@ -159,3 +156,7 @@ Regenerate with `ctchargen new --auto --seed 106 --service other --career serve 
 115. Dexterity -1, 1 to 0 (from 114) [E006 E007 E010]
 116. medical crisis, Dexterity at zero: rolled 3+4 = 7 against 8+, missed
 117. died of a medical crisis in term 7, Dexterity having reached zero (from 116) [E008 E009]
+
+---
+
+Keep the JSON record: it is the only way back to this character.

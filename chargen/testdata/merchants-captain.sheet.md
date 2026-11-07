@@ -28,4 +28,4 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 316 --service merchants --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

@@ -9,4 +9,4 @@ UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed b
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 2 --service navy --career retire --skills service --muster spartan --sheet`.
+Keep the JSON record: it is the only way back to this character.

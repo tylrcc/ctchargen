@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 4 --service army --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 5+5
@@ -245,3 +242,7 @@ Regenerate with `ctchargen new --auto --seed 4 --service army --career serve --s
 
 196. AssumeTitle: policy chose yes from yes, no
 197. social standing 13 confers marquis/marchioness, and it is assumed
+
+---
+
+Keep the JSON record: it is the only way back to this character.

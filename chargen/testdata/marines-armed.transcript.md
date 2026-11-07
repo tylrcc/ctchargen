@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 309 --service marines --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 1+4
@@ -227,3 +224,7 @@ Regenerate with `ctchargen new --auto --seed 309 --service marines --career serv
 179. Table 1, Material Benefits: rolled 1
 180. a Low Passage (from 179)
 181. retirement pay of CR 8000 a year
+
+---
+
+Keep the JSON record: it is the only way back to this character.

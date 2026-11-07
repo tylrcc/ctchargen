@@ -15,4 +15,4 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 0 --service other --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

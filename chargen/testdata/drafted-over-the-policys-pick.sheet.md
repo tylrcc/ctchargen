@@ -19,4 +19,4 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 150 --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

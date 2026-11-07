@@ -35,12 +35,22 @@ func SheetFrom(text []byte) (string, error) {
 	return sheetOf(projected)
 }
 
-// sheetOf writes the sheet, and ends it with how to get the character back.
+// sheetOf writes the sheet, and ends it by saying what to keep.
 //
 // The footer is last because it is not the character: a referee reads the
-// headline and the possessions, and reaches for the seed only once he has
-// decided he wants this one.
+// headline and the possessions, and thinks about keeping the record only once
+// he has decided he wants this one.
 func sheetOf(r record) (string, error) {
+	// Every event is read before anything is printed, and one that will not
+	// read refuses the sheet. The sheet shows one choice event at most, but
+	// it ends by telling the referee that the record is the only way back to
+	// this character, and that is not something to say about a record it
+	// could not finish reading.
+	_, err := choices(r)
+	if err != nil {
+		return "", err
+	}
+
 	var out strings.Builder
 
 	fmt.Fprintf(&out, "# %s\n\n", nameOrBlank(r.Name))
@@ -61,14 +71,22 @@ func sheetOf(r record) (string, error) {
 	// reading is checked against the page. On a sheet handed to a player
 	// they are four codes he cannot expand and does not need.
 
-	told, err := provenance(r, sheetRendering)
-	if err != nil {
-		return "", err
-	}
-
-	fmt.Fprintf(&out, "---\n\n%s\n", told)
+	endWithKeep(&out)
 
 	return out.String(), nil
+}
+
+// keepTheRecord is the one line every rendering ends with.
+//
+// A sheet is what a referee reads and keeps, and the record is the only way
+// back to the character on it (ADR 0001). Without this line a sheet spun,
+// read and liked would be a character discarded. The transcript ends the same
+// way, so the two printed renderings give the same advice.
+const keepTheRecord = "Keep the JSON record: it is the only way back to this character."
+
+// endWithKeep writes the footer every rendering ends with, after a rule.
+func endWithKeep(out *strings.Builder) {
+	fmt.Fprintf(out, "---\n\n%s\n", keepTheRecord)
 }
 
 func nameOrBlank(name string) string {
@@ -275,4 +293,46 @@ func serviceLines(r record) []string {
 	default:
 		return append(lines, fmt.Sprintf("%s after term %d", r.Departure.How, r.Terms))
 	}
+}
+
+// choices reads the record's choice events, which are the only place it says
+// who decided anything. A record whose events will not read fails here.
+func choices(r record) ([]eventJSON, error) {
+	var found []eventJSON
+
+	for _, raw := range r.Events {
+		var event eventJSON
+
+		err := unmarshalEvent(raw, &event)
+		if err != nil {
+			return nil, err
+		}
+
+		if event.Kind == kindChoice {
+			found = append(found, event)
+		}
+	}
+
+	return found, nil
+}
+
+// choiceAt returns a named choice point's event, and whether it was put at
+// all. A point nobody was asked is not the same as one the policy took.
+//
+// It hands back the whole event rather than who answered, because both halves
+// are wanted together: who chose, and what they chose. Asking only who leads
+// to crediting a decider with an outcome he did not pick.
+func choiceAt(r record, point string) (eventJSON, bool, error) {
+	made, err := choices(r)
+	if err != nil {
+		return eventJSON{}, false, err
+	}
+
+	for _, choice := range made {
+		if choice.Point == point {
+			return choice, true, nil
+		}
+	}
+
+	return eventJSON{}, false, nil
 }

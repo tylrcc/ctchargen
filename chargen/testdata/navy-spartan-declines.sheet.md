@@ -29,4 +29,4 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service navy --career serve --skills advanced --muster spartan --sheet`.
+Keep the JSON record: it is the only way back to this character.

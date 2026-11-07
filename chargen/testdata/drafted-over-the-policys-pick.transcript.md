@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 150 --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 2+5
@@ -148,3 +145,7 @@ Regenerate with `ctchargen new --auto --seed 150 --career serve --skills advance
 
 113. survival: rolled 1+3 = 4 against 6+, missed
 114. died in term 6, aged 42 (from 113) [E004]
+
+---
+
+Keep the JSON record: it is the only way back to this character.

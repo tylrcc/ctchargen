@@ -8,6 +8,10 @@ release turns out to be.
 - Every golden is generated from its own fixture, a scripted list of dice and
   draws, rather than from a seed found by search (#205). The roster gains two
   goldens for the readings only a run of 12s reaches, E003 and E014.
+- The sheet and the transcript end with one line, "Keep the JSON record: it is
+  the only way back to this character" (#206). The "Regenerate with …" footer,
+  its different-build warning and the player-answered variant are gone, and so
+  is the command line a rendering used to print.
 - E003 is stamped from the end of term 8, as `ERRATA.md` says, and no longer
   on the 12 at the end of term 7 that p. 7 prints in its own words. No golden
   had reached that 12 until #205, so the gate that holds the condition had

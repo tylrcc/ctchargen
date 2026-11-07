@@ -29,4 +29,4 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 495 --service marines --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

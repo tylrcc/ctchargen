@@ -21,4 +21,4 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service marines --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

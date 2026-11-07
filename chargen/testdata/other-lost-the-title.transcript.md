@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 130 --service other --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 2+4
@@ -108,3 +105,7 @@ Regenerate with `ctchargen new --auto --seed 130 --service other --career serve 
 ## titles (p. 5; Book 3 p. 22)
 
  80. social standing 10 at the end, from 11 at 18: no title, where the rolled value allowed one [E011]
+
+---
+
+Keep the JSON record: it is the only way back to this character.

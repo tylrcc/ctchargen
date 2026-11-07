@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 6 --service scouts --career oneterm --skills personal --muster goods --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+1
@@ -25,3 +22,7 @@ Regenerate with `ctchargen new --auto --seed 6 --service scouts --career oneterm
  17. the Scouts rejected him (from 16)
  18. SubmitToDraft: policy chose no from yes, no
  19. declined the draft, and remains a civilian [E001]
+
+---
+
+Keep the JSON record: it is the only way back to this character.

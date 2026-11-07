@@ -16,4 +16,4 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 39 --service navy --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

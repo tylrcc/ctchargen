@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 316 --service merchants --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+2
@@ -240,3 +237,7 @@ Regenerate with `ctchargen new --auto --seed 316 --service merchants --career se
 
 193. AssumeTitle: policy chose yes from yes, no
 194. social standing 11 confers knight/dame, and it is assumed
+
+---
+
+Keep the JSON record: it is the only way back to this character.

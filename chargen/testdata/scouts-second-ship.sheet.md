@@ -28,4 +28,4 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 5039 --service scouts --career serve --skills advanced --muster goods --sheet`.
+Keep the JSON record: it is the only way back to this character.

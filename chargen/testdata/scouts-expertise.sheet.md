@@ -26,4 +26,4 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service scouts --career serve --skills advanced --muster goods --sheet`.
+Keep the JSON record: it is the only way back to this character.

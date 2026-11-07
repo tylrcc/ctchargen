@@ -21,4 +21,4 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 18 --service other --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

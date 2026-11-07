@@ -26,4 +26,4 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service navy --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

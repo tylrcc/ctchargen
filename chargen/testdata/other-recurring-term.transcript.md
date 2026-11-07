@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 0 --service other --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+6
@@ -226,3 +223,7 @@ Regenerate with `ctchargen new --auto --seed 0 --service other --career serve --
 
 167. AssumeTitle: policy chose yes from yes, no
 168. social standing 12 confers baron/baroness, and it is assumed
+
+---
+
+Keep the JSON record: it is the only way back to this character.

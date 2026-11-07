@@ -58,13 +58,7 @@ type eventJSON struct {
 func transcriptOf(r record) (string, error) {
 	var out strings.Builder
 
-	told, err := provenance(r, historyRendering)
-	if err != nil {
-		return "", err
-	}
-
-	fmt.Fprintf(&out, "# Generation record: %s\n\n", nameOrBlank(r.Name))
-	fmt.Fprintf(&out, "%s\n\n", told)
+	fmt.Fprintf(&out, "# Generation record: %s\n", nameOrBlank(r.Name))
 
 	for _, raw := range r.Events {
 		var event eventJSON
@@ -76,6 +70,9 @@ func transcriptOf(r record) (string, error) {
 
 		writeEvent(&out, event)
 	}
+
+	out.WriteString("\n")
+	endWithKeep(&out)
 
 	return out.String(), nil
 }

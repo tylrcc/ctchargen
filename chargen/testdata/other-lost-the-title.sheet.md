@@ -20,4 +20,4 @@ UPP 556ACA, age 34, Other, 4 terms, forced out
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 130 --service other --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

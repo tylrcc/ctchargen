@@ -31,4 +31,4 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 309 --service marines --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

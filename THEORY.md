@@ -149,9 +149,8 @@ Three corollaries you must hold:
   `Roller` passed bare would have kept its dynamic type, and the dice with it.
   `TestADeciderCannotReachTheRollerThroughVary` holds it, and refuses to pass
   vacuously if no fixture reaches the Weapon choice.
-- Reproducibility is promised **within** a build and explicitly not across builds.
-  `render/provenance.go` prints "the same seed on a different build is a different
-  character" onto every sheet that carries a build stamp.
+- The record is the only way back to a character (ADR 0001). Every rendering ends
+  by saying so, and nothing prints a command to re-run.
 
 ### 5. Nothing decides on its own behalf, and the log is wired in from the first step
 
@@ -314,12 +313,9 @@ and deliberately does not rebuild domain types — "rebuilding an `Enlistment` o
 `Departure` back into an interface would give the renderer nothing it does not
 already have, and would need a decoder for every sum." Consequently `SheetFrom` and
 `TranscriptFrom` work on strings: `sheet.go` compares `ship.Kind ==
-traveller.ScoutShip.String()`, `provenance.go` compares
-`choice.By == traveller.ByPlayer.String()`. The compiler cannot see those. What
-holds them is the round-trip test in `render/roundtrip_test.go` and the schema
-tests, and `render/provenance.go` says so plainly of its own flag constants:
-"Nothing here is held by the compiler; what holds it is the round-trip test in
-`cmd/ctchargen`, which takes the line this file prints and runs it."
+traveller.ScoutShip.String()` and `choice.By == traveller.ByPolicy.String()`.
+The compiler cannot see those. What holds them is the round-trip test in
+`render/roundtrip_test.go` and the schema tests.
 
 If you rename a `String()` on a domain value, the write side moves and the read
 side silently does not. This is the seam to be careful at.

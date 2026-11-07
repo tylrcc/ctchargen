@@ -167,18 +167,18 @@ func TestARecordMustCarryAUPPAndARuleset(t *testing.T) {
 // A record carrying an event that will not read is refused by both
 // renderings, rather than rendered without it.
 //
-// The sheet is the one that changed: it now reads the events too, to find out
-// whether the player answered any choice. A sheet that swallowed the failure
-// would print the regenerate line - a promise that the seed brings this
-// character back - about a record it could not finish reading.
+// The sheet shows one choice event at most, so it has to read the events on
+// purpose. A sheet that swallowed the failure would end by telling the referee
+// that the record is the only way back to this character - about a record it
+// could not finish reading.
 func TestAnEventThatWillNotReadIsRefused(t *testing.T) {
 	t.Parallel()
 
-	// Both, because the sheet reads the events twice for two questions and
-	// reaches them by different routes. A civilian returns from the headline
-	// before it asks whose service this is, so only a record carrying one
-	// exercises that path - and it is the path that would otherwise print a
-	// headline about a record it could not finish reading.
+	// Both, because the sheet reaches the events by two routes: once up front
+	// for every record, and again for the headline of a serving character,
+	// which asks whose service this is. A civilian returns from the headline
+	// before that question, so only a record carrying a service exercises
+	// the second route.
 	for name, unreadable := range map[string][]byte{
 		"a civilian": minimalRecord(`"events":[3]`),
 		"a serving character": minimalRecord(
@@ -200,11 +200,11 @@ func TestAnEventThatWillNotReadIsRefused(t *testing.T) {
 // headlineCase is one record and what its headline must and must not read.
 type headlineCase struct{ body, wants, does string }
 
-// served is a record of a character in a service, with whatever the case
-// under test wants to say about how he got there.
-func served(service, how, provenance string) string {
+// served is a record of a character in a service, with whatever further
+// JSON fields the case under test wants to say about how he got there.
+func served(service, how, fields string) string {
 	return fmt.Sprintf(`"service":%q,"terms":2,"enlistment":{"how":%q},%s`,
-		service, how, provenance)
+		service, how, fields)
 }
 
 // chose is a Service choice event answered by whoever the case names.
@@ -373,105 +373,38 @@ func TestTheErrataAreOnTheTranscriptAndNotTheSheet(t *testing.T) {
 	}
 }
 
-// A backtick in the record does not break the code span holding the command.
+// Both renderings end with the one line that tells a referee what to keep.
 //
-// Markdown closes a code span on the first run of backticks matching the run
-// that opened it, so a command carrying one inside a single-backtick span
-// ends early and the reader is shown half a command line - which is worse
-// than none, because the half looks complete.
-//
-// Shell quoting is what makes such a value harmless; this is the separate
-// question of whether the reader sees all of what he is offered.
-func TestABacktickDoesNotBreakTheCodeSpan(t *testing.T) {
+// The record is the only way back to a character (ADR 0001), and a sheet is
+// what a referee reads and keeps, so the sheet says so once, last, and the
+// transcript says the same. Neither offers a command, a seed or a build: there
+// is nothing to re-run.
+func TestBothRenderingsEndBySayingToKeepTheRecord(t *testing.T) {
 	t.Parallel()
 
-	sheet, err := render.SheetFrom(minimalRecord(
-		"\"inputs\":{\"seed\":1,\"career\":\"serve`id`\",\"skills\":\"advanced\",\"muster\":\"cash\"}",
-	))
+	const keep = "---\n\nKeep the JSON record: it is the only way back to this character.\n"
+
+	body := minimalRecord(`"inputs":{"seed":1,"career":"serve","skills":"advanced","muster":"cash"}`)
+
+	sheet, err := render.SheetFrom(body)
 	if err != nil {
-		t.Fatalf("rendering: %v", err)
+		t.Fatalf("sheet: %v", err)
 	}
 
-	_, line, found := strings.Cut(sheet, "Regenerate with ")
-	if !found {
-		t.Fatalf("no regenerate line in\n%s", sheet)
+	transcript, err := render.TranscriptFrom(body)
+	if err != nil {
+		t.Fatalf("transcript: %v", err)
 	}
 
-	fence := len(line) - len(strings.TrimLeft(line, "`"))
-	if fence == 0 {
-		t.Fatalf("the command is not in a code span: %q", line)
-	}
-
-	// The command is what sits between the fences. Both ends are the
-	// assertion: the record's backtick survived inside the span, and the
-	// span still ran to the end of the command rather than closing on it.
-	body, _, closed := strings.Cut(line[fence:], strings.Repeat("`", fence))
-	if !closed {
-		t.Fatalf("the code span never closes: %q", line)
-	}
-
-	if !strings.Contains(body, "serve`id`") {
-		t.Errorf("the span does not carry the value the record put in it: %q", body)
-	}
-
-	if !strings.Contains(body, "--sheet") {
-		t.Errorf("the span closed before the end of the command: %q", body)
-	}
-}
-
-// A value the shell would act on is quoted, and the offer stays one line.
-//
-// Two ways a record reaches past the code span. A word beginning with `=` is
-// expanded by zsh, which sets EQUALS by default, to the path of the command
-// named after it - so `=id` written bare is not a value the shell reads back
-// as itself. A newline ends the line the offer is written on, which closes
-// the paragraph, leaves the code span open, and lands the rest of the value
-// on the sheet as markdown of its own.
-func TestAValueTheShellWouldActOnIsNotWrittenBare(t *testing.T) {
-	t.Parallel()
-
-	for name, tc := range map[string]struct{ career, avoid, wants string }{
-		// Bare, the word is one zsh expands before the tool sees it.
-		"a word zsh expands": {career: "=id", avoid: " =id ", wants: "'=id'"},
-		// Unescaped, the newlines end the offer and the heading is real.
-		// The rest is every other byte the escaping has to spell: a tab, a
-		// return, a backslash, a quote of its own, and one with no name.
-		//
-		// The quote is spelled \x27 rather than \', because the escaped
-		// form has to stay one inert word in a shell that does not read
-		// $'...': sh sees a plain single-quoted string, and a quote of its
-		// own inside it would end that string and leave the rest bare.
-		"a value carrying a newline": {
-			career: `serve\t\r\u0001\\'\n\n## Not a career\n\nrm -rf ~`,
-			avoid:  "\n## Not a career",
-			wants:  `\x27`,
-		},
-	} {
-		sheet, err := render.SheetFrom(minimalRecord(
-			`"inputs":{"seed":1,"career":"` + tc.career +
-				`","skills":"advanced","muster":"cash"}`,
-		))
-		if err != nil {
-			t.Fatalf("%s: %v", name, err)
+	for name, rendering := range map[string]string{"sheet": sheet, "transcript": transcript} {
+		if !strings.HasSuffix(rendering, keep) {
+			t.Errorf("the %s does not end by saying to keep the record:\n%s", name, rendering)
 		}
 
-		if strings.Contains(sheet, tc.avoid) {
-			t.Errorf("%s: the sheet carries %q:\n%s", name, tc.avoid, sheet)
-		}
-
-		_, offer, found := strings.Cut(sheet, "Regenerate with ")
-		if !found {
-			t.Fatalf("%s: no regenerate line in\n%s", name, sheet)
-		}
-
-		offer, _, _ = strings.Cut(offer, "\n")
-
-		if !strings.Contains(offer, tc.wants) {
-			t.Errorf("%s: the offer does not spell the value %q: %q", name, tc.wants, offer)
-		}
-
-		if !strings.Contains(offer, "--sheet") {
-			t.Errorf("%s: the offer does not reach the end of the command: %q", name, offer)
+		for _, gone := range []string{"Regenerate with", "Seed ", "--seed", "different build"} {
+			if strings.Contains(rendering, gone) {
+				t.Errorf("the %s still carries %q:\n%s", name, gone, rendering)
+			}
 		}
 	}
 }

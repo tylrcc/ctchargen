@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 0 --service other --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+6
@@ -370,3 +367,7 @@ Regenerate with `ctchargen new --auto --seed 0 --service other --career serve --
 ## titles (p. 5; Book 3 p. 22)
 
 270. held a social standing of 12 at death, which is baron/baroness [E011]
+
+---
+
+Keep the JSON record: it is the only way back to this character.

@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 5039 --service scouts --career serve --skills advanced --muster goods --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 5+3
@@ -190,3 +187,7 @@ Regenerate with `ctchargen new --auto --seed 5039 --service scouts --career serv
 142. Table 1, Material Benefits: rolled 5
 143. MusterWeapon: policy chose expertise in Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun, expertise in Body Pistol
 144. expertise instead: Body Pistol-1 (from 142)
+
+---
+
+Keep the JSON record: it is the only way back to this character.

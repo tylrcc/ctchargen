@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 4 --service navy --career serve --skills advanced --muster spartan --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 5+5
@@ -247,3 +244,7 @@ Regenerate with `ctchargen new --auto --seed 4 --service navy --career serve --s
 
 200. AssumeTitle: policy chose yes from yes, no
 201. social standing 14 confers count/countess, and it is assumed
+
+---
+
+Keep the JSON record: it is the only way back to this character.

@@ -18,4 +18,4 @@ UPP A68AAC, age 22, Other, 1 term, baron/baroness, forced out
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service other --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

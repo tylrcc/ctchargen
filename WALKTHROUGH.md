@@ -1022,87 +1022,19 @@ var errNotARecord = errors.New("not a character record")
 func decode(text []byte) (record, error) {
 ```
 
-### Provenance: the line at the bottom of every sheet
+### The line at the bottom of every rendering
 
-A sheet is what a referee reads and keeps, so it carries the way back to its
-character. `render/provenance.go` prints the _command_, not the seed, because
-running it is what the reader wants to do.
+A sheet is what a referee reads and keeps, and the record is the only way back
+to the character on it (ADR 0001). So every sheet and every transcript ends with
+the same one line, `render/sheet.go`, `keepTheRecord`:
 
-The command is built out of the record, and the record is not something this
-tool wrote — `render` reads whatever it is handed — so every value goes through
-a shell quoter before it reaches a line a person is told to paste.
-`render/provenance.go`, `safeToken` and `shellQuote`:
-
-`render/provenance.go` — `safeToken`
-
-```go
-// No `=`: zsh sets EQUALS by default, so a word beginning with one is
-// expanded to the path of the command named after it - `=ls` becomes
-// /bin/ls, and `=nosuch` fails the line before the tool sees it. Nothing
-// this tool writes carries one, so the class is narrowed rather than the
-// position reasoned about.
-var safeToken = regexp.MustCompile(`^[A-Za-z0-9@%+:,./_-]+$`)
-
-...
-
-// shellQuote writes a value so that a shell reads it back as one word.
-//
-// Not strconv.Quote, which is Go's syntax rather than the shell's. A shell
-// still expands `$`, a backtick and a backslash inside double quotes, so
-// strconv.Quote("a`id`") produces a command substitution the moment it is
-// pasted. Single quotes
-// expand nothing at all, and a single quote inside them is closed, escaped
-// and reopened.
-//
-// A value needing none is written bare, because the common case is a line a
-// person reads and every value this tool writes is a bare token.
-func shellQuote(value string) string {
-	if safeToken.MatchString(value) {
-		return value
-	}
-
-	// Single quotes carry a control character literally, and a newline
-	// carried literally ends the line - which breaks the code span, ends
-	// the markdown paragraph, and leaves the rest of the record rendering
-	// as prose of its own. See escaped.
-	if strings.ContainsFunc(value, isControl) {
-		return escaped(value)
-	}
-
-	return "'" + strings.ReplaceAll(value, "'", `'\''`) + "'"
-}
+```text
+Keep the JSON record: it is the only way back to this character.
 ```
 
-And a character whose choices were made at the keyboard gets a different line,
-because the seed alone does not bring him back. `render/provenance.go`,
-`provenance`:
-
-`render/provenance.go` — `provenance`
-
-```go
-// provenance is how a reader gets this character back, or why he cannot.
-//
-// A sheet is what a referee reads and what he keeps. The seed is in the JSON
-// record and on the transcript's opening line, and without this line a sheet
-// spun, read and liked would be a character discarded.
-//
-// What it prints is the command rather than the seed, because running it is
-// what the reader wants to do with it. The strategies are named even where
-// they are the defaults: a line that leans on a default stops reproducing its
-// character when the default moves.
-func provenance(r record, rendering string) (string, error) {
-	byPlayer, err := decidedByPlayer(r)
-	if err != nil {
-		return "", err
-	}
-
-	if byPlayer {
-		return answeredByThePlayer(r), nil
-	}
-
-	return regenerateWith(r, rendering), nil
-}
-```
+Nothing prints a command to re-run. The sheet still needs to know who named the
+service, which is the one choice event it reads back, through `choiceAt` in the
+same file.
 
 ## Layer six: the command line
 
@@ -1296,11 +1228,10 @@ UPP 798782, age 22, Army Captain (service chosen by the policy), 1 term, forced 
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 42 --name 'Alexander Jamison' --career serve --skills advanced --muster cash --sheet`, on github.com/philoserf/ctchargen (devel) — the same seed on a different build is a different character.
+Keep the JSON record: it is the only way back to this character.
 ```
 
-The name carried a space, so `shellQuote` wrapped it in single quotes and the
-line is safe to paste. `(service chosen by the policy)` appears because the
+`(service chosen by the policy)` appears because the
 policy named the Army and the enlistment throw succeeded — had the throw failed
 and the draft put him somewhere else, the headline would say so instead.
 
@@ -1310,9 +1241,6 @@ A transcript of `ctchargen new --auto --seed 42 --history | sed -n '1,26p'`, run
 
 ```text
 # Generation record: (unnamed)
-
-Regenerate with `ctchargen new --auto --seed 42 --career serve --skills advanced --muster cash --history`, on github.com/philoserf/ctchargen (devel) — the same seed on a different build is a different character.
-
 
 ## characteristics (p. 4)
 
@@ -1522,13 +1450,12 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service navy --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.
 ```
 
-That provenance line ends with a bare full stop and no build clause, because the
-golden was generated in-process by a test rather than by the command — and a
-build nobody recorded is not one to warn about. `stamp()` in `main.go` is the
-only thing that fills the field.
+The same line ends every sheet and every transcript, whoever generated the
+record and however: it names nothing about the run, because there is nothing to
+re-run.
 
 Each golden is a triple: the record, the sheet it renders to, and the transcript.
 All three are regenerated, never hand-edited.

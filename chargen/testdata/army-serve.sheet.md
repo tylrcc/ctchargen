@@ -30,4 +30,4 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 4 --service army --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

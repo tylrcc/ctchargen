@@ -19,4 +19,4 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 52 --service merchants --career serve --skills advanced --muster goods --sheet`.
+Keep the JSON record: it is the only way back to this character.

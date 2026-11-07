@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 7 --service navy --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+1
@@ -128,3 +125,7 @@ Regenerate with `ctchargen new --auto --seed 7 --service navy --career serve --s
 100. a Low Passage (from 99)
 101. Table 1, Material Benefits: rolled 6
 102. a Low Passage (from 101)
+
+---
+
+Keep the JSON record: it is the only way back to this character.

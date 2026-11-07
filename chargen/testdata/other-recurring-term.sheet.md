@@ -25,4 +25,4 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 0 --service other --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

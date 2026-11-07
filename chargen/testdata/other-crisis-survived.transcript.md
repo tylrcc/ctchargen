@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 18 --service other --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 2+1
@@ -183,3 +180,7 @@ Regenerate with `ctchargen new --auto --seed 18 --service other --career serve -
 137. Intelligence +1, 5 to 6 (from 136)
 138. Table 1, Material Benefits: rolled 2
 139. Intelligence +1, 6 to 7 (from 138)
+
+---
+
+Keep the JSON record: it is the only way back to this character.

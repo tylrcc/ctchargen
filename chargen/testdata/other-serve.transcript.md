@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 7 --service other --career serve --skills advanced --muster cash --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+1
@@ -132,3 +129,7 @@ Regenerate with `ctchargen new --auto --seed 7 --service other --career serve --
  98. nothing: the table prints a dash for this service (from 97)
  99. Table 1, Material Benefits: rolled 6
 100. nothing: the table prints a dash for this service (from 99)
+
+---
+
+Keep the JSON record: it is the only way back to this character.

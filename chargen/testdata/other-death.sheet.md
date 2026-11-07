@@ -17,4 +17,4 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 5 --service other --career serve --skills advanced --muster cash --sheet`.
+Keep the JSON record: it is the only way back to this character.

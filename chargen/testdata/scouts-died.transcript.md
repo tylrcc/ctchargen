@@ -1,8 +1,5 @@
 # Generation record: (unnamed)
 
-Regenerate with `ctchargen new --auto --seed 1 --service scouts --career retire --skills service --muster spartan --history`.
-
-
 ## characteristics (p. 4)
 
   2. Strength: rolled 6+1
@@ -49,3 +46,7 @@ Regenerate with `ctchargen new --auto --seed 1 --service scouts --career retire 
 
  34. survival: rolled 2+4 = 6 against 7+, missed
  35. died in term 2, aged 26 (from 34) [E004]
+
+---
+
+Keep the JSON record: it is the only way back to this character.

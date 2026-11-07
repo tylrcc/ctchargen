@@ -17,4 +17,4 @@ UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, d
 
 ---
 
-Regenerate with `ctchargen new --auto --seed 19 --career oneterm --skills personal --muster goods --sheet`.
+Keep the JSON record: it is the only way back to this character.
