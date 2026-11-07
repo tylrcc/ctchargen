@@ -181,11 +181,15 @@ its list of places the book is silent, and the readings it reached there.
 | `WALKTHROUGH.md`             | Nothing binding. A linear read of the code in execution order, generated. Where it disagrees with the tree, it is the document that is wrong.                                                        |
 | `CLAUDE.md`                  | This file.                                                                                                                                                                                           |
 
-The documents are held to the code in both directions once code exists: every
-`Erratum` constant has an `ERRATA.md` entry and every entry a constant, which
-the `rules` lift holds; `COVERAGE.md` is generated from markers,
-and a rule an implementation names and no test holds, or the reverse, fails
-the generator. Each gate is verified by breaking it.
+Each fact lives in one place, so there is no second copy to hold to the
+first. The readings document is the readings, and `rules` lifts it: an
+`Erratum` constant with no entry, or an entry with no constant, fails the
+lift. The `--auto` policy is its own doc comments. `COVERAGE.md`'s tables are
+generated from markers beside the code, and a rule an implementation names
+and no test holds, or the reverse, fails the generator. What still describes
+the code from outside it — the schema's strategy enums, the exported API
+baseline — is held to the code by a test beside what it describes. Each gate
+is verified by breaking it.
 
 ## The shape of the tree
 
@@ -236,22 +240,23 @@ watches live.
 `decode.go`. Where the domain shape and the wire shape disagree, the codec
 absorbs it and the domain type keeps its shape.
 
-**`internal/docsgate`** has no non-test code. It holds the exported Go API to
-its baseline and the schema's strategy enums to the strategies the code takes.
-
 `chargen`'s tests hold the readings to the goldens, beside the roster that
 generates them: each reading's stamping predicate is checked over every
 golden in both directions, every choice point must be reached by some golden,
 and the readings no golden stamps by design are pinned by name in one list,
 `namesNoRecord`. They read the checked-in goldens rather than generating
-records, so they read what a referee would be handed.
+records, so they read what a referee would be handed. The schema's three
+strategy enums are held to the strategies there too, where the strategies
+are defined.
 
-**`internal/coverage`** has no non-test code and is nothing but the generator
-of `docs/COVERAGE.md`. An implementation carries
+**`internal/coverage`** has no non-test code. It is the generator of
+`docs/COVERAGE.md`: an implementation carries
 `// Implements: <rule> [<page>] in <section>.` and the test or golden that
 holds it carries `// Holds: <rule>.`; the generator joins them on the rule and
 writes each section's table, leaving the document's prose as written. Its
 package doc says where a marker may sit, and a marker anywhere else fails it.
+It also holds the exported Go API to its baseline until #199 decides whether
+there is a Go library to freeze.
 
 **`cmd/ctchargen`** is the subcommands and their flag sets. It splits the data
 channel from the asking channel: the record, the sheet and the transcript to
@@ -267,8 +272,8 @@ narrower than a task, in a loop:
 go test ./chargen                     # one package
 go test ./chargen -run TestGoldens    # one test
 go test ./chargen -regenerate         # rewrite the goldens
-go test ./internal/docsgate -regenerate  # rewrite the exported API baseline
-go test ./internal/coverage -regenerate  # rewrite docs/COVERAGE.md from the markers
+go test ./internal/coverage -regenerate      # rewrite docs/COVERAGE.md from the markers
+go test ./internal/coverage -regenerate-api  # rewrite the exported API baseline
 go run ./cmd/ctchargen new --auto --sheet
 ```
 
@@ -307,8 +312,9 @@ go run ./cmd/ctchargen new --auto --sheet
   from a record that walks the new path.
 - **Goldens are regenerated, never hand-edited.**
 - **The exported Go API and the CLI are held to a baseline (#126).** The API
-  is `internal/docsgate/testdata/api.txt`, held both ways: a line gone is a
-  break, a line new is a promise, and either is regenerated only on purpose.
+  is `internal/coverage/testdata/api.txt`, held both ways: a line gone is a
+  break, a line new is a promise, and either is regenerated only on purpose,
+  under its own `-regenerate-api` flag.
   The CLI's flags, types and defaults are typed out in
   `cmd/ctchargen/cli_test.go` and held one way, because a new flag breaks
   nobody; the exit status beside them is 0 or 1.

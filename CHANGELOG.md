@@ -5,6 +5,17 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Each fact the code and the documents both stated now lives in one place,
+  and `internal/docsgate`, which existed to hold the copies together, is
+  deleted (#204, completed by #221). The readings document is lifted by
+  `rules`; the `--auto` policy is its own doc comments; the coverage map is
+  generated from markers beside the code; the stamping predicates and the
+  choice-point checks run beside the fixtures. docsgate's last two checks
+  move in #221: the schema's strategy enums are held to the strategies in
+  `chargen`, where they are defined, and the exported API baseline moves to
+  `internal/coverage` until #199 decides its future, regenerating under its
+  own flag, `go test ./internal/coverage -regenerate-api`, so rewriting the
+  coverage map never accepts an API change in passing.
 - The stamping predicates, the record reader they use, the step-name check
   and both choice-point checks move from `internal/docsgate` to `chargen`'s
   tests, beside the fixture roster (#220). They read the goldens as before and

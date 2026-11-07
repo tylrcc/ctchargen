@@ -215,7 +215,23 @@ rewrite this question's offer and answer with what it wrote. Named first, the
 forgery is not in what `record` checks, and is refused.
 `TestADeciderCannotForgeItsOwnOffer` holds it.
 
-### 7. The documents are code, and each gate is verified by breaking it
+### 7. Each fact lives in one place, and each gate is verified by breaking it
+
+A fact stated twice is held by a test whose catches are a record of the copies
+drifting, so the tree states each fact once and the documents that remain
+either are that statement or are generated from it:
+
+- **The readings are `rules/data/ERRATA.md`**, hand-written and lifted once by
+  `rules` with the tables: every `Erratum` constant ↔ every `### E0NN` entry
+  both ways, so a constant with no entry, an entry with no constant, or an id
+  twice fails the lift naming the id (`rules.TestMalformedReadings`). Each
+  lifted reading carries its prose as text.
+- **The `--auto` policy is `chargen.Policy`'s doc comments**: each method says
+  when it is asked and what each strategy answers, and `PolicyVersion` says
+  what bumps it. There is no policy document to disagree with them.
+- **`docs/COVERAGE.md`'s tables are generated** by `internal/coverage` from an
+  `Implements:` marker on each implementation and a `Holds:` marker on each
+  test or golden; a rule with only one side fails the generator naming it.
 
 `chargen`'s tests, beside the fixture roster, hold:
 
@@ -226,28 +242,21 @@ forgery is not in what `record` checks, and is refused.
   reading's prose, never from the stamping code, because "a condition
   transcribed from the thing it checks is one reading written twice." A failure
   quotes the lifted stamped-on prose, and the readings no golden stamps by
-  design are pinned in one list.
+  design are pinned in one list;
+- in `strategy_test.go`, the schema's strategy enums ↔ the code's strategies.
 
-`internal/docsgate` has no non-test code. It holds:
+`internal/coverage`'s `api_test.go` holds, in `TestTheExportedAPIIsTheBaseline`,
+**the exported Go API of `traveller`, `dice`, `rules`, `chargen` and `render`
+against `testdata/api.txt`**, one line per exported declaration, field and
+method, read through `go/importer`'s source importer. Both ways: a line gone is
+a removed name or a changed signature, which breaks a caller; a line arrived is
+a new promise, which Go's rules allow but only on purpose. Either is answered
+by `go test ./internal/coverage -regenerate-api` and reading the diff. It lives
+there until #199 decides whether there is a Go library to freeze.
 
-- in `strategy_test.go`, the schema's strategy enums ↔ the code's strategies;
-- in `api_test.go`'s `TestTheExportedAPIIsTheBaseline`, **the exported Go
-  API of `traveller`, `dice`, `rules`, `chargen` and `render` against
-  `testdata/api.txt`**, one line per exported declaration, field and method, read
-  through `go/importer`'s source importer. Both ways: a line gone is a removed
-  name or a changed signature, which breaks a caller; a line arrived is a new
-  promise, which Go's rules allow but only on purpose. Either is answered by
-  `go test ./internal/docsgate -regenerate` and reading the diff.
-
-The readings document is held by a lift, not by `docsgate`.
-`rules/data/ERRATA.md` is embedded beside the tables and lifted once with them,
-and every `Erratum` constant ↔ every `### E0NN` entry both ways: a constant
-with no entry, an entry with no constant, or an id twice fails the lift naming
-the id (`rules.TestMalformedReadings`).
-
-The command line has the same kind of baseline, beside the code it holds rather
-than in `docsgate`. `cmd/ctchargen/cli_test.go` types out each subcommand's
-flags with their types and defaults and holds them **one way**
+The command line has the same kind of baseline, beside the code it holds.
+`cmd/ctchargen/cli_test.go` types out each subcommand's flags with their types
+and defaults and holds them **one way**
 (`TestEveryBaselineFlagIsStillDeclared`): a flag gone, or retyped, or with a
 moved default breaks a script that passed it, while a new flag breaks nobody and
 is held instead by `usage_test.go`'s `TestEveryDeclaredFlagIsListed`, which walks
@@ -404,7 +413,7 @@ true — see the freeze, below.
 `skillsStrategies`, `musterStrategies`), its answer in each affected
 `Policy` method's doc comment, the schema's
 `inputs` enum, and bump `PolicyVersion` if an existing answer moved.
-`docsgate.TestTheSchemaNamesEveryStrategy` holds the schema's enum to the
+`chargen.TestTheSchemaNamesEveryStrategy` holds the schema's enum to the
 strategy slice in both directions, so the enum cannot be left behind.
 
 **A new mustering-out benefit or departure kind.** Add the case to the sum and
@@ -435,8 +444,8 @@ terms, breaking. A new choice point adds a method to the exported `Decider`
 interface, which breaks any implementation outside the module; a new case on a
 sum adds a method to its exported `…Cases` interface, which breaks any fold
 outside it. The compiler-error discipline of idea 1 is exactly what a caller in
-another module would experience as a break. The baseline in `docsgate` will
-report it as a line gone. After the tag either one is a major version; the tree
+another module would experience as a break. The API baseline will report it
+as a line gone. After the tag either one is a major version; the tree
 grows the same way, and the cost is the number.
 
 **Cross-build record compatibility, before `v1.0.0`.** Deliberately unpromised.
@@ -490,8 +499,8 @@ into its own slice is not in what `record` checks against, and is refused.
   second removes it.
 - **Writing a test for coverage.** A test that can fail only when a format
   string is edited holds nothing. Coverage is neither measured nor chased.
-- **Regenerating `internal/docsgate/testdata/api.txt` without reading the diff.**
-  A line gone is a break to callers once `v1.0.0` is tagged; `-regenerate` makes
+- **Regenerating `internal/coverage/testdata/api.txt` without reading the diff.**
+  A line gone is a break to callers once `v1.0.0` is tagged; `-regenerate-api` makes
   the gate pass, and the diff is the only place the break is visible.
 - **Consulting the repository's own history at or before `41a213a`.** The clean
   room covers it, at every rank but one: only that tree's _errata_ may be

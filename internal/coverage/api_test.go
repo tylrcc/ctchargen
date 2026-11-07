@@ -1,4 +1,4 @@
-package docsgate_test
+package coverage_test
 
 import (
 	"flag"
@@ -12,13 +12,16 @@ import (
 	"testing"
 )
 
-var regenerate = flag.Bool("regenerate", false, "rewrite the exported API baseline")
+// regenerateAPI is its own flag, not the coverage map's -regenerate: a new
+// exported name is a promise, taken on purpose, and rewriting the coverage map
+// must not take one in passing.
+var regenerateAPI = flag.Bool("regenerate-api", false, "rewrite the exported API baseline")
 
 // apiBaseline is the exported Go API v1.0.0 ships, one declaration a line.
 const apiBaseline = "testdata/api.txt"
 
 // The packages whose exported names the tag freezes, in the ordinary Go sense
-// (#126). cmd/ctchargen is a command and internal/docsgate has no non-test
+// (#126). cmd/ctchargen is a command and internal/coverage has no non-test
 // code, so neither has an API to freeze.
 var apiPackages = []string{
 	"github.com/philoserf/ctchargen/traveller",
@@ -33,7 +36,10 @@ var apiPackages = []string{
 // A line that has gone is a name removed or a signature changed, which breaks
 // a caller. A line that has arrived is a name exported, which is a promise
 // made; it is allowed under Go's rules, but only on purpose, so it is
-// regenerated rather than absorbed: `go test ./internal/docsgate -regenerate`,
+// regenerated rather than absorbed:
+//
+//	go test ./internal/coverage -regenerate-api
+//
 // then read the diff. Nothing else held this - six exported names nobody used
 // could leave and every test stayed green (#130).
 func TestTheExportedAPIIsTheBaseline(t *testing.T) {
@@ -46,7 +52,7 @@ func TestTheExportedAPIIsTheBaseline(t *testing.T) {
 
 	current := strings.Join(lines, "\n") + "\n"
 
-	if *regenerate {
+	if *regenerateAPI {
 		err := os.WriteFile(apiBaseline, []byte(current), 0o600)
 		if err != nil {
 			t.Fatalf("writing %s: %v", apiBaseline, err)

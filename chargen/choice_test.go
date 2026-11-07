@@ -57,17 +57,23 @@ func TestChoicePointsMatchTheDecider(t *testing.T) {
 		points = append(points, c.String())
 	}
 
-	methods := deciderMethods()
+	sameNames(t, points, "a ChoicePoint", deciderMethods(), "a method of Decider")
+}
 
-	for _, point := range points {
-		if !slices.Contains(methods, point) {
-			t.Errorf("%s is a ChoicePoint and no method of Decider", point)
+// sameNames reports every name in one list and not the other, both ways, and
+// not only the first.
+func sameNames(t *testing.T, these []string, theseAre string, those []string, thoseAre string) {
+	t.Helper()
+
+	for _, name := range these {
+		if !slices.Contains(those, name) {
+			t.Errorf("%s is %s but not %s", name, theseAre, thoseAre)
 		}
 	}
 
-	for _, method := range methods {
-		if !slices.Contains(points, method) {
-			t.Errorf("%s is a method of Decider and no ChoicePoint", method)
+	for _, name := range those {
+		if !slices.Contains(these, name) {
+			t.Errorf("%s is %s but not %s", name, thoseAre, theseAre)
 		}
 	}
 }

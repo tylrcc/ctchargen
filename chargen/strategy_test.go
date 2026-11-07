@@ -1,13 +1,17 @@
-package docsgate_test
+package chargen_test
 
 import (
 	"encoding/json"
-	"slices"
+	"os"
 	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/chargen"
 )
+
+// schemaPath is the record's published schema, which names the strategies a
+// record may carry.
+const schemaPath = "../docs/character.schema.json"
 
 // The schema's three strategy enums name exactly the strategies the code
 // takes, in both directions.
@@ -19,7 +23,12 @@ import (
 func TestTheSchemaNamesEveryStrategy(t *testing.T) {
 	t.Parallel()
 
-	var schema struct {
+	text, err := os.ReadFile(schemaPath)
+	if err != nil {
+		t.Fatalf("reading the schema: %v", err)
+	}
+
+	var document struct {
 		Properties struct {
 			Inputs struct {
 				Properties map[string]struct {
@@ -29,7 +38,7 @@ func TestTheSchemaNamesEveryStrategy(t *testing.T) {
 		} `json:"properties"`
 	}
 
-	err := json.Unmarshal([]byte(read(t, "character.schema.json")), &schema)
+	err = json.Unmarshal(text, &document)
 	if err != nil {
 		t.Fatalf("the schema is not JSON: %v", err)
 	}
@@ -39,13 +48,12 @@ func TestTheSchemaNamesEveryStrategy(t *testing.T) {
 		"skills": chargen.SkillsChoices(),
 		"muster": chargen.MusterChoices(),
 	} {
-		inSchema := slices.Sorted(slices.Values(schema.Properties.Inputs.Properties[field].Enum))
+		inSchema := document.Properties.Inputs.Properties[field].Enum
 		if len(inSchema) == 0 {
 			t.Errorf("the schema's inputs.%s has no enum, so this checks nothing", field)
 		}
 
-		inCode := slices.Sorted(slices.Values(strings.Split(choices, ", ")))
-
-		compare(t, inCode, inSchema, "--"+field, "the schema's inputs."+field)
+		sameNames(t, strings.Split(choices, ", "), "a --"+field+" strategy",
+			inSchema, "in the schema's inputs."+field+" enum")
 	}
 }

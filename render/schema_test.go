@@ -12,8 +12,8 @@ import (
 	"github.com/santhosh-tekuri/jsonschema/v6"
 )
 
-// docs/character.schema.json describes what this build writes, and CI is what
-// keeps it honest. It is not a promise to records already written: the PRD
+// docs/character.schema.json describes what this build writes, and the gate
+// is what keeps it honest. It is not a promise to records already written: the PRD
 // rules out cross-version record compatibility, because a record is
 // the only way back to its character, and nothing in it is hand-written.
 //

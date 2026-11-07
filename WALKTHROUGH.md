@@ -28,7 +28,8 @@ the source; a transcript is a command run while writing, and says so.
 
 ## Architecture
 
-Six packages, and the import arrows point one way. The compiler holds most of
+Six packages, and a seventh, `internal/coverage`, that is tests alone and
+imports nothing outside them. The import arrows point one way. The compiler holds most of
 that, because a reverse edge is an import cycle; the edges that would still
 compile — `traveller` or `rules` importing `dice`, the command importing `rules`
 or `dice` — are denied by `depguard` in `.golangci.yml`. It is also easy to
@@ -43,7 +44,7 @@ A transcript of `go list -deps ./... | grep philoserf | sed 's|github.com/philos
 ./chargen
 ./render
 ./cmd/ctchargen
-./internal/docsgate
+./internal/coverage
 ```
 
 That listing is in dependency order — `dice` and `traveller` first because
@@ -58,6 +59,7 @@ rules            -> traveller
 chargen          -> dice rules traveller
 render           -> chargen traveller
 cmd/ctchargen    -> chargen render traveller
+internal/coverage ->
 ```
 
 Read that as four layers:
@@ -74,9 +76,9 @@ Read that as four layers:
 - **`render`** — projections: JSON, a character sheet, a transcript.
 - **`cmd/ctchargen`** — flag parsing, the interactive player, file output.
 
-`internal/docsgate` has no non-test code at all. It holds the exported API to
-its baseline and the schema's strategy enums to the code. `internal/coverage`
-has none either; it generates `docs/COVERAGE.md` from markers beside the code.
+`internal/coverage` has no non-test code at all. It generates
+`docs/COVERAGE.md` from markers beside the code, and holds the exported API to
+its baseline.
 
 ## Layer one: the domain
 
@@ -1471,28 +1473,36 @@ navy-captain.transcript.md
 
 ## The gates
 
+Each fact lives in one place, so no test exists to hold a second copy to the
+first. The readings document's entries and the `Erratum` constants are held
+to each other by the `rules` lift; the `--auto` policy is its own doc
+comments; `COVERAGE.md` is generated from markers beside the code.
+
 `chargen`'s tests hold the readings and the choice points to the goldens,
 beside the roster that generates them: the stamping conditions of
-`rules/data/ERRATA.md` both ways, and every choice point to a golden that
-reaches it. The readings document's entries and the `Erratum` constants are
-held to each other by the `rules` lift, and `COVERAGE.md` is generated from
-markers beside the code by `internal/coverage`. `internal/docsgate`, a package
-with no non-test code, holds the schema's three strategy enums to the
-strategies the code takes, and the exported Go API to a checked-in baseline:
+`rules/data/ERRATA.md` both ways, every choice point to a golden that reaches
+it, and the schema's three strategy enums to the strategies the code takes.
+`internal/coverage`, a package with no non-test code, generates the coverage
+map and holds the exported Go API to a checked-in baseline:
 
-A transcript of `grep -h '^func Test' internal/docsgate/*.go | sed 's/func //; s/(t \*testing.T) {//'`, run while writing:
+A transcript of `grep -h '^func Test' internal/coverage/*.go | sed 's/func //; s/(t \*testing.T) {//'`, run while writing:
 
 ```text
 TestTheExportedAPIIsTheBaseline
-TestTheSchemaNamesEveryStrategy
+TestTheCoverageMapIsGenerated
+TestAMarkerRemovedFailsNamingTheRule
+TestOnlyTheTablesAreGenerated
+TestMarkersThatCannotMakeADocument
+TestAMarkerOutOfPlaceOrOutOfShape
+TestAMarkerWraps
 ```
 
 `TestTheExportedAPIIsTheBaseline` writes one line per exported declaration of
 the five library packages and compares the list with
-`internal/docsgate/testdata/api.txt`, both ways: a line gone is a name removed or
-a signature changed, and a line arrived is a promise made, which is taken on
-purpose by regenerating the baseline
-(`go test ./internal/docsgate -regenerate`) and reading the diff. The command line has its own baseline in
+`internal/coverage/testdata/api.txt`, both ways: a line gone is a name removed
+or a signature changed, and a line arrived is a promise made, which is taken
+on purpose by regenerating the baseline under its own flag
+(`go test ./internal/coverage -regenerate-api`) and reading the diff. The command line has its own baseline in
 `cmd/ctchargen/cli_test.go`, held in one direction only — a flag a script passes
 must keep its name, type and default, and a new flag breaks nothing — beside a
 test that the exit status is only ever 0 or 1:
@@ -1525,7 +1535,7 @@ A transcript of `go test ./... -count=1 2>&1 | sed -E 's/[[:space:]]+[0-9.]+s$//
 ok  	github.com/philoserf/ctchargen/chargen
 ok  	github.com/philoserf/ctchargen/cmd/ctchargen
 ok  	github.com/philoserf/ctchargen/dice
-ok  	github.com/philoserf/ctchargen/internal/docsgate
+ok  	github.com/philoserf/ctchargen/internal/coverage
 ok  	github.com/philoserf/ctchargen/render
 ok  	github.com/philoserf/ctchargen/rules
 ok  	github.com/philoserf/ctchargen/traveller
