@@ -1492,6 +1492,7 @@ A transcript of `grep -h '^func Test' internal/coverage/*.go | sed 's/func //; s
 ```text
 TestTheCoverageMapIsGenerated
 TestAMarkerRemovedFailsNamingTheRule
+TestACiteNamesAnAuthority
 TestOnlyTheTablesAreGenerated
 TestMarkersThatCannotMakeADocument
 TestAMarkerOutOfPlaceOrOutOfShape
