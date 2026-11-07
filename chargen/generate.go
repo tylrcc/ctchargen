@@ -25,8 +25,8 @@ const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 type Option func(*run)
 
 // WithRoller walks the procedure against a roller of the caller's own, which
-// is how a test replays a particular path: a career past the Aging Table's
-// last printed term, say, that no seed would reach.
+// is how a fixture walks a particular path: a career past the Aging Table's
+// last printed term, say, which takes a run of 12s no random career throws.
 func WithRoller(roller Roller) Option {
 	return func(r *run) { r.roll = roller }
 }

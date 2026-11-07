@@ -265,21 +265,19 @@ func stillParked(t *testing.T, readings []reading, disagreements map[traveller.E
 
 // The readings no golden record stamps, pinned so the gap is visible.
 //
-// Two of them are correct and permanent: E012 and E015 say "No record" in so
-// many words, and this gate is the only thing that would notice if one were
-// stamped anyway. The other two are a limitation of the roster, not of the
-// readings - E003 and E014 need a career longer than any seed produces, so
-// chargen reaches them with a scripted die instead and no golden carries
-// them. For those two this gate proves only that nothing stamps them
-// wrongly, never that anything stamps them rightly.
+// Both are correct and permanent: E012 and E015 say "No record" in so many
+// words, and this gate is the only thing that would notice if one were
+// stamped anyway. E003 and E014 were on this list while the roster was seeds,
+// because no seed produces the run of 12s they turn on; since #205 the roster
+// scripts its dice and two goldens carry them.
 //
 // The set is asserted rather than logged so that a change in either
-// direction is a finding: a golden that starts reaching E014 should shrink
-// this list, and a reading that quietly stops appearing should not go unseen.
+// direction is a finding: a golden that stamps one of these is wrong, and a
+// reading that quietly stops appearing should not go unseen.
 func unreached(t *testing.T, readings []reading, stamped map[traveller.Erratum]bool) {
 	t.Helper()
 
-	want := []string{"E003", "E012", "E014", "E015"}
+	want := []string{"E012", "E015"}
 
 	var got []string
 

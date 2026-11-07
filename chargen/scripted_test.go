@@ -8,67 +8,16 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-// scripted is a roller that answers every two-dice throw with a 12 for as
-// long as it is told to, and with a 2 thereafter. One die is always a 1.
-//
-// It exists because two readings cannot be reached by any seed. Past term 7
-// only a 12 on the reenlistment throw grants another term (pp. 6-7), so a
-// career long enough to leave the Aging Table's last printed column needs
-// eight consecutive 12s and then more - which is what E003's recurrence and
-// E014's terminal band both turn on. This is the scripted die the PRD asks
-// for so that a particular path can be walked deliberately.
-type scripted struct {
-	twelves int
-	drawn   int
-}
-
-func (s *scripted) Die() int {
-	s.drawn++
-
-	return 1
-}
-
-// Among takes the first alternative, which is what this roller's careers
-// were written against: it exists to walk a path no seed reaches (E003,
-// E014), and a drawn weapon would make that path depend on a draw as well as
-// on the twelves.
-func (s *scripted) Among(int) int {
-	s.drawn++
-
-	return 0
-}
-
-func (s *scripted) TwoDice() (int, int) {
-	s.drawn += 2
-
-	if s.twelves > 0 {
-		s.twelves--
-
-		return 6, 6
-	}
-
-	return 1, 1
-}
-
 // E003 reads p. 7's "an additional term" as recurring, and E014 reads the
-// Aging Table's last column as terminal. Both are unreachable by a seed, and
-// both are load-bearing: without the first the career stops at term 8, and
-// without the second there is no row to read for term 15.
+// Aging Table's last column as terminal. Both turn on a run of 12s no random
+// career produces, and both are load-bearing: without the first the career
+// stops at term 8, and without the second there is no row to read for term
+// 15. The fixture that walks it is on the roster, so its golden carries the
+// stamps and this test holds the arithmetic.
 func TestACareerPastTheTablesLastColumn(t *testing.T) {
 	t.Parallel()
 
-	const enoughTwelves = 80
-
-	inputs := chargen.Inputs{
-		Seed: 0, Service: traveller.Other, Forced: true,
-		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
-	}
-
-	character, err := chargen.Generate(inputs, chargen.DefaultPolicy(),
-		chargen.WithRoller(&scripted{twelves: enoughTwelves}))
-	if err != nil {
-		t.Fatalf("generating: %v", err)
-	}
+	character := byName(t, "other-past-the-table").generate(t)
 
 	const pastTheTable = 15
 

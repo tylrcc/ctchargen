@@ -13,7 +13,7 @@ import (
 // The worked example of Book 1 pp. 23-25, replayed.
 //
 // FR9 makes the instrument free: the procedure asks through a Decider and
-// throws through a Roller, so a scripted pair walks the example's own
+// throws through a Roller, so a narrated pair walks the example's own
 // character and the result is compared against the page. It is the one check
 // on this engine written by someone other than its author.
 //
@@ -92,10 +92,10 @@ var jamisonDice = []int{
 	5, 6, 2, 6, 6, 6,
 }
 
-// script rolls a written-down sequence, and refuses to be asked for more
+// narrated rolls the sequence the page narrates, and refuses to be asked for more
 // than it was given: a throw the engine makes and the page does not narrate
 // would otherwise be answered with a zero nobody chose.
-type script struct {
+type narrated struct {
 	t      *testing.T
 	throws []int
 	dice   []int
@@ -104,13 +104,13 @@ type script struct {
 // Among is never called: the worked example drives its own decider, which
 // names each weapon the book names rather than choosing one. If this ever
 // fires, the replay has stopped following p. 25 and started guessing.
-func (s *script) Among(int) int {
+func (s *narrated) Among(int) int {
 	s.t.Fatalf("the worked example drew among alternatives; p. 25 names them")
 
 	return 0
 }
 
-func (s *script) Die() int {
+func (s *narrated) Die() int {
 	s.t.Helper()
 
 	if len(s.dice) == 0 {
@@ -124,7 +124,7 @@ func (s *script) Die() int {
 	return next
 }
 
-func (s *script) TwoDice() (int, int) {
+func (s *narrated) TwoDice() (int, int) {
 	s.t.Helper()
 
 	if len(s.throws) == 0 {
@@ -244,7 +244,7 @@ func replayJamison(t *testing.T) *chargen.Character {
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 
-	rolls := &script{t: t, throws: slices.Clone(jamisonThrows), dice: slices.Clone(jamisonDice)}
+	rolls := &narrated{t: t, throws: slices.Clone(jamisonThrows), dice: slices.Clone(jamisonDice)}
 
 	chosen := &decisions{
 		t: t,

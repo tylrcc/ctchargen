@@ -437,8 +437,8 @@ that a pre-v1 shape change should bump it. Do not bump it to mark a change now.
 
 **A `Roller` that never fails a reenlistment throw.** `run.serve()` is an unbounded
 loop, and the comment is exact: termination is "a contract on the `Roller`, not a
-property of this function." The scripted test that walks past the Aging Table's
-last column hands one a _count_ of twelves for precisely this reason (#54). Nothing
+property of this function." The fixture that walks past the Aging Table's last
+column scripts a _finite_ list of dice for precisely this reason (#54). Nothing
 enforces the contract.
 
 **Injecting a decider that mutates what it is offered.** The engine's whole

@@ -12,145 +12,12 @@ import (
 	"github.com/philoserf/ctchargen/traveller"
 )
 
-// The golden fixtures. They are regenerated, never hand-edited: run
-// `go test ./chargen -regenerate` and read the diff.
-//
-// The roster is what the PRD asks for, restricted to the paths this
-// milestone's engine can walk - one per selectable strategy, plus the cases
-// only a particular path produces: a civilian who declined the draft, a
-// draftee, a death in service, and a medical crisis, which is the one path
-// that puts months on an age.
+// The goldens. They are regenerated, never hand-edited: run
+// `go test ./chargen -regenerate` and read the diff. The roster that
+// generates them is in fixtures_test.go.
 //
 //nolint:gochecknoglobals // the flag package has no other shape.
 var regenerate = flag.Bool("regenerate", false, "rewrite the golden fixtures")
-
-type fixture struct {
-	name    string
-	seed    uint64
-	service traveller.ServiceName
-	forced  bool
-	policy  chargen.Policy
-}
-
-//nolint:gochecknoglobals // an immutable roster, and Go has no const slice.
-var fixtures = []fixture{
-	{"other-serve", 7, traveller.Other, true, chargen.DefaultPolicy()},
-
-	// The four services that print a rank column (p. 10).
-	{"navy-captain", 4, traveller.Navy, true, chargen.DefaultPolicy()},
-	{"marines-serve", 4, traveller.Marines, true, chargen.DefaultPolicy()},
-	{"army-serve", 4, traveller.Army, true, chargen.DefaultPolicy()},
-	// Captain of the Merchants, which is the top of that column (E013), and
-	// the only column whose Table 1 awards a Free Trader.
-	{"merchants-captain", 316, traveller.Merchants, true, chargen.DefaultPolicy()},
-	// Rejected by the Navy, drafted into the Merchants, and commissioned
-	// there in a later term - p. 5 bars a draftee from a commission in his
-	// first term only: "they do become eligible during the second and
-	// subsequent terms of service if they reenlist."
-	{"drafted-then-commissioned", 7, traveller.Navy, true, chargen.DefaultPolicy()},
-	// Rank 5 taking the +1 the page allows on Table 1 (p. 9).
-	{
-		"merchants-table1-modifier", 52, traveller.Merchants, true,
-		chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
-	},
-	// A characteristic reduced to zero, and the crisis survived - the one
-	// path that puts months on an age (pp. 7-8).
-	{"other-crisis-survived", 18, traveller.Other, true, chargen.DefaultPolicy()},
-	// The same crisis, failed. E008 reads a failed saving throw as death.
-	{"other-crisis-died", 106, traveller.Other, true, chargen.DefaultPolicy()},
-	{"other-death", 5, traveller.Other, true, chargen.DefaultPolicy()},
-	{"other-title", 4, traveller.Other, true, chargen.DefaultPolicy()},
-	// Killed by a survival throw holding a Social Standing of 12. E011
-	// assesses the dead and does not ask them, and no other fixture reaches
-	// that branch: every other death in this roster ends below 11.
-	{"died-a-noble", 39, traveller.Navy, true, chargen.DefaultPolicy()},
-	// Rank 5 declining the +1 that p. 9 allows him on Table 1. Spartan is
-	// the only strategy that declines it, and until this fixture no
-	// generated character both held the rank and refused the modifier.
-	{
-		"navy-spartan-declines", 4, traveller.Navy, true,
-		chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
-	},
-	// Killed in the Scouts, which is where the service-wide grant of p. 23
-	// is carried by a character who never lived to muster out.
-	{
-		"scouts-died", 1, traveller.Scouts, true,
-		chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
-	},
-	// Every seed on this roster was chosen for a path, and #34's change to
-	// the skills table moved five of them off it: two medical crises, the
-	// months an age carries, a Free Trader, and a duplicate scout ship. The
-	// seeds below are re-chosen for the same paths rather than the paths
-	// being dropped - which is what golden_test's own path check is for,
-	// and it is what caught them.
-	// The scout ship rolled twice. P. 23: "Only one scout ship may be
-	// acquired by a character, and throws resulting in additional ships are
-	// lost."
-	{
-		"scouts-second-ship", 5039, traveller.Scouts, true,
-		chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
-	},
-	// Rejected by the Navy, drafted into Other, and killed there.
-	{
-		"drafted-and-died", 2, traveller.Navy, true,
-		chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
-	},
-	{
-		"scouts-civilian", 6, traveller.Scouts, true,
-		chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
-	},
-	// Weapon rows taken twice: goods converts the repeat into expertise,
-	// spartan takes a different weapon instead (p. 22).
-	{
-		"scouts-expertise", 4, traveller.Scouts, true,
-		chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
-	},
-	{
-		"scouts-diversified", 4, traveller.Scouts, true,
-		chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
-	},
-	{
-		"other-oneterm", 19, traveller.Other, false,
-		chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
-	},
-	// Unforced AND drafted, which nothing else in this roster is. The policy
-	// picked Other, the throw failed, and the draft put him in the Marines -
-	// so the service he ended in is one nobody chose. Every other unforced
-	// fixture got the service it asked for, which let the sheet credit the
-	// policy with a draft's outcome and no golden notice.
-	{"drafted-over-the-policys-pick", 150, traveller.Other, false, chargen.DefaultPolicy()},
-	// Names a weapon, three times, from both lists. Until #34 no fixture on
-	// this roster reached the Weapon choice point at all - eleven of the
-	// twelve were exercised and that one was not - so the answer to it was
-	// covered by nothing, before or after it changed.
-	{"marines-armed", 309, traveller.Marines, true, chargen.DefaultPolicy()},
-	// E011's first consequence, both ways round. A mustering out or a rank
-	// alteration can confer a title the character did not hold at 18, and
-	// Other's personal development table can take one away - and those two
-	// are the only records the reading governs that did not end in death
-	// (#92). Until they were added the roster reached neither, and E011 was
-	// stamped on nine records the document says it must not be.
-	{"marines-ennobled", 495, traveller.Marines, true, chargen.DefaultPolicy()},
-	{"other-lost-the-title", 130, traveller.Other, true, chargen.DefaultPolicy()},
-}
-
-func (f fixture) inputs() chargen.Inputs {
-	return chargen.Inputs{
-		Seed: f.seed, Service: f.service, Forced: f.forced,
-		Career: f.policy.Career, Skills: f.policy.Skills, Muster: f.policy.Muster,
-	}
-}
-
-func (f fixture) generate(t *testing.T) *chargen.Character {
-	t.Helper()
-
-	character, err := chargen.Generate(f.inputs(), f.policy)
-	if err != nil {
-		t.Fatalf("%s: %v", f.name, err)
-	}
-
-	return character
-}
 
 func golden(t *testing.T, name string, got []byte) {
 	t.Helper()
@@ -268,17 +135,13 @@ func TestGoldens(t *testing.T) {
 }
 
 // Every golden generates the same bytes twice in one process, from its own
-// recorded seed and inputs.
+// fixture.
 //
 // That is same-process determinism, and it is less than this comment used to
-// claim (#60). "Reproduced from its own recorded seed" is carried by
-// TestGoldens, which compares against the file on disk - written by an
-// earlier process, in an earlier build. The pair is adequate; the claim was
-// on the wrong half of it.
-//
-// Together they stand in for the replay subcommand the PRD rules out, running
-// against records this repository controls rather than shipping a verifier
-// for records it did not write.
+// claim (#60). "Generated from its own fixture" is carried by TestGoldens,
+// which compares against the file on disk - written by an earlier process,
+// in an earlier build. The pair is adequate; the claim was on the wrong half
+// of it.
 func TestGoldensRegenerate(t *testing.T) {
 	t.Parallel()
 
@@ -294,12 +157,12 @@ func TestGoldensRegenerate(t *testing.T) {
 		}
 
 		if string(first) != string(second) {
-			t.Errorf("%s did not reproduce from its own seed and inputs", f.name)
+			t.Errorf("%s did not generate the same record twice from its fixture", f.name)
 		}
 	}
 }
 
-// Every recorded reading is reachable by some path.
+// Every recorded reading is reachable by some fixture.
 //
 // This is the gate the PRD asks for, and until the engine walked the ranked
 // services it could not hold. Two readings are stamped on no record by
@@ -307,10 +170,6 @@ func TestGoldensRegenerate(t *testing.T) {
 // and changes nothing about a character; and E015, which settles the worked
 // example against the table it illustrates, and which only the replay of
 // that example depends on.
-//
-// E003 and E014 come from the scripted career rather than a fixture: past
-// term 7 only a 12 grants another term, so no seed reaches the Aging Table's
-// last printed column.
 func TestEveryReadingIsReachable(t *testing.T) {
 	t.Parallel()
 
@@ -320,18 +179,6 @@ func TestEveryReadingIsReachable(t *testing.T) {
 		for _, erratum := range f.generate(t).Errata {
 			stamped[erratum] = true
 		}
-	}
-
-	scripted, err := chargen.Generate(
-		fixtures[0].inputs(), chargen.DefaultPolicy(),
-		chargen.WithRoller(&scripted{twelves: 80}),
-	)
-	if err != nil {
-		t.Fatalf("the scripted career: %v", err)
-	}
-
-	for _, erratum := range scripted.Errata {
-		stamped[erratum] = true
 	}
 
 	// The two readings that name no record. E012 is a spelling, which
@@ -349,7 +196,7 @@ func TestEveryReadingIsReachable(t *testing.T) {
 		}
 
 		if !stamped[erratum] {
-			t.Errorf("%v is reachable by no path this repository tests", erratum)
+			t.Errorf("%v is reachable by no fixture on the roster", erratum)
 		}
 	}
 }
