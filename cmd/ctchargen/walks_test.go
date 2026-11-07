@@ -15,8 +15,10 @@ import (
 // record is checked in for a walk; the proof it still reaches its path is
 // the assertion the test that drives it makes.
 //
-// A walk is strict, as a fixture is: a die or a draw asked for beyond the
-// list fails the test naming it.
+// A walk is strict both ways, as a fixture is: a die or a draw asked for
+// beyond the list fails the test naming it, and so does one the run never
+// asked for. A walk a person answers scripts no draws, because a person, not
+// a draw, answers the choices the policy would draw for.
 
 // otherWalked is Other, forced, answered 1 at every question: four terms,
 // discharged. It is the walk most interactive tests take, so their event
@@ -30,7 +32,7 @@ var otherWalked = walk{
 		1, 4, 3, 2, 5, 5, 6, 1, 2, 5, 4, 6, 5, 1, 3, 4, 5, 6, 4, 2,
 		5, 2, 4, 1, 6,
 	},
-	among: []int{0},
+	among: nil,
 }
 
 // otherByPolicy is the same Other under the default policy: five terms. It is
@@ -80,7 +82,7 @@ var draftedWalked = walk{
 		3, 2, 6, 3, 6, 4, 2, 4, 1, 1, 4, 5, 1, 1, 6, 4, 3, 1, 6, 1,
 		6, 4, 3,
 	},
-	among: []int{0, 0, 0},
+	among: nil,
 }
 
 // gamblerWalked is Other, answered 2 at every question: the Service Skills
@@ -131,12 +133,47 @@ type walk struct {
 
 // roller hands out the walk's dice in order, failing the test when asked
 // for one it does not have. Each call starts the walk again, so a batch
-// test can hand the same walk to every member.
+// test can hand the same walk to every member. When the test ends, every
+// playing must have been read to its end: a walk states the dice of its
+// path, and a die or draw left over is one the path never throws.
 func (w walk) roller(t *testing.T) source {
 	t.Helper()
 
+	return w.played(t, true)
+}
+
+// partly is roller for a test whose run stops partway by design - an
+// interactive session cut off, a refusal - so the walk's tail is expected
+// to go unread. A site that uses it says why.
+func (w walk) partly(t *testing.T) source {
+	t.Helper()
+
+	return w.played(t, false)
+}
+
+func (w walk) played(t *testing.T, exactly bool) source {
+	t.Helper()
+
+	var playings []*scripted
+
+	if exactly {
+		t.Cleanup(func() {
+			if t.Failed() {
+				return
+			}
+
+			for _, s := range playings {
+				s.finished()
+			}
+		})
+	}
+
 	return func() chargen.Roller {
-		return &scripted{t: t, name: w.name, dice: slices.Clone(w.dice), among: slices.Clone(w.among)}
+		s := &scripted{t: t, name: w.name, dice: slices.Clone(w.dice), among: slices.Clone(w.among)}
+
+		playings = append(playings, s)
+
+		return s
 	}
 }
 
@@ -187,4 +224,20 @@ func (s *scripted) Among(n int) int {
 	}
 
 	return index
+}
+
+// finished fails if the run left any of the walk unread, naming how much and
+// where it starts.
+func (s *scripted) finished() {
+	s.t.Helper()
+
+	if s.die < len(s.dice) {
+		s.t.Errorf("%s: the run finished with %d of the walk's %d dice unread, from die %d",
+			s.name, len(s.dice)-s.die, len(s.dice), s.die+1)
+	}
+
+	if s.draw < len(s.among) {
+		s.t.Errorf("%s: the run finished with %d of the walk's %d draws unread, from draw %d",
+			s.name, len(s.among)-s.draw, len(s.among), s.draw+1)
+	}
 }

@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The command's walks are consumed exactly too. A walk that leaves dice or
+  draws unread fails at the end of its test, naming the walk and the
+  leftover; a test whose session stops partway by design takes the walk
+  through `partly` and says why. `otherWalked` and `draftedWalked` lose the
+  draws they scripted, because a person answers what the policy would draw.
 - Three code comments that restated a reading's own argument now say what
   their code does and cite the reading's id: `Policy.SubmitToDraft` and
   `traveller.Enlistment` (E001), and `Aging.LastPrintedTerm` (E014). The

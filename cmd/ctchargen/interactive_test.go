@@ -214,9 +214,10 @@ func TestInteractiveRefusesToInventAnAnswer(t *testing.T) {
 		"answers run out": answers("1", 2),
 	} {
 		// A walk that lives to be asked: random dice can kill a character in
-		// his first survival throw, before any question is put.
+		// his first survival throw, before any question is put. Partly,
+		// because the input ends before the walk does.
 		err := run([]string{cmdNew, flagService, other}, script, io.Discard, io.Discard,
-			withDice(otherWalked.roller(t)))
+			withDice(otherWalked.partly(t)))
 
 		switch {
 		case err == nil:
@@ -314,8 +315,9 @@ var errClosedPipe = errors.New("the other end closed")
 func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 	t.Parallel()
 
+	// Partly: the run stops at the first question nobody can be shown.
 	err := run([]string{cmdNew, flagService, other, flagSheet},
-		answers("1", 300), io.Discard, brokenPipe{}, withDice(otherWalked.roller(t)))
+		answers("1", 300), io.Discard, brokenPipe{}, withDice(otherWalked.partly(t)))
 
 	switch {
 	case err == nil:
@@ -396,8 +398,9 @@ func TestAStoppedSessionSaysWhatWasLost(t *testing.T) {
 
 			var asking strings.Builder
 
+			// Partly: the session is stopped short, which is the point.
 			err := run([]string{cmdNew, flagService, other},
-				strings.NewReader(tc.typed), io.Discard, &asking, withDice(otherWalked.roller(t)))
+				strings.NewReader(tc.typed), io.Discard, &asking, withDice(otherWalked.partly(t)))
 			if !errors.Is(err, errNoAnswer) {
 				t.Fatalf("stopping short gave %v, want the input ending", err)
 			}
@@ -434,8 +437,9 @@ func TestAFailedReadIsNotTheInputEnding(t *testing.T) {
 
 	var asking strings.Builder
 
+	// Partly: the run stops at the line it cannot read.
 	err := run([]string{cmdNew, flagService, other},
-		strings.NewReader(huge), io.Discard, &asking, withDice(otherWalked.roller(t)))
+		strings.NewReader(huge), io.Discard, &asking, withDice(otherWalked.partly(t)))
 
 	switch {
 	case err == nil:
