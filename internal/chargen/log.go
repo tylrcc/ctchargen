@@ -22,7 +22,8 @@ type log struct {
 
 	// watch is called with each event as it is appended, or nil when nobody
 	// is reading. It is how interactive mode shows the procedure between
-	// its questions; it returns nothing, so it cannot change what it sees.
+	// its questions. It is handed the event the record holds, so a write
+	// through the event's slices reaches this record and no other.
 	watch func(traveller.Event)
 }
 

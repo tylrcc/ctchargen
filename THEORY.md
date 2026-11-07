@@ -236,18 +236,20 @@ rewrite this question's offer and answer with what it wrote. Named first, the
 forgery is not in what `record` checks, and is refused.
 `TestADeciderCannotForgeItsOwnOffer` holds it.
 
-That defence covers what a decider can write. It does not cover the six
-yes-or-no points. They offer `logging.go`'s package-level
-`offered = []string{"yes", "no"}`, and `log.choice` stores that slice uncopied
-as the event's `Alternatives`. So every yes-or-no event of every character in
-the process shares one backing array, and the same array is what `record`
-checks the next answer against. No decider sees it. It does reach the watcher
-`WithObserver` installs, and every reader of `Character.Events`. Either one
-writing to it changes what every later character is offered, and the gate then
-refuses a legitimate "yes". `WithObserver`'s "a watcher cannot change what it
-watches" is true of an event's value fields and false of its slices. Nothing in
-the tree writes to it today. It is the same exposure `MusterTables[:]` (#55) and
-`rules.Weapons` (#137) were before they were closed, and nothing holds it.
+That defence covers what a decider can write. The six yes-or-no points need
+a second one, because what they offer is never handed to a decider at all:
+`log.choice` stores it uncopied as the event's `Alternatives`, where the
+watcher `WithObserver` installs and every reader of `Character.Events` can
+write to it. So `logging.go`'s `offered()` builds the pair fresh for each
+question, and a write through one event changes that event and nothing else.
+It was a package-level slice until #230, shared by every yes-or-no event of
+every character in the process and checked against by `record`, so one write
+made every later "yes" refused — the exposure `MusterTables[:]` (#55) and
+`rules.Weapons` (#137) were before they were closed.
+`TestAYesOrNoOfferIsEachEventsOwn` holds it, for a finished record and for a
+watcher. A watcher still shares an event's slices with the record it is being
+written into: `WithObserver` promises that a write reaches no other generation,
+not that it reaches nothing.
 
 ### 7. Each fact lives in one place, and each gate is verified by breaking it
 
@@ -509,11 +511,9 @@ process-wide, and that value now hands out nothing that can write to it, so the
 ruleset is no longer the obstacle. Generation is single-threaded everywhere today;
 `batch` is a sequential loop, and each member rolls from a stream of its own.
 The rest of the package-level state is read-only in practice: the `traveller`
-alphabets, the unexported strategy slices, the lift's label tables, and the
-yes-or-no pair. Only the last of those leaves its package by reference, inside
-every choice event. Parallel generation would not race on any of them unless
-something began writing to an event, so idea 6's exposure is the one to close
-first.
+alphabets, the unexported strategy slices, and the lift's label tables. None
+of them leaves its package by reference since the yes-or-no pair stopped being
+one (#230), so parallel generation would not race on them.
 
 **Cross-build record compatibility, before `v1.0.0`.** Deliberately unpromised.
 `recordShape` is 1 and stays 1 until the tag; #96 explicitly declined the reading
@@ -536,7 +536,8 @@ into its own slice is not in what `record` checks against, and is refused.
 `takeWeapon` does not re-check the answer because that gate already has;
 `chargen.TestADeciderCannotForgeItsOwnOffer` holds it at both weapon choices.
 The premise covers deciders only. The yes-or-no pair in idea 6 is never handed
-to a decider, and it is shared with everything that reads a finished record.
+to a decider; it is built per question, so a write through a finished
+record's event reaches that event and no other question's offer.
 
 ## Where a maintainer who did not understand the theory would cause damage
 
@@ -562,9 +563,9 @@ to a decider, and it is shared with everything that reads a finished record.
   to `TestNothingTheRulesHandOutIsShared`.
 - **Handing a decider the `Roller`, or anything that can be asserted back to
   one.** `varyOnly` is what makes `Vary` the only variation a decider takes.
-- **Editing a finished record's events in place.** A renderer or watcher that
-  writes to a yes-or-no event's `Alternatives` is writing to the slice the
-  next character is offered and checked against.
+- **Hoisting the yes-or-no pair back into a package-level slice.** It reads
+  like a harmless allocation saved, and it is the slice every later character
+  would be offered and checked against, reachable through every record (#230).
 - **Reading a fixture's script as the exact dice of its path.** It is held
   against running short and not against running long. After a change that
   throws fewer dice, look for an unread tail by hand.
@@ -663,8 +664,9 @@ and quotation this document names exists in the tree as written.
 
 **Two claims I tested by breaking them, in a scratch copy and not in this
 tree.** Writing `"maybe"` into one finished record's yes-or-no alternatives made
-the next character fail with "answered outside what was offered". Appending four
+the next character fail with "answered outside what was offered"; #230 closed
+it, and `TestAYesOrNoOfferIsEachEventsOwn` now makes that write. Appending four
 unused dice and two unused draws to `other-serve`'s script left the whole
-`chargen` suite green. Both are stated above as facts about the code, not as
-intentions. I do not know whether either was a known and accepted cost. Nothing
-in the issue history says so.
+`chargen` suite green. That one is stated above as a fact about the code, not
+as an intention. I do not know whether it was a known and accepted cost.
+Nothing in the issue history says so.

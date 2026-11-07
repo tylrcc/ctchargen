@@ -89,3 +89,79 @@ func deciderMethods() []string {
 
 	return names
 }
+
+// rewriteYesOrNo writes over the alternatives of every yes-or-no choice in
+// events, and says how many it wrote to.
+func rewriteYesOrNo(events ...traveller.Event) int {
+	written := 0
+
+	for _, e := range events {
+		choice, ok := e.(traveller.ChoiceEvent)
+		if ok && slices.Contains(choice.Alternatives, "yes") {
+			choice.Alternatives[0] = "maybe"
+			written++
+		}
+	}
+
+	return written
+}
+
+// A write through a yes-or-no choice's alternatives changes that event and
+// nothing else: not the next question's offer, and not the gate that checks
+// its answer.
+//
+// All six yes-or-no points once offered one package-level pair and stored it
+// uncopied in every event, so a reader that wrote "maybe" into one finished
+// record made every later "yes" refused as not offered (#230). A watcher,
+// handed each event as it is written, could do the same mid-generation.
+//
+// The two writers are subtests so that each can be run alone, which is how
+// each was shown to fail against the shared pair: once one has written to
+// it, every later generation fails, and the other proves nothing.
+func TestAYesOrNoOfferIsEachEventsOwn(t *testing.T) {
+	t.Parallel()
+
+	t.Run("watcher", func(t *testing.T) {
+		t.Parallel()
+
+		written := 0
+
+		for _, fixture := range fixtures {
+			watch := chargen.WithObserver(func(e traveller.Event) {
+				written += rewriteYesOrNo(e)
+			})
+
+			_, err := chargen.Generate(fixture.inputs(), fixture.policy,
+				chargen.WithRoller(fixture.roller(t)), watch)
+			if err != nil {
+				t.Errorf("%s, watched by a writer: %v", fixture.name, err)
+			}
+		}
+
+		if written < 2 {
+			t.Fatal("no yes-or-no choice follows one a watcher wrote to, so this checks nothing")
+		}
+	})
+
+	t.Run("record", func(t *testing.T) {
+		t.Parallel()
+
+		written := 0
+
+		for _, fixture := range fixtures {
+			written += rewriteYesOrNo(fixture.generate(t).Events...)
+		}
+
+		if written == 0 {
+			t.Fatal("no fixture reaches a yes-or-no choice, so this checks nothing")
+		}
+
+		for _, fixture := range fixtures {
+			_, err := chargen.Generate(fixture.inputs(), fixture.policy,
+				chargen.WithRoller(fixture.roller(t)))
+			if err != nil {
+				t.Errorf("%s, after a record was written to: %v", fixture.name, err)
+			}
+		}
+	})
+}

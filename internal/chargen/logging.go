@@ -47,10 +47,13 @@ func yesNo(b bool) string {
 	return "no"
 }
 
-// offered is what a yes-or-no choice point puts in front of the decider.
-//
-//nolint:gochecknoglobals // an immutable pair, and Go has no const slice.
-var offered = []string{"yes", "no"}
+// offered is what a yes-or-no choice point puts in front of the decider,
+// built fresh for each question: the slice goes into the event uncopied, so
+// a shared one would let a write through any record or watcher change what
+// every later question is offered and checked against (#230).
+func offered() []string {
+	return []string{"yes", "no"}
+}
 
 func (l logging) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
 	offer := names(from, func(o traveller.EnlistmentOffer) string { return o.Service.String() })
@@ -69,7 +72,7 @@ func (l logging) SubmitToDraft() (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceSubmitToDraft, offered, yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceSubmitToDraft, offered(), yesNo(chosen))
 }
 
 func (l logging) AttemptCommission() (bool, error) {
@@ -78,7 +81,7 @@ func (l logging) AttemptCommission() (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceAttemptCommission, offered, yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceAttemptCommission, offered(), yesNo(chosen))
 }
 
 func (l logging) AttemptPromotion() (bool, error) {
@@ -87,7 +90,7 @@ func (l logging) AttemptPromotion() (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceAttemptPromotion, offered, yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceAttemptPromotion, offered(), yesNo(chosen))
 }
 
 func (l logging) SkillTable(
@@ -144,7 +147,7 @@ func (l logging) MusterTable1DM() (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceMusterTable1DM, offered, yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceMusterTable1DM, offered(), yesNo(chosen))
 }
 
 func (l logging) MusterTable2DM() (bool, error) {
@@ -153,7 +156,7 @@ func (l logging) MusterTable2DM() (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceMusterTable2DM, offered, yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceMusterTable2DM, offered(), yesNo(chosen))
 }
 
 func (l logging) MusterWeapon(
@@ -189,7 +192,7 @@ func (l logging) AssumeTitle(title traveller.Title) (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceAssumeTitle, offered, yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceAssumeTitle, offered(), yesNo(chosen))
 }
 
 // describeWeaponBenefit renders what was taken for a weapon row, by folding,

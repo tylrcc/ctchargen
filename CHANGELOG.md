@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A yes-or-no choice event owns its alternatives (#230). The six yes-or-no
+  points offered one package-level pair and stored it in every event, so a
+  write through one record's `Alternatives`, or a watcher's, made every later
+  character's "yes" refused as not offered. Each question now builds its own
+  pair; no record's content changes.
 - There is no Go library (#199). `traveller`, `dice`, `rules`, `chargen` and
   `render` move under `internal/`, so the compiler refuses an import of any of
   them from outside the module, and `v1.0.0` freezes two things rather than

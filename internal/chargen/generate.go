@@ -40,7 +40,10 @@ func WithRoller(roller Roller) Option {
 // WithObserver calls watch with each event as the record is written, which
 // is how interactive mode shows the procedure between its questions.
 //
-// It returns nothing, so a watcher cannot change what it watches.
+// It returns nothing, so a watcher cannot change an event's values. An
+// event's slices are the record's own, so a write through one changes that
+// record and no other: no later generation, and no offer the engine checks
+// an answer against.
 //
 // Implements: The procedure is shown between the questions [FR11] in The
 // record.
