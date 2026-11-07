@@ -34,7 +34,8 @@ const (
 	E003
 
 	// E004: the fatal term counts, so a character who dies in term N is
-	// recorded at N terms and age 18 + 4N.
+	// recorded at N terms, and the term's four years go onto the character's
+	// own age, months from an earlier crisis included.
 	E004
 
 	// E005: a service-wide rank and service skill is granted once, on

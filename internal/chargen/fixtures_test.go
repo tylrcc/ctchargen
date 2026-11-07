@@ -106,8 +106,8 @@ func (s *scripted) Among(n int) int {
 // The roster. One fixture per selectable strategy, plus what only a
 // particular path produces: a civilian who declined the draft, a draftee, a
 // death in service, a medical crisis, which is the one path that puts months
-// on an age, and the two readings only a career past the Aging Table's last
-// printed column reaches.
+// on an age, a death in service carrying those months, and the two readings
+// only a career past the Aging Table's last printed column reaches.
 //
 // The comments name the path; the lists are the dice that walk it.
 //
@@ -252,6 +252,21 @@ var fixtures = []fixture{
 			3, 1, 2,
 		},
 		among: []int{3},
+	},
+	// A crisis survived at the end of term 5, then a failed survival throw
+	// in term 6. E004 adds the fatal term's four years to the character's
+	// own age, so the months the crisis put on it stay there: the one path
+	// where a dead character's age is not 18 + 4 x terms.
+	//
+	// Holds: The dead character's age and term.
+	{
+		name: "other-crisis-survived-then-killed", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		dice: []int{
+			1, 1, 5, 5, 4, 6, 3, 1, 6, 2, 6, 4, 4, 4, 6, 4, 3, 5, 5, 6,
+			3, 2, 5, 4, 6, 1, 4, 5, 6, 5, 5, 2, 3, 5, 2, 4, 3, 6, 2, 2,
+			2, 5, 1, 2, 3, 2, 3, 1, 4, 5, 3, 5, 2, 5, 2, 1, 2,
+		},
+		among: []int{7},
 	},
 	// Holds: Social Standing 11+ may assume the hereditary title.
 	// Holds: Assessed once, at the end, against the final value.

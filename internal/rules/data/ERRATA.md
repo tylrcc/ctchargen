@@ -154,7 +154,8 @@ character embarks on a term of service lasting 4 years. This adds 4 years to
 the character's age." And: "Failure to successfully achieve the survival
 throw results in death; a new character must be generated." P. 9's note:
 "Term of service refers to the end of that numbered term", with term 4 set
-against age 34 — so age is 18 + 4 × terms completed.
+against age 34 — so the term arithmetic alone gives an age of 18 + 4 × terms
+completed.
 
 **The gap.** The survival throw is the term's first step and kills the
 character part-way through a term the page's own arithmetic only counts when
@@ -162,18 +163,24 @@ completed. The record must state an age (PRD FR8) and the page never states
 this one.
 
 **Reading.** The fatal term counts as served. A character who dies during
-term N is recorded with N terms of service and age 18 + 4N, and the record
-names the term and the cause. No aging round is run for the fatal term (the
-round sits at the end of the term — [E006](#e006--where-the-aging-round-sits-within-the-term) — and the character did not reach it),
+term N is recorded with N terms of service, and the fatal term's four years
+are added to the character's own age at death, including any months already
+accrued from an earlier crisis (pp. 7–8), as [E008](#e008--the-outcome-of-a-failed-medical-crisis-saving-throw) records a crisis death.
+The record names the term and the cause. No aging round is run for the fatal
+term (the round sits at the end of the term — [E006](#e006--where-the-aging-round-sits-within-the-term) — and the character did not reach it),
 and no mustering out occurs.
 
 **Why.** P. 5 attaches the four years to the term itself — "a term of service
 lasting 4 years. This adds 4 years to the character's age" — and the term a
-character died in is a term he entered and did not leave; counting it keeps
-age and terms in the one relation the Aging Table's note fixes, 18 + 4 ×
-terms, which is what any reader of the record will assume. The alternative — age
-18 + 4(N−1), the term uncounted — makes the record say a character died in a
-term he never served.
+character died in is a term entered and never left; counting it keeps the
+term and the four years p. 5 attaches to it together. The
+alternative — the term uncounted — makes the record say a character died in a
+term never served. The years are added to the age the character has, not
+recomputed as 18 + 4N: that is the age only when no crisis was survived.
+Pp. 7–8 put a recovery's months on the age at once — "The character ages
+(one die equals the number of months in added age) immediately" — nothing on
+the pages takes them off, and [E006](#e006--where-the-aging-round-sits-within-the-term) already lets them carry the age past the
+term's own arithmetic.
 
 **Stamped on.** Records ending in death by a failed survival throw.
 

@@ -5,6 +5,13 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- E004 says what the engine does with a survival death's age (#233): the
+  fatal term's four years go onto the character's own age, months from an
+  earlier medical crisis included, as E006 and E008 already read it. It
+  used to state 18 + 4N for every such death, which is that age only when no
+  crisis was survived. The id and the stamping condition are unchanged, and
+  no record changes. A new golden, `other-crisis-survived-then-killed`, survives a
+  crisis at the end of term 5 and dies in term 6 aged 42 years 3 months.
 - A yes-or-no choice event owns its alternatives (#230). The six yes-or-no
   points offered one package-level pair and stored it in every event, so a
   write through one record's `Alternatives`, or a watcher's, made every later

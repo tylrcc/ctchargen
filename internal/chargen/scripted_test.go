@@ -42,8 +42,9 @@ func TestACareerPastTheTablesLastColumn(t *testing.T) {
 		}
 	}
 
-	// Age is 18 plus four years a term, whatever ends the service (p. 5,
-	// p. 9's note, E004).
+	// Age is 18 plus four years a term (p. 5, p. 9's note). That holds for
+	// this career because it survives no medical crisis, whose months would
+	// go on top (pp. 7-8, E004).
 	const startingAge = 18
 
 	if want := startingAge + traveller.Years*character.Terms; character.Age.Years() != want {

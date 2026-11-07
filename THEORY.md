@@ -628,19 +628,15 @@ question.** Every implementation is inside the module, under `internal/`
 (#199), so a new method breaks only code the same change must fix, and the
 compiler names each one. Idea 1's growth path costs nothing after the tag.
 
-**E004's age and the engine's age agree only until a crisis is survived.** E004
-records a character who dies in term N at "age 18 + 4N", and defends that
-formula as the relation the Aging Table's note fixes. `run.survive` instead
-records "the character's own [age], advanced by the fatal term's four years ...
-rather than recomputed from the term count", so the months a survived medical
-crisis added stay on the dead character's age. I believe the engine follows the
-page here, since pp. 7–8 add the months and nothing takes them away. But the
-choice is made in a Go comment and not in `ERRATA.md`, which is the one place
-`CLAUDE.md` says a reading may live. Two survived crises whose months reach
-twelve would also put the recorded years past 18 + 4N. No golden walks that
-path, and `TestACareerPastTheTablesLastColumn`'s 18 + 4 × terms assertion would
-not hold for one that did. Treat E004's formula as describing the usual case,
-not every record.
+**Settled: a survival death keeps the months a crisis added (#233).** E004
+used to record a character who dies in term N at "age 18 + 4N", while
+`run.survive` advanced the character's own age by the fatal term's four years,
+a choice made only in a Go comment. E004 now says what the engine does, in
+agreement with E006 and E008: the four years go onto the age the character
+has, months from an earlier crisis included, and 18 + 4N is that age only when
+no crisis was survived. The `other-crisis-survived-then-killed` golden walks the path
+where the two differ, and `TestACareerPastTheTablesLastColumn` asserts
+18 + 4 × terms only for its own crisis-free career.
 
 **Settled: `inputs` and `policy` answer different questions.** A hand-walked
 record names strategies in `inputs` and carries no `policy`. Both `new.go` and
