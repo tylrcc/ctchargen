@@ -101,7 +101,7 @@ per choice point, each typed to its own alphabet. `//nolint:interfacebloat` sits
 it with the reason: "one method per choice point closes the set." Spelling it as
 one method over a label would lose exactly that.
 
-### 2. A fold that cannot fail still returns an error, and the code says why each time
+### 2. A fold that cannot fail still returns an error, and the code says why
 
 You will see this pattern constantly:
 
@@ -114,7 +114,9 @@ The `error` return exists because `Fold` is one signature serving cases that _ca
 fail (applying a result rolls dice and consults a decider) and cases that cannot
 (projecting to JSON). Discarding it is correct at the codec sites and wrong at the
 application sites. The comment is load-bearing; do not delete it and do not add
-error handling that no test can reach.
+error handling that no test can reach. One codec site, `render`'s `foldDeparture`,
+discards it without saying why (#254), and a reader who meets that one first
+learns the wrong habit.
 
 ### 3. Indexing a printed table is what makes a number data
 
@@ -142,14 +144,29 @@ it produced. Every golden is generated from a fixture that scripts its dice:
 **a throw the procedure does not make consumes nothing**, and a throw it makes
 beyond the script fails the test naming it.
 
-The strictness runs both ways (#231). A fixture's character is generated
-through `fixture.run`, which, when the procedure finishes, fails if the script
-still holds a die or a draw it never asked for, naming how many and where they
-start. So a fixture states the dice of its path exactly, and a change that
-throws fewer dice fails naming what it left, before `-regenerate` can accept
-the shorter path. A run that ends in an error is not held to it: the
-refused-answer test drives a fixture's roller with a decider of its own, and a
-refusal stops the procedure partway.
+The strictness runs both ways, in both places a script is walked. In `chargen`,
+a fixture's path is walked through `fixture.run`, which, when the procedure
+finishes, fails if the script still holds a die or a draw it never asked for,
+naming how many and where they start (#231). So a fixture states the dice of
+its path exactly, and a change that throws fewer dice fails naming what it
+left, before `-regenerate` can accept the shorter path. A run that ends in an
+error is not held to it: the refused-answer test drives a fixture's roller
+with a decider of its own, and a refusal stops the procedure partway.
+
+The command's tests walk scripts of their own, and the shape there explains a
+type that otherwise looks like indirection for its own sake. `cmd/ctchargen`'s
+dice option is a `source`, a `func() chargen.Roller`, and not a `Roller`,
+because a batch generates many characters and each needs a stream of its own:
+a member that started from where the last one stopped would roll different
+dice than its script says. A walk's `roller` hands out a fresh playing per
+call, remembers each, and at the end of the test fails on any playing left
+unread; a test whose session stops partway on purpose takes the walk through
+`partly` and says why (#245). A walk a person answers scripts no draws,
+because a person answers what the policy would have drawn.
+
+Not every test that borrows a fixture walks it. The two weapon-choice tests
+take a fixture's inputs and roll unscripted dice, so which choices they reach
+varies from run to run (#251).
 
 The fixtures are also where the record proves it is a way back. Every
 script was extracted from its golden's own event log, and the goldens
@@ -173,16 +190,17 @@ Three corollaries you must hold:
   `WeaponPick`) passes `varyOnly{a.run.roll}`, a wrapper with nothing on it but
   `Among`, so a type assertion back to `Roller` finds nothing. The run's own
   `Roller` passed bare would have kept its dynamic type, and the dice with it.
-  `TestADeciderCannotReachTheRollerThroughVary` holds it, and refuses to pass
-  vacuously if no fixture reaches the Weapon choice.
+  `TestADeciderCannotReachTheRollerThroughVary` holds it, on random dice and
+  refusing to pass if no run reached the Weapon choice (#251).
 - The record is the only way back to a character (ADR 0001). Every rendering ends
   by saying so, and nothing prints a command to re-run.
 
 ### 5. Nothing decides on its own behalf, and the log is wired in from the first step
 
-`chargen.Generate` takes a `Decider`. Three implementations exist — the auto
-`Policy`, the interactive `player`, and the scripted deciders the tests use — and
-the engine cannot tell them apart. A method is called **only when more than one
+`chargen.Generate` takes a `Decider`. Three kinds answer questions — the auto
+`Policy`, the interactive `player`, and the scripted deciders the tests use —
+and the engine cannot tell them apart. A fourth implementation, `logging`,
+answers nothing: it wraps whichever decider is given (idea 6). A method is called **only when more than one
 answer is legal**. The `Decider` contract gives the reason: "a question with one
 answer is not a choice, and asking it would put an entry in the generation
 record that no reader could have decided differently." `reenlist.go`'s `intent`
@@ -199,16 +217,18 @@ real-looking answer.
 
 The log is not added afterwards, "because a log that is added afterwards records
 what the author remembered." Every event carries a sequence number, and an
-`OutcomeEvent` carries `Because` — the sequence number of the throw or choice that
-caused it, or zero where it follows from the procedure itself. That causal edge is
+`OutcomeEvent` carries `Because` — the sequence number of the throw, roll or
+choice that caused it, or zero where it follows from the procedure itself.
+(The field's own comment says "throw or choice", which is narrower than what
+the engine writes; #254.) That causal edge is
 what makes the record auditable rather than merely verbose.
 
 ### 6. `logging` is the single gate, and it rests on a stated assumption
 
 `internal/chargen/logging.go` wraps every `Decider` — `generate.go` does this
 unconditionally, so it is the only way a decider reaches the engine. It must
-implement all twelve methods to compile, "so a choice point cannot reach the engine
-without reaching the log."
+implement all twelve methods to compile, which is the point of the shape: "a
+choice point cannot reach the engine without reaching the log."
 
 Its `record` method does two jobs: it writes the choice event, and it **refuses an
 answer that was not offered**. Checking there rather than at each application site
@@ -229,7 +249,8 @@ end: `rules.liftWeapons` refuses a weapon listed twice.
 This is the tightest reasoning in the repository. Understand it before you touch
 `logging.go`.
 
-The order inside each method matters. It names `from` _before_ it asks, because
+The order inside each method that takes a slice matters. It names `from`
+_before_ it asks, because
 the slice is the decider's to write to: every offered set is the decider's own —
 built fresh for the question, or copied out of the ruleset — so a write cannot
 reach a later character, and an offer named afterwards would let a decider
@@ -250,7 +271,18 @@ made every later "yes" refused — the exposure `MusterTables[:]` (#55) and
 `TestAYesOrNoOfferIsEachEventsOwn` holds it, for a finished record and for a
 watcher. A watcher still shares an event's slices with the record it is being
 written into: `WithObserver` promises that a write reaches no other generation,
-not that it reaches nothing.
+not that it reaches nothing. The yes-or-no methods build their pair after the
+decider has answered, which the slice methods' ordering would forbid and which
+is harmless here because no decider is handed the pair.
+
+The gate has an edge, and it is worth knowing where. It checks that an answer
+is _in the offer_; it cannot check that a decider mapped its own input to the
+answer it meant. The interactive `player` turns a menu index into a value
+through a list it builds itself, and for the weapon benefit that list pairs
+each line of text with a `TakeWeapon` or `TakeExpertise`. A wrong pairing
+yields a benefit that is still in the offer, so the gate passes it, and no
+walk reaches those entries (#247). What a person reads and what the engine
+receives are held together only where a test walks to them.
 
 ### 7. Each fact lives in one place, and each gate is verified by breaking it
 
@@ -265,7 +297,10 @@ either are that statement or are generated from it:
   lifted reading carries its prose as text.
 - **The `--auto` policy is `chargen.Policy`'s doc comments**: each method says
   when it is asked and what each strategy answers, and `PolicyVersion` says
-  what bumps it. There is no policy document to disagree with them.
+  what bumps it. There is no policy document to disagree with them, which
+  makes a false sentence there the policy misdescribed rather than a stale
+  copy. One is false today: `MusterTable2DM` calls spartan the only strategy
+  that never rolls on Table 2, and goods never does either (#248).
 - **`docs/COVERAGE.md`'s tables are generated** by `internal/coverage` from an
   `Implements:` marker on each implementation and a `Holds:` marker on each
   test or golden; a rule with only one side fails the generator naming it.
@@ -275,11 +310,18 @@ either are that statement or are generated from it:
   or a PRD heading or requirement read from the PRD itself: `[FR9]`,
   `[CLI sketch]`, `[JSON conventions]`. The PRD governs nothing, and its
   labels stay as the names those promises were first stated under; a cite
-  that names nothing fails the generator, naming the rule.
+  that names nothing fails the generator, naming the rule. The PRD is never
+  edited, so a withdrawal is stated by the ADR that made it: ADR 0001's line
+  "Withdraws from `docs/PRD.md`: Determinism." is read by the generator,
+  which refuses a `[Determinism]` cite naming ADR 0001. Where a promise
+  outlived the section that stated it, an ADR states it again: ADR 0002 is
+  why a record still names its ruleset and build once the seed they were
+  provenance for was gone.
 
 One second copy survives that sweep. Each choice point says when it is asked
 twice, once on the `Decider` method and again on the `Policy` method, and the
-engine's own conditions are a third statement. The `Erratum` constants in
+engine's own conditions are a third statement. The pairs agree today, and
+nothing holds them (#252). The `Erratum` constants in
 `internal/traveller/erratum.go` state nothing about their readings: each
 carries only its id and its entry's title, as the heading prints it, and
 `rules`' `TestEachErratumIsCommentedWithItsTitle` holds the one to the other
@@ -305,7 +347,9 @@ carries only its id and its entry's title, as the heading prints it, and
 **There is no Go library (#199).** `traveller`, `dice`, `rules`, `chargen` and
 `render` are under `internal/`, so the compiler refuses an import of any of them
 from outside this module, and there is no exported API for a tag to freeze or a
-baseline to hold.
+baseline to hold. So growing `Decider`, or a sum's cases interface, is not a
+version question either: every implementation is inside the module, and the
+compiler names each one the same change must fix.
 
 The command line is what a script depends on, and it has a baseline beside the
 code it holds. `cmd/ctchargen/cli_test.go` types out each subcommand's flags with their types
@@ -359,12 +403,14 @@ to it. Its tables are unexported fields reached through methods (`Aging()`,
 `Muster()`, `Eligibility()`, `Education()`, `Retirement()`, each returning a
 value), `Retirement`'s pay map is unexported, and every method that returns a
 slice returns a copy: `Weapons`, `Service` (its ranks and the DMs of all four
-throws, through `Service.clone` and `Throw.clone`), and `Aging.At`. The comment
+throws, through `Service.clone` and `Throw.clone`), `Aging.At`, and
+`GrantsOnEntering` and `GrantsAtRank`, which build theirs fresh. The comment
 beside `Load` states it once, and `internal/rules/tables_test.go`'s
 `TestAWeaponListIsTheCallersOwn` and `TestNothingTheRulesHandOutIsShared` hold
-it by writing through each and reading a fresh `Load()`. A new method that hands
-out a slice of the ruleset without copying it is the defect those tests exist to
-catch, and they catch it only for the slices they name.
+it by writing through each and reading a fresh `Load()` — through the
+enlistment and commission DMs, not the survival or promotion ones. A new method
+that hands out a slice of the ruleset without copying it is the defect those
+tests exist to catch, and they catch it only for the slices they name.
 
 **`rules` transcribes pages, not the engine's needs.** Its scope is "every
 table of pp. 4–25", not "every table the procedure reads". That is why the
@@ -372,7 +418,8 @@ passage prices and the 90% resale rate of pp. 21–22 are lifted, validated and
 transcribed twice even though no step of the procedure, the record or a
 rendering reads them. #57 and PRERELEASE P2-1 settled them as reference data
 v1 applies to nothing. The same holds for the readings: `Rules.Reading` lifts
-every field of every `ERRATA.md` entry, and only the stamping test reads one.
+every field of every `ERRATA.md` entry, and only tests read one — the
+stamping test, and `rules`' own.
 A field with no production caller in `rules` is not automatically dead. Ask
 whether the page prints it before you remove it.
 
@@ -380,9 +427,9 @@ whether the page prints it before you remove it.
 
 `render` projects a `*chargen.Character` into a flat `record` struct, and this is
 where the domain's vocabulary and the wire's diverge. `internal/render/json.go` is honest
-about it: "Where the two disagree — a sum that must marshal flat, an array-backed
-profile that must marshal as six named keys — the codec here absorbs the difference
-and the domain type keeps its shape."
+about it: "Where the two disagree - a sum that must marshal flat, an array-backed
+profile that must marshal as six named keys - the codec here absorbs the
+difference and the domain type keeps its shape."
 
 The write side is held by folds: `enlistmentCodec`, `departureCodec`, the event
 codec. Add a case to a sum and this package stops compiling.
@@ -390,21 +437,29 @@ codec. Add a case to a sum and this package stops compiling.
 **The read side is held by nothing.** `internal/render/decode.go` unmarshals into `record`
 and deliberately does not rebuild domain types — "rebuilding an `Enlistment` or a
 `Departure` back into an interface would give the renderer nothing it does not
-already have, and would need a decoder for every sum." Consequently `SheetFrom` and
+already have, and would need a decoder for every sum that could go wrong in a
+way the wire shape cannot." Consequently `SheetFrom` and
 `TranscriptFrom` work on strings: `sheet.go` compares `ship.Kind ==
 traveller.ScoutShip.String()` and `choice.By == traveller.ByPolicy.String()`.
 The compiler cannot see those. What holds them is the round-trip test in
-`internal/render/roundtrip_test.go` and the schema tests.
+`internal/render/roundtrip_test.go`, which types the literals ("Scout ship,
+Type S", "policy") out by hand, and the schema tests.
 
-If you rename a `String()` on a domain value, the write side moves and the read
-side silently does not. This is the seam to be careful at.
+So a `String()` renamed in this tree fails there, not silently. What it does
+not catch is a record already on disk: the read side compares against
+today's spellings, and a record written under yesterday's renders as though
+the comparison had failed. Before `v1.0.0` that is the freedom the record has
+to move; after it, a rename is a shape change. This is the seam to be careful
+at.
 
 `docs/character.schema.json` is the third participant, and it describes the rules
 this build has, not some perhaps future. The root is open — a later build may add
 a top-level section, and a reader holding this schema loads the record and
 renders what it understands. Everything inside is closed: the fourteen nested
 objects refuse an unknown key, and the event kinds, the choice-point names and
-the three strategy vocabularies are closed enums. `internal/render/transcript.go` prints
+the three strategy vocabularies are closed enums. That makes a new choice point
+or a new `--auto` strategy a change to the record's shape: free before
+`v1.0.0`, and after it said in the record's `record` number. `internal/render/transcript.go` prints
 `(unknown event kind %q)` for a kind it does not know, which is how a reader
 survives a record it could not validate — not a reason to validate it.
 `internal/render/schema_test.go`'s `TestAnUnknownEventKindDoesNotValidate` holds the
@@ -421,16 +476,24 @@ record cannot support". A record a person walked carries
 `inputs.career: "serve"` and no `policy`, and that is correct. Read the
 strategies from `inputs` only where `policy` is present.
 
-`render` prints what the record carries and escapes nothing. The one string an
-operator types into a record is the name, and it is held at the command line
-rather than here — see below.
+`render` prints what the record carries and escapes nothing into its
+markdown; the one exception is an unknown event kind, quoted with `%q` so a
+reader sees it is foreign. The one string an operator types into a record is
+the name, and it is held at the command line rather than here — see below.
+
+Two renderings of the same events now differ in one detail. The live view
+numbers each step heading with its sequence number, because the unnumbered
+headings made a watched session's numbers appear to skip; the `--history`
+transcript, and every golden transcript, still prints headings unnumbered, so
+the transcript a referee keeps is the one whose numbering skips (#249).
 
 ### The command line
 
 `cmd/ctchargen` is where strings become domain values and where they stop being
-strings. `new` and `batch` declare their six generating flags once, as
-`characterFlags` (`declareCharacterFlags`), and `characterFlags.inputs()` is the
-one parse both share. It calls `chargen.ParsePolicy` once for all three `--auto`
+strings. `new` and `batch` declare their five generating flags once, as
+`characterFlags` (`declareCharacterFlags`), with `--auto` declared by each
+command beside them, and `characterFlags.inputs()` is the one parse both
+share. It calls `chargen.ParsePolicy` once for all three `--auto`
 strategies, at the boundary: "past here a Career is a Career, and no part of the
 engine asks again whether it is one of three. That is why chargen has no Validate
 any more (#41)." The `Inputs` and the `Policy` are both written from that one
@@ -451,6 +514,15 @@ summary on standard output would be a line of JSONL that is not JSON." A batch
 that stops partway still says what it wrote: the tally goes to `asking`, worded
 as "written before the run stopped", ahead of the error — except where nothing
 was written, and for `errSearch`, whose message already carries the counts.
+
+That tally rests on a premise only two of the three destinations keep. A
+stream and a directory write each record as it is made, so a count of records
+made is a count of records on disk. A `.jsonl` file is generated whole in
+memory and written at the end (#64), so when that run fails, or the open
+refuses an existing file, the tally reports records that were never written
+(#246). The `--survivors` search beside it has two behaviours no test would
+notice changing: its attempts bound, and the tally's exemption for a failed
+search (#250).
 
 The exit status is 0 or 1 and nothing else. `main` hands `run`'s error to
 `exitStatus`, the one place that decides it: 0 for a run that did what it was
@@ -534,10 +606,12 @@ set is the decider's own: `chooseService`, `offeredTables` and
 `offeredIntents` build theirs per question, `chooseMusterTable` copies
 `traveller.MusterTables`, and `rules.Weapons` copies its list. So a write cannot
 reach a later character. Nor can it pass for an offer in this one: each
-`logging` method names its offer before it asks, so an answer the decider wrote
-into its own slice is not in what `record` checks against, and is refused.
-`takeWeapon` does not re-check the answer because that gate already has;
-`chargen.TestADeciderCannotForgeItsOwnOffer` holds it at both weapon choices.
+`logging` method that hands a decider a slice names its offer before it asks,
+so an answer the decider wrote into its own slice is not in what `record`
+checks against, and is refused. `takeWeapon` does not re-check the answer
+because that gate already has. `chargen.TestADeciderCannotForgeItsOwnOffer`
+holds it at whichever weapon choice its random dice reach, and a forged
+`Weapon` answer ends the run before `MusterWeapon` can be asked (#251).
 The premise covers deciders only. The yes-or-no pair in idea 6 is never handed
 to a decider; it is built per question, so a write through a finished
 record's event reaches that event and no other question's offer.
@@ -573,6 +647,15 @@ record's event reaches that event and no other question's offer.
   `chargen.Generate` with `fixture.roller` directly skips the check that the
   script was read to its end, and a fixture can again carry dice its path
   never throws (#231).
+- **Collapsing `source` into a `Roller`.** A batch would hand its second
+  member the dice its first left off at, and every walk-driven batch test
+  would stop meaning what its script says (#245).
+- **Recomputing a dead character's age from the term count.** 18 + 4N is the
+  age only when no medical crisis was survived; the engine adds the fatal
+  term's four years to the character's own age, and E004 says so (#233).
+- **Trusting the `logging` gate for a decider's own mapping.** It refuses an
+  answer outside the offer; it cannot see a menu line whose value is another
+  answer that is also in the offer (#247).
 - **Escaping in `render`, or relaxing the `--name` check.** The name is held to
   one line at the command line and `render` prints what it is given. Doing the
   first moves the defence to a place that would change every sheet; doing the
@@ -609,64 +692,39 @@ rather than live authority, and I read them that way — but a maintainer could
 reasonably read them as the PRD still governing. For those three comments,
 nothing is wrong and the fix would be a wording preference.
 
-The coverage map's cites name something that exists and is in force (#232).
-The PRD's headings and requirement ids stay as the citation labels for the
-tool's own promises, and `CLAUDE.md`'s document table says so; the generator
-reads them from the PRD and refuses a cite that names nothing (idea 7). The PRD
-is never edited, so a withdrawal is stated by the ADR that made it: ADR 0001's
-"Withdraws from `docs/PRD.md`: Determinism." is read by the generator, which
-refuses a `[Determinism]` cite naming ADR 0001. `chargen.Generate`'s fixture
-rule cites ADR 0001, which says fixtures state their dice. The ruleset and
-build stamp cites ADR 0002, which records why a record names what wrote it,
-once the seed it was provenance for was gone. `ERRATA.md` still argues
-partly from PRD sections, in its preamble and in E002, E004 and E014, as
-historical rationale.
-
-**Settled: the strategy vocabulary is part of the record's shape.** The schema
-describes the rules this build has, so `inputs.career`/`skills`/`muster`, the
-choice-point names and the event kinds are closed enums, and growing any of them
-after `v1.0.0` is a change to a frozen shape, said in the record's `record`
-number. That is a decision, not an oversight.
-
-**Settled: growing `Decider` or a sum's cases interface is not a version
-question.** Every implementation is inside the module, under `internal/`
-(#199), so a new method breaks only code the same change must fix, and the
-compiler names each one. Idea 1's growth path costs nothing after the tag.
-
-**Settled: a survival death keeps the months a crisis added (#233).** E004
-used to record a character who dies in term N at "age 18 + 4N", while
-`run.survive` advanced the character's own age by the fatal term's four years,
-a choice made only in a Go comment. E004 now says what the engine does, in
-agreement with E006 and E008: the four years go onto the age the character
-has, months from an earlier crisis included, and 18 + 4N is that age only when
-no crisis was survived. The `other-crisis-survived-then-killed` golden walks the path
-where the two differ, and `TestACareerPastTheTablesLastColumn` asserts
-18 + 4 × terms only for its own crisis-free career.
-
-**Settled: `inputs` and `policy` answer different questions.** A hand-walked
-record names strategies in `inputs` and carries no `policy`. Both `new.go` and
-`policyThatAnswered` argue for this, and I read it as deliberate.
+`ERRATA.md` argues from PRD sections in the same historical way, in its
+preamble and in E002, E004, E008, E009, E013 and E014. The coverage map is the
+one place the PRD's labels are still cited, and there they are names, not
+authority (idea 7).
 
 **The `Roller` termination contract is documented and unenforced**, and I take that
 as deliberate rather than as drift — the comment names the failure mode and the one
 test that could hit it works around it explicitly. A reader who wanted a hard bound
 could reasonably disagree. Not filed.
 
-**Test coverage of `--survivors` under adversarial policies.** I read
-`survivors_test.go`'s structure but did not trace every case. The `survivorAttempts
-= 100` bound is argued from a referee's measurement of 74 deaths in 100 under the
-default strategy; I did not re-measure.
+**Whether `sheet.go`'s case-insensitive service compare is meant for hand-edited
+records.** `strings.EqualFold` at the headline's "after the X refused him"
+matters only for a record whose `inputs.service` is not the canonical
+spelling, which the tool never writes. It may be a deliberate courtesy to a
+hand-edited record, or a leftover; nothing says which, and nothing tests it
+(#254).
 
-**Consistencies I checked, and they held.** `CLAUDE.md` claims "fourteen nested
-objects" carry `additionalProperties: false`. The schema has fifteen
-`additionalProperties` sites: one `true` at the root and fourteen `false` inside.
-The count is right. The package arrows match `go list`. Every test, function
-and quotation this document names exists in the tree as written.
+**The `--survivors` bound.** `survivorAttempts = 100` is argued from a referee's
+measurement of 74 deaths in 100 under the default strategy; I did not
+re-measure. The search's own edges are less held than its happy path (#250).
 
-**Two claims I tested by breaking them, in a scratch copy and not in this
-tree.** Writing `"maybe"` into one finished record's yes-or-no alternatives made
-the next character fail with "answered outside what was offered"; #230 closed
-it, and `TestAYesOrNoOfferIsEachEventsOwn` now makes that write. Appending four
-unused dice and two unused draws to `other-serve`'s script left the whole
-`chargen` suite green; #231 closed it, and one unused die or draw now fails
-every test that generates the fixture.
+**What I checked.** About 140 checkable claims in this document, against the
+tree at `b92a931`: every named test, function, type and path; the package
+arrows against `go list`; the twelve choice points and twelve `Decider`
+methods; E001–E015; the fifteen `additionalProperties` sites, one open at the
+root and fourteen closed; `PolicyVersion` 3 and `recordShape` 1. Twelve were
+wrong or imprecise and are corrected in place, three of them quotations that
+had drifted from their source.
+
+**What I tested by breaking it**, in a scratch copy and not in this tree. Nine
+mutations across `cmd/ctchargen`, `render` and `chargen`. Those that survived
+are the claims above that cite #247 (the player's weapon menu), #250 (the
+survivors bound and its tally exemption) and #254 (the service compare); the
+batch tally of #246 was reproduced on a built binary. A change to goods'
+`MusterTable2DM` answer was killed, by `TestMusterStrategies` alone, which is
+how #248 was confirmed.
