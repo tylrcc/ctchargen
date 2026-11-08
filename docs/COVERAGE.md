@@ -40,9 +40,9 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | Die roll conventions: `N+`, `N−`, exact | 1:2–3 | `internal/traveller.Target` | `internal/traveller.TestParseTarget`, `internal/traveller.TestTargetSatisfied` |
 | All characters begin at 18 | 1:4 | `internal/chargen.startingAge` | `internal/chargen.TestGoldens` |
 | Floor of 0 for an aging reduction | 1:4, 7–9 (E010) | `internal/traveller.Profile.AgeReduce` | `internal/traveller.TestAgeReduceFloorsAtZero` |
-| Floor of 1 for every ordinary alteration | 1:4 (E010) | `internal/traveller.Profile.Alter` | `internal/traveller.TestTheTwoFloorsDiffer` |
-| Six 2D rolls, in order | 1:4 | `internal/chargen.run.rollProfile` | `internal/chargen.TestGoldens` |
-| Values 2–12 initially; never above 15 | 1:4 | `internal/traveller.Profile.Alter` | `internal/traveller.TestAlterHoldsTheOrdinaryFloorAndTheCeiling` |
+| Floor of 1 for every ordinary alteration | 1:4 (E010) | `internal/traveller.Profile.Alter` | `internal/traveller.TestAlterHoldsTheOrdinaryFloorAndTheCeiling`, `internal/traveller.TestTheTwoFloorsDiffer` |
+| Never above 15 | 1:4 | `internal/traveller.Profile.Alter` | `internal/traveller.TestAlterHoldsTheOrdinaryFloorAndTheCeiling` |
+| Six 2D rolls, in order: values 2–12 initially | 1:4 | `internal/chargen.run.rollProfile` | `internal/chargen.TestGoldens` |
 | UPP as hexadecimal, in rolled order | 1:8 | `internal/traveller.Profile.UPP` | `internal/traveller.TestUPP` |
 | Two-die throws except the draft | 1:10 | `internal/chargen.roll`, `internal/dice.Stream` | `internal/dice.TestTwoDiceIsTwoDice` |
 

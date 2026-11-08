@@ -17,7 +17,8 @@ func profile(values ...int) traveller.Profile {
 // P. 4: values "may never exceed 15, and do not go below 1 except for
 // calamitous injury or aging." Alter is every alteration that is not aging.
 //
-// Holds: Values 2–12 initially; never above 15.
+// Holds: Never above 15.
+// Holds: Floor of 1 for every ordinary alteration.
 func TestAlterHoldsTheOrdinaryFloorAndTheCeiling(t *testing.T) {
 	t.Parallel()
 

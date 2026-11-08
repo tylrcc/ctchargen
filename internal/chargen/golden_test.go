@@ -94,7 +94,7 @@ func documentedExample(t *testing.T, name string, encoded []byte) {
 
 // Every fixture's JSON, sheet and transcript, pinned.
 //
-// Holds: Six 2D rolls, in order.
+// Holds: Six 2D rolls, in order: values 2–12 initially.
 // Holds: All characters begin at 18.
 // Holds: One enlistment attempt, against the Prior Service Table.
 // Holds: Per-term order is the exposition's.

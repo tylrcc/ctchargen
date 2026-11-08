@@ -36,6 +36,8 @@ release turns out to be.
   promise the test harness keeps is marked on the test code that carries it,
   never on a test, and only a promise no single declaration carries goes on a
   package doc (#293).
+- "Values 2–12 initially" is marked on the six 2D rolls that carry it, and
+  `Profile.Alter` carries only "Never above 15" (#294).
 
 ## 1.0.0-beta.6
 

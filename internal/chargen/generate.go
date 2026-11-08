@@ -196,7 +196,8 @@ func (r *run) generate() error {
 
 // rollProfile rolls the six characteristics in the order p. 4 rolls them.
 //
-// Implements: Six 2D rolls, in order [1:4] in Characteristics and the record.
+// Implements: Six 2D rolls, in order: values 2–12 initially [1:4] in
+// Characteristics and the record.
 func (r *run) rollProfile() {
 	r.log.step("characteristics", "p. 4")
 

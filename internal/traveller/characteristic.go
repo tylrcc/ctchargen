@@ -78,8 +78,7 @@ type Profile [len(Characteristics)]int
 //
 // Aging does not go through here. See AgeReduce.
 //
-// Implements: Values 2–12 initially; never above 15 [1:4] in Characteristics
-// and the record.
+// Implements: Never above 15 [1:4] in Characteristics and the record.
 // Implements: Floor of 1 for every ordinary alteration [1:4 (E010)] in
 // Characteristics and the record.
 func (p Profile) Alter(c Characteristic, delta int) Profile {
