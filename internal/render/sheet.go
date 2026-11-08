@@ -186,7 +186,7 @@ func whoseService(r record) (string, error) {
 	switch {
 	case attempted == "":
 		return "", nil
-	case !strings.EqualFold(attempted, r.Service):
+	case attempted != r.Service:
 		return fmt.Sprintf(" (%s after the %s refused him)", r.Enlistment.How, attempted), nil
 	case byPolicy:
 		return " (service chosen by the policy)", nil

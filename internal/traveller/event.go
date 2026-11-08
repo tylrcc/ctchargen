@@ -127,10 +127,11 @@ type ChoiceEvent struct {
 }
 
 // OutcomeEvent records a consequence — a skill gained, a characteristic
-// changed, years elapsed, a death — and the throw or choice that caused it.
+// changed, years elapsed, a death — and the throw, roll or choice that caused
+// it.
 //
 // Because is the sequence number of the causing event, or zero where the
-// consequence follows from the procedure itself rather than from a roll.
+// consequence follows from the procedure itself rather than from an event.
 type OutcomeEvent struct {
 	Seq         int
 	Because     int

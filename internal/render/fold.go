@@ -80,6 +80,7 @@ func (d *departureCodec) KilledByMedicalCrisis(characteristic traveller.Characte
 func foldDeparture(from traveller.Departure) departureRecord {
 	var codec departureCodec
 
+	// A fold over a codec cannot fail: every case only assigns.
 	_ = from.Fold(&codec)
 
 	// Which departures are deaths is traveller.Fatal's to say, not this

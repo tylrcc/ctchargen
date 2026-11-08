@@ -64,12 +64,11 @@ func openDestination(out io.Writer, path string, force bool) (destination, error
 // The rename is atomic on one filesystem. os.CreateTemp creates at 0600,
 // which is recordFileMode, so the record is not widened on its way through.
 //
-// A path that is a directory is refused as the open refused it: a rename
-// would report it as "file exists", which reads as the --force refusal.
+// A path that is a directory is refused as one: a rename would report it as
+// "file exists", which reads as the --force refusal.
 func replacing(path string) (destination, error) {
 	if isDirectory(path) {
-		return destination{}, fmt.Errorf("opening %s: %w", path,
-			&fs.PathError{Op: "open", Path: path, Err: syscall.EISDIR})
+		return destination{}, aDirectory(path)
 	}
 
 	staged, err := os.CreateTemp(filepath.Dir(path), ".ctchargen-*")
@@ -105,14 +104,37 @@ func create(path string) (*os.File, error) {
 	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, recordFileMode)
 	if err != nil {
 		if errors.Is(err, os.ErrExist) {
-			return nil, fmt.Errorf("%w: %s %w; pass --force to replace it",
-				errUsage, path, errWouldOverwrite)
+			return nil, inTheWay(path)
 		}
 
 		return nil, fmt.Errorf("opening %s: %w", path, err)
 	}
 
 	return file, nil
+}
+
+// inTheWay is the refusal for a path that already holds something.
+//
+// A file is refused with the --force advice, because --force replaces a
+// file. A directory is named as a directory (#254): the exclusive open reads
+// one as a file that exists, and advising --force sent the referee round
+// again only to be told what was really in the way, which --force cannot
+// remove.
+//
+// Implements: A directory in the way is named as one, with no --force advice
+// [CLI sketch] in The record.
+func inTheWay(path string) error {
+	if isDirectory(path) {
+		return aDirectory(path)
+	}
+
+	return fmt.Errorf("%w: %s %w; pass --force to replace it", errUsage, path, errWouldOverwrite)
+}
+
+// aDirectory is the error an open of a directory for writing gives.
+func aDirectory(path string) error {
+	return fmt.Errorf("opening %s: %w", path,
+		&fs.PathError{Op: "open", Path: path, Err: syscall.EISDIR})
 }
 
 // namesDirectory reports whether `-o` asked for a directory rather than a

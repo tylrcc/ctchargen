@@ -393,3 +393,52 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 		})
 	}
 }
+
+// A directory where a record is to go is reported as a directory, the first
+// time and without --force advice (#254).
+//
+// The exclusive open read a directory as a file that already exists, and
+// said "pass --force to replace it"; with --force it then failed as a
+// directory. So the advice cost the referee a second run to learn the real
+// obstruction, and --force could never have removed it.
+//
+// Holds: A directory in the way is named as one, with no --force advice.
+func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
+	t.Parallel()
+
+	for name, path := range map[string]func(dir string) (args []string, blocked string){
+		"new": func(dir string) ([]string, string) {
+			blocked := filepath.Join(dir, "sheet.json")
+
+			return []string{cmdNew, flagAuto, flagService, other, flagOutput, blocked}, blocked
+		},
+		"a batch member": func(dir string) ([]string, string) {
+			blocked := filepath.Join(dir, "2.json")
+
+			return []string{cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir}, blocked
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			dir := t.TempDir()
+			args, blocked := path(dir)
+
+			err := os.Mkdir(blocked, 0o700)
+			if err != nil {
+				t.Fatalf("planting the directory: %v", err)
+			}
+
+			err = run(args, nil, io.Discard, io.Discard)
+
+			switch {
+			case err == nil:
+				t.Fatal("a record was written over a directory")
+			case !strings.Contains(err.Error(), "is a directory"):
+				t.Errorf("a directory in the way was reported as %q, which does not say so", err)
+			case strings.Contains(err.Error(), "--force"):
+				t.Errorf("a directory in the way was reported as %q, advising --force, which cannot help", err)
+			}
+		})
+	}
+}

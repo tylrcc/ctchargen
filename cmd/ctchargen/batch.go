@@ -429,8 +429,7 @@ func noMemberExists(paths []string) error {
 	for _, path := range paths {
 		_, err := os.Stat(path)
 		if err == nil {
-			return fmt.Errorf("%w: %s %w; pass --force to replace it",
-				errUsage, path, errWouldOverwrite)
+			return inTheWay(path)
 		}
 	}
 

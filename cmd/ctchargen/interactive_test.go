@@ -77,9 +77,10 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 
 	// Named against the answer, not against the words around it. An echo
 	// reading "you chose " with nothing after it keeps the numbering whole
-	// and says nothing - which is what happens the moment liveCodec stops
-	// carrying the field, a drift the fold cannot catch because the case
-	// still compiles.
+	// and says nothing - which is what happens the moment the flat shape
+	// stops carrying the field, a drift the fold cannot catch because the
+	// case still compiles. render's TestTheFlatShapeIsWhatWasWritten holds
+	// that drift; this holds what the player is shown.
 	if !strings.Contains(shown, "you chose Personal Development Table") {
 		t.Error("the echo does not name what was chosen")
 	}

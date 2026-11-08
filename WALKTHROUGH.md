@@ -1012,7 +1012,7 @@ A transcript of `grep -n 'Codec struct\|^func fold' internal/render/fold.go`, ru
 33:func foldEnlistment(from traveller.Enlistment) enlistmentRecord {
 46:type departureCodec struct{ out departureRecord }
 80:func foldDeparture(from traveller.Departure) departureRecord {
-160:type eventCodec struct {
+161:type eventCodec struct {
 ```
 
 The **read** side is not. `internal/render/decode.go` unmarshals into the same `record`

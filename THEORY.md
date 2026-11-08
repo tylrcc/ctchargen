@@ -114,9 +114,8 @@ The `error` return exists because `Fold` is one signature serving cases that _ca
 fail (applying a result rolls dice and consults a decider) and cases that cannot
 (projecting to JSON). Discarding it is correct at the codec sites and wrong at the
 application sites. The comment is load-bearing; do not delete it and do not add
-error handling that no test can reach. One codec site, `render`'s `foldDeparture`,
-discards it without saying why (#254), and a reader who meets that one first
-learns the wrong habit.
+error handling that no test can reach. Every codec site says so, `render`'s
+`foldDeparture` among them since #254.
 
 ### 3. Indexing a printed table is what makes a number data
 
@@ -703,13 +702,6 @@ authority (idea 7).
 as deliberate rather than as drift — the comment names the failure mode and the one
 test that could hit it works around it explicitly. A reader who wanted a hard bound
 could reasonably disagree. Not filed.
-
-**Whether `sheet.go`'s case-insensitive service compare is meant for hand-edited
-records.** `strings.EqualFold` at the headline's "after the X refused him"
-matters only for a record whose `inputs.service` is not the canonical
-spelling, which the tool never writes. It may be a deliberate courtesy to a
-hand-edited record, or a leftover; nothing says which, and nothing tests it
-(#254).
 
 **The `--survivors` bound.** `survivorAttempts = 100` is argued from a referee's
 measurement of 74 deaths in 100 under the default strategy; I did not

@@ -5,6 +5,14 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A directory where a record is to go is reported as a directory on the
+  first attempt, for `new -o` and for a batch member, with no `--force`
+  advice (#254); it read as an existing file to replace, and `--force` then
+  failed on it. The sheet's headline compares the attempted service exactly,
+  and three comments are brought true: `foldDeparture` says why it discards
+  `Fold`'s error, `OutcomeEvent.Because` (and the schema's `because`) names
+  rolls among its causes, and an interactive test no longer names the
+  removed `liveCodec`.
 - `chargen.Inputs` holds a forced service as one value, `Forced`, rather
   than a `Service` beside a `Forced` flag (#253). Its one field is the
   service itself, unexported, and its zero value forces nothing, so a forced
