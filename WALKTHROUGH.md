@@ -47,6 +47,7 @@ A transcript of `go list -deps ./... | grep philoserf | sed 's|github.com/philos
 ./internal/render
 ./cmd/ctchargen
 ./internal/coverage
+./internal/mutate
 ./internal/walkthrough
 ```
 
@@ -1545,6 +1546,7 @@ ok  	github.com/philoserf/ctchargen/cmd/ctchargen
 ok  	github.com/philoserf/ctchargen/internal/chargen
 ok  	github.com/philoserf/ctchargen/internal/coverage
 ok  	github.com/philoserf/ctchargen/internal/dice
+ok  	github.com/philoserf/ctchargen/internal/mutate
 ok  	github.com/philoserf/ctchargen/internal/render
 ok  	github.com/philoserf/ctchargen/internal/rules
 ok  	github.com/philoserf/ctchargen/internal/traveller

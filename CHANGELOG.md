@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `go run ./internal/mutate` shows whether a test kills a mutation. It copies
+  the tree, makes one exact edit in the copy (refusing text that does not
+  occur exactly once), runs the command given, and prints its output with
+  `KILLED` or `SURVIVED`; the tree it runs from is never touched.
 - The gate re-runs `WALKTHROUGH.md`'s transcripts. `internal/walkthrough`
   runs every transcribed command and fails where its output differs, or
   where a random run labelled as a sample no longer runs; `-regenerate`

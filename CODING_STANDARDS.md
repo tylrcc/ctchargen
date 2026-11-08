@@ -41,7 +41,8 @@ package doc.
 
 `CLAUDE.md`'s gate section states the rule. Review for its evidence: a new
 invariant, or a check rewritten, comes with the mutation that killed it and
-what the failure said, in the commit or the PR.
+what the failure said, in the commit or the PR. `go run ./internal/mutate`
+prints both, so the evidence can be pasted as it ran.
 
 ## A walkthrough excerpt matches the tree
 

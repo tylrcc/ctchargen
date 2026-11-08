@@ -216,6 +216,9 @@ promise (#199).
   `Implements:` and `Holds:` markers.
 - `internal/walkthrough`: test code only. Re-runs every command
   `WALKTHROUGH.md` transcribes and compares what it prints.
+- `internal/mutate`: a tool, not part of the CLI. Runs a command against a
+  scratch copy of the tree with one exact edit made, and says whether it
+  failed.
 - `cmd/ctchargen`: the subcommands. The record goes to stdout and the
   conversation to stderr, so `ctchargen new | jq` pipes a record.
 
@@ -230,6 +233,7 @@ go test ./internal/chargen -run TestGoldens  # one test
 go test ./internal/chargen -regenerate       # rewrite the goldens
 go test ./internal/coverage -regenerate      # rewrite docs/COVERAGE.md from the markers
 go test ./internal/walkthrough -regenerate   # rewrite WALKTHROUGH.md's transcripts from their commands
+go run ./internal/mutate -file F -old TEXT -new TEXT go test ./pkg -run T  # show a mutation killed
 go run ./cmd/ctchargen new --auto --sheet
 ```
 
@@ -272,7 +276,9 @@ go run ./cmd/ctchargen new --auto --sheet
   `cmd/ctchargen/cli_test.go` and held one way, because a new flag breaks
   nobody; the exit status beside them is 0 or 1.
 - **A new invariant is not done until a deliberate mutation has been shown to
-  kill it**, and the failure names what was broken.
+  kill it**, and the failure names what was broken. Show it with
+  `go run ./internal/mutate`, which makes the edit in a scratch copy and never
+  in the tree, prints the command's output, and says `KILLED` or `SURVIVED`.
 - **An erratum's stamping condition is machine-checked, not just reachable**
   (#66). `ERRATA.md` states each as a predicate over the finished record, and
   `internal/chargen/stamping_test.go` holds what a record stamps to what the document
