@@ -187,7 +187,7 @@ func TestGoldensRegenerate(t *testing.T) {
 
 // Every recorded reading is reachable by some fixture.
 //
-// This is the gate the PRD asks for, and until the engine walked the ranked
+// This gate holds every reading to a fixture, and until the engine walked the ranked
 // services it could not hold. The readings stamped on no record by design are
 // namesNoRecord's, and one stamped anyway fails here.
 //

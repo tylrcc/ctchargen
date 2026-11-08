@@ -28,8 +28,8 @@ func renderRecord(args []string, out io.Writer) error {
 		return fmt.Errorf("%w: %w; run `ctchargen render --help`", errUsage, err)
 	}
 
-	// The flag package stops at the first non-flag argument, and the PRD's
-	// CLI sketch says so plainly: flags precede the filename. Someone who
+	// The flag package stops at the first non-flag argument, so flags
+	// precede the filename. Someone who
 	// puts them after gets more than one positional argument, and deserves
 	// to be told which of the two mistakes he made.
 	if flags.set.NArg() > 1 {

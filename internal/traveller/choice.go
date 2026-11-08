@@ -81,7 +81,7 @@ type EnlistmentOffer struct {
 // one for each method of the Decider interface, and the value's String is
 // that method's name.
 //
-// The PRD calls this "a rendering of that interface, never a second list
+// The v1 contract called this "a rendering of that interface, never a second list
 // kept parallel to it" — and an enum is, unavoidably, a second list. What
 // makes it honest is a check in chargen's tests, which holds these constants
 // and the interface's methods to each other by reflection, so the list cannot

@@ -768,8 +768,8 @@ jobs.
 // recorded, and nothing would notice. It holds, and
 // traveller.TestNoTwoValuesOfAnAlphabetShareASpelling holds it (#48).
 //
-// Implements: An answer outside the offered set is refused, not applied [FR9]
-// in The record.
+// Implements: An answer outside the offered set is refused, not applied
+// [Choice points] in The record.
 func (l logging) record(point traveller.ChoicePoint, from []string, chosen string) error {
 	if !slices.Contains(from, chosen) {
 		return fmt.Errorf("%w: %v offered %v, and was answered %q",

@@ -27,8 +27,8 @@ func Sheet(character *chargen.Character) (string, error) {
 // the same values: a sheet describes the record, so the record is what it
 // should be written from, and one renderer cannot disagree with itself.
 //
-// Implements: A record renders to what generating it rendered [FR8] in The
-// record.
+// Implements: A record renders to what generating it rendered [Character
+// record] in The record.
 func SheetFrom(text []byte) (string, error) {
 	projected, err := decode(text)
 	if err != nil {
@@ -44,8 +44,8 @@ func SheetFrom(text []byte) (string, error) {
 // headline and the possessions, and thinks about keeping the record only once
 // he has decided he wants this one.
 //
-// Implements: The errata are on the transcript and not the sheet [FR11] in The
-// record.
+// Implements: The errata are on the transcript and not the sheet [Generation
+// record] in The record.
 func sheetOf(r record) (string, error) {
 	// Every event is read before anything is printed, and one that will not
 	// read refuses the sheet. The sheet shows one choice event at most, but
@@ -148,7 +148,8 @@ func headline(r record) (string, error) {
 // terms is the count and the word, so a one-term character does not read
 // "1 terms".
 //
-// Implements: A one-term character reads as one term [FR8] in The record.
+// Implements: A one-term character reads as one term [Character record] in The
+// record.
 func terms(count int) string {
 	if count == oneTerm {
 		return "1 term"

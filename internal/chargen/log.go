@@ -13,8 +13,8 @@ import (
 // It is wired in from the first step rather than added afterwards, because a
 // log that is added afterwards records what the author remembered.
 //
-// Implements: Every step, throw, choice and consequence, in order [FR11] in The
-// record.
+// Implements: Every step, throw, choice and consequence, in order [Generation
+// record] in The record.
 type log struct {
 	events []traveller.Event
 	errata map[traveller.Erratum]bool

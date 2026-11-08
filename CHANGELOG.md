@@ -5,6 +5,14 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `docs/PRD.md` and `docs/PRERELEASE.md` are removed; the history keeps both
+  as of `ec7289f`. The coverage map's promise labels are a fixed list in
+  `internal/coverage` rather than read from the PRD, and the PRD's opaque
+  ids are renamed for what they named: `[FR8]` is `[Character record]`,
+  `[FR9]` is `[Choice points]`, `[FR11]` is `[Generation record]`. With
+  nothing left to withdraw from, an ADR's "Withdraws from" line is no
+  longer read; a retired label such as `[Determinism]` is simply off the
+  list. This replaces the withdrawn-section and PRD-label bullets below.
 - `Policy.MusterTable2DM`'s doc comment says which strategies reach it
   (#248): only cash rolls on Table 2, so only cash is ever asked under
   `--auto`. It had called spartan the only strategy that never rolls there,

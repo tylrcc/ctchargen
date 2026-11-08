@@ -1,17 +1,18 @@
 # CLAUDE.md
 
-Guidance for Claude Code in this repository. `docs/PRD.md` was the v1
-contract and is delivered and historical; this file carries the authority
-model live, and adds what an agent needs and a human reader does not.
+Guidance for Claude Code in this repository. The v1 contract was
+`docs/PRD.md`, delivered and then removed from the tree after `ec7289f`, where
+the history keeps it; this file carries the authority model live, and adds
+what an agent needs and a human reader does not.
 
 ## What this repo is
 
 A Go CLI that generates rules-accurate Classic Traveller characters from
 Books 1–3 (© 1977 text, FFE reprints). The repo was emptied at `41a213a` and
-rebuilt from `docs/PRD.md`.
+rebuilt from that contract.
 
 **Current state: the v1 contract is delivered, and the prerelease review
-(`docs/PRERELEASE.md`) and the prerelease code audit (#27) are closed.**
+and the prerelease code audit (#27) are closed.**
 **What governs the work now is what Classic Traveller referees report about
 using the tool** (#26 was the first such report); the page and the clean room
 govern how a report gets answered. `v1.0.0-beta.4` is the current release.
@@ -166,17 +167,16 @@ never made.
 
 What may be consulted, and only at rank 3 above, is that tree's **errata** —
 its list of places the book is silent, and the readings it reached there.
-`docs/PRD.md` already carries the list; the readings are the fallback.
+The v1 contract carries the list — `docs/PRD.md` as of `ec7289f`; the
+readings are the fallback.
 
 ## Documents and what each governs
 
 | File                            | Governs                                                                                                                                                                                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/PRD.md`                   | Nothing now. The delivered v1 contract, kept as the record of why the tree has this shape. Its `## ` headings and `FRn` ids stay as labels: the coverage map cites them for the tool's own promises.                                        |
 | `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                                                               |
 | `docs/COVERAGE.md`              | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
 | `docs/character.schema.json`    | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
-| `docs/PRERELEASE.md`            | One section per tag: what it ships with open and why, and the review that preceded it where there was one. A finding is recorded before it is fixed.                                                                                        |
 | `THEORY.md`                     | Nothing binding. What the code believes, where those beliefs are enforced, and where they rest on nothing but care. A reader's account, not a contract.                                                                                     |
 | `WALKTHROUGH.md`                | Nothing binding. A linear read of the code in execution order, generated. Where it disagrees with the tree, it is the document that is wrong.                                                                                               |
 | `CODING_STANDARDS.md`           | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                                                        |

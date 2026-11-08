@@ -112,7 +112,7 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 //
 // --sheet and --history are one character asked for two ways. rendered() took
 // the sheet and said nothing, so a referee who asked for the transcript got a
-// sheet and no reason (#58). Neither flag is in the PRD's CLI sketch; what
+// sheet and no reason (#58). Neither flag outranks the other; what
 // settles it is that preferring one silently is the same defect as swallowing
 // a word after a help flag, and this command refuses that.
 //

@@ -26,5 +26,5 @@
 // text. Printed page N is PDF page N+6 in Book 1, N+5 in Books 2 and 3.
 //
 // Implements: The spellings that gate rests on tell every value of an alphabet
-// apart [FR9] in The record.
+// apart [Choice points] in The record.
 package traveller

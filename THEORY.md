@@ -307,16 +307,15 @@ either are that statement or are generated from it:
   The bracket in a marker is the rule's authority, from a closed set the
   generator checks (#232). For the book's rules it is a page, `[1:5]`. For
   the tool's own promises it is a reading `[(E011)]`, an ADR `[ADR 0001]`,
-  or a PRD heading or requirement read from the PRD itself: `[FR9]`,
-  `[CLI sketch]`, `[JSON conventions]`. The PRD governs nothing, and its
-  labels stay as the names those promises were first stated under; a cite
-  that names nothing fails the generator, naming the rule. The PRD is never
-  edited, so a withdrawal is stated by the ADR that made it: ADR 0001's line
-  "Withdraws from `docs/PRD.md`: Determinism." is read by the generator,
-  which refuses a `[Determinism]` cite naming ADR 0001. Where a promise
-  outlived the section that stated it, an ADR states it again: ADR 0002 is
-  why a record still names its ruleset and build once the seed they were
-  provenance for was gone.
+  or a promise label from the fixed list in `internal/coverage`:
+  `[Choice points]`, `[CLI sketch]`, `[JSON conventions]`. The labels are
+  the sections of the v1 contract those promises were first stated under,
+  kept as names when the contract left the tree after `ec7289f`; a cite that
+  names nothing fails the generator, naming the rule. A label the contract's
+  removal retired, such as `[Determinism]` (withdrawn by ADR 0001), is simply
+  not on the list. Where a promise outlived the section that stated it, an
+  ADR states it again: ADR 0002 is why a record still names its ruleset and
+  build once the seed they were provenance for was gone.
 
 - **`WALKTHROUGH.md`'s transcripts are re-run** by `internal/walkthrough`:
   each "A transcript of" names a command whose output must match its block
@@ -421,7 +420,8 @@ tests exist to catch, and they catch it only for the slices they name.
 table of pp. 4–25", not "every table the procedure reads". That is why the
 passage prices and the 90% resale rate of pp. 21–22 are lifted, validated and
 transcribed twice even though no step of the procedure, the record or a
-rendering reads them. #57 and PRERELEASE P2-1 settled them as reference data
+rendering reads them. #57 and the prerelease review's P2-1
+(`docs/PRERELEASE.md` at `ec7289f`) settled them as reference data
 v1 applies to nothing. The same holds for the readings: `Rules.Reading` lifts
 every field of every `ERRATA.md` entry, and only tests read one — the
 stamping test, and `rules`' own.
@@ -686,20 +686,14 @@ I did **not** verify any of them against the printed page. If a transcription is
 wrong, nothing in this document would catch it, and the twice-transcribed
 discipline is the only thing that would.
 
-**`docs/PRD.md` "governs nothing," but code still appeals to it.**
-`CLAUDE.md`'s document table says the PRD governs nothing now and is kept as
-history. Yet `cmd/ctchargen/render.go` justifies a parse decision with "the PRD's
-CLI sketch says so plainly: flags precede the filename," `new.go` argues from
-"Neither flag is in the PRD's CLI sketch," and `internal/traveller/choice.go` quotes the
-PRD's "a rendering of that interface, never a second list kept parallel to it"
-as the standard `ChoicePoint` is held to. All three are historical rationales
-rather than live authority, and I read them that way — but a maintainer could
-reasonably read them as the PRD still governing. For those three comments,
-nothing is wrong and the fix would be a wording preference.
-
-`ERRATA.md` argues from PRD sections in the same historical way, in its
-preamble and in E002, E004, E008, E009, E013 and E014. The coverage map is the
-one place the PRD's labels are still cited, and there they are names, not
+**The v1 contract left the tree, and its arguments stayed in history.**
+`docs/PRD.md` was removed after `ec7289f`. The code no longer appeals to it:
+`internal/traveller/choice.go` still quotes the contract's "a rendering of
+that interface, never a second list kept parallel to it" as the standard
+`ChoicePoint` is held to, as a historical rationale. `ERRATA.md` argues from
+PRD sections in E002, E004, E008, E009, E013 and E014, and its preamble says
+those cites mean the contract at `ec7289f`. The coverage map keeps the
+contract's section names as promise labels, and there they are names, not
 authority (idea 7).
 
 **The `Roller` termination contract is documented and unenforced**, and I take that

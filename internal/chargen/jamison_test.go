@@ -12,7 +12,7 @@ import (
 
 // The worked example of Book 1 pp. 23-25, replayed.
 //
-// FR9 makes the instrument free: the procedure asks through a Decider and
+// The choice points make the instrument free: the procedure asks through a Decider and
 // throws through a Roller, so a narrated pair walks the example's own
 // character and the result is compared against the page. It is the one check
 // on this engine written by someone other than its author.

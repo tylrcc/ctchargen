@@ -7,7 +7,7 @@ import (
 )
 
 // Character is the record a generation produces, complete whether it ended
-// in mustering out or in death (FR8).
+// in mustering out or in death.
 //
 // A deliberate delta from sibling tools: Books 1-3 have no calendar and no
 // birthdate rules, so the record carries an age and a count of terms, not a

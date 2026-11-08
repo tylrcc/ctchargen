@@ -1,6 +1,9 @@
 # ERRATA: recorded readings
 
-2026-09-02. Milestone 0. Companion to `PRD.md`.
+2026-09-02. Milestone 0.
+
+A rationale below that cites "PRD" cites the delivered v1 contract,
+removed from the tree after `ec7289f`; it is `docs/PRD.md` at that commit.
 
 Every place the held text is silent, ambiguous, or self-contradictory, and
 the reading this tool applies there. Each entry carries the printed page,

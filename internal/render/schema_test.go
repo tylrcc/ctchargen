@@ -13,9 +13,8 @@ import (
 )
 
 // docs/character.schema.json describes what this build writes, and the gate
-// is what keeps it honest. It is not a promise to records already written: the PRD
-// rules out cross-version record compatibility, because a record is
-// the only way back to its character, and nothing in it is hand-written.
+// is what keeps it honest. It is not a promise to records already written:
+// until v1.0.0 a record's shape is free to move between builds (#62).
 //
 // Every golden and both documented examples are validated here. A schema
 // nothing validates is a description that drifts away from the thing it

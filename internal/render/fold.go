@@ -155,8 +155,8 @@ type outcomeJSON struct {
 // both would stop compiling, but not a field, and one could stop carrying DM
 // with only a transcript golden to notice.
 //
-// Implements: The shape a reader gets back is the shape that was written [FR11]
-// in The record.
+// Implements: The shape a reader gets back is the shape that was written
+// [Generation record] in The record.
 type eventCodec struct {
 	out  json.RawMessage
 	flat eventJSON

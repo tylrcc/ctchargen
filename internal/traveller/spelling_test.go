@@ -14,7 +14,7 @@ import (
 
 // No two values of an alphabet share a spelling.
 //
-// This is the assumption chargen's FR9 gate rests on. logging.record refuses
+// This is the assumption chargen's choice gate rests on. logging.record refuses
 // an answer that was not offered by comparing rendered names, not values: the
 // decorator holds both the offered set and the answer, and checking there
 // leaves one definition of "answered outside the offer" rather than one per
@@ -72,7 +72,7 @@ func spelledOnce[T fmt.Stringer](t *testing.T, alphabet string, all []T) {
 
 		first, taken := seen[spelled]
 		if taken {
-			t.Errorf("%s: values %d and %d both spell %q; the FR9 gate compares spellings",
+			t.Errorf("%s: values %d and %d both spell %q; the choice gate compares spellings",
 				alphabet, first, i, spelled)
 
 			continue

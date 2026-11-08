@@ -45,19 +45,19 @@ func WithRoller(roller Roller) Option {
 // record and no other: no later generation, and no offer the engine checks
 // an answer against.
 //
-// Implements: The procedure is shown between the questions [FR11] in The
-// record.
+// Implements: The procedure is shown between the questions [Generation record]
+// in The record.
 func WithObserver(watch func(traveller.Event)) Option {
 	return func(r *run) { r.log.watch = watch }
 }
 
 // WithAnswerer names who the decider stands for, which every choice event
-// then records (FR9). A run says the policy answered unless it is told that
+// then records. A run says the policy answered unless it is told that
 // a person did, so a record read back names the kind of thing that made
 // each choice rather than assuming the automatic one.
 //
 // Implements: A guided run's choices are recorded as the player's, not the
-// policy's [FR9] in The record.
+// policy's [Choice points] in The record.
 func WithAnswerer(who traveller.DecidedBy) Option {
 	return func(r *run) { r.by = who }
 }

@@ -18,12 +18,9 @@
 // The bracket is the rule's authority, from a closed set: a page cite, which
 // opens with book:page and may name readings, "1:5; 3:22 (E011)"; a reading
 // alone, "(E011)", that ERRATA.md has a heading for; "ADR 0001", naming a file
-// in docs/adr; or a "## " heading or FRn requirement of docs/PRD.md, which
-// governs nothing and keeps its labels as names. The PRD is never edited, so a
-// label withdrawn from it is named by the ADR that withdrew it, on a line
-// "Withdraws from `docs/PRD.md`: Determinism.", and is refused as a cite. The
-// set is read from those documents, and a cite outside it fails the
-// generator, naming the rule.
+// in docs/adr; or one of the promise labels below, for a promise of the
+// tool's own. The readings and the ADRs are read from those documents, and a
+// cite outside the set fails the generator, naming the rule.
 //
 // A marker runs on to the following comment lines until a blank comment line,
 // the next marker or the end of the comment, so a long one wraps like prose.
@@ -100,7 +97,6 @@ const (
 	schema   = "docs/character.schema.json"
 
 	// The documents a cite that is not a page may name.
-	prd      = "docs/PRD.md"
 	adrDir   = "docs/adr"
 	readings = "internal/rules/data/ERRATA.md"
 
@@ -120,15 +116,21 @@ var (
 	pageCite = regexp.MustCompile(`^(\d+):(\d+)`)
 
 	// The labels the other cites are drawn from, as each document writes
-	// them: a PRD heading or requirement, an ADR's file, a reading's heading.
-	prdHeading     = regexp.MustCompile(`(?m)^## (.+)$`)
-	prdRequirement = regexp.MustCompile(`(?m)^\*\*(FR\d+) — `)
+	// them: an ADR's file, a reading's heading.
 	adrFile        = regexp.MustCompile(`^(\d{4})-.+\.md$`)
 	readingHeading = regexp.MustCompile(`(?m)^### (E\d{3}) — `)
-
-	// adrWithdraws is an ADR's line naming the PRD labels it withdrew.
-	adrWithdraws = regexp.MustCompile("(?m)^Withdraws from `docs/PRD.md`: (.+)\\.$")
 )
+
+// promises are the labels a promise of the tool's own cites. They are the
+// sections of the v1 contract each promise was first stated under, kept as
+// names when that contract was removed; it is docs/PRD.md as of ec7289f, in
+// the history.
+//
+//nolint:gochecknoglobals // a fixed list, and Go has no const slice.
+var promises = []string{
+	"Authority", "CLI sketch", "Character record", "Choice points",
+	"Documents", "Domain model", "Generation record", "JSON conventions",
+}
 
 // implementation is one Implements marker and the declaration carrying it.
 type implementation struct {
@@ -244,9 +246,7 @@ func TestAMarkerRemovedFailsNamingTheRule(t *testing.T) {
 }
 
 // A cite that is not a page names an authority that exists: a reading, an ADR,
-// or a heading or requirement of the PRD, whose labels stay citable though it
-// governs nothing (#232), unless an ADR withdrew that label. Anything else
-// fails, naming the rule.
+// or a promise label. Anything else fails, naming the rule.
 func TestACiteNamesAnAuthority(t *testing.T) {
 	t.Parallel()
 
@@ -260,7 +260,7 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, cite := range []string{"(E011)", "ADR 0001", "ADR 0002", "Domain model", "FR8"} {
+	for _, cite := range []string{"(E011)", "ADR 0001", "ADR 0002", "Domain model", "Choice points"} {
 		if !known.cites[cite] {
 			t.Errorf("[%s] names an authority that exists, and is refused", cite)
 		}
@@ -268,11 +268,7 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 
 	victim := found.implementations[0]
 
-	if known.withdrawn["Determinism"] != "ADR 0001" {
-		t.Errorf("ADR 0001 withdrew [Determinism], and the generator does not know it")
-	}
-
-	for _, cite := range []string{"Nonsense", "ADR 0099", "(E099)", "FR99", "Domain", "Determinism"} {
+	for _, cite := range []string{"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain", "Determinism"} {
 		t.Run(cite, func(t *testing.T) {
 			t.Parallel()
 
@@ -1045,35 +1041,25 @@ func joined(found markers) (map[string]row, []error) {
 }
 
 // authorities is every cite that is not a page and names something that
-// exists, and every PRD label an ADR withdrew, with the ADR that did, read
-// from the documents themselves rather than listed here.
+// exists: the promise labels, and the ADRs and readings read from the
+// documents themselves.
 type authorities struct {
-	cites     map[string]bool
-	withdrawn map[string]string
+	cites map[string]bool
 }
 
 func readAuthorities(dir string) (authorities, error) {
-	known := authorities{cites: make(map[string]bool), withdrawn: make(map[string]string)}
+	known := authorities{cites: make(map[string]bool)}
 
-	text, err := os.ReadFile(filepath.Join(dir, prd))
-	if err != nil {
-		return authorities{}, fmt.Errorf("%w: %w", errMarker, err)
+	for _, label := range promises {
+		known.cites[label] = true
 	}
 
-	for _, match := range prdHeading.FindAllStringSubmatch(string(text), -1) {
-		known.cites[match[1]] = true
-	}
-
-	for _, match := range prdRequirement.FindAllStringSubmatch(string(text), -1) {
-		known.cites[match[1]] = true
-	}
-
-	err = known.readADRs(dir)
+	err := known.readADRs(dir)
 	if err != nil {
 		return authorities{}, err
 	}
 
-	text, err = os.ReadFile(filepath.Join(dir, readings))
+	text, err := os.ReadFile(filepath.Join(dir, readings))
 	if err != nil {
 		return authorities{}, fmt.Errorf("%w: %w", errMarker, err)
 	}
@@ -1082,20 +1068,10 @@ func readAuthorities(dir string) (authorities, error) {
 		known.cites["("+match[1]+")"] = true
 	}
 
-	var withdrawals []error
-
-	for _, label := range slices.Sorted(maps.Keys(known.withdrawn)) {
-		if !known.cites[label] {
-			withdrawals = append(withdrawals, fmt.Errorf("%w: %s withdraws [%s], which is no PRD heading or requirement",
-				errMarker, known.withdrawn[label], label))
-		}
-	}
-
-	return known, errors.Join(withdrawals...)
+	return known, nil
 }
 
-// readADRs adds each ADR in docs/adr as a cite, and each PRD label one says
-// it withdrew.
+// readADRs adds each ADR in docs/adr as a cite.
 func (known authorities) readADRs(dir string) error {
 	entries, err := os.ReadDir(filepath.Join(dir, adrDir))
 	if err != nil {
@@ -1108,20 +1084,7 @@ func (known authorities) readADRs(dir string) error {
 			continue
 		}
 
-		adr := "ADR " + match[1]
-
-		known.cites[adr] = true
-
-		record, err := os.ReadFile(filepath.Join(dir, adrDir, entry.Name()))
-		if err != nil {
-			return fmt.Errorf("%w: %w", errMarker, err)
-		}
-
-		for _, line := range adrWithdraws.FindAllStringSubmatch(string(record), -1) {
-			for label := range strings.SplitSeq(line[1], ", ") {
-				known.withdrawn[label] = adr
-			}
-		}
+		known.cites["ADR "+match[1]] = true
 	}
 
 	return nil
@@ -1138,13 +1101,9 @@ func (known authorities) check(found markers) error {
 			continue
 		}
 
-		switch by, withdrawn := known.withdrawn[impl.page]; {
-		case withdrawn:
-			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], which %s withdrew",
-				errMarker, impl.rule, impl.site, impl.page, by))
-		case !known.cites[impl.page]:
+		if !known.cites[impl.page] {
 			errs = append(errs, fmt.Errorf(
-				"%w: %q: %s cites [%s], which is no page, reading, ADR, or PRD heading or requirement",
+				"%w: %q: %s cites [%s], which is no page, reading, ADR, or promise label",
 				errMarker, impl.rule, impl.site, impl.page,
 			))
 		}

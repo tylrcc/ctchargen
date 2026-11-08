@@ -28,8 +28,8 @@ import (
 // traveller.Event is sealed, so no further case can arrive from outside to
 // fail either. An error return here would be a branch no test could reach.
 //
-// Implements: The procedure is shown between the questions [FR11] in The
-// record.
+// Implements: The procedure is shown between the questions [Generation record]
+// in The record.
 func EventLine(event traveller.Event) string {
 	var lined eventCodec
 

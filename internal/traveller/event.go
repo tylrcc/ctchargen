@@ -61,7 +61,7 @@ type ThrowEvent struct {
 // there is nothing for the roll to succeed at.
 //
 // Implements: A roll with nothing to meet is not recorded as a throw that
-// succeeded [FR11] in The record.
+// succeeded [Generation record] in The record.
 type RollEvent struct {
 	Seq  int
 	Step string
@@ -96,7 +96,7 @@ func (t ThrowEvent) Total() int {
 // that is the thing asked, this is which kind of thing answered.
 type DecidedBy int
 
-// The two who can answer (FR9).
+// The two who can answer.
 const (
 	ByPlayer DecidedBy = iota
 	ByPolicy
