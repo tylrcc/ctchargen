@@ -52,9 +52,9 @@ keeps its heading and says it is withdrawn.
 **Pages.** Book 1 p. 5, both the Enlistment and The Draft paragraphs.
 
 **What the page says.** Enlistment: "Only one enlistment attempt is permitted
-per character. If rejected for enlistment, he **may** submit to the draft.
+per character. If rejected for enlistment, he may submit to the draft.
 Enlistment or draft is not allowed after age 18." The Draft, two paragraphs
-later: "Should an attempt at enlistment fail, the character **must** submit
+later: "Should an attempt at enlistment fail, the character must submit
 to the draft."
 
 **The gap.** The same page states both modalities for the same step. One of
@@ -125,7 +125,7 @@ service." P. 7: "Service beyond the seventh term is normally impossible, and
 retirement mandatory. However, persons who throw 12 (exactly) on the final
 reenlistment throw must serve an additional term of service."
 
-**The gap.** P. 7 grants "**an** additional term" in the singular, and says
+**The gap.** P. 7 grants "an additional term" in the singular, and says
 nothing about a second 12 thrown during that additional term.
 
 **Reading.** The rule recurs without limit. The reenlistment throw is made
@@ -237,7 +237,7 @@ death during the first term.
 **What the page says.** P. 7: "There is the possibility of detrimental aging
 effects when a character reaches the age of 34, and in 4 year increments
 thereafter. When a character turns 34 (when adventuring during the game, or
-**at the end of the 4th term of service**), he is subject to a possible
+at the end of the 4th term of service), he is subject to a possible
 reduction in his characteristics." P. 9's note: "Term of service refers to
 the end of that numbered term." P. 25: "he is subject to 2 rounds of aging
 (one round should have been made at the end of term of service 4, but is
@@ -316,7 +316,7 @@ alongside [E006](#e006--where-the-aging-round-sits-within-the-term).
 **What the page says.** "If, as a result of aging or combat, a characteristic
 is reduced to zero, the character is considered to be ill or wounded. A basic
 saving throw of 8+ applies (and may be modified by the expertise of attending
-medical personnel). **If the character survives**, his recovery is made
+medical personnel). If the character survives, his recovery is made
 immediately (under slow drug, which speeds up his body chemistry). The
 character ages (one die equals the number of months in added age)
 immediately, but also returns to play fully recovered. The characteristic
@@ -379,9 +379,9 @@ Stamped alongside [E008](#e008--the-outcome-of-a-failed-medical-crisis-saving-th
 
 **What the page says.** P. 4: "As a result of various modifications,
 characteristic values may ultimately range from 1 to 15. Characteristics (for
-player-characters) may never exceed 15, and do not go below 1 **except for
-calamitous injury or aging**." Pp. 7–8 name only one sub-1 value: "If, as a
-result of aging or combat, a characteristic is **reduced to zero** … The
+player-characters) may never exceed 15, and do not go below 1 except for
+calamitous injury or aging." Pp. 7–8 name only one sub-1 value: "If, as a
+result of aging or combat, a characteristic is reduced to zero … The
 characteristic which was reduced to zero automatically becomes one." P. 9's
 table prints reductions of −1 and −2.
 
@@ -425,12 +425,12 @@ is the condition above.
 **What the page says.** Book 1 p. 5: "**Titles:** A character with a Social
 Standing of 11 or greater may assume his family's hereditary title. The full
 range of titles is given in Book 3. For initial naming, a Social Standing of
-11 allows use of Sir, denoting hereditary knighthood; a Social Standing of 12
+11 allows the use of Sir, denoting hereditary knighthood; a Social Standing of 12
 allows use of Baron, or prefixing von to the character's surname." Book 3
-p. 22: "Persons with social standing of 11 or greater **are considered to be
-nobility** … Nobility have hereditary titles and high standing in their home
+p. 22: "Persons with social standing of 11 or greater are considered to be
+nobility … Nobility have hereditary titles and high standing in their home
 communities. … The nobility table indicates the actual designations or titles
-**accruing to specific social standing values**", the table running from 11
+accruing to specific social standing values", the table running from 11
 knight/dame to 15 duke/duchess.
 
 **The gap.** Neither page fixes a moment. Social Standing is not fixed at 18:
@@ -713,8 +713,8 @@ pages settle them. Recorded so they are not re-litigated as silences.
   matters because it fixes what "first in the printed list" names in the
   auto policy's answers.
 - **Mustering-out expertise stays inside the benefit's own category.**
-  P. 22: a repeat weapon benefit may be taken as "+1 expertise **in lieu of
-  receiving a second or subsequent weapon of exactly the same type**", and
+  P. 22: a repeat weapon benefit may be taken as "+1 expertise in lieu of
+  receiving a second or subsequent weapon of exactly the same type", and
   "Expertise may only be taken in a weapon received as a benefit." The
   expertise substitutes for the weapon that benefit would have delivered, so
   it is taken in a weapon of that benefit's category — the page's worked

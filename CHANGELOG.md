@@ -42,6 +42,11 @@ release turns out to be.
   show; `traveller`'s package doc points to Authority point 6 for when a
   printed range is data; and CODING_STANDARDS.md says a rule carried by several
   declarations is marked on each.
+- ERRATA.md's quotations carry only the emphasis the page prints: ten bold
+  passages in E001, E003, E006, E008, E010, E011 and E015 were added here and
+  are removed, read against each page; E011's bold run-in "Titles:" and
+  E002's italic aside from the Jamison example are the page's own and stay,
+  and E011's quotation of p. 5 regains a dropped "the" (#310).
 
 ## 1.0.0-beta.6
 
