@@ -117,6 +117,68 @@ func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	}
 }
 
+// livesThenDies is a source whose first character survives and whose every
+// later one is killed, so a --survivors search writes one and then runs out.
+func livesThenDies(t *testing.T) source {
+	t.Helper()
+
+	lives, dies := otherByPolicy.roller(t), otherKilled.roller(t)
+	first := true
+
+	return func() chargen.Roller {
+		if first {
+			first = false
+
+			return lives()
+		}
+
+		return dies()
+	}
+}
+
+// A --survivors search that runs out, through the command (#250).
+//
+// The bound is count times survivorAttempts, and the error
+// says exactly how many it generated: one more or one fewer is a moved bound.
+// One member was written before the search failed, so the stopped-run tally
+// had something to say, and must not say it: the error already carries the
+// counts, and a second line beside it would tell the same story twice.
+//
+// Holds: `--survivors` gives up rather than drawing forever.
+//
+// Holds: A failed search prints no stopped-run tally beside its counts.
+func TestAFailedSearchCountsOnce(t *testing.T) {
+	t.Parallel()
+
+	var out, asking strings.Builder
+
+	err := run([]string{
+		cmdBatch, flagCount, "2", flagAuto, flagService, other, flagSurvivors,
+	}, nil, &out, &asking, withDice(livesThenDies(t)))
+	if err == nil {
+		t.Fatal("a search that never finds the second survivor reported success")
+	}
+
+	if !errors.Is(err, errSearch) {
+		t.Fatalf("an exhausted search said %v, want the search's own failure", err)
+	}
+
+	want := fmt.Sprintf("generated %d characters for 2 living and found 1", 2*survivorAttempts)
+
+	if !strings.Contains(err.Error(), want) {
+		t.Errorf("the search reported %q, want it to say it %s", err, want)
+	}
+
+	if lines := strings.Count(out.String(), "\n"); lines != 1 {
+		t.Errorf("%d records streamed, want the one survivor", lines)
+	}
+
+	if asking.Len() != 0 {
+		t.Errorf("a failed search printed %q beside its error, which carries the counts alone",
+			asking.String())
+	}
+}
+
 type census struct{ members, dead int }
 
 func livingCount(t *testing.T, jsonl string) census {

@@ -95,6 +95,9 @@ func declareBatchFlags() batchFlagSet {
 
 // write sends the batch where it was asked for, and says what it did either
 // way. A directory takes one file per character; anything else is JSONL.
+//
+// Implements: A failed search prints no stopped-run tally beside its counts
+// [CLI sketch] in The record.
 func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
 	count int, path string, force, survivors bool, dice source,
 ) error {

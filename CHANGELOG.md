@@ -5,6 +5,9 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A `--survivors` search that runs out is now held through the command
+  (#250): a test drives `batch` to exhaustion and fails if the bound moves by
+  one attempt or if a stopped-run tally is printed beside the search's error.
 - A `batch` to a `.jsonl` file that stops no longer claims records it never
   wrote (#246). A file already there is refused before anyone is generated,
   as a directory batch's members are, and a run that fails after generating
