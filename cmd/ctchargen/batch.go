@@ -137,7 +137,7 @@ func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
 // A failure names the attempt, which under --survivors counts the dead the
 // run passed over as well as the living it wrote.
 func member(base chargen.Inputs, policy chargen.Policy, i int, dice source) (*chargen.Character, error) {
-	character, err := chargen.Generate(base, policy, dice.options()...)
+	character, err := chargen.Auto(base, policy, dice.options()...)
 	if err != nil {
 		return nil, fmt.Errorf("attempt %d: %w", i+1, err)
 	}

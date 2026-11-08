@@ -46,10 +46,7 @@
     "assumed": false
   },
   "inputs": {
-    "service": "Other",
-    "career": "serve",
-    "skills": "advanced",
-    "muster": "cash"
+    "service": "Other"
   },
   "errata": [
     "E002",
@@ -61,7 +58,12 @@
     "E014"
   ],
   "ruleset": "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)",
-  "policy": 3,
+  "policy": {
+    "version": 3,
+    "career": "serve",
+    "skills": "advanced",
+    "muster": "cash"
+  },
   "events": [
     {
       "seq": 1,
@@ -229,7 +231,6 @@
       "seq": 22,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -260,7 +261,6 @@
       "seq": 25,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -340,7 +340,6 @@
       "seq": 34,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -420,7 +419,6 @@
       "seq": 43,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -500,7 +498,6 @@
       "seq": 52,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -652,7 +649,6 @@
       "seq": 68,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -804,7 +800,6 @@
       "seq": 84,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -956,7 +951,6 @@
       "seq": 100,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1108,7 +1102,6 @@
       "seq": 116,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1263,7 +1256,6 @@
       "seq": 132,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1418,7 +1410,6 @@
       "seq": 148,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1573,7 +1564,6 @@
       "seq": 164,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1728,7 +1718,6 @@
       "seq": 180,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1905,7 +1894,6 @@
       "seq": 198,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -2082,7 +2070,6 @@
       "seq": 216,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -2259,7 +2246,6 @@
       "seq": 234,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -2440,7 +2426,6 @@
       "seq": 252,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",

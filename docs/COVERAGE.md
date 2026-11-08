@@ -159,26 +159,27 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A directory batch that cannot write a member leaves what came before | CLI sketch | `cmd/ctchargen.intoDirectory` | `cmd/ctchargen.TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction` |
 | A directory in the way is named as one, with no --force advice | CLI sketch | `cmd/ctchargen.inTheWay` | `cmd/ctchargen.TestADirectoryInTheWayIsNamedAsOne` |
 | A failed search prints no stopped-run tally beside its counts | CLI sketch | `cmd/ctchargen.write` | `cmd/ctchargen.TestAFailedSearchCountsOnce` |
-| A fixture generates one golden, and the same one twice | ADR 0001 | `internal/chargen.Generate` | `internal/chargen.TestGoldensRegenerate` |
-| A guided run's choices are recorded as the player's, not the policy's | Choice points | `internal/chargen.WithAnswerer` | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord` |
+| A fixture generates one golden, and the same one twice | ADR 0001 | `internal/chargen.generate` | `internal/chargen.TestGoldensRegenerate` |
+| A guided run's choices are recorded as the player's, not the policy's | Choice points | `internal/chargen.Guided` | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord` |
 | A key a later build adds inside an existing object is still refused | JSON conventions | `docs/character.schema.json` | `internal/render.TestAnUnknownKeyInsideAnEventDoesNotValidate` |
 | A one-term character reads as one term | Character record | `internal/render.terms` | `internal/render.TestOneTermIsSingular` |
 | A player nobody can be shown anything is not asked | Choice points | `cmd/ctchargen.player.sayf` | `cmd/ctchargen.TestInteractiveStopsWhenItCannotBeRead` |
 | A read that fails is not the input ending | Choice points | `cmd/ctchargen.player.stopped` | `cmd/ctchargen.TestAFailedReadIsNotTheInputEnding` |
 | A record from a later build validates and renders, which is what v1 promises | JSON conventions | `docs/character.schema.json` | `internal/render.TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders` |
-| A record names the policy that answered it | JSON conventions | `internal/chargen.PolicyVersion` | `cmd/ctchargen.TestOnlyARecordThePolicyAnsweredNamesOne` |
+| A record names the policy that answered it | JSON conventions | `internal/chargen.Auto` | `cmd/ctchargen.TestOnlyARecordThePolicyAnsweredNamesOne` |
 | A record names the shape it is, so the v1 freeze has something to attach to | JSON conventions | `internal/render.recordShape` | `internal/chargen.TestGoldens`, `internal/render.TestARecordWithoutItsShapeDoesNotValidate` |
 | A record renders to what generating it rendered | Character record | `internal/render.SheetFrom` | `internal/render.TestARecordRendersToWhatGeneratedItRendered` |
 | A refused batch writes none of itself, on the members it will actually write | CLI sketch | `cmd/ctchargen.noMemberExists` | `cmd/ctchargen.TestARefusedBatchWritesNothing`, `cmd/ctchargen.TestARefusedSurvivorBatchKeysOnTheIndicesItWrites` |
 | A roll with nothing to meet is not recorded as a throw that succeeded | Generation record | `internal/traveller.RollEvent` | `internal/render.TestEveryGoldenMatchesTheSchema`, `internal/render.TestTheFlatShapeIsWhatWasWritten` |
 | A stopped session says what was answered and that nothing was written | ADR 0001 | `cmd/ctchargen.player.stopped` | `cmd/ctchargen.TestAStoppedSessionSaysWhatWasLost` |
+| A strategy given without --auto is refused, not ignored | CLI sketch | `cmd/ctchargen.strategiesWithoutAuto` | `cmd/ctchargen.TestAStrategyWithoutAutoIsRefused` |
 | A word after a help flag is refused, not discarded | CLI sketch | `cmd/ctchargen.writeHelp` | `cmd/ctchargen.TestAWordAfterAHelpFlagIsRefused` |
 | A word that names no strategy never becomes one | Choice points | `internal/chargen.parsed` | `internal/chargen.TestAWordThatNamesNoStrategyIsNotOne` |
 | A write that fails partway stops the batch, naming the member | CLI sketch | `cmd/ctchargen.writingTo` | `cmd/ctchargen.TestABatchReportsAWriteThatFailedPartway` |
 | An answer outside the offered set is refused, not applied | Choice points | `internal/chargen.logging.record` | `internal/chargen.TestAnAnswerOutsideTheOfferIsRefused` |
 | An event kind this build does not know is said to be unknown | Generation record | `internal/render.writeEvent` | `internal/render.TestAnUnknownEventKindIsSaidToBeUnknown` |
 | An unreadable answer is asked again, never guessed at | Choice points | `cmd/ctchargen.player.choose` | `cmd/ctchargen.TestInteractiveReAsksWhatItCannotRead` |
-| Each choice names who decided and what was offered | Generation record | `internal/chargen.logging` | `internal/chargen.TestGoldens` |
+| Each choice names what was offered and what was chosen | Generation record | `internal/chargen.logging` | `internal/chargen.TestGoldens` |
 | Each weapon-benefit line records the benefit it says | Choice points | `cmd/ctchargen.player.MusterWeapon` | `cmd/ctchargen.TestEachWeaponLineRecordsWhatItSays` |
 | Every batch member matches the schema | JSON conventions | `cmd/ctchargen.batch` | `cmd/ctchargen.TestEveryBatchMemberMatchesTheSchema` |
 | Every choice point the engine offers is reached by a record | Documents | `internal/chargen.fixtures` | `internal/chargen.TestEveryChoicePointIsReachedByARecord` |
@@ -209,7 +210,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | Rule | Page | Implementation | Test |
 | --- | --- | --- | --- |
 | A printed table governs over the example's stated result | 1:9, 25 (E015) | `internal/rules.Rules.liftBenefits` | `internal/chargen.TestTheWorkedExamplesDepartures` |
-| The worked example reproduces | 1:23–25 | `internal/chargen.Generate` | `internal/chargen.TestTheWorkedExampleReproduces` |
+| The worked example reproduces | 1:23–25 | `internal/chargen.generate` | `internal/chargen.TestTheWorkedExampleReproduces` |
 | The example's per-term order is not followed | 1:24 (E002) | `internal/chargen.run.term` | `internal/chargen.TestTheWorkedExamplesDepartures` |
 | Its ship, cash and pension | 1:25 | `internal/chargen.run.musterOut`, `internal/chargen.run.pension` | `internal/chargen.TestTheWorkedExamplesPossessions` |
 | Its skills, as its inset lists them | 1:25 | `internal/chargen.Character.addSkill` | `internal/chargen.TestTheWorkedExamplesSkills` |

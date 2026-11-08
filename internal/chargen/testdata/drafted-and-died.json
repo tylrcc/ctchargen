@@ -28,17 +28,19 @@
     "fatal": true
   },
   "inputs": {
-    "service": "Navy",
-    "career": "retire",
-    "skills": "service",
-    "muster": "spartan"
+    "service": "Navy"
   },
   "errata": [
     "E001",
     "E004"
   ],
   "ruleset": "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)",
-  "policy": 3,
+  "policy": {
+    "version": 3,
+    "career": "retire",
+    "skills": "service",
+    "muster": "spartan"
+  },
   "events": [
     {
       "seq": 1,
@@ -176,7 +178,6 @@
       "seq": 18,
       "kind": "choice",
       "point": "SubmitToDraft",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"

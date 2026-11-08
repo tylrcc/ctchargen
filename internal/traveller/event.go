@@ -1,7 +1,5 @@
 package traveller
 
-import "fmt"
-
 // Event is one entry in the generation record: the ordered log of the whole
 // generation, which serves audit — verify any character against Book 1 by
 // walking the log — and narrative.
@@ -90,38 +88,12 @@ func (t ThrowEvent) Total() int {
 	return total
 }
 
-// DecidedBy names who answered a choice — the player, or the auto policy.
-//
-// It is not the chargen.Decider interface and must not be confused with it:
-// that is the thing asked, this is which kind of thing answered.
-type DecidedBy int
-
-// The two who can answer.
-const (
-	ByPlayer DecidedBy = iota
-	ByPolicy
-)
-
-// DecidedBys is both answerers, for iteration.
-var DecidedBys = [...]DecidedBy{ByPlayer, ByPolicy}
-
-func (d DecidedBy) String() string {
-	switch d {
-	case ByPlayer:
-		return "player"
-	case ByPolicy:
-		return "policy"
-	}
-
-	return fmt.Sprintf("DecidedBy(%d)", int(d))
-}
-
-// ChoiceEvent records a choice point: which one, who answered, what the
-// alternatives were, and what was chosen.
+// ChoiceEvent records a choice point: which one, what the alternatives were,
+// and what was chosen. Who answered is not the event's to say: a run has one
+// answerer, and the record names it once.
 type ChoiceEvent struct {
 	Seq          int
 	Point        ChoicePoint
-	By           DecidedBy
 	Alternatives []string
 	Chosen       string
 }

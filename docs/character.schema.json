@@ -189,17 +189,13 @@
     "inputs": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["career", "skills", "muster"],
-      "description": "Everything the generation was given, so that a record says what made it.",
+      "description": "What the generation was given besides who answered it, so that a record says what made it. Who answered is said by policy.",
       "properties": {
         "name": { "type": "string" },
         "service": {
           "$ref": "#/$defs/service",
           "description": "Present when --service forced the enlistment attempt. It forces the attempt only: the throw is still made, and a failed throw still goes to the draft."
-        },
-        "career": { "enum": ["serve", "retire", "oneterm"] },
-        "skills": { "enum": ["advanced", "service", "personal"] },
-        "muster": { "enum": ["cash", "goods", "spartan"] }
+        }
       }
     },
     "errata": {
@@ -212,9 +208,20 @@
       "description": "The text this record was generated under. Every page cite in its log is to these three books and nothing else."
     },
     "policy": {
-      "type": "integer",
-      "minimum": 1,
-      "description": "The version of the --auto policy that answered this record's choice points. Absent from a record the policy answered nothing in - one walked by hand - because naming a policy that decided none of it is a claim the record cannot support. It moves only when one of the policy's answers changes, which is what a referee reads to tell which answers made a record; ruleset names the rules and build names the writer, and neither moves for that reason."
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "career", "skills", "muster"],
+      "description": "The --auto policy that answered this record's choice points: present on every auto run, whether or not the policy was asked anything, and absent from every guided run, where the player answered every choice and no policy decided any of it. Its presence is the whole of what says who answered; a choice event does not repeat it, because a run has one answerer.",
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "The version of what the policy answers. It moves only when one of the policy's answers changes, which is what a referee reads to tell which answers made a record; ruleset names the rules and build names the writer, and neither moves for that reason."
+        },
+        "career": { "enum": ["serve", "retire", "oneterm"] },
+        "skills": { "enum": ["advanced", "service", "personal"] },
+        "muster": { "enum": ["cash", "goods", "spartan"] }
+      }
     },
     "build": {
       "type": "string",
@@ -306,7 +313,7 @@
     "choiceEvent": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["seq", "kind", "point", "by", "alternatives", "chosen"],
+      "required": ["seq", "kind", "point", "alternatives", "chosen"],
       "properties": {
         "seq": { "$ref": "#/$defs/sequence" },
         "kind": { "const": "choice" },
@@ -318,7 +325,6 @@
           ],
           "description": "One per method of the Decider interface, which is what closes the set."
         },
-        "by": { "enum": ["player", "policy"] },
         "alternatives": { "type": "array", "items": { "type": "string" } },
         "chosen": { "type": "string" }
       }

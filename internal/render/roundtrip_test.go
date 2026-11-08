@@ -170,6 +170,26 @@ func TestARecordMustCarryAUPPAndARuleset(t *testing.T) {
 	}
 }
 
+// A record that names its policy as a bare version, as builds before #276
+// wrote it, is refused rather than read. Read, it would carry no policy, and
+// a record with none says a person answered it: an auto character read back
+// as one the player made is the misattribution #276 removed.
+func TestAPolicyNamedByVersionAloneIsRefused(t *testing.T) {
+	t.Parallel()
+
+	old := minimalRecord(`"policy":3`)
+
+	_, err := render.SheetFrom(old)
+	if err == nil || !strings.Contains(err.Error(), "not a character record") {
+		t.Errorf("the sheet read a policy named by its version alone: %v", err)
+	}
+
+	_, err = render.TranscriptFrom(old)
+	if err == nil || !strings.Contains(err.Error(), "not a character record") {
+		t.Errorf("the transcript read a policy named by its version alone: %v", err)
+	}
+}
+
 // A record carrying an event that will not read is refused by both
 // renderings, rather than rendered without it.
 //
@@ -213,10 +233,17 @@ func served(service, how, fields string) string {
 		service, how, fields)
 }
 
-// chose is a Service choice event answered by whoever the case names.
+// chose is a Service choice event answered by whoever the case names: the
+// policy on an auto record, which names it, and the player on a guided one,
+// which names none.
 func chose(by string) string {
-	return fmt.Sprintf(`"inputs":{},"events":[{"seq":1,"kind":"choice",`+
-		`"point":"Service","by":%q,"alternatives":["Navy","Other"],"chosen":"Navy"}]`, by)
+	policy := ""
+	if by == "policy" {
+		policy = `"policy":{"version":1,"career":"serve","skills":"advanced","muster":"cash"},`
+	}
+
+	return policy + `"inputs":{},"events":[{"seq":1,"kind":"choice",` +
+		`"point":"Service","alternatives":["Navy","Other"],"chosen":"Navy"}]`
 }
 
 // unchanged is the headline of a character with nothing to explain.

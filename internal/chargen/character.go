@@ -42,6 +42,12 @@ type Character struct {
 	Nobility Nobility
 
 	Inputs Inputs
+
+	// Policy is what answered an auto run: the policy and the version it
+	// answered as. It is nil on a guided run, where a person answered and
+	// no policy decided anything.
+	Policy *AutoPolicy
+
 	Events []traveller.Event
 	Errata []traveller.Erratum
 
@@ -96,8 +102,9 @@ type Benefits struct {
 	Ships         []Ship
 }
 
-// Inputs is everything a generation was given, so that a record says what
-// made it.
+// Inputs is what a generation was given besides who answers it, so that a
+// record says what made it. Who answers is the way the run came in - Auto
+// under a policy, or Guided - and the policy's strategies travel with it.
 type Inputs struct {
 	Name string
 
@@ -105,10 +112,13 @@ type Inputs struct {
 	// forced. It forces the attempt only: the throw is still made, and a
 	// failed throw still goes to the draft (p. 5).
 	Forced ForcedService
+}
 
-	Career Career
-	Skills Skills
-	Muster Muster
+// AutoPolicy is what an auto run's record carries of the policy that
+// answered it: its strategies, and the version of what it answers.
+type AutoPolicy struct {
+	Policy  Policy
+	Version int
 }
 
 // ForcedService is the service a generation was told to attempt, or none.

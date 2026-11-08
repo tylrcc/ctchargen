@@ -43,7 +43,6 @@ func TestNoTwoValuesOfAnAlphabetShareASpelling(t *testing.T) {
 	spelledOnce(t, "MusterTable", traveller.MusterTables[:])
 	spelledOnce(t, "ChoicePoint", traveller.ChoicePoints[:])
 	spelledOnce(t, "Erratum", traveller.Errata[:])
-	spelledOnce(t, "DecidedBy", traveller.DecidedBys[:])
 	spelledOnce(t, "SkillTable", traveller.SkillTables[:])
 	spelledOnce(t, "WeaponCategory", traveller.WeaponCategories[:])
 	spelledOnce(t, "ServiceName", traveller.ServiceNames[:])

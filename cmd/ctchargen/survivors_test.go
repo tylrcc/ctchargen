@@ -101,7 +101,6 @@ func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 
 	base := chargen.Inputs{
 		Forced: chargen.ForceService(traveller.Scouts),
-		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 
 	_, err := eachMember(base, chargen.DefaultPolicy(), 20, true, 1, scoutKilled.roller(t),
@@ -338,10 +337,10 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 // A record names the policy that answered it, and only then.
 //
 // The field exists so a referee reading a record can tell which version of
-// the policy's answers made it. On a record he walked by hand the policy
-// answered nothing, and naming a policy that decided none of it is a claim
-// the record cannot support - the same reason a civilian carries no service and no
-// departure.
+// the policy's answers made it, under which strategies. On a record he walked
+// by hand the policy answered nothing, and naming a policy that decided none
+// of it is a claim the record cannot support - the same reason a civilian
+// carries no service and no departure.
 //
 // Holds: A record names the policy that answered it.
 func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
@@ -372,11 +371,10 @@ func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 		}
 
 		var record struct {
-			Policy int `json:"policy"`
-			Events []struct {
-				Kind string `json:"kind"`
-				By   string `json:"by"`
-			} `json:"events"`
+			Policy *struct {
+				Version int    `json:"version"`
+				Career  string `json:"career"`
+			} `json:"policy"`
 		}
 
 		err = json.Unmarshal([]byte(out.String()), &record)
@@ -386,20 +384,15 @@ func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 			continue
 		}
 
-		byPolicy := false
-
-		for _, event := range record.Events {
-			if event.Kind == "choice" && event.By == "policy" {
-				byPolicy = true
-			}
-		}
-
-		if byPolicy != tc.wants {
-			t.Errorf("%s: choices by the policy = %v, want %v", name, byPolicy, tc.wants)
-		}
-
-		if named := record.Policy != 0; named != tc.wants {
+		if named := record.Policy != nil; named != tc.wants {
 			t.Errorf("%s: names a policy = %v, want %v", name, named, tc.wants)
+
+			continue
+		}
+
+		if record.Policy != nil && (record.Policy.Version != chargen.PolicyVersion || record.Policy.Career != "serve") {
+			t.Errorf("%s: names policy %+v, want version %d under the default career",
+				name, *record.Policy, chargen.PolicyVersion)
 		}
 	}
 }

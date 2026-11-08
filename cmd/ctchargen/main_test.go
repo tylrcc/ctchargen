@@ -68,9 +68,9 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		"no such batch muster": {
 			[]string{cmdBatch, flagAuto, flagCount, "1", flagMuster, "gold"}, wantNoStrategy,
 		},
-		// The strategies are recorded whichever mode runs, and the schema
-		// restricts them to the policy's strategies, so an unknown one is refused
-		// without --auto too rather than being written into a record.
+		// Without --auto a strategy is refused for being given at all, but a
+		// word that names none is still refused as naming none: the flags are
+		// parsed before anything asks whether they were wanted.
 		"no such strategy, asking": {[]string{cmdNew, flagCareer, "dawdle"}, wantNoStrategy},
 	} {
 		err := run(tc.args, nil, io.Discard, io.Discard)

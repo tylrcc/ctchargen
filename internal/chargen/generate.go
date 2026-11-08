@@ -51,19 +51,29 @@ func WithObserver(watch func(traveller.Event)) Option {
 	return func(r *run) { r.log.watch = watch }
 }
 
-// WithAnswerer names who the decider stands for, which every choice event
-// then records. A run says the policy answered unless it is told that
-// a person did, so a record read back names the kind of thing that made
-// each choice rather than assuming the automatic one.
+// Auto walks Book 1's character generation procedure, pp. 4-25, as an auto
+// run: policy answers every choice point, and the record names it and the
+// version it answered as. It rolls dice of its own unless a roller is given.
+//
+// Implements: A record names the policy that answered it [JSON conventions] in
+// The record.
+func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
+	return generate(in, policy, &AutoPolicy{Policy: policy, Version: PolicyVersion}, options)
+}
+
+// Guided walks the same procedure as a guided run: decider answers every
+// choice point on a person's behalf, and the record names no policy. Every
+// choice is the player's, whatever decider stands for him.
 //
 // Implements: A guided run's choices are recorded as the player's, not the
 // policy's [Choice points] in The record.
-func WithAnswerer(who traveller.DecidedBy) Option {
-	return func(r *run) { r.by = who }
+func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
+	return generate(in, decider, nil, options)
 }
 
-// Generate walks Book 1's character generation procedure, pp. 4-25, rolling
-// dice of its own unless a roller is given.
+// generate is the procedure behind both ways in. Which way a run came in is
+// fixed before anything is asked, so nothing a caller passes can make the
+// record name one answerer while another answered.
 //
 // The order within a term is the exposition's, not the worked example's
 // (E002): survival, commission, promotion, skills, reenlistment, and then
@@ -75,7 +85,7 @@ func WithAnswerer(who traveller.DecidedBy) Option {
 // [ADR 0001] in The record.
 // Implements: The worked example reproduces [1:23–25] in The book's own
 // character.
-func Generate(in Inputs, decider Decider, options ...Option) (*Character, error) {
+func generate(in Inputs, decider Decider, policy *AutoPolicy, options []Option) (*Character, error) {
 	tables, err := rules.Load()
 	if err != nil {
 		return nil, fmt.Errorf("loading the rules: %w", err)
@@ -87,9 +97,8 @@ func Generate(in Inputs, decider Decider, options ...Option) (*Character, error)
 		tables: tables,
 		roll:   dice.New(),
 		log:    record,
-		by:     traveller.ByPolicy,
 		char: &Character{
-			Name: in.Name, Age: traveller.NewAge(startingAge), Inputs: in, Ruleset: Ruleset,
+			Name: in.Name, Age: traveller.NewAge(startingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
 		},
 	}
 
@@ -97,7 +106,7 @@ func Generate(in Inputs, decider Decider, options ...Option) (*Character, error)
 		option(run)
 	}
 
-	run.decide = logging{to: decider, by: run.by, log: record}
+	run.decide = logging{to: decider, log: record}
 
 	err = run.generate()
 	if err != nil {
@@ -128,7 +137,6 @@ type run struct {
 	tables *rules.Rules
 	roll   Roller
 	decide Decider
-	by     traveller.DecidedBy
 	log    *log
 	char   *Character
 

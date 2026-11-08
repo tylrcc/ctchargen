@@ -9,6 +9,17 @@ release turns out to be.
   each release prep PR, stamped with that tag, and ignored between releases.
   `internal/walkthrough`, the gate that held the walkthrough to the tree, is
   removed.
+- A record names who answered it once, at the top (#276). `policy` becomes an
+  object carrying the version and the three strategies, present on every
+  `--auto` record and absent from every guided one; `inputs` no longer
+  carries the strategies, and a choice event no longer carries `by`. A
+  beta.5 `--auto` record, whose `policy` is a bare number, is refused by
+  `render` rather than read back as one the player made. `new` without
+  `--auto` refuses `--career`, `--skills` and `--muster`, which decided
+  nothing there. In the code, `chargen.Generate` becomes `chargen.Auto` and
+  `chargen.Guided`, so a run cannot be credited to an answerer it did not
+  have; the worked-example test was crediting the policy with its scripted
+  choices.
 
 ## 1.0.0-beta.5
 

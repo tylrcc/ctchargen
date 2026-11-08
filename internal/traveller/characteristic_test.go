@@ -191,10 +191,6 @@ func namesByKind() map[string][]string {
 		add("MusterTable", m.String())
 	}
 
-	for _, d := range traveller.DecidedBys {
-		add("DecidedBy", d.String())
-	}
-
 	return named
 }
 

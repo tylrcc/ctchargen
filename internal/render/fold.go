@@ -134,7 +134,6 @@ type choiceJSON struct {
 	Seq          int      `json:"seq"`
 	Kind         string   `json:"kind"`
 	Point        string   `json:"point"`
-	By           string   `json:"by"`
 	Alternatives []string `json:"alternatives"`
 	Chosen       string   `json:"chosen"`
 }
@@ -210,12 +209,12 @@ func (e *eventCodec) Roll(from traveller.RollEvent) error {
 
 func (e *eventCodec) Choice(from traveller.ChoiceEvent) error {
 	out := choiceJSON{
-		Seq: from.Seq, Kind: kindChoice, Point: from.Point.String(), By: from.By.String(),
+		Seq: from.Seq, Kind: kindChoice, Point: from.Point.String(),
 		Alternatives: from.Alternatives, Chosen: from.Chosen,
 	}
 
 	e.flat = eventJSON{
-		Seq: out.Seq, Kind: out.Kind, Point: out.Point, By: out.By,
+		Seq: out.Seq, Kind: out.Kind, Point: out.Point,
 		Alternatives: out.Alternatives, Chosen: out.Chosen,
 	}
 

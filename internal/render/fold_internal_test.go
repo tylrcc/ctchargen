@@ -36,7 +36,7 @@ func TestTheFlatShapeIsWhatWasWritten(t *testing.T) {
 			Seq: 3, Step: "Table 2, Cash Allowances", Dice: []int{4}, DM: 1,
 		},
 		"choice": traveller.ChoiceEvent{
-			Seq: 4, Point: traveller.ChoiceSubmitToDraft, By: traveller.ByPolicy,
+			Seq: 4, Point: traveller.ChoiceSubmitToDraft,
 			Alternatives: []string{"yes", "no"}, Chosen: "yes",
 		},
 		"outcome": traveller.OutcomeEvent{

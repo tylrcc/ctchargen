@@ -10,6 +10,17 @@ The JSON the tool writes for one character, carrying every die thrown and
 every choice made. The only way back to a character.
 _Avoid_: Output, result, JSON file
 
+**Auto run**:
+A generation the `--auto` policy answers, every choice point of it. Its
+record names the policy, the version of what it answers and its strategies,
+whether or not the policy was asked anything.
+_Avoid_: Automatic mode, batch (a batch is many auto runs)
+
+**Guided run**:
+A generation a person answers, every choice point of it. Its record names no
+policy, and that absence is what says the player made every choice.
+_Avoid_: Interactive mode (for the record's fact), manual run
+
 **Replay**:
 Handing the tool the same inputs and getting the same character back. Not
 offered since #200; the record is the only way back to a character.

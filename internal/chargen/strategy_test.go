@@ -9,11 +9,11 @@ import (
 	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
-// schemaPath is the record's published schema, which names the strategies a
-// record may carry.
+// schemaPath is the record's published schema, which names the strategies an
+// auto record's policy may carry.
 const schemaPath = "../../docs/character.schema.json"
 
-// The schema's three strategy enums name exactly the strategies the code
+// The schema's three strategy enums, under `policy`, name exactly the strategies the code
 // takes, in both directions.
 //
 // The point enum is held through the goldens, because every choice point
@@ -30,11 +30,11 @@ func TestTheSchemaNamesEveryStrategy(t *testing.T) {
 
 	var document struct {
 		Properties struct {
-			Inputs struct {
+			Policy struct {
 				Properties map[string]struct {
 					Enum []string `json:"enum"`
 				} `json:"properties"`
-			} `json:"inputs"`
+			} `json:"policy"`
 		} `json:"properties"`
 	}
 
@@ -48,12 +48,12 @@ func TestTheSchemaNamesEveryStrategy(t *testing.T) {
 		"skills": chargen.SkillsChoices(),
 		"muster": chargen.MusterChoices(),
 	} {
-		inSchema := document.Properties.Inputs.Properties[field].Enum
+		inSchema := document.Properties.Policy.Properties[field].Enum
 		if len(inSchema) == 0 {
-			t.Errorf("the schema's inputs.%s has no enum, so this checks nothing", field)
+			t.Errorf("the schema's policy.%s has no enum, so this checks nothing", field)
 		}
 
 		sameNames(t, strings.Split(choices, ", "), "a --"+field+" strategy",
-			inSchema, "in the schema's inputs."+field+" enum")
+			inSchema, "in the schema's policy."+field+" enum")
 	}
 }

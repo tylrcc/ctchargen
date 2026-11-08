@@ -83,10 +83,7 @@
     "assumed": true
   },
   "inputs": {
-    "service": "Merchants",
-    "career": "serve",
-    "skills": "advanced",
-    "muster": "cash"
+    "service": "Merchants"
   },
   "errata": [
     "E002",
@@ -94,7 +91,12 @@
     "E007"
   ],
   "ruleset": "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)",
-  "policy": 3,
+  "policy": {
+    "version": 3,
+    "career": "serve",
+    "skills": "advanced",
+    "muster": "cash"
+  },
   "events": [
     {
       "seq": 1,
@@ -257,7 +259,6 @@
       "seq": 21,
       "kind": "choice",
       "point": "AttemptCommission",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -287,7 +288,6 @@
       "seq": 24,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -323,7 +323,6 @@
       "seq": 28,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -354,7 +353,6 @@
       "seq": 31,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -385,7 +383,6 @@
       "seq": 34,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -428,7 +425,6 @@
       "seq": 38,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -470,7 +466,6 @@
       "seq": 43,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -506,7 +501,6 @@
       "seq": 47,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -549,7 +543,6 @@
       "seq": 51,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -591,7 +584,6 @@
       "seq": 56,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -627,7 +619,6 @@
       "seq": 60,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -658,7 +649,6 @@
       "seq": 63,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -701,7 +691,6 @@
       "seq": 67,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -743,7 +732,6 @@
       "seq": 72,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -779,7 +767,6 @@
       "seq": 76,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -801,7 +788,6 @@
       "seq": 78,
       "kind": "choice",
       "point": "Weapon",
-      "by": "policy",
       "alternatives": [
         "Body Pistol",
         "Automatic Pistol",
@@ -829,7 +815,6 @@
       "seq": 80,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -872,7 +857,6 @@
       "seq": 84,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -986,7 +970,6 @@
       "seq": 96,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1022,7 +1005,6 @@
       "seq": 100,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1065,7 +1047,6 @@
       "seq": 104,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "retire"
@@ -1179,7 +1160,6 @@
       "seq": 116,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1221,7 +1201,6 @@
       "seq": 121,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1252,7 +1231,6 @@
       "seq": 124,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1274,7 +1252,6 @@
       "seq": 126,
       "kind": "choice",
       "point": "Weapon",
-      "by": "policy",
       "alternatives": [
         "Dagger",
         "Blade",
@@ -1315,7 +1292,6 @@
       "seq": 129,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "retire"
@@ -1429,7 +1405,6 @@
       "seq": 141,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1465,7 +1440,6 @@
       "seq": 145,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1496,7 +1470,6 @@
       "seq": 148,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1623,7 +1596,6 @@
       "seq": 161,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -1649,7 +1621,6 @@
       "seq": 164,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -1675,7 +1646,6 @@
       "seq": 167,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -1701,7 +1671,6 @@
       "seq": 170,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1728,7 +1697,6 @@
       "seq": 173,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1749,7 +1717,6 @@
       "seq": 175,
       "kind": "choice",
       "point": "MusterWeapon",
-      "by": "policy",
       "alternatives": [
         "Dagger",
         "Blade",
@@ -1775,7 +1742,6 @@
       "seq": 177,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1802,7 +1768,6 @@
       "seq": 180,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1823,7 +1788,6 @@
       "seq": 182,
       "kind": "choice",
       "point": "MusterWeapon",
-      "by": "policy",
       "alternatives": [
         "Dagger",
         "Blade",
@@ -1850,7 +1814,6 @@
       "seq": 184,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1877,7 +1840,6 @@
       "seq": 187,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1898,7 +1860,6 @@
       "seq": 189,
       "kind": "choice",
       "point": "MusterWeapon",
-      "by": "policy",
       "alternatives": [
         "Dagger",
         "Blade",
@@ -1936,7 +1897,6 @@
       "seq": 193,
       "kind": "choice",
       "point": "AssumeTitle",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"

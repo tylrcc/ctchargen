@@ -122,7 +122,9 @@ else entirely — the sheet says that too.
 promotion attempts, reenlistment and the title; `--skills` the skills table
 and the weapon a combat result names; `--muster` the mustering-out table, its
 two DMs and repeated weapons. What each strategy answers at each choice is in
-the doc comment of the `chargen.Policy` method that asks it.
+the doc comment of the `chargen.Policy` method that asks it. Without `--auto`
+the three are refused: you answer every choice they would have, and the
+record names no policy for them to belong to.
 
 | Flag       | Values                                        |
 | ---------- | --------------------------------------------- |

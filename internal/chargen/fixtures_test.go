@@ -28,10 +28,7 @@ type fixture struct {
 }
 
 func (f fixture) inputs() chargen.Inputs {
-	return chargen.Inputs{
-		Forced: f.forced,
-		Career: f.policy.Career, Skills: f.policy.Skills, Muster: f.policy.Muster,
-	}
+	return chargen.Inputs{Forced: f.forced}
 }
 
 func (f fixture) generate(t *testing.T) *chargen.Character {
@@ -45,30 +42,43 @@ func (f fixture) generate(t *testing.T) *chargen.Character {
 	return character
 }
 
-// run walks the fixture's path under its own policy, and, when the procedure
-// finishes, fails if the script holds a die or a draw it never asked for. A
-// run that ends in an error stopped early, and its unread tail says nothing.
+// run walks the fixture's path as an auto run under its own policy, and,
+// when the procedure finishes, fails if the script holds a die or a draw it
+// never asked for. A run that ends in an error stopped early, and its unread
+// tail says nothing.
 func (f fixture) run(t *testing.T, options ...chargen.Option) (*chargen.Character, error) {
 	t.Helper()
 
-	return f.runWith(t, f.policy, options...)
+	return f.walk(t, func(options ...chargen.Option) (*chargen.Character, error) {
+		return chargen.Auto(f.inputs(), f.policy, options...)
+	}, options)
 }
 
-// runWith is run with another decider. One that answers as the fixture's
-// policy does walks the same path, and a run that finishes is held to the
-// whole script as run's is. One that answers otherwise walks somewhere the
-// script was not written for: it fails if it asks for a die past the end,
-// and, finishing, if it leaves any unread.
+// runWith is run as a guided run, with another decider answering. One that
+// answers as the fixture's policy does walks the same path, and a run that
+// finishes is held to the whole script as run's is. One that answers
+// otherwise walks somewhere the script was not written for: it fails if it
+// asks for a die past the end, and, finishing, if it leaves any unread.
 func (f fixture) runWith(t *testing.T, decider chargen.Decider, options ...chargen.Option) (*chargen.Character, error) {
+	t.Helper()
+
+	return f.walk(t, func(options ...chargen.Option) (*chargen.Character, error) {
+		return chargen.Guided(f.inputs(), decider, options...)
+	}, options)
+}
+
+func (f fixture) walk(t *testing.T, way func(...chargen.Option) (*chargen.Character, error),
+	options []chargen.Option,
+) (*chargen.Character, error) {
 	t.Helper()
 
 	roller := f.roller(t)
 
 	options = append(slices.Clip(options), chargen.WithRoller(roller))
 
-	character, err := chargen.Generate(f.inputs(), decider, options...)
+	character, err := way(options...)
 	if err != nil {
-		return nil, err //nolint:wrapcheck // the engine's own error, for the caller to judge
+		return nil, err
 	}
 
 	roller.finished()

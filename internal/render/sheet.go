@@ -213,7 +213,7 @@ func serviceAttempted(r record) (string, bool, error) {
 		return "", false, err
 	}
 
-	return choice.Chosen, choice.By == traveller.ByPolicy.String(), nil
+	return choice.Chosen, r.Policy != nil, nil
 }
 
 func writeSection(out *strings.Builder, heading string, lines []string) {
@@ -311,7 +311,7 @@ func serviceLines(r record) []string {
 }
 
 // choices reads the record's choice events, which are the only place it says
-// who decided anything. A record whose events will not read fails here.
+// what was decided. A record whose events will not read fails here.
 func choices(r record) ([]eventJSON, error) {
 	var found []eventJSON
 
@@ -334,9 +334,10 @@ func choices(r record) ([]eventJSON, error) {
 // choiceAt returns a named choice point's event, and whether it was put at
 // all. A point nobody was asked is not the same as one the policy took.
 //
-// It hands back the whole event rather than who answered, because both halves
-// are wanted together: who chose, and what they chose. Asking only who leads
-// to crediting a decider with an outcome he did not pick.
+// It hands back the whole event, because what was chosen is read beside who
+// answered, and who answered is the record's to say rather than the event's.
+// Reading only who leads to crediting a decider with an outcome he did not
+// pick.
 func choiceAt(r record, point string) (eventJSON, bool, error) {
 	made, err := choices(r)
 	if err != nil {

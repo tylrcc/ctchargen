@@ -167,8 +167,8 @@ func TestACivilianEnteredNoService(t *testing.T) {
 // A character who has not been enlisted has no service, and asking does not
 // panic.
 //
-// Nothing inside the tool reaches this: Generate enlists before anything
-// asks. But Character is an exported type with exported fields, so a caller
+// Nothing inside the tool reaches this: Auto and Guided both enlist before
+// anything asks. But Character is an exported type with exported fields, so a caller
 // can hold one that has never been through it - and Fold on a nil interface
 // is a panic, not a zero value.
 func TestAnUnenlistedCharacterHasNoService(t *testing.T) {

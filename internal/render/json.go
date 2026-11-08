@@ -96,7 +96,7 @@ type record struct {
 	Inputs          inputsRecord      `json:"inputs"`
 	Errata          []string          `json:"errata"`
 	Ruleset         string            `json:"ruleset"`
-	Policy          int               `json:"policy,omitempty"`
+	Policy          *policyRecord     `json:"policy,omitempty"`
 	Events          []json.RawMessage `json:"events"`
 	Build           string            `json:"build,omitempty"`
 }
@@ -147,28 +147,41 @@ type nobilityRecord struct {
 type inputsRecord struct {
 	Name    string `json:"name,omitempty"`
 	Service string `json:"service,omitempty"`
+}
+
+// policyRecord is what an auto run's record says of the policy that answered
+// it, and the whole of what tells an auto record from a guided one: present
+// on every record the policy answered, whether or not it was asked anything,
+// and absent from every record a person answered. Its strategies are here and
+// not in `inputs` because they are the policy's, and a guided run has none.
+type policyRecord struct {
+	Version int    `json:"version"`
 	Career  string `json:"career"`
 	Skills  string `json:"skills"`
 	Muster  string `json:"muster"`
 }
 
-// policyThatAnswered is the policy version, on a record the policy answered
-// something in, and nothing on one it did not.
-//
-// The field exists so a referee reading a record can tell which version of
-// the policy's answers made it. On a record he walked by hand the policy
-// answered nothing, and naming a policy that decided none of it is a claim
-// the record cannot support - the same reason a civilian carries no service and no
-// departure.
-func policyThatAnswered(character *chargen.Character) int {
-	for _, event := range character.Events {
-		choice, isChoice := event.(traveller.ChoiceEvent)
-		if isChoice && choice.By == traveller.ByPolicy {
-			return chargen.PolicyVersion
-		}
+func projectPolicy(answered *chargen.AutoPolicy) *policyRecord {
+	if answered == nil {
+		return nil
 	}
 
-	return 0
+	return &policyRecord{
+		Version: answered.Version,
+		Career:  answered.Policy.Career.String(),
+		Skills:  answered.Policy.Skills.String(),
+		Muster:  answered.Policy.Muster.String(),
+	}
+}
+
+// answerer names who answered every choice in the record: the policy on an
+// auto run, the player on a guided one.
+func (r record) answerer() string {
+	if r.Policy != nil {
+		return "policy"
+	}
+
+	return "player"
 }
 
 func project(character *chargen.Character) (record, error) {
@@ -188,7 +201,7 @@ func project(character *chargen.Character) (record, error) {
 		Inputs:          projectInputs(character.Inputs),
 		Errata:          make([]string, 0, len(character.Errata)),
 		Ruleset:         character.Ruleset,
-		Policy:          policyThatAnswered(character),
+		Policy:          projectPolicy(character.Policy),
 		Events:          nil,
 		Build:           character.Build,
 	}
@@ -232,10 +245,7 @@ func project(character *chargen.Character) (record, error) {
 }
 
 func projectInputs(in chargen.Inputs) inputsRecord {
-	out := inputsRecord{
-		Name:   in.Name,
-		Career: in.Career.String(), Skills: in.Skills.String(), Muster: in.Muster.String(),
-	}
+	out := inputsRecord{Name: in.Name}
 	if service, forced := in.Forced.Service(); forced {
 		out.Service = service.String()
 	}

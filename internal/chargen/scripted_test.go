@@ -63,12 +63,11 @@ func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 
 	inputs := chargen.Inputs{
 		Forced: chargen.ForceService(traveller.Other),
-		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 
 	// Twelves for enlistment and the first term's survival, then throws that
 	// make every reenlistment without ever rolling the 12 that forces one.
-	character, err := chargen.Generate(inputs, chargen.DefaultPolicy(), chargen.WithRoller(&alwaysNine{}))
+	character, err := chargen.Auto(inputs, chargen.DefaultPolicy(), chargen.WithRoller(&alwaysNine{}))
 	if err != nil {
 		t.Fatalf("generating: %v", err)
 	}
@@ -164,7 +163,7 @@ func TestAnAnswerOutsideTheOfferIsRefused(t *testing.T) {
 			// refusal stops the procedure partway, so the script's unread
 			// tail is expected rather than a sign it carries dice it never
 			// throws.
-			_, err := chargen.Generate(f.inputs(), tc.decider, chargen.WithRoller(f.roller(t)))
+			_, err := chargen.Guided(f.inputs(), tc.decider, chargen.WithRoller(f.roller(t)))
 			if err == nil {
 				t.Fatal("the engine applied an answer it had not offered")
 			}

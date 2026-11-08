@@ -355,28 +355,26 @@ func TestTheQuestionsStayOutOfTheRecord(t *testing.T) {
 	}
 
 	// And the record names who answered. A guided run's choices were the
-	// player's, and a record that calls them the policy's misdescribes how
-	// the character was made - the one thing the log exists to say.
+	// player's, which a record says by naming no policy: one that named one
+	// would call them the policy's and misdescribe how the character was
+	// made - the one thing the log exists to say.
 	events, _ := written["events"].([]any)
 
 	choices := 0
 
 	for _, event := range events {
 		fields, _ := event.(map[string]any)
-		if fields["kind"] != "choice" {
-			continue
-		}
-
-		choices++
-
-		if fields["by"] != "player" {
-			t.Errorf("choice %v says %v answered it, want the player",
-				fields["point"], fields["by"])
+		if fields["kind"] == "choice" {
+			choices++
 		}
 	}
 
 	if choices == 0 {
 		t.Fatal("the record holds no choice events, so it asserts nothing about who answered")
+	}
+
+	if policy, named := written["policy"]; named {
+		t.Errorf("a guided record names policy %v, which answered none of its %d choices", policy, choices)
 	}
 }
 

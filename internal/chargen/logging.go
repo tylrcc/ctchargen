@@ -15,11 +15,10 @@ import (
 // reaching the log. Adding a method to Decider breaks this type until the
 // log learns to record it.
 //
-// Implements: Each choice names who decided and what was offered [Generation
-// record] in The record.
+// Implements: Each choice names what was offered and what was chosen
+// [Generation record] in The record.
 type logging struct {
 	to  Decider
-	by  traveller.DecidedBy
 	log *log
 }
 
@@ -243,7 +242,7 @@ func (l logging) record(point traveller.ChoicePoint, from []string, chosen strin
 			errNotOffered, point, from, chosen)
 	}
 
-	l.log.choice(point, l.by, from, chosen)
+	l.log.choice(point, from, chosen)
 
 	return nil
 }

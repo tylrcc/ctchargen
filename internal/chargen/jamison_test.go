@@ -241,7 +241,6 @@ func replayJamison(t *testing.T) *chargen.Character {
 
 	inputs := chargen.Inputs{
 		Name: "Jamison", Forced: chargen.ForceService(traveller.Merchants),
-		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 
 	rolls := &narrated{t: t, throws: slices.Clone(jamisonThrows), dice: slices.Clone(jamisonDice)}
@@ -268,7 +267,7 @@ func replayJamison(t *testing.T) *chargen.Character {
 		},
 	}
 
-	character, err := chargen.Generate(inputs, chosen, chargen.WithRoller(rolls))
+	character, err := chargen.Guided(inputs, chosen, chargen.WithRoller(rolls))
 	if err != nil {
 		t.Fatalf("replaying the example: %v", err)
 	}
@@ -289,6 +288,12 @@ func TestTheWorkedExampleReproduces(t *testing.T) {
 	t.Parallel()
 
 	jamison := replayJamison(t)
+
+	// The book's author made these choices, not the policy, so the record
+	// names none.
+	if jamison.Policy != nil {
+		t.Errorf("the worked example names policy %+v, which answered none of its choices", *jamison.Policy)
+	}
 
 	if got := jamison.Profile.UPP(); got != "779C99" {
 		t.Errorf("UPP %s, want 779C99", got)

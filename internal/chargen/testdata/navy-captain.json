@@ -68,10 +68,7 @@
     "assumed": true
   },
   "inputs": {
-    "service": "Navy",
-    "career": "serve",
-    "skills": "advanced",
-    "muster": "cash"
+    "service": "Navy"
   },
   "errata": [
     "E002",
@@ -79,7 +76,12 @@
     "E007"
   ],
   "ruleset": "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)",
-  "policy": 3,
+  "policy": {
+    "version": 3,
+    "career": "serve",
+    "skills": "advanced",
+    "muster": "cash"
+  },
   "events": [
     {
       "seq": 1,
@@ -242,7 +244,6 @@
       "seq": 21,
       "kind": "choice",
       "point": "AttemptCommission",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -278,7 +279,6 @@
       "seq": 25,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -309,7 +309,6 @@
       "seq": 28,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -352,7 +351,6 @@
       "seq": 32,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -394,7 +392,6 @@
       "seq": 37,
       "kind": "choice",
       "point": "AttemptCommission",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -424,7 +421,6 @@
       "seq": 40,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -460,7 +456,6 @@
       "seq": 44,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -491,7 +486,6 @@
       "seq": 47,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -534,7 +528,6 @@
       "seq": 51,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -576,7 +569,6 @@
       "seq": 56,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -612,7 +604,6 @@
       "seq": 60,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -643,7 +634,6 @@
       "seq": 63,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -686,7 +676,6 @@
       "seq": 67,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -728,7 +717,6 @@
       "seq": 72,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -764,7 +752,6 @@
       "seq": 76,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -795,7 +782,6 @@
       "seq": 79,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -838,7 +824,6 @@
       "seq": 83,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -952,7 +937,6 @@
       "seq": 95,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -988,7 +972,6 @@
       "seq": 99,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1019,7 +1002,6 @@
       "seq": 102,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1062,7 +1044,6 @@
       "seq": 106,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "retire"
@@ -1176,7 +1157,6 @@
       "seq": 118,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1212,7 +1192,6 @@
       "seq": 122,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1255,7 +1234,6 @@
       "seq": 126,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "retire"
@@ -1369,7 +1347,6 @@
       "seq": 138,
       "kind": "choice",
       "point": "AttemptPromotion",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1411,7 +1388,6 @@
       "seq": 143,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1442,7 +1418,6 @@
       "seq": 146,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -1569,7 +1544,6 @@
       "seq": 159,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -1595,7 +1569,6 @@
       "seq": 162,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -1621,7 +1594,6 @@
       "seq": 165,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -1647,7 +1619,6 @@
       "seq": 168,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1674,7 +1645,6 @@
       "seq": 171,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1701,7 +1671,6 @@
       "seq": 174,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1728,7 +1697,6 @@
       "seq": 177,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1755,7 +1723,6 @@
       "seq": 180,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1782,7 +1749,6 @@
       "seq": 183,
       "kind": "choice",
       "point": "MusterTable1DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -1820,7 +1786,6 @@
       "seq": 188,
       "kind": "choice",
       "point": "AssumeTitle",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"

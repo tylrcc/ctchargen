@@ -107,7 +107,7 @@ func documentedExample(t *testing.T, name string, encoded []byte) {
 // Holds: The mustering-out table is designated before the die.
 // Holds: The +1 with gambling on Table 2.
 // Holds: Every step, throw, choice and consequence, in order.
-// Holds: Each choice names who decided and what was offered.
+// Holds: Each choice names what was offered and what was chosen.
 // Holds: A record names the shape it is, so the v1 freeze has something to
 // attach to.
 // Holds: The two documented examples are generated, not written.

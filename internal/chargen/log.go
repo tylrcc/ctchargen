@@ -94,11 +94,12 @@ func (l *log) dice(step string, faces ...int) int {
 	return seq
 }
 
-// choice records a choice point: which one, who answered, what was offered,
-// and what was chosen.
-func (l *log) choice(point traveller.ChoicePoint, by traveller.DecidedBy, from []string, chosen string) {
+// choice records a choice point: which one, what was offered, and what was
+// chosen. Who answered is the run's, not the event's: one run has one
+// answerer.
+func (l *log) choice(point traveller.ChoicePoint, from []string, chosen string) {
 	l.add(traveller.ChoiceEvent{
-		Seq: l.next(), Point: point, By: by, Alternatives: from, Chosen: chosen,
+		Seq: l.next(), Point: point, Alternatives: from, Chosen: chosen,
 	})
 }
 

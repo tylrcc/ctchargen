@@ -40,10 +40,7 @@
     "how": "retired"
   },
   "inputs": {
-    "service": "Other",
-    "career": "serve",
-    "skills": "advanced",
-    "muster": "cash"
+    "service": "Other"
   },
   "errata": [
     "E002",
@@ -51,7 +48,12 @@
     "E007"
   ],
   "ruleset": "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)",
-  "policy": 3,
+  "policy": {
+    "version": 3,
+    "career": "serve",
+    "skills": "advanced",
+    "muster": "cash"
+  },
   "events": [
     {
       "seq": 1,
@@ -218,7 +220,6 @@
       "seq": 22,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -248,7 +249,6 @@
       "seq": 25,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -326,7 +326,6 @@
       "seq": 34,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -368,7 +367,6 @@
       "seq": 38,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -415,7 +413,6 @@
       "seq": 44,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -457,7 +454,6 @@
       "seq": 48,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -504,7 +500,6 @@
       "seq": 54,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -525,7 +520,6 @@
       "seq": 56,
       "kind": "choice",
       "point": "Weapon",
-      "by": "policy",
       "alternatives": [
         "Body Pistol",
         "Automatic Pistol",
@@ -565,7 +559,6 @@
       "seq": 59,
       "kind": "choice",
       "point": "ReenlistIntent",
-      "by": "policy",
       "alternatives": [
         "continue",
         "discharge"
@@ -684,7 +677,6 @@
       "seq": 72,
       "kind": "choice",
       "point": "SkillTable",
-      "by": "policy",
       "alternatives": [
         "Personal Development Table",
         "Service Skills Table",
@@ -810,7 +802,6 @@
       "seq": 85,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -821,7 +812,6 @@
       "seq": 86,
       "kind": "choice",
       "point": "MusterTable2DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -848,7 +838,6 @@
       "seq": 89,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -859,7 +848,6 @@
       "seq": 90,
       "kind": "choice",
       "point": "MusterTable2DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"
@@ -886,7 +874,6 @@
       "seq": 93,
       "kind": "choice",
       "point": "MusterTable",
-      "by": "policy",
       "alternatives": [
         "Table 1, Material Benefits",
         "Table 2, Cash Allowances"
@@ -897,7 +884,6 @@
       "seq": 94,
       "kind": "choice",
       "point": "MusterTable2DM",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"

@@ -22,16 +22,18 @@
     "cash": 0
   },
   "inputs": {
-    "service": "Scouts",
-    "career": "oneterm",
-    "skills": "personal",
-    "muster": "goods"
+    "service": "Scouts"
   },
   "errata": [
     "E001"
   ],
   "ruleset": "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)",
-  "policy": 3,
+  "policy": {
+    "version": 3,
+    "career": "oneterm",
+    "skills": "personal",
+    "muster": "goods"
+  },
   "events": [
     {
       "seq": 1,
@@ -168,7 +170,6 @@
       "seq": 18,
       "kind": "choice",
       "point": "SubmitToDraft",
-      "by": "policy",
       "alternatives": [
         "yes",
         "no"

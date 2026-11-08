@@ -344,3 +344,40 @@ func TestTheTwoRenderingsCannotBothBeAskedFor(t *testing.T) {
 		}
 	}
 }
+
+// A strategy is the --auto policy's, so one given to a guided run is refused
+// rather than accepted and then ignored: the player answers every choice it
+// would have decided, and the record names no policy to carry it. The flag's
+// own default is refused too, because what is refused is the operator setting
+// it, and every strategy flag has one.
+//
+// Holds: A strategy given without --auto is refused, not ignored.
+func TestAStrategyWithoutAutoIsRefused(t *testing.T) {
+	t.Parallel()
+
+	for flag, value := range map[string]string{
+		flagCareer: "serve",
+		flagSkills: "advanced",
+		flagMuster: "cash",
+	} {
+		t.Run(flag, func(t *testing.T) {
+			t.Parallel()
+
+			err := run([]string{cmdNew, flag, value}, answers("1", 300), io.Discard, io.Discard)
+
+			switch {
+			case err == nil:
+				t.Fatalf("a guided run took %s %s and decided nothing with it", flag, value)
+			case !errors.Is(err, errUsage):
+				t.Errorf("the refusal %q is not a usage error", err)
+			case !strings.Contains(err.Error(), flag):
+				t.Errorf("the refusal %q does not name %s", err, flag)
+			}
+
+			err = run([]string{cmdNew, flagAuto, flag, value}, nil, io.Discard, io.Discard)
+			if err != nil {
+				t.Errorf("an auto run refused %s %s: %v", flag, value, err)
+			}
+		})
+	}
+}

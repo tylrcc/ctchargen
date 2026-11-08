@@ -47,7 +47,6 @@ type eventJSON struct {
 	Total        int      `json:"total"`
 	Succeeded    bool     `json:"succeeded"`
 	Point        string   `json:"point"`
-	By           string   `json:"by"`
 	Alternatives []string `json:"alternatives"`
 	Chosen       string   `json:"chosen"`
 	Because      int      `json:"because"`
@@ -68,6 +67,12 @@ func transcriptOf(r record) (string, error) {
 			return "", err
 		}
 
+		if event.Kind == kindChoice {
+			fmt.Fprintln(&out, choiceLine(event, r.answerer()))
+
+			continue
+		}
+
 		writeEvent(&out, event)
 	}
 
@@ -77,6 +82,8 @@ func transcriptOf(r record) (string, error) {
 	return out.String(), nil
 }
 
+// writeEvent writes every kind but a choice, whose line is choiceLine's.
+//
 // A step heading carries its number like every other line (#249): bare, it
 // made the numbers appear to skip, and a transcript kept for the table opened
 // at event 2.
@@ -95,10 +102,6 @@ func writeEvent(out *strings.Builder, event eventJSON) {
 		// is exactly what throwLine already prints. Splitting the kinds
 		// changed the record, not the reading of it.
 		fmt.Fprintln(out, throwLine(event))
-	case kindChoice:
-		fmt.Fprintf(out, "%3d. %s: %s chose %s from %s\n",
-			event.Seq, event.Point, event.By, event.Chosen,
-			strings.Join(event.Alternatives, ", "))
 	case kindOutcome:
 		fmt.Fprintln(out, outcomeLine(event))
 	default:
@@ -108,6 +111,15 @@ func writeEvent(out *strings.Builder, event eventJSON) {
 		// and claim the transcript was complete.
 		fmt.Fprintf(out, "%3d. (unknown event kind %q)\n", event.Seq, event.Kind)
 	}
+}
+
+// choiceLine is a choice's transcript line. It is not one of writeEvent's
+// cases because it names who answered, which is the record's to say and not
+// the event's, and the live view, which has no record yet, prints its own.
+func choiceLine(event eventJSON, answerer string) string {
+	return fmt.Sprintf("%3d. %s: %s chose %s from %s",
+		event.Seq, event.Point, answerer, event.Chosen,
+		strings.Join(event.Alternatives, ", "))
 }
 
 func throwLine(event eventJSON) string {

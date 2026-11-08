@@ -97,6 +97,11 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 		return err
 	}
 
+	err = strategiesWithoutAuto(flags.set, *flags.auto)
+	if err != nil {
+		return err
+	}
+
 	err = flagsThatContradict(*flags.sheet, *flags.history)
 	if err != nil {
 		return err
@@ -106,6 +111,44 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 		auto: *flags.auto, sheet: *flags.sheet, history: *flags.history,
 		output: *flags.output, force: *flags.force,
 	}, in, out, asking, dice)
+}
+
+// strategiesWithoutAuto refuses a strategy flag on a guided run. The
+// strategies are the policy's, and on a guided run the player answers every
+// choice the policy would have: a strategy accepted there would decide
+// nothing and appear nowhere in the record. The check is on what the operator
+// set, not on the values, because every strategy flag has a default.
+//
+// Implements: A strategy given without --auto is refused, not ignored
+// [CLI sketch] in The record.
+func strategiesWithoutAuto(set *flag.FlagSet, auto bool) error {
+	if auto {
+		return nil
+	}
+
+	var given []string
+
+	set.Visit(func(f *flag.Flag) {
+		switch f.Name {
+		case careerFlag, skillsFlag, musterFlag:
+			given = append(given, "--"+f.Name)
+		}
+	})
+
+	if len(given) > 0 {
+		return fmt.Errorf("%w: %s %s the --auto policy's; without --auto the player answers every choice",
+			errUsage, strings.Join(given, " and "), isOrAre(len(given)))
+	}
+
+	return nil
+}
+
+func isOrAre(n int) string {
+	if n == 1 {
+		return "is"
+	}
+
+	return "are"
 }
 
 // flagsThatContradict refuses a pair that cannot both be meant.
@@ -160,15 +203,14 @@ func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRenderi
 	return where.write(text)
 }
 
-// inputs is what the parsed flags say to generate, and the policy that
-// answers for it.
+// inputs is what the parsed flags say to generate, and the policy the
+// strategy flags name.
 //
 // This is the boundary the strategies are parsed at, and the only one: past
 // here a Career is a Career, and no part of the engine asks again whether it
 // is one of three. That is why chargen has no Validate any more (#41). The
-// inputs and the policy are both written from that one parse, so what a
-// record says it was given and what decided it cannot name different
-// strategies.
+// strategies go into the policy and nowhere else, so an auto record names
+// the strategies that decided it because they are the policy's own.
 func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 	policy, err := chargen.ParsePolicy(*f.career, *f.skills, *f.muster)
 	if err != nil {
@@ -182,10 +224,7 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 		return chargen.Inputs{}, policy, fmt.Errorf("%w: --name %q is more than one line", errUsage, *f.name)
 	}
 
-	in := chargen.Inputs{
-		Name:   *f.name,
-		Career: policy.Career, Skills: policy.Skills, Muster: policy.Muster,
-	}
+	in := chargen.Inputs{Name: *f.name}
 
 	if *f.service == "" {
 		return in, policy, nil
@@ -202,13 +241,8 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 	return in, policy, fmt.Errorf("%w: no service is called %q", errUsage, *f.service)
 }
 
-// generate runs the procedure under the auto policy, or asks the player.
-//
-// The policy is the one characterFlags.inputs parsed beside the inputs, so
-// that what is checked and what is written into the record cannot name
-// different strategies. They are parsed in both modes: an interactive run
-// records them too, and a record naming a word that is not one of the
-// policy's strategies is one its own schema refuses.
+// generate runs the procedure as an auto run under the policy, or as a
+// guided run that asks the player.
 //
 // Interactive mode watches the record as it is written, so the throws and
 // their consequences reach the player between his questions; --auto passes
@@ -217,7 +251,7 @@ func generate(inputs chargen.Inputs, policy chargen.Policy, auto bool,
 	in io.Reader, asking io.Writer, dice source,
 ) (*chargen.Character, error) {
 	if auto {
-		character, err := chargen.Generate(inputs, policy, dice.options()...)
+		character, err := chargen.Auto(inputs, policy, dice.options()...)
 		if err != nil {
 			return nil, fmt.Errorf("generating: %w", err)
 		}
@@ -227,8 +261,8 @@ func generate(inputs chargen.Inputs, policy chargen.Policy, auto bool,
 
 	asked := newPlayer(in, asking)
 
-	character, err := chargen.Generate(inputs, asked, append(dice.options(),
-		chargen.WithObserver(asked.watch), chargen.WithAnswerer(traveller.ByPlayer))...)
+	character, err := chargen.Guided(inputs, asked, append(dice.options(),
+		chargen.WithObserver(asked.watch))...)
 	if err != nil {
 		return nil, fmt.Errorf("generating: %w", err)
 	}

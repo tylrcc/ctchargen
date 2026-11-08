@@ -49,7 +49,7 @@ type Policy struct {
 
 // PolicyVersion is the version of what --auto answers.
 //
-// Every record the policy answered carries it, beside the ruleset that
+// Every auto run's record carries it, beside the ruleset that
 // governed the rules and the build that wrote the file. Those two move for
 // reasons that have nothing to do with what --auto answers; this moves only
 // when an answer does.
@@ -63,9 +63,6 @@ type Policy struct {
 // differently before it, because the question was never asked. Version 2
 // draws the weapon rather than taking the first name; version 3 designates
 // the skills table he has trained on least (#34).
-//
-// Implements: A record names the policy that answered it [JSON conventions] in
-// The record.
 const PolicyVersion = 3
 
 // Career is the --auto career strategy: continue, retire, or take one term.
