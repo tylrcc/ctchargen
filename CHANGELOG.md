@@ -20,6 +20,9 @@ release turns out to be.
   names (1, 2 or 3) and every reading it names (a heading in ERRATA.md).
   Before, anything opening with a book and page passed, and only a reading
   cited alone was checked (#287).
+- CLAUDE.md and the scripted roller's doc no longer say a fixture whose dice
+  moved fails naming the throw that moved: nothing names it, and some changes
+  fail only a golden, whose diff is read before regenerating (#289).
 
 ## 1.0.0-beta.6
 

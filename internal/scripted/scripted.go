@@ -4,8 +4,9 @@
 // A script is strict both ways. It states every die and every draw of its
 // path, so a die or draw asked for past its end fails the test naming the
 // roller and the count, and one the procedure never asked for is reported by
-// Finished. Either way a script that no longer walks its path says which
-// throw moved, rather than answering with a value nobody chose.
+// Finished. Either way a script that no longer walks its path fails, rather
+// than answering with a value nobody chose; which throw moved is for the
+// reader to find in the record.
 //
 // It is test support, imported only by test files: the chargen fixtures and
 // the command's walks both drive their runs through it (#280). When Finished

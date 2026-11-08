@@ -241,9 +241,12 @@ go run ./cmd/ctchargen new --auto --sheet
 - **Dice-stream consumption order is load-bearing for the fixtures.** A 2D
   throw is two dice in sequence, and a throw the procedure does not make
   consumes nothing. Changing the order changes which path every fixture
-  walks; that is an ordinary change, not a breaking one — the fixture that
-  felt it fails naming the throw that moved, and its dice are re-scripted
-  from a record that walks the new path.
+  walks; that is an ordinary change, not a breaking one, and the fixture's
+  dice are re-scripted from a record that walks the new path. No failure
+  names the throw that moved: a script says only where its dice ran out or
+  were left unread, and some changes fail nothing but a golden. So a golden
+  diff after a change to consumption is read before it is regenerated, or the
+  fixture is silently re-pathed.
 - **Goldens are regenerated, never hand-edited.**
 - **The CLI is held to a baseline (#126).** Its flags, types and defaults are
   typed out in
