@@ -17,6 +17,10 @@ import (
 // table, the shared ruleset, or the next question's offer (#55, #137). And a
 // question with one legal answer is refused before it is asked.
 //
+// The copies guard every site, including the ones that build their slices
+// fresh for each question. Where a site does, no test can see the copy, and
+// a mutation removing it survives; it is there for the site that does not.
+//
 // Implements: An offer is the decider's own, and writing to it changes nothing
 // the engine offers [Choice points] in The record.
 //

@@ -67,6 +67,10 @@ func (f fixture) runWith(t *testing.T, decider chargen.Decider, options ...charg
 	}, options)
 }
 
+// play runs the fixture one way in and, when the run finishes, holds the
+// script to being read to its end. No test holds play to calling Finished:
+// a play that stopped would leave every golden green, which is a deleted line
+// for review to see rather than a rule the suite keeps (#280).
 func (f fixture) play(t *testing.T, way func(...chargen.Option) (*chargen.Character, error),
 	options []chargen.Option,
 ) (*chargen.Character, error) {
@@ -310,6 +314,18 @@ var fixtures = []fixture{
 		dice: []int{
 			6, 1, 6, 6, 2, 6, 5, 1, 4, 2, 3, 6, 3, 3, 1, 6, 1, 1, 3, 2,
 			2, 4,
+		},
+		among: nil,
+	},
+	// A scout killed by his first survival throw, before anything is asked.
+	// The policy answered nothing, and the record names it all the same: an
+	// auto run names its policy whether or not it was asked anything (#276).
+	// A quarter of forced scouts end this way, so it is no corner case.
+	{
+		name: "scouts-died-unasked", forced: chargen.ForceService(traveller.Scouts),
+		policy: chargen.DefaultPolicy(),
+		dice: []int{
+			1, 5, 6, 1, 2, 1, 2, 5, 2, 1, 2, 3, 5, 2, 1, 3,
 		},
 		among: nil,
 	},

@@ -88,6 +88,17 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 	}
 }
 
+// failedSearch is a --survivors search built to fail: twenty living asked
+// for, one attempt each, from a walk that kills every scout it plays.
+func failedSearch(t *testing.T) batchRun {
+	t.Helper()
+
+	return batchRun{
+		base:   chargen.Inputs{Forced: chargen.ForceService(traveller.Scouts)},
+		policy: chargen.DefaultPolicy(), count: 20, survivors: true, attempts: 1, dice: scoutKilled.roller(t),
+	}
+}
+
 // --survivors gives up rather than drawing forever.
 //
 // The bound is a hundred attempts per character asked for, which no measured run
@@ -99,12 +110,7 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	t.Parallel()
 
-	searching := batchRun{
-		base:   chargen.Inputs{Forced: chargen.ForceService(traveller.Scouts)},
-		policy: chargen.DefaultPolicy(), count: 20, survivors: true, attempts: 1, dice: scoutKilled.roller(t),
-	}
-
-	_, err := searching.each(func(int, *chargen.Character) error { return nil })
+	_, err := failedSearch(t).each(func(int, *chargen.Character) error { return nil })
 	if err == nil {
 		t.Fatal("a bounded search reported success without finding the living")
 	}

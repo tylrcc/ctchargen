@@ -278,19 +278,21 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 
 // streamed writes the batch to standard output as JSONL, one record to the
 // line, each as it is generated.
+//
 // JSONL exists to be piped, so `batch --count 50000 --auto | jq` sees the
 // first record at once and the run holds one record in memory rather than
 // all of them (#44). The atomicity that justifies buffering is about not
 // leaving a file half-written and not clobbering one on a retry, and there is
 // no file to clobber on standard output (#64).
-//
-// Implements: A batch to standard output arrives a record at a time [CLI
-// sketch] in The record.
 func (b batchRun) streamed(out io.Writer) (tally, error) {
 	return b.each(writingTo(out))
 }
 
-// writingTo is the take a streamed run uses: encode the member and write it.
+// writingTo is the take a streamed run uses: encode the member and write it,
+// as each member is made.
+//
+// Implements: A batch to standard output arrives a record at a time [CLI
+// sketch] in The record.
 //
 // A failure names the member by its position among those written, which is
 // the one name a streamed member has.

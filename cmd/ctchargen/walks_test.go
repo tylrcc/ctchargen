@@ -168,6 +168,11 @@ func (w walk) partly(t *testing.T) source {
 	return w.played(t, false)
 }
 
+// played hands out a fresh playing of the walk for each roller asked of it,
+// and, exactly, checks every playing in the test's cleanup. No test holds the
+// cleanup to calling Finished: one that stopped would leave every test green,
+// which is a deleted line for review to see rather than a rule the suite
+// keeps (#280).
 func (w walk) played(t *testing.T, exactly bool) source {
 	t.Helper()
 

@@ -1,7 +1,6 @@
 package chargen_test
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
@@ -91,87 +90,3 @@ type alwaysNine struct{}
 func (alwaysNine) Die() int            { return 1 }
 func (alwaysNine) Among(int) int       { return 0 }
 func (alwaysNine) TwoDice() (int, int) { return 4, 5 }
-
-// answeringOutsideTheOffer is a decider that reaches past what the procedure
-// put in front of it. Everything else it defers to the policy.
-type answeringOutsideTheOffer struct {
-	chargen.Decider
-
-	table     bool
-	expertise bool
-}
-
-func (a answeringOutsideTheOffer) SkillTable(
-	from []traveller.SkillTable, taken []int,
-) (traveller.SkillTable, error) {
-	if a.table {
-		// P. 11 opens this table only at Education 8, and the character
-		// generated below stands at 7, so it is not among `from`.
-		return traveller.AdvancedEducationEight, nil
-	}
-
-	return a.Decider.SkillTable(from, taken) //nolint:wrapcheck // the policy's own error, unchanged
-}
-
-func (a answeringOutsideTheOffer) MusterWeapon(
-	category traveller.WeaponCategory, from, received []traveller.WeaponName,
-) (traveller.WeaponBenefit, error) {
-	if a.expertise && len(received) == 0 {
-		// P. 22 offers the expertise only in a weapon already received as a
-		// benefit, and this character has received none of this category.
-		return traveller.TakeExpertise{Weapon: from[0]}, nil
-	}
-
-	return a.Decider.MusterWeapon(category, from, received) //nolint:wrapcheck // the policy's own error, unchanged
-}
-
-// A decider that answers outside the offered set is refused, not obeyed.
-//
-// The engine offers exactly what the page allows; applying an answer from
-// outside that set builds a character the book does not permit - one trained
-// on a table his Education closes to him, or holding expertise in a weapon he
-// never received. The mutation that found this had the interactive loop
-// designate a closed table, and the engine consulted it.
-//
-// Holds: An answer outside the offered set is refused, not applied.
-func TestAnAnswerOutsideTheOfferIsRefused(t *testing.T) {
-	t.Parallel()
-
-	for name, tc := range map[string]struct {
-		fixture string
-		decider answeringOutsideTheOffer
-	}{
-		// other-serve stands at Education 7 for the whole career, so p. 11
-		// never opens the fourth table to him.
-		"a skills table his Education closes": {
-			fixture: "other-serve",
-			decider: answeringOutsideTheOffer{Decider: chargen.DefaultPolicy(), table: true},
-		},
-		// scouts-expertise draws weapon benefits, so the choice point is
-		// reached - and the first time it is, nothing of that category has
-		// been received yet.
-		"expertise in a weapon never received": {
-			fixture: "scouts-expertise",
-			decider: answeringOutsideTheOffer{Decider: chargen.DefaultPolicy(), expertise: true},
-		},
-	} {
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
-			f := byName(t, tc.fixture)
-
-			// Not f.run: the decider is not the fixture's policy, and a
-			// refusal stops the procedure partway, so the script's unread
-			// tail is expected rather than a sign it carries dice it never
-			// throws.
-			_, err := chargen.Guided(f.inputs(), tc.decider, chargen.WithRoller(f.roller(t)))
-			if err == nil {
-				t.Fatal("the engine applied an answer it had not offered")
-			}
-
-			if !strings.Contains(err.Error(), "answered outside what was offered") {
-				t.Errorf("error %q does not say the answer was not offered", err)
-			}
-		})
-	}
-}

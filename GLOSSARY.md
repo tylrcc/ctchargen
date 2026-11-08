@@ -45,6 +45,11 @@ Marking a record with an erratum because its reading's condition holds for
 that record.
 _Avoid_: Tagging, applying, flagging
 
+**Script**:
+The dice and draws of one path, in the order the procedure asks for them:
+what a fixture or a walk states, and a scripted roller plays.
+_Avoid_: Seed, sequence (for the whole)
+
 **Fixture**:
 A scripted sequence of dice and draws that walks the procedure down one chosen
 path, named for the path it reaches, whose record is checked in as a golden.

@@ -37,6 +37,10 @@ release turns out to be.
   afterwards at each generating site; a batch member's `build` is held by a
   test for the first time. The batch's settings travel as one value.
 
+- A golden for the scout killed by his first survival throw, before anything
+  is asked: the record that holds an auto run naming its policy even when the
+  policy answered nothing (#276). It is a quarter of forced-scout records.
+
 ## 1.0.0-beta.5
 
 The dice are no longer seeded. A character cannot be brought back by running

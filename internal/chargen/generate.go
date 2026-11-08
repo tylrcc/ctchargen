@@ -54,9 +54,6 @@ func WithObserver(watch func(traveller.Event)) Option {
 // WithBuild names the build that writes the record (ADR 0002). Only the
 // command passes it; a record generated in-process by a test passes none
 // and carries none, for the reason Character.Build gives.
-//
-// Implements: The record names its ruleset and the build that wrote it
-// [ADR 0002] in The record.
 func WithBuild(build string) Option {
 	return func(r *run) { r.char.Build = build }
 }

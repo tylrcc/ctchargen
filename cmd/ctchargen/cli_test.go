@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
-	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // The flags v1.0.0 ships, each with its type and its default (#126).
@@ -79,10 +78,7 @@ func TestEveryBaselineFlagIsStillDeclared(t *testing.T) {
 func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 	t.Parallel()
 
-	_, searched := batchRun{
-		base:   chargen.Inputs{Forced: chargen.ForceService(traveller.Scouts)},
-		policy: chargen.DefaultPolicy(), count: 20, survivors: true, attempts: 1, dice: scoutKilled.roller(t),
-	}.each(func(int, *chargen.Character) error { return nil })
+	_, searched := failedSearch(t).each(func(int, *chargen.Character) error { return nil })
 
 	var record strings.Builder
 

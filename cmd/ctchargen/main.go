@@ -55,6 +55,9 @@ type source func() chargen.Roller
 // to come from rather than a call at each generating site (#282).
 // TestRunWritesEachRendering holds a new record and a batch member to
 // carrying it.
+//
+// Implements: The record names its ruleset and the build that wrote it
+// [ADR 0002] in The record.
 func (s source) options() []chargen.Option {
 	options := []chargen.Option{chargen.WithBuild(build())}
 

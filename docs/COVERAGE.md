@@ -152,7 +152,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A batch checks for collisions without generating anybody | CLI sketch | `cmd/ctchargen.plannedPaths` | `cmd/ctchargen.TestTheCollisionCheckNeedsNoCharacters` |
 | A batch says how many it wrote and how many died | CLI sketch | `cmd/ctchargen.tally` | `cmd/ctchargen.TestABatchReportsASummaryThatCouldNotBeWritten`, `cmd/ctchargen.TestABatchSaysHowManyDied` |
 | A batch to a file is written all at once, never a record at a time | CLI sketch | `cmd/ctchargen.batchRun.buffered` | `cmd/ctchargen.TestABatchToAFileIsStillWrittenAtOnce` |
-| A batch to standard output arrives a record at a time | CLI sketch | `cmd/ctchargen.batchRun.streamed` | `cmd/ctchargen.TestABatchToStandardOutputArrivesARecordAtATime` |
+| A batch to standard output arrives a record at a time | CLI sketch | `cmd/ctchargen.writingTo` | `cmd/ctchargen.TestABatchToStandardOutputArrivesARecordAtATime` |
 | A buffered batch that stops claims no record written | CLI sketch | `cmd/ctchargen.batchRun.buffered` | `cmd/ctchargen.TestAFailedFileWriteClaimsNothing`, `cmd/ctchargen.TestAnExistingFileIsRefusedFirst` |
 | A character is written one way, not two | CLI sketch | `cmd/ctchargen.flagsThatContradict` | `cmd/ctchargen.TestTheTwoRenderingsCannotBothBeAskedFor` |
 | A data file broken two ways reports the same one every run | JSON conventions | `internal/rules.Rules.liftPriorService` | `internal/rules.TestABrokenServiceNamesTheSameColumnEveryRun` |
@@ -198,7 +198,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | The procedure is shown between the questions | Generation record | `internal/chargen.WithObserver`, `internal/render.EventLine` | `cmd/ctchargen.TestInteractiveShowsWhatAutoDoesNot` |
 | The questions go to stderr, not into the record | CLI sketch | `cmd/ctchargen.run` | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord` |
 | The record matches the schema that describes it | JSON conventions | `docs/character.schema.json` | `internal/render.TestEveryGoldenMatchesTheSchema` |
-| The record names its ruleset and the build that wrote it | ADR 0002 | `internal/chargen.Ruleset`, `internal/chargen.WithBuild` | `cmd/ctchargen.TestRunWritesEachRendering` |
+| The record names its ruleset and the build that wrote it | ADR 0002 | `cmd/ctchargen.source.options`, `internal/chargen.Ruleset` | `cmd/ctchargen.TestRunWritesEachRendering` |
 | The shape a reader gets back is the shape that was written | Generation record | `internal/render.eventCodec` | `internal/render.TestTheFlatShapeIsWhatWasWritten` |
 | The spellings that gate rests on tell every value of an alphabet apart | Choice points | `internal/traveller` | `internal/traveller.TestNoTwoValuesOfAnAlphabetShareASpelling` |
 | The two documented examples are generated, not written | Documents | `internal/chargen.documentedExample` | `internal/chargen.TestGoldens` |
