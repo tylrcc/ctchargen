@@ -155,7 +155,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A batch to standard output arrives a record at a time | CLI sketch | `cmd/ctchargen.writingTo` | `cmd/ctchargen.TestABatchToStandardOutputArrivesARecordAtATime` |
 | A buffered batch that stops claims no record written | CLI sketch | `cmd/ctchargen.batchRun.buffered` | `cmd/ctchargen.TestAFailedFileWriteClaimsNothing`, `cmd/ctchargen.TestAnExistingFileIsRefusedFirst` |
 | A character is written one way, not two | CLI sketch | `cmd/ctchargen.flagsThatContradict` | `cmd/ctchargen.TestTheTwoRenderingsCannotBothBeAskedFor` |
-| A data file broken two ways reports the same one every run | JSON conventions | `internal/rules.Rules.liftPriorService` | `internal/rules.TestABrokenServiceNamesTheSameColumnEveryRun` |
+| A data file broken two ways reports the same one every run | JSON conventions | `internal/rules.Rules.liftPriorService`, `internal/rules.Rules.liftSkills` | `internal/rules.TestABrokenServiceNamesTheSameColumnEveryRun`, `internal/rules.TestABrokenServiceNamesTheSameRowEveryRun`, `internal/rules.TestABrokenSkillsFileNamesTheSameTableEveryRun` |
 | A directory batch that cannot write a member leaves what came before | CLI sketch | `cmd/ctchargen.batchRun.intoDirectory` | `cmd/ctchargen.TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction` |
 | A directory in the way is named as one, with no --force advice | CLI sketch | `cmd/ctchargen.inTheWay` | `cmd/ctchargen.TestADirectoryInTheWayIsNamedAsOne` |
 | A failed search prints no stopped-run tally beside its counts | CLI sketch | `cmd/ctchargen.write` | `cmd/ctchargen.TestAFailedSearchCountsOnce` |

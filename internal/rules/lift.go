@@ -3,6 +3,8 @@ package rules
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
+	"slices"
 	"strings"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -271,16 +273,25 @@ func (r *Rules) liftPriorService(wire wireServices) error {
 		return err
 	}
 
-	rows := map[string]int{
-		"enlistment": len(wire.Enlistment), "draft": len(wire.Draft),
-		"survival": len(wire.Survival), "commission": len(wire.Commission),
-		"promotion": len(wire.Promotion), "reenlist": len(wire.Reenlist),
-		"ranks": len(wire.Ranks),
+	// A slice, not a map, in the order p. 10 prints the rows with the Table
+	// of Ranks below them: a file with two short rows names the first, every
+	// run.
+	rows := []struct {
+		name  string
+		cells int
+	}{
+		{"enlistment", len(wire.Enlistment)},
+		{"draft", len(wire.Draft)},
+		{"survival", len(wire.Survival)},
+		{"commission", len(wire.Commission)},
+		{"promotion", len(wire.Promotion)},
+		{"reenlist", len(wire.Reenlist)},
+		{"ranks", len(wire.Ranks)},
 	}
-	for row, n := range rows {
-		if n != len(traveller.ServiceNames) {
+	for _, row := range rows {
+		if row.cells != len(traveller.ServiceNames) {
 			return fmt.Errorf("%w: prior service table, %s: %d cells, want %d", errMalformed,
-				row, n, len(traveller.ServiceNames))
+				row.name, row.cells, len(traveller.ServiceNames))
 		}
 	}
 
@@ -480,17 +491,35 @@ func (r *Rules) liftRetirement(wire wireServices) error {
 	return nil
 }
 
-func (r *Rules) liftSkills(wire wireSkills) error {
-	tables := withoutNotes(wire.Tables)
+// skillTablesByName reads the four tables' names, in sorted order so a file
+// with two unknown names refuses the same one every run.
+func skillTablesByName(wire map[string][][]string) (map[traveller.SkillTable][][]string, error) {
+	tables := withoutNotes(wire)
 	if len(tables) != len(traveller.SkillTables) {
-		return fmt.Errorf("%w: acquired skills: %d tables, want %d", errMalformed, len(tables), len(traveller.SkillTables))
+		return nil, fmt.Errorf("%w: acquired skills: %d tables, want %d", errMalformed,
+			len(tables), len(traveller.SkillTables))
 	}
 
-	for name, rows := range tables {
+	byTable := make(map[traveller.SkillTable][][]string, len(tables))
+
+	for _, name := range slices.Sorted(maps.Keys(tables)) {
 		table, err := parseSkillTable(name)
 		if err != nil {
-			return fmt.Errorf("%w: acquired skills: %w", errMalformed, err)
+			return nil, fmt.Errorf("%w: acquired skills: %w", errMalformed, err)
 		}
+
+		byTable[table] = tables[name]
+	}
+
+	return byTable, nil
+}
+
+// liftSkillTables lifts every cell of the four tables, in the order p. 11
+// prints them (traveller.SkillTables) and never a map's, so a file broken two
+// ways names the first fault every run.
+func (r *Rules) liftSkillTables(services []string, byTable map[traveller.SkillTable][][]string) error {
+	for _, table := range traveller.SkillTables {
+		rows := byTable[table]
 
 		if len(rows) != Faces {
 			return fmt.Errorf("%w: acquired skills, %v: %d rows, want %d", errMalformed, table, len(rows), Faces)
@@ -499,7 +528,7 @@ func (r *Rules) liftSkills(wire wireSkills) error {
 		for die, row := range rows {
 			what := fmt.Sprintf("acquired skills, %v, row %d", table, die+1)
 
-			err := eachService(wire.Services, row, what, func(s traveller.ServiceName, cell string) error {
+			err := eachService(services, row, what, func(s traveller.ServiceName, cell string) error {
 				result, err := parseTableResult(cell, r.normalize)
 				if err != nil {
 					return err
@@ -513,6 +542,27 @@ func (r *Rules) liftSkills(wire wireSkills) error {
 				return err
 			}
 		}
+	}
+
+	return nil
+}
+
+// liftSkills lifts skills.json: the four acquired skills tables, the
+// eligibility and the education gate. Names are read in sorted order and the
+// tables in the order p. 11 prints them, so a file broken two ways reports the
+// same fault every run.
+//
+// Implements: A data file broken two ways reports the same one every run [JSON
+// conventions] in The record.
+func (r *Rules) liftSkills(wire wireSkills) error {
+	byTable, err := skillTablesByName(wire.Tables)
+	if err != nil {
+		return err
+	}
+
+	err = r.liftSkillTables(wire.Services, byTable)
+	if err != nil {
+		return err
 	}
 
 	r.eligibility = Eligibility{

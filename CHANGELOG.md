@@ -13,6 +13,9 @@ release turns out to be.
 - Which glyphs are a sign, and that an en dash is not one, is defined once in
   `traveller` and read by both targets and table cells, where three lists
   across two packages said it before. No behaviour changes (#297).
+- A data file broken two ways now reports the same fault every run in the
+  Prior Service Table's row counts and the Acquired Skills tables, as it
+  already did for ranks, commissions and promotions (#286).
 
 ## 1.0.0-beta.6
 

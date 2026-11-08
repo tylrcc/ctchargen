@@ -394,19 +394,14 @@ func TestMalformedShips(t *testing.T) {
 // file reported commission on one run and promotion on the next, and a reader
 // could not tell whether his fix had worked (#53).
 //
-// Repeated because once proves nothing: Go's map order is deliberately
-// unstable, and a single pass through an unordered range agrees with an
-// ordered one about half the time.
+// Repeated (sameErrorEveryRun) because once proves nothing: a single pass
+// through an unordered range agrees with an ordered one about half the time.
 //
 // Holds: A data file broken two ways reports the same one every run.
 func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 	t.Parallel()
 
-	const runs = 50
-
-	first := ""
-
-	for range runs {
+	first := sameErrorEveryRun(t, func() error {
 		wire := mustRead[wireServices](t, "services.json")
 
 		// Scouts print no ranks, so a commission and a promotion in that
@@ -416,9 +411,28 @@ func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 		wire.Commission[scouts] = wire.Commission[0]
 		wire.Promotion[scouts] = wire.Promotion[0]
 
-		err := (&Rules{}).liftPriorService(wire)
+		return (&Rules{}).liftPriorService(wire)
+	})
+
+	if !strings.Contains(first, "commission") {
+		t.Errorf("the refusal names %q; the page prints commission before promotion", first)
+	}
+}
+
+// sameErrorEveryRun lifts a freshly broken file fifty times and fails unless
+// every run refuses it with the same error, which it returns. Once proves
+// nothing: Go's map order is deliberately unstable.
+func sameErrorEveryRun(t *testing.T, lift func() error) string {
+	t.Helper()
+
+	const runs = 50
+
+	first := ""
+
+	for range runs {
+		err := lift()
 		if err == nil {
-			t.Fatal("a service printing a commission and a promotion without ranks was lifted")
+			t.Fatal("a file broken two ways was lifted")
 		}
 
 		if first == "" {
@@ -428,12 +442,74 @@ func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 		}
 
 		if err.Error() != first {
-			t.Fatalf("the same broken file reported two different problems:\n  %s\n  %s",
-				first, err.Error())
+			t.Fatalf("the same broken file reported two different problems:\n  %s\n  %s", first, err.Error())
 		}
 	}
 
-	if !strings.Contains(first, "commission") {
-		t.Errorf("the refusal names %q; the page prints commission before promotion", first)
+	return first
+}
+
+// Two rows short at once is two faults, and the lift reports the one p. 10
+// prints first on every run.
+//
+// Holds: A data file broken two ways reports the same one every run.
+func TestABrokenServiceNamesTheSameRowEveryRun(t *testing.T) {
+	t.Parallel()
+
+	got := sameErrorEveryRun(t, func() error {
+		wire := mustRead[wireServices](t, "services.json")
+
+		wire.Enlistment = wire.Enlistment[:5]
+		wire.Survival = wire.Survival[:5]
+
+		return (&Rules{}).liftPriorService(wire)
+	})
+
+	if !strings.Contains(got, "enlistment") {
+		t.Errorf("the refusal names %q; p. 10 prints enlistment before survival", got)
+	}
+}
+
+// Two skill tables a row short at once, or two tables the type does not
+// name, is two faults, and the lift reports the same one on every run: the
+// table p. 11 prints first, or the name that sorts first.
+//
+// Holds: A data file broken two ways reports the same one every run.
+func TestABrokenSkillsFileNamesTheSameTableEveryRun(t *testing.T) {
+	t.Parallel()
+
+	short := sameErrorEveryRun(t, func() error {
+		wire := mustRead[wireSkills](t, "skills.json")
+
+		for _, name := range []string{"Personal Development Table", "Service Skills Table"} {
+			table := wire.Tables[name]
+			if len(table) == 0 {
+				t.Fatalf("skills.json has no %s to shorten", name)
+			}
+
+			wire.Tables[name] = table[:len(table)-1]
+		}
+
+		return (&Rules{normalize: map[string]string{}}).liftSkills(wire)
+	})
+
+	if !strings.Contains(short, "Personal Development") {
+		t.Errorf("the refusal names %q; p. 11 prints Personal Development before Service Skills", short)
+	}
+
+	unknown := sameErrorEveryRun(t, func() error {
+		wire := mustRead[wireSkills](t, "skills.json")
+
+		wire.Tables["Basic Training"] = wire.Tables["Personal Development Table"]
+		wire.Tables["Field Training"] = wire.Tables["Service Skills Table"]
+
+		delete(wire.Tables, "Personal Development Table")
+		delete(wire.Tables, "Service Skills Table")
+
+		return (&Rules{normalize: map[string]string{}}).liftSkills(wire)
+	})
+
+	if !strings.Contains(unknown, "Basic Training") {
+		t.Errorf("the refusal names %q; Basic Training sorts before Field Training", unknown)
 	}
 }
