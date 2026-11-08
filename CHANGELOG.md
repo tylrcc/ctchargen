@@ -47,6 +47,9 @@ release turns out to be.
   are removed, read against each page; E011's bold run-in "Titles:" and
   E002's italic aside from the Jamison example are the page's own and stay,
   and E011's quotation of p. 5 regains a dropped "the" (#310).
+- A page range in a cite is written with an en dash, and the coverage
+  generator refuses a hyphen: one marker cited `1:11-13` beside the tree's
+  `1:11–13` (#311).
 
 ## 1.0.0-beta.6
 

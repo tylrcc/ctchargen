@@ -147,7 +147,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | The headline names the service attempted, not the one the draft gave | 1:5 | `internal/render.whoseService` | `internal/render.TestTheHeadlineSaysWhoseServiceItIs` |
 | The gambling modifier is offered only to one who has the expertise | 1:9 | `cmd/ctchargen.player.MusterTable2DM` | `cmd/ctchargen.TestInteractiveOffersTheGamblingModifier` |
 | The skills table designated is the one he has trained on least | 1:11 | `internal/chargen.Policy.SkillTable` | `internal/chargen.TestOneCharacterTrainsOnMoreThanOneTable` |
-| The weapon for a Blade or Gun result is drawn, not always the first printed | 1:11-13 | `internal/chargen.Policy.Weapon` | `internal/chargen.TestTheAutoPolicyNamesMoreThanOneWeapon`, golden `marines-armed` |
+| The weapon for a Blade or Gun result is drawn, not always the first printed | 1:11–13 | `internal/chargen.Policy.Weapon` | `internal/chargen.TestTheAutoPolicyNamesMoreThanOneWeapon`, golden `marines-armed` |
 | A ship's terms follow its kind, not its numbers | 1:22–23 | `internal/render.shipLine` | `internal/render.TestAShipsTermsFollowItsKind` |
 | A batch checks for collisions without generating anybody | CLI sketch | `cmd/ctchargen.plannedPaths` | `cmd/ctchargen.TestTheCollisionCheckNeedsNoCharacters` |
 | A batch says how many it wrote and how many died | CLI sketch | `cmd/ctchargen.tally` | `cmd/ctchargen.TestABatchReportsASummaryThatCouldNotBeWritten`, `cmd/ctchargen.TestABatchSaysHowManyDied` |

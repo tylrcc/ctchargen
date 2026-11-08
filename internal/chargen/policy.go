@@ -479,7 +479,7 @@ func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
 // purpose is spartan's MusterWeapon.
 //
 // Implements: The weapon for a Blade or Gun result is drawn, not always the
-// first printed [1:11-13] in The record.
+// first printed [1:11–13] in The record.
 func (p Policy) Weapon(
 	_ traveller.WeaponCategory, from []traveller.WeaponName, vary Vary,
 ) (traveller.WeaponName, error) {

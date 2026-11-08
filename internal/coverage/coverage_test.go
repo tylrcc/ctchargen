@@ -16,11 +16,11 @@
 //	// Holds: Six 2D rolls, in order.
 //
 // The bracket is the rule's authority, from a closed set: a page cite, pages
-// or ranges joined by ", " or "; ", the first with its book, then any readings
-// in one pair of parentheses, naming only Books 1 to 3 and readings ERRATA.md
-// has a heading for, "1:5; 3:22 (E011)"; a reading alone, "(E011)", that it
-// has a heading for; "ADR 0001", naming a file in docs/adr; or one of
-// the promise labels below, for a promise of the tool's own. The readings and
+// or ranges (an en dash) joined by ", " or "; ", the first with its book,
+// then any readings in one pair of parentheses, naming only Books 1 to 3 and
+// readings ERRATA.md has a heading for, "1:5; 3:22 (E011)"; a reading alone,
+// "(E011)", that it has a heading for; "ADR 0001", naming a file in docs/adr;
+// or one of the promise labels below, for a promise of the tool's own. The readings and
 // the ADRs are read from those documents, and a cite outside the set fails the
 // generator, naming the rule.
 //
@@ -121,11 +121,12 @@ var (
 	citedReading = regexp.MustCompile(`E\d{3}`)
 
 	// pageCiteShape is the whole of a page cite as the tree writes one: pages
-	// or ranges, the first with its book and any later one with or without,
-	// joined by ", " or "; ", then any readings in one pair of parentheses.
+	// or ranges (an en dash, never a hyphen), the first with its book and any
+	// later one with or without, joined by ", " or "; ", then any readings in
+	// one pair of parentheses:
 	// "1:5, 10", "1:4, 7–9 (E010)", "1:5; 3:22 (E011)", "1:9 (E006, E007)".
 	pageCiteShape = regexp.MustCompile(
-		`^\d+:\d+(?:[–-]\d+)?(?:(?:, |; )(?:\d+:)?\d+(?:[–-]\d+)?)*(?: \(E\d{3}(?:, E\d{3})*\))?$`,
+		`^\d+:\d+(?:–\d+)?(?:(?:, |; )(?:\d+:)?\d+(?:–\d+)?)*(?: \(E\d{3}(?:, E\d{3})*\))?$`,
 	)
 
 	// The labels the other cites are drawn from, as each document writes
@@ -283,7 +284,7 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 
 	// Every form a page cite takes is accepted when what it names exists.
 	for _, cite := range []string{
-		"1:5", "1:2–3", "1:11-13", "1:5, 10", "1:4, 7–9 (E010)", "1:5, 1:7–8",
+		"1:5", "1:2–3", "1:11–13", "1:5, 10", "1:4, 7–9 (E010)", "1:5, 1:7–8",
 		"1:5; 3:22 (E011)", "2:18–19", "1:9 (E006, E007)",
 	} {
 		err := known.check(withFirstCite(t, found, cite))
@@ -292,13 +293,14 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 		}
 	}
 
-	// A page cite is checked too: every book it names is in authority, and
-	// every reading it names has a heading.
+	// A page cite is checked too: its shape, every book it names is in
+	// authority, and every reading it names has a heading.
 	for _, cite := range []string{
 		"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain", "Determinism",
 		"1:5 (E099)", "4:5", "1:5; 4:22", "1:5; 3:22 (E099)", "0:5",
 		"1:9 (E006, E099)", "1:9 E099", "1:9 (e099)", "1:9 (e006)",
-		"1:5 garbage", "1:5; Book 4 p. 5", "1:5 (E99)", "1:5 (E0999)", "1:5,6", "1:5 (E006,E007)",
+		"1:5 garbage", "1:5; Book 4 p. 5", "1:5 (E99)", "1:5 (E0999)", "1:5,6",
+		"1:5 (E006,E007)", "1:11-13", "1:5, 7-9",
 	} {
 		t.Run(cite, func(t *testing.T) {
 			t.Parallel()
