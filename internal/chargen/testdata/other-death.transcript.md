@@ -1,6 +1,6 @@
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 5+4
   3. Strength 9 (from 2)
@@ -16,17 +16,17 @@
  13. Social Standing 5 (from 12)
  14. UPP 9346C5 at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Other: rolled 5+6 = 11 against 3+, made
  17. enlisted in the Other (from 16)
 
-## term 1 (pp. 5-7)
+## 18. term 1 (pp. 5-7)
 
  19. survival: rolled 3+6 = 9 against 5+, made
  20. survived term 1 (from 19)
 
-## skills and training (pp. 6, 11)
+## 21. skills and training (pp. 6, 11)
 
  22. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 4
@@ -38,12 +38,12 @@
  29. ReenlistIntent: policy chose continue from continue, discharge
  30. reenlisted for term 2 (from 28)
 
-## term 2 (pp. 5-7)
+## 31. term 2 (pp. 5-7)
 
  32. survival: rolled 5+1 = 6 against 5+, made
  33. survived term 2 (from 32)
 
-## skills and training (pp. 6, 11)
+## 34. skills and training (pp. 6, 11)
 
  35. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  36. Service Skills Table: rolled 3
@@ -52,12 +52,12 @@
  39. ReenlistIntent: policy chose continue from continue, discharge
  40. reenlisted for term 3 (from 38)
 
-## term 3 (pp. 5-7)
+## 41. term 3 (pp. 5-7)
 
  42. survival: rolled 1+6 = 7 against 5+, made
  43. survived term 3 (from 42)
 
-## skills and training (pp. 6, 11)
+## 44. skills and training (pp. 6, 11)
 
  45. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  46. Personal Development Table: rolled 4
@@ -67,12 +67,12 @@
  50. ReenlistIntent: policy chose continue from continue, discharge
  51. reenlisted for term 4 (from 49)
 
-## term 4 (pp. 5-7)
+## 52. term 4 (pp. 5-7)
 
  53. survival: rolled 1+5 = 6 against 5+, made
  54. survived term 4 (from 53)
 
-## skills and training (pp. 6, 11)
+## 55. skills and training (pp. 6, 11)
 
  56. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  57. Advanced Education Table (education 8+): rolled 1
@@ -81,7 +81,7 @@
  60. ReenlistIntent: policy chose continue from continue, discharge
  61. reenlisted for term 5 (from 59)
 
-## aging, end of term 4 (pp. 7-9)
+## 62. aging, end of term 4 (pp. 7-9)
 
  63. aging, Strength: rolled 2+5 = 7 against 8+, missed
  64. Strength -1, 9 to 8 (from 63) [E006 E007]
@@ -90,7 +90,7 @@
  67. aging, Endurance: rolled 5+3 = 8 against 8+, made
  68. Endurance holds (from 67) [E006 E007]
 
-## term 5 (pp. 5-7)
+## 69. term 5 (pp. 5-7)
 
  70. survival: rolled 1+2 = 3 against 5+, missed
  71. died in term 5, aged 38 (from 70) [E004]

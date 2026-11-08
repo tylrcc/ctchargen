@@ -4,7 +4,9 @@ import (
 	"flag"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
+	"strconv"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
@@ -295,6 +297,54 @@ func TestTheRosterReachesItsPaths(t *testing.T) {
 	} {
 		if !reached[path] {
 			t.Errorf("no fixture reaches %q", path)
+		}
+	}
+}
+
+// numbered is the sequence number a transcript line opens with: an event line
+// ("  2. Strength: rolled 5+5") or a step heading ("## 17. term 3").
+var numbered = regexp.MustCompile(`(?m)^(?:## | *)(\d+)\. `)
+
+// No golden's transcript skips a number (#249).
+//
+// The live view numbered its step headings because a watched session whose
+// headings printed bare appeared to skip - 17, 18, then 20 - and the kept
+// transcript printed them bare still, so army-serve's opened at event 2.
+// Every event is one numbered line, in order, from 1 to the last.
+//
+// Holds: The kept transcript numbers every event, so no number is skipped.
+func TestNoTranscriptSkipsANumber(t *testing.T) {
+	t.Parallel()
+
+	for _, fixture := range fixtures {
+		character := fixture.generate(t)
+
+		transcript, err := render.Transcript(character)
+		if err != nil {
+			t.Fatalf("%s: %v", fixture.name, err)
+		}
+
+		var seen []int
+
+		for _, match := range numbered.FindAllStringSubmatch(transcript, -1) {
+			n, err := strconv.Atoi(match[1])
+			if err != nil {
+				t.Fatalf("%s: %v", fixture.name, err)
+			}
+
+			seen = append(seen, n)
+		}
+
+		for i, n := range seen {
+			if n != i+1 {
+				t.Errorf("%s: the transcript's line %d is numbered %d, want %d", fixture.name, i+1, n, i+1)
+
+				break
+			}
+		}
+
+		if len(seen) != len(character.Events) {
+			t.Errorf("%s: %d numbered lines for %d events", fixture.name, len(seen), len(character.Events))
 		}
 	}
 }

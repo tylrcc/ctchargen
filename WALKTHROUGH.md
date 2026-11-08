@@ -1281,7 +1281,7 @@ A transcript of `ctchargen render --history internal/chargen/testdata/army-serve
 ```text
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 5+5
   3. Strength 10 (from 2)
@@ -1297,7 +1297,7 @@ A transcript of `ctchargen render --history internal/chargen/testdata/army-serve
  13. Social Standing 12 (from 12)
  14. UPP A68AAC at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Army: rolled 5+1 +3 = 9 against 5+, made
  17. enlisted in the Army (from 16)
@@ -1310,9 +1310,8 @@ sequence number of the throw or choice that produced it, so "enlisted in the
 Army" points at the throw one line above it. That is what makes the log
 auditable rather than merely verbose.
 
-The numbers skip — 14, then 16 — because step headings are events too. They
-carry a sequence number in the JSON record and render as an unnumbered `##`
-heading here.
+The step headings are events too, so they carry their number: `## 15.` is
+the enlistment step, and the numbers run without a gap from 1 to the last.
 
 And the UPP is `A68AAC` at 18 but `965BCD` on the sheet above: seven terms of
 service, four of them followed by aging rounds, moved four of the six
@@ -1320,10 +1319,10 @@ characteristics. The transcript is where you find out which throw moved each.
 
 Here is the first term:
 
-A transcript of `ctchargen render --history internal/chargen/testdata/army-serve.json | sed -n '/## term 1 /,/## term 2 /p'`, run while writing:
+A transcript of `ctchargen render --history internal/chargen/testdata/army-serve.json | sed -n '/## [0-9]*\. term 1 /,/## [0-9]*\. term 2 /p'`, run while writing:
 
 ```text
-## term 1 (pp. 5-7)
+## 20. term 1 (pp. 5-7)
 
  21. survival: rolled 2+5 +2 = 9 against 5+, made
  22. survived term 1 (from 21)
@@ -1335,7 +1334,7 @@ A transcript of `ctchargen render --history internal/chargen/testdata/army-serve
  28. promotion: rolled 2+1 +1 = 4 against 6+, missed
  29. not promoted this term (from 28)
 
-## skills and training (pp. 6, 11)
+## 30. skills and training (pp. 6, 11)
 
  31. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  32. Advanced Education Table (education 8+): rolled 3
@@ -1352,7 +1351,7 @@ A transcript of `ctchargen render --history internal/chargen/testdata/army-serve
  43. ReenlistIntent: policy chose continue from continue, discharge
  44. reenlisted for term 2 (from 42)
 
-## term 2 (pp. 5-7)
+## 45. term 2 (pp. 5-7)
 ```
 
 And there is `thinnest` working. Three eligibilities were spent — two for the

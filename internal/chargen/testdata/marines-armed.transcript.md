@@ -1,6 +1,6 @@
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 1+4
   3. Strength 5 (from 2)
@@ -16,16 +16,16 @@
  13. Social Standing 9 (from 12)
  14. UPP 5B8879 at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Marines: rolled 5+4 +1 = 10 against 9+, made
  17. enlisted in the Marines (from 16)
 
-## rank and service skills (p. 23)
+## 18. rank and service skills (p. 23)
 
  19. Cutlass-1 [E005]
 
-## term 1 (pp. 5-7)
+## 20. term 1 (pp. 5-7)
 
  21. survival: rolled 4+1 +2 = 7 against 6+, made
  22. survived term 1 (from 21)
@@ -37,7 +37,7 @@
  28. promotion: rolled 2+5 +1 = 8 against 9+, missed
  29. not promoted this term (from 28)
 
-## skills and training (pp. 6, 11)
+## 30. skills and training (pp. 6, 11)
 
  31. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  32. Advanced Education Table: rolled 2
@@ -53,7 +53,7 @@
  42. ReenlistIntent: policy chose continue from continue, discharge
  43. reenlisted for term 2 (from 41)
 
-## term 2 (pp. 5-7)
+## 44. term 2 (pp. 5-7)
 
  45. survival: rolled 4+5 +2 = 11 against 6+, made
  46. survived term 2 (from 45)
@@ -61,7 +61,7 @@
  48. promotion: rolled 3+1 +1 = 5 against 9+, missed
  49. not promoted this term (from 48)
 
-## skills and training (pp. 6, 11)
+## 50. skills and training (pp. 6, 11)
 
  51. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  52. Advanced Education Table: rolled 5
@@ -71,7 +71,7 @@
  56. ReenlistIntent: policy chose continue from continue, discharge
  57. reenlisted for term 3 (from 55)
 
-## term 3 (pp. 5-7)
+## 58. term 3 (pp. 5-7)
 
  59. survival: rolled 4+5 +2 = 11 against 6+, made
  60. survived term 3 (from 59)
@@ -79,7 +79,7 @@
  62. promotion: rolled 4+5 +1 = 10 against 9+, made
  63. promoted: Captain (from 62)
 
-## skills and training (pp. 6, 11)
+## 64. skills and training (pp. 6, 11)
 
  65. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  66. Service Skills Table: rolled 6
@@ -92,7 +92,7 @@
  73. ReenlistIntent: policy chose continue from continue, discharge
  74. reenlisted for term 4 (from 72)
 
-## term 4 (pp. 5-7)
+## 75. term 4 (pp. 5-7)
 
  76. survival: rolled 3+3 +2 = 8 against 6+, made
  77. survived term 4 (from 76)
@@ -100,7 +100,7 @@
  79. promotion: rolled 1+4 +1 = 6 against 9+, missed
  80. not promoted this term (from 79)
 
-## skills and training (pp. 6, 11)
+## 81. skills and training (pp. 6, 11)
 
  82. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  83. Advanced Education Table: rolled 2
@@ -109,7 +109,7 @@
  86. ReenlistIntent: policy chose continue from continue, discharge
  87. reenlisted for term 5 (from 85)
 
-## aging, end of term 4 (pp. 7-9)
+## 88. aging, end of term 4 (pp. 7-9)
 
  89. aging, Strength: rolled 1+3 = 4 against 8+, missed
  90. Strength -1, 5 to 4 (from 89) [E006 E007]
@@ -118,7 +118,7 @@
  93. aging, Endurance: rolled 5+5 = 10 against 8+, made
  94. Endurance holds (from 93) [E006 E007]
 
-## term 5 (pp. 5-7)
+## 95. term 5 (pp. 5-7)
 
  96. survival: rolled 3+6 +2 = 11 against 6+, made
  97. survived term 5 (from 96)
@@ -126,7 +126,7 @@
  99. promotion: rolled 4+3 +1 = 8 against 9+, missed
 100. not promoted this term (from 99)
 
-## skills and training (pp. 6, 11)
+## 101. skills and training (pp. 6, 11)
 
 102. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 103. Service Skills Table: rolled 4
@@ -136,7 +136,7 @@
 107. ReenlistIntent: policy chose continue from continue, retire
 108. reenlisted for term 6 (from 106)
 
-## aging, end of term 5 (pp. 7-9)
+## 109. aging, end of term 5 (pp. 7-9)
 
 110. aging, Strength: rolled 5+1 = 6 against 8+, missed
 111. Strength -1, 4 to 3 (from 110) [E006 E007]
@@ -145,7 +145,7 @@
 114. aging, Endurance: rolled 4+5 = 9 against 8+, made
 115. Endurance holds (from 114) [E006 E007]
 
-## term 6 (pp. 5-7)
+## 116. term 6 (pp. 5-7)
 
 117. survival: rolled 1+5 +2 = 8 against 6+, made
 118. survived term 6 (from 117)
@@ -153,7 +153,7 @@
 120. promotion: rolled 6+6 +1 = 13 against 9+, made
 121. promoted: Force Cmdr (from 120)
 
-## skills and training (pp. 6, 11)
+## 122. skills and training (pp. 6, 11)
 
 123. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 124. Personal Development Table: rolled 2
@@ -165,7 +165,7 @@
 130. ReenlistIntent: policy chose continue from continue, retire
 131. reenlisted for term 7 (from 129)
 
-## aging, end of term 6 (pp. 7-9)
+## 132. aging, end of term 6 (pp. 7-9)
 
 133. aging, Strength: rolled 3+5 = 8 against 8+, made
 134. Strength holds (from 133) [E006 E007]
@@ -174,7 +174,7 @@
 137. aging, Endurance: rolled 5+4 = 9 against 8+, made
 138. Endurance holds (from 137) [E006 E007]
 
-## term 7 (pp. 5-7)
+## 139. term 7 (pp. 5-7)
 
 140. survival: rolled 3+4 +2 = 9 against 6+, made
 141. survived term 7 (from 140)
@@ -182,7 +182,7 @@
 143. promotion: rolled 3+3 +1 = 7 against 9+, missed
 144. not promoted this term (from 143)
 
-## skills and training (pp. 6, 11)
+## 145. skills and training (pp. 6, 11)
 
 146. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 147. Service Skills Table: rolled 2
@@ -190,7 +190,7 @@
 149. reenlistment: rolled 5+5 = 10 against 6+, made
 150. left the service after term 7 and is retired: retire (from 149)
 
-## aging, end of term 7 (pp. 7-9)
+## 151. aging, end of term 7 (pp. 7-9)
 
 152. aging, Strength: rolled 4+6 = 10 against 8+, made
 153. Strength holds (from 152) [E006 E007]
@@ -199,7 +199,7 @@
 156. aging, Endurance: rolled 1+4 = 5 against 8+, missed
 157. Endurance -1, 9 to 8 (from 156) [E006 E007]
 
-## mustering out, 9 rolls (pp. 7, 9, 21-23)
+## 158. mustering out, 9 rolls (pp. 7, 9, 21-23)
 
 159. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 160. Table 2, Cash Allowances: rolled 6

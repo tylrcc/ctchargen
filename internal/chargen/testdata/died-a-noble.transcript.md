@@ -1,6 +1,6 @@
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 2+2
   3. Strength 4 (from 2)
@@ -16,7 +16,7 @@
  13. Social Standing 12 (from 12)
  14. UPP 445C6C at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Navy: rolled 1+5 +1 = 7 against 8+, missed
  17. the Navy rejected him (from 16)
@@ -24,12 +24,12 @@
  19. draft: rolled 6
  20. drafted into the Other (from 19) [E001]
 
-## term 1 (pp. 5-7)
+## 21. term 1 (pp. 5-7)
 
  22. survival: rolled 5+2 +2 = 9 against 5+, made
  23. survived term 1 (from 22)
 
-## skills and training (pp. 6, 11)
+## 24. skills and training (pp. 6, 11)
 
  25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Advanced Education Table: rolled 5
@@ -41,12 +41,12 @@
  32. ReenlistIntent: policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
 
-## term 2 (pp. 5-7)
+## 34. term 2 (pp. 5-7)
 
  35. survival: rolled 4+3 +2 = 9 against 5+, made
  36. survived term 2 (from 35)
 
-## skills and training (pp. 6, 11)
+## 37. skills and training (pp. 6, 11)
 
  38. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  39. Personal Development Table: rolled 5
@@ -55,12 +55,12 @@
  42. ReenlistIntent: policy chose continue from continue, discharge
  43. reenlisted for term 3 (from 41)
 
-## term 3 (pp. 5-7)
+## 44. term 3 (pp. 5-7)
 
  45. survival: rolled 1+6 +2 = 9 against 5+, made
  46. survived term 3 (from 45)
 
-## skills and training (pp. 6, 11)
+## 47. skills and training (pp. 6, 11)
 
  48. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  49. Advanced Education Table: rolled 6
@@ -69,12 +69,12 @@
  52. ReenlistIntent: policy chose continue from continue, discharge
  53. reenlisted for term 4 (from 51)
 
-## term 4 (pp. 5-7)
+## 54. term 4 (pp. 5-7)
 
  55. survival: rolled 6+6 +2 = 14 against 5+, made
  56. survived term 4 (from 55)
 
-## skills and training (pp. 6, 11)
+## 57. skills and training (pp. 6, 11)
 
  58. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  59. Service Skills Table: rolled 6
@@ -83,7 +83,7 @@
  62. ReenlistIntent: policy chose continue from continue, discharge
  63. reenlisted for term 5 (from 61)
 
-## aging, end of term 4 (pp. 7-9)
+## 64. aging, end of term 4 (pp. 7-9)
 
  65. aging, Strength: rolled 2+2 = 4 against 8+, missed
  66. Strength -1, 4 to 3 (from 65) [E006 E007]
@@ -92,12 +92,12 @@
  69. aging, Endurance: rolled 2+6 = 8 against 8+, made
  70. Endurance holds (from 69) [E006 E007]
 
-## term 5 (pp. 5-7)
+## 71. term 5 (pp. 5-7)
 
  72. survival: rolled 1+1 +2 = 4 against 5+, missed
  73. died in term 5, aged 38 (from 72) [E004]
 
-## titles (p. 5; Book 3 p. 22)
+## 74. titles (p. 5; Book 3 p. 22)
 
  75. held a social standing of 12 at death, which is baron/baroness [E011]
 

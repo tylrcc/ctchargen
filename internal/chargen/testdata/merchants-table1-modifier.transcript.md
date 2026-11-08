@@ -1,6 +1,6 @@
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 4+6
   3. Strength 10 (from 2)
@@ -16,12 +16,12 @@
  13. Social Standing 9 (from 12)
  14. UPP AC9469 at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Merchants: rolled 3+3 +1 = 7 against 7+, made
  17. enlisted in the Merchants (from 16)
 
-## term 1 (pp. 5-7)
+## 18. term 1 (pp. 5-7)
 
  19. survival: rolled 1+6 = 7 against 5+, made
  20. survived term 1 (from 19)
@@ -32,7 +32,7 @@
  25. promotion: rolled 4+1 = 5 against 10+, missed
  26. not promoted this term (from 25)
 
-## skills and training (pp. 6, 11)
+## 27. skills and training (pp. 6, 11)
 
  28. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Advanced Education Table: rolled 2
@@ -48,7 +48,7 @@
  39. ReenlistIntent: policy chose continue from continue, discharge
  40. reenlisted for term 2 (from 38)
 
-## term 2 (pp. 5-7)
+## 41. term 2 (pp. 5-7)
 
  42. survival: rolled 2+6 = 8 against 5+, made
  43. survived term 2 (from 42)
@@ -56,7 +56,7 @@
  45. promotion: rolled 4+2 = 6 against 10+, missed
  46. not promoted this term (from 45)
 
-## skills and training (pp. 6, 11)
+## 47. skills and training (pp. 6, 11)
 
  48. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  49. Advanced Education Table: rolled 6
@@ -65,7 +65,7 @@
  52. ReenlistIntent: policy chose continue from continue, discharge
  53. reenlisted for term 3 (from 51)
 
-## term 3 (pp. 5-7)
+## 54. term 3 (pp. 5-7)
 
  55. survival: rolled 2+4 = 6 against 5+, made
  56. survived term 3 (from 55)
@@ -73,7 +73,7 @@
  58. promotion: rolled 4+6 = 10 against 10+, made
  59. promoted: 3rd Officer (from 58)
 
-## skills and training (pp. 6, 11)
+## 60. skills and training (pp. 6, 11)
 
  61. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  62. Service Skills Table: rolled 2
@@ -85,7 +85,7 @@
  68. ReenlistIntent: policy chose continue from continue, discharge
  69. reenlisted for term 4 (from 67)
 
-## term 4 (pp. 5-7)
+## 70. term 4 (pp. 5-7)
 
  71. survival: rolled 2+6 = 8 against 5+, made
  72. survived term 4 (from 71)
@@ -93,7 +93,7 @@
  74. promotion: rolled 5+6 = 11 against 10+, made
  75. promoted: 2nd Officer (from 74)
 
-## skills and training (pp. 6, 11)
+## 76. skills and training (pp. 6, 11)
 
  77. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  78. Advanced Education Table: rolled 3
@@ -105,7 +105,7 @@
  84. ReenlistIntent: policy chose continue from continue, discharge
  85. reenlisted for term 5 (from 83)
 
-## aging, end of term 4 (pp. 7-9)
+## 86. aging, end of term 4 (pp. 7-9)
 
  87. aging, Strength: rolled 3+4 = 7 against 8+, missed
  88. Strength -1, 11 to 10 (from 87) [E006 E007]
@@ -114,7 +114,7 @@
  91. aging, Endurance: rolled 6+3 = 9 against 8+, made
  92. Endurance holds (from 91) [E006 E007]
 
-## term 5 (pp. 5-7)
+## 93. term 5 (pp. 5-7)
 
  94. survival: rolled 6+2 = 8 against 5+, made
  95. survived term 5 (from 94)
@@ -123,7 +123,7 @@
  98. promoted: 1st Officer (from 97)
  99. Pilot-1 (from 97)
 
-## skills and training (pp. 6, 11)
+## 100. skills and training (pp. 6, 11)
 
 101. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 102. Personal Development Table: rolled 4
@@ -135,7 +135,7 @@
 108. ReenlistIntent: policy chose continue from continue, retire
 109. reenlisted for term 6 (from 107)
 
-## aging, end of term 5 (pp. 7-9)
+## 110. aging, end of term 5 (pp. 7-9)
 
 111. aging, Strength: rolled 4+1 = 5 against 8+, missed
 112. Strength -1, 11 to 10 (from 111) [E006 E007]
@@ -144,7 +144,7 @@
 115. aging, Endurance: rolled 6+6 = 12 against 8+, made
 116. Endurance holds (from 115) [E006 E007]
 
-## term 6 (pp. 5-7)
+## 117. term 6 (pp. 5-7)
 
 118. survival: rolled 3+1 = 4 against 5+, missed
 119. died in term 6, aged 42 (from 118) [E004]

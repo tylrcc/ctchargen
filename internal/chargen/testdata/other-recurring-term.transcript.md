@@ -1,6 +1,6 @@
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 6+6
   3. Strength 12 (from 2)
@@ -16,17 +16,17 @@
  13. Social Standing 12 (from 12)
  14. UPP CCCCCC at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Other: rolled 6+6 = 12 against 3+, made
  17. enlisted in the Other (from 16)
 
-## term 1 (pp. 5-7)
+## 18. term 1 (pp. 5-7)
 
  19. survival: rolled 6+6 +2 = 14 against 5+, made
  20. survived term 1 (from 19)
 
-## skills and training (pp. 6, 11)
+## 21. skills and training (pp. 6, 11)
 
  22. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 1
@@ -37,12 +37,12 @@
  28. reenlistment: rolled 6+6 = 12 against 5+, made
  29. a 12 exactly: the service requires another term (from 28)
 
-## term 2 (pp. 5-7)
+## 30. term 2 (pp. 5-7)
 
  31. survival: rolled 6+6 +2 = 14 against 5+, made
  32. survived term 2 (from 31)
 
-## skills and training (pp. 6, 11)
+## 33. skills and training (pp. 6, 11)
 
  34. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Service Skills Table: rolled 1
@@ -50,12 +50,12 @@
  37. reenlistment: rolled 6+6 = 12 against 5+, made
  38. a 12 exactly: the service requires another term (from 37)
 
-## term 3 (pp. 5-7)
+## 39. term 3 (pp. 5-7)
 
  40. survival: rolled 6+6 +2 = 14 against 5+, made
  41. survived term 3 (from 40)
 
-## skills and training (pp. 6, 11)
+## 42. skills and training (pp. 6, 11)
 
  43. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  44. Personal Development Table: rolled 1
@@ -63,12 +63,12 @@
  46. reenlistment: rolled 6+6 = 12 against 5+, made
  47. a 12 exactly: the service requires another term (from 46)
 
-## term 4 (pp. 5-7)
+## 48. term 4 (pp. 5-7)
 
  49. survival: rolled 6+6 +2 = 14 against 5+, made
  50. survived term 4 (from 49)
 
-## skills and training (pp. 6, 11)
+## 51. skills and training (pp. 6, 11)
 
  52. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  53. Advanced Education Table (education 8+): rolled 1
@@ -76,7 +76,7 @@
  55. reenlistment: rolled 6+6 = 12 against 5+, made
  56. a 12 exactly: the service requires another term (from 55)
 
-## aging, end of term 4 (pp. 7-9)
+## 57. aging, end of term 4 (pp. 7-9)
 
  58. aging, Strength: rolled 6+6 = 12 against 8+, made
  59. Strength holds (from 58) [E006 E007]
@@ -85,12 +85,12 @@
  62. aging, Endurance: rolled 6+6 = 12 against 8+, made
  63. Endurance holds (from 62) [E006 E007]
 
-## term 5 (pp. 5-7)
+## 64. term 5 (pp. 5-7)
 
  65. survival: rolled 6+6 +2 = 14 against 5+, made
  66. survived term 5 (from 65)
 
-## skills and training (pp. 6, 11)
+## 67. skills and training (pp. 6, 11)
 
  68. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Advanced Education Table: rolled 1
@@ -98,7 +98,7 @@
  71. reenlistment: rolled 6+6 = 12 against 5+, made
  72. a 12 exactly: the service requires another term (from 71)
 
-## aging, end of term 5 (pp. 7-9)
+## 73. aging, end of term 5 (pp. 7-9)
 
  74. aging, Strength: rolled 6+6 = 12 against 8+, made
  75. Strength holds (from 74) [E006 E007]
@@ -107,12 +107,12 @@
  78. aging, Endurance: rolled 6+6 = 12 against 8+, made
  79. Endurance holds (from 78) [E006 E007]
 
-## term 6 (pp. 5-7)
+## 80. term 6 (pp. 5-7)
 
  81. survival: rolled 6+6 +2 = 14 against 5+, made
  82. survived term 6 (from 81)
 
-## skills and training (pp. 6, 11)
+## 83. skills and training (pp. 6, 11)
 
  84. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  85. Service Skills Table: rolled 1
@@ -120,7 +120,7 @@
  87. reenlistment: rolled 6+6 = 12 against 5+, made
  88. a 12 exactly: the service requires another term (from 87)
 
-## aging, end of term 6 (pp. 7-9)
+## 89. aging, end of term 6 (pp. 7-9)
 
  90. aging, Strength: rolled 6+6 = 12 against 8+, made
  91. Strength holds (from 90) [E006 E007]
@@ -129,12 +129,12 @@
  94. aging, Endurance: rolled 6+6 = 12 against 8+, made
  95. Endurance holds (from 94) [E006 E007]
 
-## term 7 (pp. 5-7)
+## 96. term 7 (pp. 5-7)
 
  97. survival: rolled 6+6 +2 = 14 against 5+, made
  98. survived term 7 (from 97)
 
-## skills and training (pp. 6, 11)
+## 99. skills and training (pp. 6, 11)
 
 100. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Personal Development Table: rolled 1
@@ -142,7 +142,7 @@
 103. reenlistment: rolled 6+6 = 12 against 5+, made
 104. a 12 exactly: the service requires another term (from 103)
 
-## aging, end of term 7 (pp. 7-9)
+## 105. aging, end of term 7 (pp. 7-9)
 
 106. aging, Strength: rolled 6+6 = 12 against 8+, made
 107. Strength holds (from 106) [E006 E007]
@@ -151,12 +151,12 @@
 110. aging, Endurance: rolled 6+6 = 12 against 8+, made
 111. Endurance holds (from 110) [E006 E007]
 
-## term 8 (pp. 5-7)
+## 112. term 8 (pp. 5-7)
 
 113. survival: rolled 6+6 +2 = 14 against 5+, made
 114. survived term 8 (from 113)
 
-## skills and training (pp. 6, 11)
+## 115. skills and training (pp. 6, 11)
 
 116. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 117. Advanced Education Table (education 8+): rolled 1
@@ -164,7 +164,7 @@
 119. reenlistment: rolled 6+6 = 12 against 5+, made
 120. a 12 exactly: the service requires another term (from 119) [E003]
 
-## aging, end of term 8 (pp. 7-9)
+## 121. aging, end of term 8 (pp. 7-9)
 
 122. aging, Strength: rolled 6+6 = 12 against 9+, made
 123. Strength holds (from 122) [E006 E007]
@@ -173,12 +173,12 @@
 126. aging, Endurance: rolled 6+6 = 12 against 9+, made
 127. Endurance holds (from 126) [E006 E007]
 
-## term 9 (pp. 5-7)
+## 128. term 9 (pp. 5-7)
 
 129. survival: rolled 6+6 +2 = 14 against 5+, made
 130. survived term 9 (from 129)
 
-## skills and training (pp. 6, 11)
+## 131. skills and training (pp. 6, 11)
 
 132. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 133. Advanced Education Table: rolled 1
@@ -186,7 +186,7 @@
 135. reenlistment: rolled 1+1 = 2 against 5+, missed
 136. left the service after term 9 and is retired: reenlistment denied (from 135)
 
-## aging, end of term 9 (pp. 7-9)
+## 137. aging, end of term 9 (pp. 7-9)
 
 138. aging, Strength: rolled 1+1 = 2 against 9+, missed
 139. Strength -1, 14 to 13 (from 138) [E006 E007]
@@ -195,7 +195,7 @@
 142. aging, Endurance: rolled 1+1 = 2 against 9+, missed
 143. Endurance -1, 12 to 11 (from 142) [E006 E007]
 
-## mustering out, 9 rolls (pp. 7, 9, 21-23)
+## 144. mustering out, 9 rolls (pp. 7, 9, 21-23)
 
 145. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 146. Table 2, Cash Allowances: rolled 1
@@ -219,7 +219,7 @@
 164. Table 1, Material Benefits: rolled 1
 165. a Low Passage (from 164)
 
-## titles (p. 5; Book 3 p. 22)
+## 166. titles (p. 5; Book 3 p. 22)
 
 167. AssumeTitle: policy chose yes from yes, no
 168. social standing 12 confers baron/baroness, and it is assumed

@@ -1,6 +1,6 @@
 # Generation record: (unnamed)
 
-## characteristics (p. 4)
+## 1. characteristics (p. 4)
 
   2. Strength: rolled 6+1
   3. Strength 7 (from 2)
@@ -16,7 +16,7 @@
  13. Social Standing 8 (from 12)
  14. UPP 76B348 at age 18
 
-## enlistment (pp. 5, 10)
+## 15. enlistment (pp. 5, 10)
 
  16. enlistment, Scouts: rolled 4+2 = 6 against 7+, missed
  17. the Scouts rejected him (from 16)

@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The kept transcript numbers its step headings, as the live view does
+  (#249): `## 20. term 1 (pp. 5-7)` rather than `## term 1 (pp. 5-7)`, so no
+  `--history` transcript skips a number. Every golden transcript is
+  regenerated, changing only its headings; the live view prints what it did.
 - `docs/PRD.md` and `docs/PRERELEASE.md` are removed; the history keeps both
   as of `ec7289f`. The coverage map's promise labels are a fixed list in
   `internal/coverage` rather than read from the PRD, and the PRD's opaque

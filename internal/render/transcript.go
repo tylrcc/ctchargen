@@ -77,12 +77,19 @@ func transcriptOf(r record) (string, error) {
 	return out.String(), nil
 }
 
+// A step heading carries its number like every other line (#249): bare, it
+// made the numbers appear to skip, and a transcript kept for the table opened
+// at event 2.
+//
 // Implements: An event kind this build does not know is said to be unknown
 // [Generation record] in The record.
+//
+// Implements: The kept transcript numbers every event, so no number is
+// skipped [Generation record] in The record.
 func writeEvent(out *strings.Builder, event eventJSON) {
 	switch event.Kind {
 	case kindStep:
-		fmt.Fprintf(out, "\n## %s (%s)\n\n", event.Step, event.Pages)
+		fmt.Fprintf(out, "\n## %d. %s (%s)\n\n", event.Seq, event.Step, event.Pages)
 	case kindThrow, kindRoll:
 		// One line for both: a roll is a throw whose target is empty, which
 		// is exactly what throwLine already prints. Splitting the kinds

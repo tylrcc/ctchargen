@@ -486,11 +486,12 @@ markdown; the one exception is an unknown event kind, quoted with `%q` so a
 reader sees it is foreign. The one string an operator types into a record is
 the name, and it is held at the command line rather than here — see below.
 
-Two renderings of the same events now differ in one detail. The live view
-numbers each step heading with its sequence number, because the unnumbered
-headings made a watched session's numbers appear to skip; the `--history`
-transcript, and every golden transcript, still prints headings unnumbered, so
-the transcript a referee keeps is the one whose numbering skips (#249).
+Two renderings of the same events differ only in how a choice is echoed. Both
+number every step heading, through the one `writeEvent`: unnumbered headings
+made a watched session's numbers appear to skip, and the transcript a referee
+keeps skipped the same way until #249 numbered it too
+(`chargen.TestNoTranscriptSkipsANumber` holds every golden to an unbroken
+run).
 
 ### The command line
 
