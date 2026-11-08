@@ -32,6 +32,11 @@ release turns out to be.
   command's walks (#280), where two identical copies did; its strictness both
   ways is tested for the first time.
 
+- The command names the build on a record through the options every
+  generation takes (#282), as `chargen.WithBuild`, rather than stamping it
+  afterwards at each generating site; a batch member's `build` is held by a
+  test for the first time. The batch's settings travel as one value.
+
 ## 1.0.0-beta.5
 
 The dice are no longer seeded. A character cannot be brought back by running

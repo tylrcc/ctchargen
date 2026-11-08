@@ -79,9 +79,10 @@ func TestEveryBaselineFlagIsStillDeclared(t *testing.T) {
 func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 	t.Parallel()
 
-	_, searched := eachMember(chargen.Inputs{
-		Forced: chargen.ForceService(traveller.Scouts),
-	}, chargen.DefaultPolicy(), 20, true, 1, scoutKilled.roller(t), func(int, *chargen.Character) error { return nil })
+	_, searched := batchRun{
+		base:   chargen.Inputs{Forced: chargen.ForceService(traveller.Scouts)},
+		policy: chargen.DefaultPolicy(), count: 20, survivors: true, attempts: 1, dice: scoutKilled.roller(t),
+	}.each(func(int, *chargen.Character) error { return nil })
 
 	var record strings.Builder
 

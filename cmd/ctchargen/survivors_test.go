@@ -91,7 +91,7 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 // --survivors gives up rather than drawing forever.
 //
 // The bound is a hundred attempts per character asked for, which no measured run
-// approaches. It is reachable here because eachMember takes the bound rather
+// approaches. It is reachable here because a batchRun carries the bound rather
 // than reading the constant, so a test can ask for the living twenty times in
 // twenty draws from a service that kills three in four.
 //
@@ -99,12 +99,12 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	t.Parallel()
 
-	base := chargen.Inputs{
-		Forced: chargen.ForceService(traveller.Scouts),
+	searching := batchRun{
+		base:   chargen.Inputs{Forced: chargen.ForceService(traveller.Scouts)},
+		policy: chargen.DefaultPolicy(), count: 20, survivors: true, attempts: 1, dice: scoutKilled.roller(t),
 	}
 
-	_, err := eachMember(base, chargen.DefaultPolicy(), 20, true, 1, scoutKilled.roller(t),
-		func(int, *chargen.Character) error { return nil })
+	_, err := searching.each(func(int, *chargen.Character) error { return nil })
 	if err == nil {
 		t.Fatal("a bounded search reported success without finding the living")
 	}

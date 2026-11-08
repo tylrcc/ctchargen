@@ -49,13 +49,20 @@ func exitStatus(err error) int {
 // withDice, so that a run walks a known path; nothing else does.
 type source func() chargen.Roller
 
-// options is what a source adds to a generation: nothing, or a roller.
+// options is everything the command adds to a generation: the build that
+// writes the record, and a roller of the source's own when one is given.
+// Every generation the command makes takes these, so the build has one place
+// to come from rather than a call at each generating site (#282).
+// TestRunWritesEachRendering holds a new record and a batch member to
+// carrying it.
 func (s source) options() []chargen.Option {
-	if s == nil {
-		return nil
+	options := []chargen.Option{chargen.WithBuild(build())}
+
+	if s != nil {
+		options = append(options, chargen.WithRoller(s()))
 	}
 
-	return []chargen.Option{chargen.WithRoller(s())}
+	return options
 }
 
 // An option is a setting a caller of run may change. There is one.
@@ -153,22 +160,15 @@ func version(args []string, out io.Writer) error {
 	return nil
 }
 
-// stamp names the build that wrote a record.
-//
-// The command is what fills it, and only the command: a record generated
-// in-process by a test carries none, because a test binary's build info is
-// not the build of a released tool and would make every golden differ by
-// machine.
-//
-// Implements: The record names its ruleset and the build that wrote it
-// [ADR 0002] in The record.
-func stamp(character *chargen.Character) {
+// build names this build, as the version subcommand reports it, or nothing
+// when no build information is embedded.
+func build() string {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
-		return
+		return ""
 	}
 
-	character.Build = info.Main.Path + " " + buildVersion(info)
+	return info.Main.Path + " " + buildVersion(info)
 }
 
 func buildVersion(info *debug.BuildInfo) string {

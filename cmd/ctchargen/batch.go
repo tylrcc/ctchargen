@@ -58,7 +58,26 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 		return err
 	}
 
-	return write(out, asking, base, policy, *flags.count, *flags.output, *flags.force, *flags.survivors, dice)
+	run := batchRun{
+		base: base, policy: policy, count: *flags.count,
+		survivors: *flags.survivors, attempts: survivorAttempts, dice: dice,
+	}
+
+	return write(out, asking, run, *flags.output, *flags.force)
+}
+
+// batchRun is what every member of a batch is generated from, and how many
+// are wanted: the settings that hold for the whole run, whatever it is
+// written to. Where it is written is each writer's own argument.
+type batchRun struct {
+	base      chargen.Inputs
+	policy    chargen.Policy
+	count     int
+	survivors bool
+
+	// attempts bounds a --survivors search at count*attempts characters.
+	attempts int
+	dice     source
 }
 
 // batchFlagSet is batch's flag set, declared apart from running the command so
@@ -98,18 +117,19 @@ func declareBatchFlags() batchFlagSet {
 //
 // Implements: A failed search prints no stopped-run tally beside its counts
 // [CLI sketch] in The record.
-func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
-	count int, path string, force, survivors bool, dice source,
-) error {
+func write(out, asking io.Writer, run batchRun, path string, force bool) error {
 	var (
 		done tally
 		err  error
 	)
 
-	if namesDirectory(path) {
-		done, err = intoDirectory(base, policy, count, path, force, survivors, dice)
-	} else {
-		done, err = intoStream(out, base, policy, count, path, force, survivors, dice)
+	switch {
+	case namesDirectory(path):
+		done, err = run.intoDirectory(path, force)
+	case path == "":
+		done, err = run.streamed(out)
+	default:
+		done, err = run.buffered(path, force)
 	}
 
 	// A run that stopped partway has left records on disk, and the tally is
@@ -136,13 +156,11 @@ func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
 //
 // A failure names the attempt, which under --survivors counts the dead the
 // run passed over as well as the living it wrote.
-func member(base chargen.Inputs, policy chargen.Policy, i int, dice source) (*chargen.Character, error) {
-	character, err := chargen.Auto(base, policy, dice.options()...)
+func (b batchRun) member(i int) (*chargen.Character, error) {
+	character, err := chargen.Auto(b.base, b.policy, b.dice.options()...)
 	if err != nil {
 		return nil, fmt.Errorf("attempt %d: %w", i+1, err)
 	}
-
-	stamp(character)
 
 	return character, nil
 }
@@ -193,9 +211,9 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 }
 
 // survivorAttempts bounds how many characters --survivors generates per one
-// asked for. It is a parameter of eachMember rather than read from there, so
-// that a test can reach the bound without needing a hundred deaths per
-// character to do it.
+// asked for. It reaches the search as batchRun's attempts, which each reads
+// rather than this constant, so that a test can reach the bound without
+// needing a hundred deaths per character to do it.
 //
 // It bounds a loop that would otherwise have none, which is the shape of
 // defect #54 names elsewhere. The referee who reported #33 measured 74 dead
@@ -207,7 +225,7 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 // in The record.
 const survivorAttempts = 100
 
-// eachMember walks the batch, handing each member that is to be written to
+// each walks the batch, handing each member that is to be written to
 // take with its one-based position among them, and reports what it did.
 //
 // Without --survivors every member is written, dead or alive. With it a dead
@@ -217,30 +235,28 @@ const survivorAttempts = 100
 //
 // Implements: `--survivors` writes only the living, and generates another [CLI
 // sketch] in The record.
-func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors bool,
-	attempts int, dice source, take func(index int, character *chargen.Character) error,
-) (tally, error) {
+func (b batchRun) each(take func(index int, character *chargen.Character) error) (tally, error) {
 	var done tally
 
-	for i := 0; done.written < count; i++ {
-		if survivors && i >= count*attempts {
+	for i := 0; done.written < b.count; i++ {
+		if b.survivors && i >= b.count*b.attempts {
 			// Not a usage error: the flags were well formed, and what
 			// failed was the search. The bound's own comment says
 			// reaching it means something is wrong rather than unlucky,
 			// and that is a run-time condition and not a misuse.
 			return done, fmt.Errorf(
 				"%w: --survivors generated %d characters for %d living and found %d",
-				errSearch, i, count, done.written,
+				errSearch, i, b.count, done.written,
 			)
 		}
 
-		character, err := member(base, policy, i, dice)
+		character, err := b.member(i)
 		if err != nil {
 			return done, err
 		}
 
 		if traveller.Fatal(character.Departure) {
-			if survivors {
+			if b.survivors {
 				done.passed++
 
 				continue
@@ -260,9 +276,8 @@ func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors
 	return done, nil
 }
 
-// intoStream writes the batch as JSONL, one record to the line.
-//
-// To standard output it streams, writing each record as it is generated.
+// streamed writes the batch to standard output as JSONL, one record to the
+// line, each as it is generated.
 // JSONL exists to be piped, so `batch --count 50000 --auto | jq` sees the
 // first record at once and the run holds one record in memory rather than
 // all of them (#44). The atomicity that justifies buffering is about not
@@ -271,14 +286,8 @@ func eachMember(base chargen.Inputs, policy chargen.Policy, count int, survivors
 //
 // Implements: A batch to standard output arrives a record at a time [CLI
 // sketch] in The record.
-func intoStream(out io.Writer, base chargen.Inputs, policy chargen.Policy,
-	count int, path string, force, survivors bool, dice source,
-) (tally, error) {
-	if path == "" {
-		return eachMember(base, policy, count, survivors, survivorAttempts, dice, writingTo(out))
-	}
-
-	return buffered(base, policy, count, path, force, survivors, dice)
+func (b batchRun) streamed(out io.Writer) (tally, error) {
+	return b.each(writingTo(out))
 }
 
 // writingTo is the take a streamed run uses: encode the member and write it.
@@ -320,9 +329,7 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 //
 // Implements: A buffered batch that stops claims no record written [CLI
 // sketch] in The record.
-func buffered(base chargen.Inputs, policy chargen.Policy,
-	count int, path string, force, survivors bool, dice source,
-) (tally, error) {
+func (b batchRun) buffered(path string, force bool) (tally, error) {
 	if !force {
 		err := noMemberExists([]string{path})
 		if err != nil {
@@ -332,15 +339,15 @@ func buffered(base chargen.Inputs, policy chargen.Policy,
 
 	var lines strings.Builder
 
-	done, err := eachMember(base, policy, count, survivors, survivorAttempts, dice, writingTo(&lines))
+	done, err := b.each(writingTo(&lines))
 	if err != nil {
 		// The members were written to memory, never to the file, so the
 		// tally of a stopped run has nothing on disk to count (#246).
 		return tally{}, err
 	}
 
-	// nil, because path is never empty here: intoStream sends an empty one to
-	// the stream above, so openDestination always opens a file.
+	// nil, because path is never empty here: write sends an empty one to
+	// streamed, so openDestination always opens a file.
 	where, err := openDestination(nil, path, force)
 	if err == nil {
 		err = where.write(lines.String())
@@ -367,35 +374,34 @@ func buffered(base chargen.Inputs, policy chargen.Policy,
 //
 // Implements: A directory batch that cannot write a member leaves what came
 // before [CLI sketch] in The record.
-func intoDirectory(base chargen.Inputs, policy chargen.Policy,
-	count int, dir string, force, survivors bool, dice source,
-) (tally, error) {
+func (b batchRun) intoDirectory(dir string, force bool) (tally, error) {
 	err := os.MkdirAll(dir, recordDirMode)
 	if err != nil {
 		return tally{}, fmt.Errorf("creating %s: %w", dir, err)
 	}
 
 	if !force {
-		err = noMemberExists(plannedPaths(count, dir))
+		err = noMemberExists(plannedPaths(b.count, dir))
 		if err != nil {
 			return tally{}, err
 		}
 	}
 
-	return eachMember(base, policy, count, survivors, survivorAttempts, dice,
+	return b.each(
 		func(index int, character *chargen.Character) error {
 			encoded, err := render.JSON(character)
 			if err != nil {
 				return fmt.Errorf("member %d: %w", index, err)
 			}
 
-			where, err := openDestination(nil, memberPath(dir, index, count), force)
+			where, err := openDestination(nil, memberPath(dir, index, b.count), force)
 			if err != nil {
 				return err
 			}
 
 			return where.write(string(encoded))
-		})
+		},
+	)
 }
 
 // plannedPaths is where members 1 through count will be written.

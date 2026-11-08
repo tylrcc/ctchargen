@@ -98,6 +98,9 @@ func TestRunWritesEachRendering(t *testing.T) {
 		// The command is what fills the build, so a record it writes says
 		// which tool wrote it where a test-generated one says nothing.
 		"json build": {[]string{cmdNew, flagAuto, flagService, other}, `"build"`},
+		// And so does every member of a batch, which generates on a path of
+		// its own: one that skipped the build would ship unnoticed (#282).
+		"batch build": {[]string{cmdBatch, flagAuto, flagCount, "1", flagService, other}, `"build"`},
 		"json ruleset": {
 			[]string{cmdNew, flagAuto, flagService, other},
 			`"ruleset": "Classic Traveller, Books 1-3`,

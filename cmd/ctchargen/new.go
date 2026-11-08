@@ -188,8 +188,6 @@ func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRenderi
 		return err
 	}
 
-	stamp(character)
-
 	text, err := rendered(character, how.sheet, how.history)
 	if err != nil {
 		return err

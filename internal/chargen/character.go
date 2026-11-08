@@ -61,9 +61,10 @@ type Character struct {
 	// referee say which code wrote the record he is reading or filing a
 	// report against.
 	//
-	// The command fills it. A record generated in-process by a test does
-	// not carry one, because the build info of a test binary is not the
-	// build of a released tool and would make a golden differ by machine.
+	// The command fills it, through WithBuild. A record generated
+	// in-process by a test does not carry one, because the build info of a
+	// test binary is not the build of a released tool and would make a
+	// golden differ by machine.
 	Build string
 }
 
