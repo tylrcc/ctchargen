@@ -153,6 +153,11 @@ type weaponOffer struct {
 	means traveller.WeaponBenefit
 }
 
+// MusterWeapon offers a weapon of the category, or expertise in one already
+// received, each line carrying the benefit it names.
+//
+// Implements: Each weapon-benefit line records the benefit it says [1:22] in
+// The record.
 func (p *player) MusterWeapon(
 	category traveller.WeaponCategory, from, received []traveller.WeaponName,
 ) (traveller.WeaponBenefit, error) {

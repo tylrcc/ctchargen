@@ -99,6 +99,25 @@ var gamblerWalked = walk{
 	among: nil,
 }
 
+// navyRearmed is the Navy, answered 1 at every question, mustering out with a
+// Blade Combat benefit twice: the first takes a Dagger, so the second's menu
+// offers "+1 expertise in the Dagger" as its twelfth line, and it is the
+// thirtieth question asked. A menu line throws no dice, so the walk is the
+// same whichever line that question is answered with.
+//
+//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
+var navyRearmed = walk{
+	name: "navyRearmed",
+	dice: []int{
+		6, 2, 3, 4, 6, 4, 5, 4, 5, 5, 6, 5, 3, 2, 1, 2, 2, 2, 6, 3,
+		6, 3, 5, 1, 5, 5, 5, 4, 6, 5, 2, 4, 2, 6, 3, 6, 6, 3, 5, 5,
+		5, 5, 3, 4, 2, 4, 3, 6, 4, 1, 5, 6, 3, 5, 2, 2, 1, 4, 6, 3,
+		6, 3, 1, 5, 1, 2, 5, 3, 1, 2, 5, 2, 6, 3, 2, 4, 6, 1, 6, 6,
+		3, 4, 2, 3, 6, 4, 5, 6, 5,
+	},
+	among: nil,
+}
+
 // scoutKilled is a Scout killed by the survival throw in his first term.
 //
 //nolint:gochecknoglobals // an immutable script, and Go has no const slice.

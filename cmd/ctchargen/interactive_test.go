@@ -5,6 +5,7 @@ import (
 	"errors"
 	"io"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -457,4 +458,123 @@ func TestAFailedReadIsNotTheInputEnding(t *testing.T) {
 			t.Errorf("a failed read was not told what was lost, %q:\n%s", want, asking.String())
 		}
 	}
+}
+
+// Each line of the weapon-benefit menu records the benefit it says (#247).
+//
+// The engine's gate checks only that an answer is among those offered, and a
+// plain Dagger for a Dagger already held is offered too, so an expertise line
+// that carried TakeWeapon would pass it. Only a walk that answers past the
+// weapon lines shows what the expertise line means: navyRearmed's second
+// Blade Combat menu, answered here, and every other question answered 1.
+//
+// The menu says "+1 expertise in the Dagger" and the record says "expertise
+// in Dagger": two wordings for two readers, and this holds each to its own.
+//
+// Holds: Each weapon-benefit line records the benefit it says.
+func TestEachWeaponLineRecordsWhatItSays(t *testing.T) {
+	t.Parallel()
+
+	// askedFirst is how many questions navyRearmed puts before its second
+	// Blade Combat menu, and expertiseLine is what only that menu prints: the
+	// first had received nothing to offer expertise in.
+	const (
+		askedFirst    = 29
+		expertiseLine = "12) +1 expertise in the Dagger"
+	)
+
+	for name, tc := range map[string]struct {
+		answer string
+		line   string
+		want   armed
+	}{
+		"the expertise line": {
+			answer: "12", line: expertiseLine,
+			want: armed{weapons: []string{dagger}, daggerSkill: true, chosen: "expertise in Dagger"},
+		},
+		"a weapon line": {
+			answer: "4", line: "4) Cutlass",
+			want: armed{weapons: []string{dagger, "Cutlass"}, daggerSkill: false, chosen: "Cutlass"},
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			in := io.MultiReader(answers("1", askedFirst), strings.NewReader(tc.answer+"\n"), answers("1", 50))
+
+			record, asking := mustRun(t, []string{cmdNew, flagService, navy}, in,
+				withDice(navyRearmed.roller(t)))
+
+			if !strings.Contains(asking, expertiseLine) {
+				t.Fatalf("navyRearmed never reached a second Blade Combat menu: %q was never offered",
+					expertiseLine)
+			}
+
+			got := armedBy(t, record)
+
+			if !slices.Equal(got.weapons, tc.want.weapons) {
+				t.Errorf("answering %q recorded the weapons %v, want %v", tc.line, got.weapons, tc.want.weapons)
+			}
+
+			if got.daggerSkill != tc.want.daggerSkill {
+				t.Errorf("answering %q left Dagger-1 among the skills = %v, want %v",
+					tc.line, got.daggerSkill, tc.want.daggerSkill)
+			}
+
+			if got.chosen != tc.want.chosen {
+				t.Errorf("answering %q recorded the choice %q, want %q", tc.line, got.chosen, tc.want.chosen)
+			}
+		})
+	}
+}
+
+// dagger is the weapon navyRearmed takes at its first Blade Combat benefit.
+const dagger = "Dagger"
+
+// armed is what a record says of the weapon benefits it took: the weapons,
+// whether Dagger-1 is among the skills, and the last weapon-benefit choice
+// in the record's own wording.
+type armed struct {
+	weapons     []string
+	daggerSkill bool
+	chosen      string
+}
+
+func armedBy(t *testing.T, record string) armed {
+	t.Helper()
+
+	var got struct {
+		Skills []struct {
+			Name  string `json:"name"`
+			Level int    `json:"level"`
+		} `json:"skills"`
+		Benefits struct {
+			Weapons []string `json:"weapons"`
+		} `json:"benefits"`
+		Events []struct {
+			Point  string `json:"point"`
+			Chosen string `json:"chosen"`
+		} `json:"events"`
+	}
+
+	err := json.Unmarshal([]byte(record), &got)
+	if err != nil {
+		t.Fatalf("reading the record: %v", err)
+	}
+
+	found := armed{weapons: got.Benefits.Weapons}
+
+	for _, skill := range got.Skills {
+		if skill.Name == dagger && skill.Level == 1 {
+			found.daggerSkill = true
+		}
+	}
+
+	for _, event := range got.Events {
+		if event.Point == "MusterWeapon" {
+			found.chosen = event.Chosen
+		}
+	}
+
+	return found
 }

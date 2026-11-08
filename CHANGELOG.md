@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Each line of the interactive weapon-benefit menu is held to the benefit it
+  names (#247). A new walk, `navyRearmed`, musters out with Blade Combat
+  twice, and a test answers the second menu with its expertise line and with
+  a plain weapon, checking the record's weapons, skills and choice for each.
 - A `--survivors` search that runs out is now held through the command
   (#250): a test drives `batch` to exhaustion and fails if the bound moves by
   one attempt or if a stopped-run tally is printed beside the search's error.
