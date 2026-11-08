@@ -209,6 +209,12 @@ func TestMalformedSkills(t *testing.T) {
 			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "+x Social Standing" },
 			"begins with a sign",
 		},
+		// An en dash looks like a minus on screen and is neither minus in
+		// signs, so the cell is refused by name rather than lifted as a skill.
+		"an alteration typed with an en dash": {
+			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "–1 Social Standing" },
+			"an en dash is not a minus",
+		},
 		"an education gate on a table that does not exist": {
 			func(w *wireSkills) { w.EducationGate.Table = "Basic Training" },
 			"education gate",

@@ -7,6 +7,9 @@ release turns out to be.
 
 - A target typed with an en dash (`8–`, `–3`) is refused with an error that
   says an en dash is not a minus, rather than a bare parse error (#296).
+- An Acquired Skills cell typed with an en dash (`–1 Social Standing`) is
+  refused the same way, where it used to lift silently as a skill of that
+  name (#288).
 
 ## 1.0.0-beta.6
 

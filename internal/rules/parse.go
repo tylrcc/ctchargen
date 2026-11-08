@@ -124,6 +124,11 @@ func parseDM(amount int, condition string) (DM, error) {
 // the U+2212 the page is set in.
 var signs = []string{"+", "-", "−"}
 
+// enDash is not a minus. It looks like one on screen, so a cell opening
+// with one is a slip, and it is refused by name rather than read as either
+// minus in signs.
+const enDash = "–"
+
 // startsWithSign reports whether a cell opens with the sign of an
 // alteration. P. 3 puts the sign of a modifier before its number, so a cell
 // beginning with one is an alteration or it is a defect — never a skill.
@@ -142,8 +147,10 @@ func startsWithSign(cell string) bool {
 // SkillName does not close at compile time — so the guard that matters here
 // is the one on the other two: a cell that opens with a sign and did not
 // parse as an alteration is refused rather than accumulating as a skill of
-// that name. Without it "−1 Social Standing", typed with the page's own
-// minus, lifts as a skill indistinguishable on screen from the real cell.
+// that name. Without it "+x Social Standing" lifts as a skill whose name is
+// the whole cell. A cell opening with an en dash is refused too, ahead of
+// that guard and with an error naming the en dash, since "–1 Social
+// Standing" is indistinguishable on screen from the real cell.
 func parseTableResult(cell string, normalize map[string]string) (traveller.TableResult, error) {
 	characteristic, size, isAlteration, err := parseAlteration(cell)
 	if err != nil {
@@ -152,6 +159,10 @@ func parseTableResult(cell string, normalize map[string]string) (traveller.Table
 
 	if isAlteration {
 		return traveller.AlterationResult{Characteristic: characteristic, Delta: size}, nil
+	}
+
+	if strings.HasPrefix(cell, enDash) {
+		return nil, fmt.Errorf("%w: %q: an en dash is not a minus", errMalformed, cell)
 	}
 
 	if startsWithSign(cell) {
