@@ -111,8 +111,10 @@ func write(out, asking io.Writer, base chargen.Inputs, policy chargen.Policy,
 
 	// A run that stopped partway has left records on disk, and the tally is
 	// the only place it says how many and how many of them are corpses (#118).
-	// It is skipped where it would say nothing - no record written - and for
-	// a failed search, whose error already carries the counts.
+	// Written means on disk, for every destination: a buffered batch that
+	// stopped wrote nothing, so it counts zero and prints no tally (#246).
+	// The tally is skipped where it would say nothing - no record written -
+	// and for a failed search, whose error already carries the counts.
 	if err != nil {
 		if done.written > 0 && !errors.Is(err, errSearch) {
 			reported := done.reportStopped(asking)
@@ -306,26 +308,46 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 // half-read. What differs is only where it writes and when the file is
 // opened, which is the whole of the distinction #64 drew.
 //
+// A file that is already there is refused before anyone is generated, as a
+// directory batch refuses its members (#99): the open at the end would refuse
+// it too, but only after the whole batch had been made for nothing.
+//
 // Implements: A batch to a file is written all at once, never a record at a
 // time [CLI sketch] in The record.
+//
+// Implements: A buffered batch that stops claims no record written [CLI
+// sketch] in The record.
 func buffered(base chargen.Inputs, policy chargen.Policy,
 	count int, path string, force, survivors bool, dice source,
 ) (tally, error) {
+	if !force {
+		err := noMemberExists([]string{path})
+		if err != nil {
+			return tally{}, err
+		}
+	}
+
 	var lines strings.Builder
 
 	done, err := eachMember(base, policy, count, survivors, survivorAttempts, dice, writingTo(&lines))
 	if err != nil {
-		return done, err
+		// The members were written to memory, never to the file, so the
+		// tally of a stopped run has nothing on disk to count (#246).
+		return tally{}, err
 	}
 
 	// nil, because path is never empty here: intoStream sends an empty one to
 	// the stream above, so openDestination always opens a file.
 	where, err := openDestination(nil, path, force)
-	if err != nil {
-		return done, err
+	if err == nil {
+		err = where.write(lines.String())
 	}
 
-	return done, where.write(lines.String())
+	if err != nil {
+		return tally{}, err
+	}
+
+	return done, nil
 }
 
 // intoDirectory writes one file per character, named by its index.

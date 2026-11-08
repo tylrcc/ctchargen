@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A `batch` to a `.jsonl` file that stops no longer claims records it never
+  wrote (#246). A file already there is refused before anyone is generated,
+  as a directory batch's members are, and a run that fails after generating
+  prints no "written before the run stopped" tally: its members were only
+  ever in memory.
 - `WALKTHROUGH.md`'s code excerpts quote the tree as it stands. Eight had
   drifted, most of them the seed-era doc comments ADR 0001 rewrote, and the
   prose around them still described a seeded stream; both are current.
