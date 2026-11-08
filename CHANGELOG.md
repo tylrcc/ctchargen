@@ -5,6 +5,9 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A target typed with an en dash (`8–`, `–3`) is refused with an error that
+  says an en dash is not a minus, rather than a bare parse error (#296).
+
 ## 1.0.0-beta.6
 
 A record says who answered it once, at the top. The record's shape changed to

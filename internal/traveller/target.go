@@ -3,6 +3,7 @@ package traveller
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -64,6 +65,11 @@ func NewTarget(number int, modality Modality) Target {
 // a data file is typed with, and the U+2212 the page is set in.
 const minusSigns = "-−"
 
+// enDash is not a minus. It looks like one on screen, so one typed into a
+// target is a slip, and it is refused by name rather than read as either of
+// minusSigns.
+const enDash = '–'
+
 // ParseTarget reads a target in the book's own notation: "8+", "3-", "12".
 //
 // It is deliberately strict about the sign. Pp. 2-3 make the sign the whole
@@ -76,6 +82,10 @@ func ParseTarget(s string) (Target, error) {
 	runes := []rune(strings.TrimSpace(s))
 	if len(runes) == 0 {
 		return Target{}, fmt.Errorf("%w: it is empty", errTarget)
+	}
+
+	if slices.Contains(runes, enDash) {
+		return Target{}, fmt.Errorf("%w %q: an en dash is not a minus", errTarget, s)
 	}
 
 	modality := Exactly

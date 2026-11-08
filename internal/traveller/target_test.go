@@ -1,6 +1,7 @@
 package traveller_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -48,6 +49,24 @@ func TestParseTargetRefusesNonsense(t *testing.T) {
 		got, err := traveller.ParseTarget(in)
 		if err == nil {
 			t.Errorf("ParseTarget(%q) = %v, want an error", in, got)
+		}
+	}
+}
+
+// An en dash is refused in either position, and the error says why.
+func TestParseTargetRefusesAnEnDashByName(t *testing.T) {
+	t.Parallel()
+
+	for _, in := range []string{"8–", "–3"} {
+		got, err := traveller.ParseTarget(in)
+		if err == nil {
+			t.Errorf("ParseTarget(%q) = %v, want an error", in, got)
+
+			continue
+		}
+
+		if !strings.Contains(err.Error(), "an en dash is not a minus") {
+			t.Errorf("ParseTarget(%q): %v; want the error to name the en dash", in, err)
 		}
 	}
 }
