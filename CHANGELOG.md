@@ -5,6 +5,13 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The gate re-runs `WALKTHROUGH.md`'s transcripts. `internal/walkthrough`
+  runs every transcribed command and fails where its output differs, or
+  where a random run labelled as a sample no longer runs; `-regenerate`
+  rewrites them. The single-character sections now transcribe goldens
+  through `render` rather than seeded runs that ADR 0001 removed, and every
+  transcript is current.
+
 - The command's walks are consumed exactly too. A walk that leaves dice or
   draws unread fails at the end of its test, naming the walk and the
   leftover; a test whose session stops partway by design takes the walk

@@ -18,7 +18,7 @@ The entry point is `cmd/ctchargen/main.go`. Four subcommands:
 | Command   | What it does                                                      |
 | --------- | ----------------------------------------------------------------- |
 | `new`     | generate one character, asking at every choice unless `--auto`    |
-| `batch`   | generate many from one base seed, `--auto` only                   |
+| `batch`   | generate many characters, `--auto` only                           |
 | `render`  | read a record saved earlier and write it as a sheet or transcript |
 | `version` | write the build                                                   |
 
@@ -47,12 +47,13 @@ A transcript of `go list -deps ./... | grep philoserf | sed 's|github.com/philos
 ./internal/render
 ./cmd/ctchargen
 ./internal/coverage
+./internal/walkthrough
 ```
 
 That listing is in dependency order — `dice` and `traveller` first because
 neither imports anything else in the module. The edges themselves:
 
-A transcript of each package's in-module imports, from `go list -f '{{.Imports}}'`, run while writing:
+Each package's in-module imports, summarised from `go list -f '{{.Imports}}'` while writing:
 
 ```text
 internal/traveller ->
@@ -245,11 +246,11 @@ A transcript of `grep -n 'Cases interface' internal/traveller/*.go`, run while w
 
 ```text
 internal/traveller/event.go:19:type EventCases interface {
-internal/traveller/sums.go:28:type EnlistmentCases interface {
-internal/traveller/sums.go:110:type TableResultCases interface {
-internal/traveller/sums.go:150:type BenefitRowCases interface {
-internal/traveller/sums.go:222:type DepartureCases interface {
-internal/traveller/sums.go:273:type WeaponBenefitCases interface {
+internal/traveller/sums.go:26:type EnlistmentCases interface {
+internal/traveller/sums.go:108:type TableResultCases interface {
+internal/traveller/sums.go:148:type BenefitRowCases interface {
+internal/traveller/sums.go:220:type DepartureCases interface {
+internal/traveller/sums.go:271:type WeaponBenefitCases interface {
 ```
 
 ## Layer two: the tables
@@ -1129,7 +1130,7 @@ A transcript of `ctchargen --help`, run while writing:
 usage: ctchargen <command> [flags]
 
   new      generate one character, asking at every choice unless --auto
-  batch    generate many characters from one base seed, under --auto
+  batch    generate many characters, under --auto
   render   write a record saved earlier as a sheet or as a transcript
   version  write the build
 
@@ -1137,7 +1138,7 @@ Run `ctchargen <command> --help` for that command's flags.
 ```
 
 The two generating subcommands share the flags that say what a character is
-generated from — seed, name, service and the three strategies. Their names,
+generated from — name, service and the three strategies. Their names,
 types and defaults are declared once, in `declareCharacterFlags`, and each
 command supplies only its own descriptions; from there they travel as one value,
 so five adjacent strings cannot be transposed on the way in.
@@ -1175,7 +1176,6 @@ A transcript of `ctchargen new --help`, run while writing:
 ```text
 usage: ctchargen new [flags]
 
-  --answers string   answers to give before asking, as 1,2,1
   --auto             decide by the policy at every choice, rather than asking
   --career strategy  the --auto career strategy: serve, retire, oneterm (default serve)
   --force            replace the output file if it already exists
@@ -1183,7 +1183,6 @@ usage: ctchargen new [flags]
   --muster strategy  the --auto mustering out strategy: cash, goods, spartan (default cash)
   --name string      the character's name
   -o string          write to this file rather than to standard output
-  --seed uint        the seed to generate from; one is drawn if absent
   --service string   attempt enlistment in this service: navy, marines, army, scouts, merchants, other
   --sheet            write the character sheet rather than JSON
   --skills strategy  the --auto skills strategy: advanced, service, personal (default advanced)
@@ -1194,7 +1193,7 @@ transcript print the name as markdown, where a line break would start sections
 the character does not have. A built binary shows the exit status too, which
 `go run` would replace with its own:
 
-A transcript of `ctchargen new --auto --seed 42` given a two-line `--name`, and its exit status, run while writing:
+A transcript of `ctchargen new --auto --name "$(printf 'Alexander\nJamison')"; echo "exit $?"`, run while writing:
 
 ```text
 ctchargen: usage: --name "Alexander\nJamison" is more than one line
@@ -1203,138 +1202,152 @@ exit 1
 
 ### A character, end to end
 
-One seed, the auto policy, rendered as the sheet a referee would keep:
+A record is the only way back to a character (ADR 0001), so this section reads
+one that is checked in: the `army-serve` golden, rendered as the sheet a
+referee would keep. A fresh `ctchargen new --auto --sheet` prints a different
+character every time.
 
-A transcript of `ctchargen new --auto --seed 42 --name 'Alexander Jamison' --sheet`, run while writing:
+A transcript of `ctchargen render internal/chargen/testdata/army-serve.json`, run while writing:
 
 ```text
-# Alexander Jamison
+# (unnamed)
 
-UPP 798782, age 22, Army Captain (service chosen by the policy), 1 term, forced out
+UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 ## Skills
 
-- ATV-1
-- Electronic-1
+- ATV-2
+- Administration-1
+- Electronic-2
+- Gambling-1
+- Halberd-1
+- Mechanical-1
 - Rifle-1
-- Submachine Gun-1
-- Tactics-1
+- Submachine Gun-2
+- Tactics-3
 
 ## Possessions
 
-- CR 22000
+- CR 30000
+- Middle Passage
+- High Passage
+- High Passage
+- High Passage
+- CR 8000 a year in retirement pay
 
 ## Service record
 
 - Army, enlisted
-- forced out after term 1
+- retired after term 7
 
 ---
 
 Keep the JSON record: it is the only way back to this character.
 ```
 
-`(service chosen by the policy)` appears because the
-policy named the Army and the enlistment throw succeeded — had the throw failed
-and the draft put him somewhere else, the headline would say so instead.
+The fixture forced the Army, so the headline names it plainly. Had the policy
+chosen the service, the headline would say `(service chosen by the policy)`,
+and had a failed throw sent him to the draft, it would say where he was sent
+and who refused him.
 
-The same seed as a transcript is the audit trail. Its opening:
+The same record as a transcript is the audit trail. Its opening:
 
-A transcript of `ctchargen new --auto --seed 42 --history | sed -n '1,26p'`, run while writing:
+A transcript of `ctchargen render --history internal/chargen/testdata/army-serve.json | sed -n '1,22p'`, run while writing:
 
 ```text
 # Generation record: (unnamed)
 
 ## characteristics (p. 4)
 
-  2. Strength: rolled 4+3
-  3. Strength 7 (from 2)
-  4. Dexterity: rolled 4+4
-  5. Dexterity 8 (from 4)
-  6. Endurance: rolled 6+2
+  2. Strength: rolled 5+5
+  3. Strength 10 (from 2)
+  4. Dexterity: rolled 3+3
+  5. Dexterity 6 (from 4)
+  6. Endurance: rolled 2+6
   7. Endurance 8 (from 6)
-  8. Intelligence: rolled 2+5
-  9. Intelligence 7 (from 8)
- 10. Education: rolled 5+3
- 11. Education 8 (from 10)
- 12. Social Standing: rolled 1+1
- 13. Social Standing 2 (from 12)
- 14. UPP 788782 at age 18
+  8. Intelligence: rolled 6+4
+  9. Intelligence 10 (from 8)
+ 10. Education: rolled 5+5
+ 11. Education 10 (from 10)
+ 12. Social Standing: rolled 6+6
+ 13. Social Standing 12 (from 12)
+ 14. UPP A68AAC at age 18
 
 ## enlistment (pp. 5, 10)
 
- 16. Service: policy chose Army from Navy, Marines, Army, Scouts, Merchants, Other
- 17. enlistment, Army: rolled 4+6 +3 = 13 against 5+, made
- 18. enlisted in the Army (from 17)
+ 16. enlistment, Army: rolled 5+1 +3 = 9 against 5+, made
+ 17. enlisted in the Army (from 16)
 ```
 
 Three things to read out of that.
 
 The `(from N)` suffixes are the causal edges: an `OutcomeEvent` carries the
 sequence number of the throw or choice that produced it, so "enlisted in the
-Army" points at the throw two lines above it. That is what makes the log
+Army" points at the throw one line above it. That is what makes the log
 auditable rather than merely verbose.
 
 The numbers skip — 14, then 16 — because step headings are events too. They
 carry a sequence number in the JSON record and render as an unnumbered `##`
 heading here.
 
-And the UPP is `788782` at 18 but `798782` on the sheet above: something raised
-Dexterity by one along the way. The transcript is where you find out what.
+And the UPP is `A68AAC` at 18 but `965BCD` on the sheet above: seven terms of
+service, four of them followed by aging rounds, moved four of the six
+characteristics. The transcript is where you find out which throw moved each.
 
-Here is the term itself:
+Here is the first term:
 
-A transcript of `ctchargen new --auto --seed 42 --history | sed -n '/## term 1/,/## mustering/p'`, run while writing:
+A transcript of `ctchargen render --history internal/chargen/testdata/army-serve.json | sed -n '/## term 1 /,/## term 2 /p'`, run while writing:
 
 ```text
 ## term 1 (pp. 5-7)
 
- 22. survival: rolled 2+3 +2 = 7 against 5+, made
- 23. survived term 1 (from 22)
- 24. AttemptCommission: policy chose yes from yes, no
- 25. commission: rolled 6+4 +1 = 11 against 5+, made
- 26. commissioned: Lieutenant (from 25)
- 27. Submachine Gun-1 (from 25)
- 28. AttemptPromotion: policy chose yes from yes, no
- 29. promotion: rolled 6+3 +1 = 10 against 6+, made
- 30. promoted: Captain (from 29)
+ 21. survival: rolled 2+5 +2 = 9 against 5+, made
+ 22. survived term 1 (from 21)
+ 23. AttemptCommission: policy chose yes from yes, no
+ 24. commission: rolled 2+3 +1 = 6 against 5+, made
+ 25. commissioned: Lieutenant (from 24)
+ 26. Submachine Gun-1 (from 24)
+ 27. AttemptPromotion: policy chose yes from yes, no
+ 28. promotion: rolled 2+1 +1 = 4 against 6+, missed
+ 29. not promoted this term (from 28)
 
 ## skills and training (pp. 6, 11)
 
- 32. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 33. Advanced Education Table (education 8+): rolled 2
- 34. Tactics-1 (from 33) [E002]
- 35. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 36. Advanced Education Table: rolled 3
- 37. Electronic-1 (from 36) [E002]
+ 31. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 32. Advanced Education Table (education 8+): rolled 3
+ 33. Tactics-1 (from 32) [E002]
+ 34. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 35. Advanced Education Table: rolled 5
+ 36. Weapon: policy chose Halberd from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+ 37. Blade Combat: Halberd-1 (from 35) [E002]
  38. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 39. Service Skills Table: rolled 1
- 40. ATV-1 (from 39) [E002]
- 41. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 42. Personal Development Table: rolled 2
- 43. Dexterity +1, 8 to 9 (from 42) [E002]
- 44. reenlistment: rolled 3+3 = 6 against 7+, missed
- 45. left the service after term 1: reenlistment denied (from 44)
+ 39. Service Skills Table: rolled 6
+ 40. Weapon: policy chose Submachine Gun from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+ 41. Gun Combat: Submachine Gun-2 (from 39) [E002]
+ 42. reenlistment: rolled 6+3 = 9 against 7+, made
+ 43. ReenlistIntent: policy chose continue from continue, discharge
+ 44. reenlisted for term 2 (from 42)
 
-## mustering out, 2 rolls (pp. 7, 9, 21-23)
+## term 2 (pp. 5-7)
 ```
 
-There is the Dexterity: event 43, off the Personal Development Table.
-
-And there is `thinnest` working. Four eligibilities were spent — two for the
-initial term, one for the commission, one for the promotion — and the policy
-designated a _different_ table each time: the Education 8+ table first (its
-ranking), then Advanced Education, then Service Skills, then Personal
-Development. Under pure ranking all four would have been the 8+ table.
+And there is `thinnest` working. Three eligibilities were spent — two for the
+initial term and one for the commission; the promotion throw missed — and the
+policy designated a _different_ table each time: the Education 8+ table first
+(its ranking), then Advanced Education, then Service Skills. Under pure ranking
+all three would have been the 8+ table.
 
 `[E002]` is an erratum stamp. Every skill taken this term names the reading that
 put the training step where it is — the exposition's per-term order rather than
 the worked example's. Fifteen such readings are recorded in `internal/rules/data/ERRATA.md`, and
 a record names every one that governed it.
 
-The term ends on a failed reenlistment throw, which is `traveller.ForcedOut` —
-one of the five cases of the `Departure` sum. The other four are `Discharged`,
-`Retired`, and two deaths.
+The two `Weapon` lines are the one choice the policy draws for: the book names
+no basis for picking a blade or a gun, so the policy takes `Among` the offer,
+and the record logs the draw as the choice it produced. The term ends on a
+reenlistment throw that was made. Six terms later this character retires, which
+is `traveller.Retired` — one of the five cases of the `Departure` sum. The other
+four are `Discharged`, `ForcedOut`, and two deaths.
 
 ### Death is an outcome, not an error
 
@@ -1343,56 +1356,56 @@ Under the 1977 text a failed survival throw kills the character. There is no
 likeliest thing for a programmer to get wrong from memory. The tool prints the
 corpse:
 
-A transcript of `ctchargen new --auto --seed 3 --service marines --sheet | head -5`, run while writing:
+A transcript of `ctchargen render internal/chargen/testdata/drafted-and-died.json | head -5`, run while writing:
 
 ```text
 # (unnamed)
 
-UPP 324994, age 46, Other (drafted after the Marines refused him), 7 terms, killed by the survival throw
+UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed by the survival throw
 
-## Skills
+## Service record
 ```
 
-That one line carries three of the ideas above at once. `--service marines`
-forced the enlistment _attempt_ only — the throw was still made, it failed, and
-the draft put him in the Other service, "possibly the very service which had just
-previously rejected his enlistment" (p. 5). The headline says
-`drafted after the Marines refused him` rather than silently showing a service
-nobody asked for. And he died in term 7, which still counts: the fatal term and
-its four years are included, so he is 46 and not 42 (E004).
+That one line carries three of the ideas above at once. The fixture forced the
+Navy, which forced the enlistment _attempt_ only — the throw was still made, it
+failed, and the draft put him in the Other service, "possibly the very service
+which had just previously rejected his enlistment" (p. 5). The headline says
+`drafted after the Navy refused him` rather than silently showing a service
+nobody asked for. And he died in term 1, which still counts: the fatal term and
+its four years are included, so he is 22 and not 18 (E004).
 
 ### Batches
 
-`batch` generates many characters from one base seed — member _i_ uses seed
-`base + i`, so `batch --count 1 --seed N` produces exactly what `new --seed N`
-produces. It always says what it did, on the `asking` channel, because a run that
-wrote seventy-four corpses and printed nothing would be a trap:
+`batch` generates many characters, each with dice of its own. It always says
+what it did, on the `asking` channel, because a run that wrote seventy-four
+corpses and printed nothing would be a trap. The dice are random, so these are
+samples: another run prints other counts.
 
-A transcript of `ctchargen batch --auto --count 8 --seed 100 2>&1 >/dev/null`, run while writing:
+A sample of `ctchargen batch --auto --count 8 2>&1 >/dev/null`, run while writing:
 
 ```text
-8 written, 3 died
+8 written, 1 died
 ```
 
-`--survivors` does not reroll anyone. It passes over a dead character and goes on
-to the next seed, so every character written is still exactly the character his
-own seed makes — what changes is which seeds appear:
+`--survivors` does not reroll anyone. It passes over a dead character and
+generates another in his place, so every character written is still exactly
+the character his own dice made — what changes is which characters appear:
 
-A transcript of `ctchargen batch --auto --count 8 --seed 100 --survivors 2>&1 >/dev/null`, run while writing:
+A sample of `ctchargen batch --auto --count 8 --survivors 2>&1 >/dev/null`, run while writing:
 
 ```text
-8 written, 3 passed over for dying
+8 written, 1 passed over for dying
 ```
 
 The records themselves go to standard output as JSONL, one per line, streamed as
 they are generated so a pipe sees the first one immediately:
 
-A transcript of `ctchargen batch --auto --count 3 --seed 100 2>/dev/null | cut -c1-96`, run while writing:
+A sample of `ctchargen batch --auto --count 3 2>/dev/null | cut -c1-96`, run while writing:
 
 ```text
-{"record":1,"name":"","upp":"759A66","characteristics":{"Dexterity":5,"Education":6,"Endurance":
-{"record":1,"name":"","upp":"86A7CC","characteristics":{"Dexterity":6,"Education":12,"Endurance"
-{"record":1,"name":"","upp":"068289","characteristics":{"Dexterity":6,"Education":8,"Endurance":
+{"record":1,"name":"","upp":"639999","characteristics":{"Dexterity":3,"Education":9,"Endurance":
+{"record":1,"name":"","upp":"B66985","characteristics":{"Dexterity":6,"Education":8,"Endurance":
+{"record":1,"name":"","upp":"976594","characteristics":{"Dexterity":7,"Education":9,"Endurance":
 ```
 
 A batch that fails partway has already written records, so `write` reports the
@@ -1535,6 +1548,7 @@ ok  	github.com/philoserf/ctchargen/internal/dice
 ok  	github.com/philoserf/ctchargen/internal/render
 ok  	github.com/philoserf/ctchargen/internal/rules
 ok  	github.com/philoserf/ctchargen/internal/traveller
+ok  	github.com/philoserf/ctchargen/internal/walkthrough
 ```
 
 ## Where the linear order breaks down

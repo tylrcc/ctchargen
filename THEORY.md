@@ -318,6 +318,11 @@ either are that statement or are generated from it:
   why a record still names its ruleset and build once the seed they were
   provenance for was gone.
 
+- **`WALKTHROUGH.md`'s transcripts are re-run** by `internal/walkthrough`:
+  each "A transcript of" names a command whose output must match its block
+  exactly, and each "A sample of" is a random run held only to still run.
+  The code excerpts beside them are held by nothing but review.
+
 One second copy survives that sweep. Each choice point says when it is asked
 twice, once on the `Decider` method and again on the `Policy` method, and the
 engine's own conditions are a third statement. The pairs agree today, and

@@ -50,3 +50,9 @@ transcript with the command that produced it. A change that edits a quoted
 symbol, or changes what a transcribed command prints, leaves the excerpt or
 transcript wrong; it is brought into line in the same change, from the source
 or by re-running the command, never by hand from memory.
+
+The transcripts are held by the gate: `internal/walkthrough` re-runs each one
+and fails on a difference, and `go test ./internal/walkthrough -regenerate`
+rewrites them. A run whose output depends on the dice is labelled "A sample
+of", is held only to still run, and keeps the output its prose describes. The
+excerpts are not held by the gate, so they are still the reviewer's to check.

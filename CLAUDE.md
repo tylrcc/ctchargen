@@ -214,6 +214,8 @@ promise (#199).
 - `render`: the record's projections, and reading one back.
 - `internal/coverage`: test code only. Generates `docs/COVERAGE.md` from
   `Implements:` and `Holds:` markers.
+- `internal/walkthrough`: test code only. Re-runs every command
+  `WALKTHROUGH.md` transcribes and compares what it prints.
 - `cmd/ctchargen`: the subcommands. The record goes to stdout and the
   conversation to stderr, so `ctchargen new | jq` pipes a record.
 
@@ -227,6 +229,7 @@ go test ./internal/chargen                   # one package
 go test ./internal/chargen -run TestGoldens  # one test
 go test ./internal/chargen -regenerate       # rewrite the goldens
 go test ./internal/coverage -regenerate      # rewrite docs/COVERAGE.md from the markers
+go test ./internal/walkthrough -regenerate   # rewrite WALKTHROUGH.md's transcripts from their commands
 go run ./cmd/ctchargen new --auto --sheet
 ```
 
