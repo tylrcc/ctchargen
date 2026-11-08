@@ -153,8 +153,6 @@ readings are the fallback.
 | `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                                                               |
 | `docs/COVERAGE.md`              | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
 | `docs/character.schema.json`    | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
-| `THEORY.md`                     | Nothing binding. What the code believes, where those beliefs are enforced, and where they rest on nothing but care. A reader's account, not a contract.                                                                                     |
-| `WALKTHROUGH.md`                | Nothing binding. A linear read of the code in execution order, generated. Where it disagrees with the tree, it is the document that is wrong.                                                                                               |
 | `CODING_STANDARDS.md`           | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                                                        |
 | `CLAUDE.md`                     | This file.                                                                                                                                                                                                                                  |
 
@@ -190,8 +188,6 @@ promise (#199).
 - `render`: the record's projections, and reading one back.
 - `internal/coverage`: test code only. Generates `docs/COVERAGE.md` from
   `Implements:` and `Holds:` markers.
-- `internal/walkthrough`: test code only. Re-runs every command
-  `WALKTHROUGH.md` transcribes and compares what it prints.
 - `internal/mutate`: a tool, not part of the CLI. Runs a command against a
   scratch copy of the tree with one exact edit made, and says whether it
   failed.
@@ -208,7 +204,6 @@ go test ./internal/chargen                   # one package
 go test ./internal/chargen -run TestGoldens  # one test
 go test ./internal/chargen -regenerate       # rewrite the goldens
 go test ./internal/coverage -regenerate      # rewrite docs/COVERAGE.md from the markers
-go test ./internal/walkthrough -regenerate   # rewrite WALKTHROUGH.md's transcripts from their commands
 go run ./internal/mutate -file F -old TEXT -new TEXT go test ./pkg -run T  # show a mutation killed
 go run ./cmd/ctchargen new --auto --sheet
 ```
@@ -267,10 +262,10 @@ go run ./cmd/ctchargen new --auto --sheet
 
 - **The review rules are `CODING_STANDARDS.md`**: sweeping a removal by its
   vocabulary, verbatim quotation, predicates written from the prose, marker
-  placement, mutations shown, walkthrough excerpts kept true. Read it before
+  placement, mutations shown. Read it before
   calling a change done; the reviewer holds the diff to it.
 - **What a change does to the narrative documents.** The global release-docs
-  rule brings `README.md`, `CLAUDE.md`, `THEORY.md` and `WALKTHROUGH.md`
+  rule brings `README.md` and `CLAUDE.md`
   current at release; here a change also sweeps them as `CODING_STANDARDS.md`'s
   "A removal is swept by its vocabulary" says — every sentence that still
   tells the old story, not only the lines that name it — and adds its bullet

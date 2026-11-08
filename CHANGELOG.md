@@ -5,6 +5,9 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `THEORY.md` and `WALKTHROUGH.md` are removed, and with them
+  `internal/walkthrough`, the gate that re-ran the walkthrough's transcripts.
+
 ## 1.0.0-beta.5
 
 The dice are no longer seeded. A character cannot be brought back by running

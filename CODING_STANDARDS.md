@@ -15,11 +15,6 @@ the thing — what it did, what it promised, what held it ("the gate", "the
 document", "row", "decision table") — not only its identifiers and paths. A
 name-only sweep left stale prose in every ticket of #203 and #204.
 
-A change that closes an issue also greps `THEORY.md` and `WALKTHROUGH.md` for
-that issue's number: they cite an open drift by it ("nothing holds them
-(#252)"), so every hit is a sentence that may now describe something fixed.
-Four of #246–#254 shipped or nearly shipped such a sentence.
-
 ## A quotation from the page is verbatim
 
 Comments and documents quote Book 1 to 3 to show where a rule comes from. A
@@ -48,20 +43,6 @@ package doc.
 invariant, or a check rewritten, comes with the mutation that killed it and
 what the failure said, in the commit or the PR. `go run ./internal/mutate`
 prints both, so the evidence can be pasted as it ran.
-
-## A walkthrough excerpt matches the tree
-
-`WALKTHROUGH.md` labels each code excerpt `` `path` — `symbol` `` and each
-transcript with the command that produced it. A change that edits a quoted
-symbol, or changes what a transcribed command prints, leaves the excerpt or
-transcript wrong; it is brought into line in the same change, from the source
-or by re-running the command, never by hand from memory.
-
-The transcripts are held by the gate: `internal/walkthrough` re-runs each one
-and fails on a difference, and `go test ./internal/walkthrough -regenerate`
-rewrites them. A run whose output depends on the dice is labelled "A sample
-of", is held only to still run, and keeps the output its prose describes. The
-excerpts are not held by the gate, so they are still the reviewer's to check.
 
 ## The record's shape
 
