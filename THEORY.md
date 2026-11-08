@@ -280,8 +280,9 @@ is _in the offer_; it cannot check that a decider mapped its own input to the
 answer it meant. The interactive `player` turns a menu index into a value
 through a list it builds itself, and for the weapon benefit that list pairs
 each line of text with a `TakeWeapon` or `TakeExpertise`. A wrong pairing
-yields a benefit that is still in the offer, so the gate passes it, and no
-walk reaches those entries (#247). What a person reads and what the engine
+yields a benefit that is still in the offer, so the gate passes it.
+`navyRearmed` walks to a second Blade Combat menu and answers both a weapon
+and the expertise line (#247). What a person reads and what the engine
 receives are held together only where a test walks to them.
 
 ### 7. Each fact lives in one place, and each gate is verified by breaking it
@@ -299,8 +300,9 @@ either are that statement or are generated from it:
   when it is asked and what each strategy answers, and `PolicyVersion` says
   what bumps it. There is no policy document to disagree with them, which
   makes a false sentence there the policy misdescribed rather than a stale
-  copy. One is false today: `MusterTable2DM` calls spartan the only strategy
-  that never rolls on Table 2, and goods never does either (#248).
+  copy. `MusterTable2DM` had one, calling spartan the only strategy that never
+  rolls on Table 2 when goods never does either; it says now that only cash is
+  ever asked (#248).
 - **`docs/COVERAGE.md`'s tables are generated** by `internal/coverage` from an
   `Implements:` marker on each implementation and a `Holds:` marker on each
   test or golden; a rule with only one side fails the generator naming it.
@@ -521,14 +523,13 @@ that stops partway still says what it wrote: the tally goes to `asking`, worded
 as "written before the run stopped", ahead of the error — except where nothing
 was written, and for `errSearch`, whose message already carries the counts.
 
-That tally rests on a premise only two of the three destinations keep. A
-stream and a directory write each record as it is made, so a count of records
-made is a count of records on disk. A `.jsonl` file is generated whole in
-memory and written at the end (#64), so when that run fails, or the open
-refuses an existing file, the tally reports records that were never written
-(#246). The `--survivors` search beside it has two behaviours no test would
-notice changing: its attempts bound, and the tally's exemption for a failed
-search (#250).
+That tally counts records on disk, and only two of the three destinations
+make that the same as records made. A stream and a directory write each
+record as it is made. A `.jsonl` file is generated whole in memory and written
+at the end (#64), so `buffered` refuses an existing file before generating
+anyone and reports nothing written when the run fails (#246). The
+`--survivors` search beside it is held through the command at its exact
+attempts bound, with no tally beside the search's own counts (#250).
 
 The exit status is 0 or 1 and nothing else. `main` hands `run`'s error to
 `exitStatus`, the one place that decides it: 0 for a run that did what it was
@@ -704,7 +705,8 @@ could reasonably disagree. Not filed.
 
 **The `--survivors` bound.** `survivorAttempts = 100` is argued from a referee's
 measurement of 74 deaths in 100 under the default strategy; I did not
-re-measure. The search's own edges are less held than its happy path (#250).
+re-measure. Its edges are held now, through the command (#250); its value
+still rests on that one measurement.
 
 **What I checked.** About 140 checkable claims in this document, against the
 tree at `b92a931`: every named test, function, type and path; the package

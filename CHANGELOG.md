@@ -5,213 +5,73 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- The working environment, from the retrospective on #246–#254. A
-  `WALKTHROUGH.md` transcript whose command prints nothing fails, compared or
-  regenerated, where a sed range that stopped matching once emptied one with
-  the gate passing. Its four `grep -n` transcripts drop their line numbers, so
-  a comment edit no longer breaks them. `go test ./internal/coverage
--regenerate` writes a stale map and passes in one run, and the map's tables
-  are unpadded, so adding a rule changes only its row. `CLAUDE.md` defers to
-  `CODING_STANDARDS.md`'s sweep rule, which now greps the narrative documents
-  for the number of an issue a change closes, and the record-shape paragraphs
-  (#62, #96, #113, #129) move from `CLAUDE.md` to `CODING_STANDARDS.md`.
-- A directory where a record is to go is reported as a directory on the
-  first attempt, for `new -o` and for a batch member, with no `--force`
-  advice (#254); it read as an existing file to replace, and `--force` then
-  failed on it. The sheet's headline compares the attempted service exactly,
-  and three comments are brought true: `foldDeparture` says why it discards
-  `Fold`'s error, `OutcomeEvent.Because` (and the schema's `because`) names
-  rolls among its causes, and an interactive test no longer names the
-  removed `liveCodec`.
-- `chargen.Inputs` holds a forced service as one value, `Forced`, rather
-  than a `Service` beside a `Forced` flag (#253). Its one field is the
-  service itself, unexported, and its zero value forces nothing, so a forced
-  service with no name, or a named one not forced, cannot be written;
-  `ForceService` makes one and `Forced.Service()` reads it back. The record
-  is unchanged.
-- When each choice point is asked is stated once, on its `Policy` method
-  (#252). The `Decider` methods say what they ask and answer with, and
-  nothing about when; the `Decider` type comment says "one method per choice
-  point closes the set" once and points at `Policy`. Comment-only.
-- The two decider-guard tests walk the fixtures' scripted dice (#251), so
-  they reach the same weapon choices on every run. The forge test forges at
-  `Weapon` and at `MusterWeapon` in separate walks and requires each to be
-  reached; before, a forged `Weapon` answer ended its run, and nothing made
-  any run reach `MusterWeapon`.
-- The kept transcript numbers its step headings, as the live view does
-  (#249): `## 20. term 1 (pp. 5-7)` rather than `## term 1 (pp. 5-7)`, so no
-  `--history` transcript skips a number. Every golden transcript is
-  regenerated, changing only its headings; the live view prints what it did.
-- `docs/PRD.md` and `docs/PRERELEASE.md` are removed; the history keeps both
-  as of `ec7289f`. The coverage map's promise labels are a fixed list in
-  `internal/coverage` rather than read from the PRD, and the PRD's opaque
-  ids are renamed for what they named: `[FR8]` is `[Character record]`,
-  `[FR9]` is `[Choice points]`, `[FR11]` is `[Generation record]`. With
-  nothing left to withdraw from, an ADR's "Withdraws from" line is no
-  longer read; a retired label such as `[Determinism]` is simply off the
-  list. This replaces the withdrawn-section and PRD-label bullets below.
-- `Policy.MusterTable2DM`'s doc comment says which strategies reach it
-  (#248): only cash rolls on Table 2, so only cash is ever asked under
-  `--auto`. It had called spartan the only strategy that never rolls there,
-  and goods never does either. Nothing the policy answers changes.
-- Each line of the interactive weapon-benefit menu is held to the benefit it
-  names (#247). A new walk, `navyRearmed`, musters out with Blade Combat
-  twice, and a test answers the second menu with its expertise line and with
-  a plain weapon, checking the record's weapons, skills and choice for each.
-- A `--survivors` search that runs out is now held through the command
-  (#250): a test drives `batch` to exhaustion and fails if the bound moves by
-  one attempt or if a stopped-run tally is printed beside the search's error.
-- A `batch` to a `.jsonl` file that stops no longer claims records it never
-  wrote (#246). A file already there is refused before anyone is generated,
-  as a directory batch's members are, and a run that fails after generating
-  prints no "written before the run stopped" tally: its members were only
-  ever in memory.
-- `WALKTHROUGH.md`'s code excerpts quote the tree as it stands. Eight had
-  drifted, most of them the seed-era doc comments ADR 0001 rewrote, and the
-  prose around them still described a seeded stream; both are current.
-- `go run ./internal/mutate` shows whether a test kills a mutation. It copies
-  the tree, makes one exact edit in the copy (refusing text that does not
-  occur exactly once), runs the command given, and prints its output with
-  `KILLED` or `SURVIVED`; the tree it runs from is never touched.
-- The gate re-runs `WALKTHROUGH.md`'s transcripts. `internal/walkthrough`
-  runs every transcribed command and fails where its output differs, or
-  where a random run labelled as a sample no longer runs; `-regenerate`
-  rewrites them. The single-character sections now transcribe goldens
-  through `render` rather than seeded runs that ADR 0001 removed, and every
-  transcript is current.
+## 1.0.0-beta.5
 
-- The command's walks are consumed exactly too. A walk that leaves dice or
-  draws unread fails at the end of its test, naming the walk and the
-  leftover; a test whose session stops partway by design takes the walk
-  through `partly` and says why. `otherWalked` and `draftedWalked` lose the
-  draws they scripted, because a person answers what the policy would draw.
-- Three code comments that restated a reading's own argument now say what
-  their code does and cite the reading's id: `Policy.SubmitToDraft` and
-  `traveller.Enlistment` (E001), and `Aging.LastPrintedTerm` (E014). The
-  argument lives in `ERRATA.md` alone, as #234 left the constants.
-- A coverage cite to a withdrawn PRD section fails, naming the ADR that
-  withdrew it. An ADR states a withdrawal on a line the generator reads, and
-  ADR 0001 now says it withdrew Determinism. ADR 0002 records why a record
-  names its ruleset and build, and the coverage map cites it for that rule,
-  in place of FR8, which lists neither field.
-- Each `Erratum` constant's comment is its id and its reading's title, as
-  `ERRATA.md`'s heading prints it, and a test in `rules` holds the two
-  together (#234). The one-line paraphrases of each reading are gone: they
-  were a second statement of the readings that nothing checked, and E004's
-  had drifted (#233).
-- A coverage cite names an authority that exists (#232). An `Implements:`
-  marker cites a page, a reading, an ADR, or a heading or requirement the
-  PRD defines, read from those documents; anything else fails the
-  generator, naming the rule. The PRD governs nothing and keeps its labels
-  as names. The three rows that cited the withdrawn `[Determinism]` cite
-  ADR 0001 or FR8, and `[Presentation]` and `[(sums)]`, which named
-  nothing, cite FR8 and `Domain model`.
-- A fixture's script is consumed exactly (#231). A fixture that finishes
-  with dice or draws its path never asked for fails, naming the fixture,
-  how many were left and where they start, so a change that throws fewer
-  dice fails the fixture that felt it rather than only its golden. Every
-  fixture already read its script to the end; no golden changed.
-- E004 says what the engine does with a survival death's age (#233): the
-  fatal term's four years go onto the character's own age, months from an
-  earlier medical crisis included, as E006 and E008 already read it. It
-  used to state 18 + 4N for every such death, which is that age only when no
-  crisis was survived. The id and the stamping condition are unchanged, and
-  no record changes. A new golden, `other-crisis-survived-then-killed`, survives a
-  crisis at the end of term 5 and dies in term 6 aged 42 years 3 months.
-- A yes-or-no choice event owns its alternatives (#230). The six yes-or-no
-  points offered one package-level pair and stored it in every event, so a
-  write through one record's `Alternatives`, or a watcher's, made every later
-  character's "yes" refused as not offered. Each question now builds its own
-  pair; no record's content changes.
-- There is no Go library (#199). `traveller`, `dice`, `rules`, `chargen` and
-  `render` move under `internal/`, so the compiler refuses an import of any of
-  them from outside the module, and `v1.0.0` freezes two things rather than
-  three: the record and the command line. The exported API baseline and its
-  `-regenerate-api` flag are deleted with nothing left to hold. Paths in the
-  documents and the coverage map name the new locations; no golden moved.
+The dice are no longer seeded. A character cannot be brought back by running
+the tool again: the JSON record, which logs every die, is the only way back to
+one (ADR 0001). Most of what a referee will notice follows from that; the rest
+are corrections.
 
-- The gate checks links. `task docs` runs lychee, offline, over every tracked
-  Markdown file, and fails on a link to a file or an anchor that is not in the
-  tree; `Brewfile` lists it so `task clean` keeps it. The alpha releases' notes
-  linked to documents since moved or deleted, and now link to them as they
-  stood at those tags.
-- The review rules a diff is held to are `CODING_STANDARDS.md`, and
-  `CLAUDE.md`'s tree map is a line per package, pointing at the package's own
-  doc comment rather than restating it.
-- Each fact the code and the documents both stated now lives in one place,
-  and `internal/docsgate`, which existed to hold the copies together, is
-  deleted (#204, completed by #221). The readings document is lifted by
-  `rules`; the `--auto` policy is its own doc comments; the coverage map is
-  generated from markers beside the code; the stamping predicates and the
-  choice-point checks run beside the fixtures. docsgate's last two checks
-  move in #221: the schema's strategy enums are held to the strategies in
-  `chargen`, where they are defined, and the exported API baseline moves to
-  `internal/coverage` until #199 decides its future, regenerating under its
-  own flag, `go test ./internal/coverage -regenerate-api`, so rewriting the
-  coverage map never accepts an API change in passing.
-- The stamping predicates, the record reader they use, the step-name check
-  and both choice-point checks move from `internal/docsgate` to `chargen`'s
-  tests, beside the fixture roster (#220). They read the goldens as before and
-  hold what they held. A failing predicate quotes the reading's stamped-on
-  prose as `rules` lifts it, rather than a copy typed beside it, and the
-  readings no golden stamps by design (E012 and E015) are pinned in one list
-  that both the stamping check and the reachability check read. docsgate
-  keeps the exported API baseline and the schema's strategy check.
-- `docs/POLICY.md` is gone, and the `--auto` policy describes itself (#219).
-  Each `chargen.Policy` method's doc comment says when the choice is asked and
-  what each of the three strategies answers, carrying what the document's row
-  said, and `PolicyVersion`'s says what bumps it. The answers are unchanged,
-  the version stays 3, and no golden moved. The README keeps its table of
-  flags and strategies. docsgate's two tests that held the document's version
-  and rows to the code are gone; the compiler holds the policy total, and the
-  reachability check holds that every choice point is exercised.
-- `docs/COVERAGE.md.rows`, a scratch dump of the old coverage
-  table, was committed by mistake in #224 and is removed.
-- `docs/COVERAGE.md`'s tables are generated from markers beside the code (#218).
-  Each implementation carries an `Implements:` line with its rule, page and
-  section, and each test or golden that holds a rule carries a `Holds:` line;
-  `internal/coverage` joins them and fails, naming the rule, on one with only
-  one side. Regenerate with `go test ./internal/coverage -regenerate`. The set
-  of rules mapped is unchanged. Cells name code the way the generator does:
-  module-relative, methods with their receivers, and one cell that named a
-  function no longer in the tree now names `traveller.Fatal`, which carries
-  the rule. The two rules both called "The table is designated before the
-  die" are told apart. A `Holds:` is refused anywhere but a `Test` function or
-  a golden. docsgate's two coverage-citation tests are gone.
-- The readings document moves to `rules/data/ERRATA.md`, beside the tables,
-  and is embedded and lifted by `rules` once at startup (#217). Each entry's
-  pages, the page's words, the gap, the reading, its rationale and its
-  stamping condition are carried as text on `rules.Reading`. An erratum with
-  no entry, or an entry with no erratum, fails the lift naming the id. No
-  reading's text changed.
-- `--seed` and `--answers` are gone (#209). The dice are not seeded, a record
-  carries no `inputs.seed`, and no character can be brought back by running
-  the tool again: the record, which logs every die, is the only way back (ADR
-  0001). `batch` generates each member from dice of its own, and a member that
-  fails to write is named by its position rather than a seed.
-- Every golden is generated from its own fixture, a scripted list of dice and
-  draws, rather than from a seed found by search (#205). The roster gains two
-  goldens for the readings only a run of 12s reaches, E003 and E014.
-- `batch -o <dir>` names each member by its position in the batch, `01.json`
-  through `20.json` for a batch of twenty, padded to the batch's width, rather
-  than by its seed (#208). A directory now sorts in generation order and its
-  names say nothing about seeds.
-- A stopped interactive session says what was answered and that nothing was
-  written (#207). It no longer offers a `--seed` and `--answers` line to pick
-  up where it stopped, because the record is the only way back to a character
-  and a session that stopped has none.
-- The sheet and the transcript end with one line, "Keep the JSON record: it is
-  the only way back to this character" (#206). The "Regenerate with …" footer,
-  its different-build warning and the player-answered variant are gone, and so
-  is the command line a rendering used to print.
-- E003 is stamped from the end of term 8, as `ERRATA.md` says, and no longer
-  on the 12 at the end of term 7 that p. 7 prints in its own words. No golden
-  had reached that 12 until #205, so the gate that holds the condition had
-  nothing to read.
-- The coverage ratchet is gone (#198). `task` no longer writes a coverage
-  profile or holds a per-package count of uncovered statements, and
-  `coverage.ratchet`, `task ratchet` and `task ratchet:update` are removed.
-  Nothing a referee sees changes.
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-beta.5
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+Earlier releases' binaries stay on their own release pages.
+
+### What a referee will notice
+
+**`--seed` and `--answers` are gone** (#209). A record carries no
+`inputs.seed`, and `batch` generates each member from dice of its own. The
+sheet and the transcript end with one line, "Keep the JSON record: it is the
+only way back to this character" (#206), in place of the "Regenerate with …"
+footer, and a stopped interactive session says what was answered and that
+nothing was written (#207). A record written by beta.4 still renders; its
+`inputs.seed` is ignored.
+
+**`batch -o <dir>` names members by position**, `01.json` through `20.json`
+for a batch of twenty, padded to the batch's width, so a directory sorts in
+generation order (#208).
+
+**A `batch` to a `.jsonl` file that stops claims nothing it never wrote**
+(#246). A file already there is refused before anyone is generated, and a run
+that fails after generating prints no "written before the run stopped" tally.
+
+**A directory where a record is to go is named as a directory**, for `new -o`
+and for a batch member, without the `--force` advice that `--force` could not
+honour (#254).
+
+**The kept transcript numbers its step headings**, `## 20. term 1 (pp. 5-7)`,
+as the live view always did, so no `--history` transcript skips a number
+(#249).
+
+**A "yes" can no longer be refused as not offered** (#230). The yes-or-no
+questions shared one pair of alternatives, and a write through one record's
+could make every later character's answer fail.
+
+**Two readings are corrected.** E003 is stamped from the end of term 8, as
+`ERRATA.md` says, and no longer on the 12 at the end of term 7. E004 now says
+what the engine does with a survival death's age, months from an earlier
+medical crisis included (#233); no record changes.
+
+### Notes
+
+There is no Go library (#199): every package is under `internal/`, so
+`v1.0.0` will freeze two things, the record and the command line. Until that
+tag a record is not promised to be readable by the next build (#62).
+
+The gate holds more of the tree to itself. It re-runs `WALKTHROUGH.md`'s
+transcripts, checks the documents' links, and generates `docs/COVERAGE.md`
+from markers beside the code; `rules` lifts `ERRATA.md`, and the `--auto`
+policy is its own doc comments. `docs/POLICY.md`, `docs/PRD.md` and
+`docs/PRERELEASE.md` are removed, and the history keeps them. The coverage
+ratchet is gone (#198). `go run ./internal/mutate` shows whether a test kills a
+mutation, in a scratch copy of the tree. There is no CI; `task` is the gate.
+
+**Do not install `v1.0.0-alpha.1` or `v1.0.0-alpha.2`.** Both predate the
+rebuild at `41a213a` and are builds of a different implementation.
 
 ## 1.0.0-beta.4
 
