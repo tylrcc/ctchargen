@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- ADR 0004: documents are for people, data is code, checks are tests. The
+  readings become Go values the tool can explain, an erratum names one
+  decision for good, a reading is withdrawn rather than deleted, and the
+  coverage map becomes a check (#321–#325). The glossary defines a withdrawn
+  reading and says an erratum's decision never changes.
+
 ## 1.0.0-beta.7
 
 Nothing a referee sees at the table changes: the record, its shape, the sheet
