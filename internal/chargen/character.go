@@ -101,15 +101,38 @@ type Benefits struct {
 type Inputs struct {
 	Name string
 
-	// Service is the service enlistment was attempted in, when one was
+	// Forced is the service enlistment was attempted in, when one was
 	// forced. It forces the attempt only: the throw is still made, and a
 	// failed throw still goes to the draft (p. 5).
-	Service traveller.ServiceName
-	Forced  bool
+	Forced ForcedService
 
 	Career Career
 	Skills Skills
 	Muster Muster
+}
+
+// ForcedService is the service a generation was told to attempt, or none.
+//
+// It is one value, not a service beside a flag (#253). There is nothing to
+// set without the other: the service is the only field, and its absence is
+// the zero value, which forces nothing. ForceService is the one way to name
+// one, and it copies the name, so no caller can change it afterwards.
+type ForcedService struct {
+	service *traveller.ServiceName
+}
+
+// ForceService forces enlistment to be attempted in service.
+func ForceService(service traveller.ServiceName) ForcedService {
+	return ForcedService{service: &service}
+}
+
+// Service is the forced service, and whether one was forced.
+func (f ForcedService) Service() (traveller.ServiceName, bool) {
+	if f.service == nil {
+		return 0, false
+	}
+
+	return *f.service, true
 }
 
 // serviceCodec folds an enlistment into the service it entered.

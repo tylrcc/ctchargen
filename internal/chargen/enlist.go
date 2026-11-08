@@ -79,8 +79,8 @@ func (r *run) draft() error {
 
 // chooseService decides which service to attempt, unless a flag forced one.
 func (r *run) chooseService() (traveller.ServiceName, error) {
-	if r.char.Inputs.Forced {
-		return r.char.Inputs.Service, nil
+	if service, forced := r.char.Inputs.Forced.Service(); forced {
+		return service, nil
 	}
 
 	offers := make([]traveller.EnlistmentOffer, 0, len(traveller.ServiceNames))

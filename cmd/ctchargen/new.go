@@ -193,7 +193,7 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 
 	for _, known := range traveller.ServiceNames {
 		if strings.EqualFold(known.String(), *f.service) {
-			in.Service, in.Forced = known, true
+			in.Forced = chargen.ForceService(known)
 
 			return in, policy, nil
 		}

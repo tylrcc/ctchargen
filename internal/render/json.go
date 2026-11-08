@@ -236,8 +236,8 @@ func projectInputs(in chargen.Inputs) inputsRecord {
 		Name:   in.Name,
 		Career: in.Career.String(), Skills: in.Skills.String(), Muster: in.Muster.String(),
 	}
-	if in.Forced {
-		out.Service = in.Service.String()
+	if service, forced := in.Forced.Service(); forced {
+		out.Service = service.String()
 	}
 
 	return out

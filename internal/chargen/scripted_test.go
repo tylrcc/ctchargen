@@ -62,7 +62,7 @@ func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 	t.Parallel()
 
 	inputs := chargen.Inputs{
-		Service: traveller.Other, Forced: true,
+		Forced: chargen.ForceService(traveller.Other),
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 

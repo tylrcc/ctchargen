@@ -20,17 +20,16 @@ import (
 // it: one that asks for more names the die asked for, and one that asks for
 // fewer names what it left unread.
 type fixture struct {
-	name    string
-	service traveller.ServiceName
-	forced  bool
-	policy  chargen.Policy
-	dice    []int // every die, in the order the procedure asks for it
-	among   []int // every draw among alternatives, as an index into the offer
+	name   string
+	forced chargen.ForcedService
+	policy chargen.Policy
+	dice   []int // every die, in the order the procedure asks for it
+	among  []int // every draw among alternatives, as an index into the offer
 }
 
 func (f fixture) inputs() chargen.Inputs {
 	return chargen.Inputs{
-		Service: f.service, Forced: f.forced,
+		Forced: f.forced,
 		Career: f.policy.Career, Skills: f.policy.Skills, Muster: f.policy.Muster,
 	}
 }
@@ -168,7 +167,7 @@ func (s *scripted) finished() {
 var fixtures = []fixture{
 	// Holds: A round at the end of term 4 and every term after.
 	{
-		name: "other-serve", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-serve", forced: chargen.ForceService(traveller.Other), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			6, 1, 5, 1, 2, 2, 5, 2, 3, 4, 4, 3, 2, 3, 5, 3, 4, 2, 6, 6,
 			1, 4, 3, 2, 5, 5, 6, 1, 2, 5, 4, 6, 5, 3, 4, 5, 6, 4, 2, 5,
@@ -183,7 +182,7 @@ var fixtures = []fixture{
 	// Holds: Promotion: the commissioning term and every term after.
 	// Holds: Retirement pay from term 5, not for Scouts or Other.
 	{
-		name: "navy-captain", service: traveller.Navy, forced: true, policy: chargen.DefaultPolicy(),
+		name: "navy-captain", forced: chargen.ForceService(traveller.Navy), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
 			3, 5, 4, 6, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 4, 3,
@@ -195,7 +194,7 @@ var fixtures = []fixture{
 		among: nil,
 	},
 	{
-		name: "marines-serve", service: traveller.Marines, forced: true, policy: chargen.DefaultPolicy(),
+		name: "marines-serve", forced: chargen.ForceService(traveller.Marines), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
 			3, 5, 4, 6, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 3, 1,
@@ -204,7 +203,7 @@ var fixtures = []fixture{
 		among: []int{6},
 	},
 	{
-		name: "army-serve", service: traveller.Army, forced: true, policy: chargen.DefaultPolicy(),
+		name: "army-serve", forced: chargen.ForceService(traveller.Army), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
 			3, 5, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 4, 3, 1, 4,
@@ -222,7 +221,7 @@ var fixtures = []fixture{
 	// Holds: Rank-keyed grants, at the moment the rank is conferred.
 	// Holds: Free Trader: 40 years of payments, 10 off per repeat.
 	{
-		name: "merchants-captain", service: traveller.Merchants, forced: true, policy: chargen.DefaultPolicy(),
+		name: "merchants-captain", forced: chargen.ForceService(traveller.Merchants), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			6, 2, 3, 1, 5, 1, 3, 6, 6, 3, 6, 5, 3, 4, 2, 4, 5, 6, 5, 3,
 			3, 4, 2, 2, 3, 3, 1, 2, 4, 1, 3, 2, 4, 3, 6, 3, 2, 2, 1, 4,
@@ -240,7 +239,7 @@ var fixtures = []fixture{
 	//
 	// Holds: Draftees are not eligible for commission in the first term only.
 	{
-		name: "drafted-then-commissioned", service: traveller.Navy, forced: true, policy: chargen.DefaultPolicy(),
+		name: "drafted-then-commissioned", forced: chargen.ForceService(traveller.Navy), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			6, 1, 5, 1, 2, 2, 5, 2, 3, 4, 4, 3, 2, 3, 5, 3, 4, 2, 6, 6,
 			1, 4, 3, 2, 5, 5, 6, 1, 2, 5, 4, 6, 5, 1, 3, 4, 5, 4, 2, 5,
@@ -252,7 +251,7 @@ var fixtures = []fixture{
 	//
 	// Holds: The +1 at rank 5 or 6 on Table 1.
 	{
-		name: "merchants-table1-modifier", service: traveller.Merchants, forced: true,
+		name: "merchants-table1-modifier", forced: chargen.ForceService(traveller.Merchants),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
 		dice: []int{
 			4, 6, 6, 6, 6, 3, 3, 1, 3, 3, 6, 3, 3, 3, 1, 6, 3, 6, 4, 1,
@@ -268,7 +267,7 @@ var fixtures = []fixture{
 	// Holds: A characteristic at zero is a medical crisis, resolved inline.
 	// Holds: Survival recovers to 1 and adds 1D months.
 	{
-		name: "other-crisis-survived", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-crisis-survived", forced: chargen.ForceService(traveller.Other), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			2, 1, 5, 5, 4, 6, 3, 1, 6, 2, 6, 4, 4, 4, 6, 4, 3, 5, 5, 6,
 			3, 2, 5, 4, 6, 1, 4, 5, 6, 5, 5, 2, 3, 5, 2, 4, 3, 6, 2, 2,
@@ -283,7 +282,7 @@ var fixtures = []fixture{
 	// Holds: A failed crisis throw is death.
 	// Holds: Which departures are deaths is said in one place.
 	{
-		name: "other-crisis-died", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-crisis-died", forced: chargen.ForceService(traveller.Other), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			1, 1, 1, 2, 1, 3, 4, 2, 5, 3, 6, 2, 1, 4, 3, 4, 3, 1, 6, 2,
 			5, 2, 2, 5, 5, 3, 6, 1, 1, 4, 3, 3, 3, 5, 5, 1, 2, 5, 5, 3,
@@ -295,7 +294,7 @@ var fixtures = []fixture{
 	// Holds: Survival throw; failure is death.
 	// Holds: The dead character's age and term.
 	{
-		name: "other-death", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-death", forced: chargen.ForceService(traveller.Other), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			5, 4, 2, 1, 1, 3, 2, 4, 6, 6, 2, 3, 5, 6, 3, 6, 4, 6, 5, 2,
 			5, 1, 3, 4, 5, 1, 6, 4, 5, 2, 1, 5, 1, 3, 5, 2, 5, 5, 5, 5,
@@ -310,7 +309,8 @@ var fixtures = []fixture{
 	//
 	// Holds: The dead character's age and term.
 	{
-		name: "other-crisis-survived-then-killed", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-crisis-survived-then-killed", forced: chargen.ForceService(traveller.Other),
+		policy: chargen.DefaultPolicy(),
 		dice: []int{
 			1, 1, 5, 5, 4, 6, 3, 1, 6, 2, 6, 4, 4, 4, 6, 4, 3, 5, 5, 6,
 			3, 2, 5, 4, 6, 1, 4, 5, 6, 5, 5, 2, 3, 5, 2, 4, 3, 6, 2, 2,
@@ -321,7 +321,7 @@ var fixtures = []fixture{
 	// Holds: Social Standing 11+ may assume the hereditary title.
 	// Holds: Assessed once, at the end, against the final value.
 	{
-		name: "other-title", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-title", forced: chargen.ForceService(traveller.Other), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
 			3,
@@ -334,7 +334,7 @@ var fixtures = []fixture{
 	//
 	// Holds: The dead are assessed but not asked.
 	{
-		name: "died-a-noble", service: traveller.Navy, forced: true, policy: chargen.DefaultPolicy(),
+		name: "died-a-noble", forced: chargen.ForceService(traveller.Navy), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			2, 2, 2, 2, 2, 3, 6, 6, 5, 1, 6, 6, 1, 5, 6, 5, 2, 5, 2, 1,
 			6, 4, 3, 5, 6, 3, 1, 6, 6, 6, 2, 6, 6, 6, 3, 6, 2, 2, 1, 3,
@@ -348,7 +348,7 @@ var fixtures = []fixture{
 	//
 	// Holds: The +1 on Table 1 may be declined.
 	{
-		name: "navy-spartan-declines", service: traveller.Navy, forced: true,
+		name: "navy-spartan-declines", forced: chargen.ForceService(traveller.Navy),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
@@ -365,7 +365,7 @@ var fixtures = []fixture{
 	//
 	// Holds: Service-wide rank and service skills, granted once on entering.
 	{
-		name: "scouts-died", service: traveller.Scouts, forced: true,
+		name: "scouts-died", forced: chargen.ForceService(traveller.Scouts),
 		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
 		dice: []int{
 			6, 1, 6, 6, 2, 6, 5, 1, 4, 2, 3, 6, 3, 3, 1, 6, 1, 1, 3, 2,
@@ -379,7 +379,7 @@ var fixtures = []fixture{
 	//
 	// Holds: Scout ship: duplicates lost.
 	{
-		name: "scouts-second-ship", service: traveller.Scouts, forced: true,
+		name: "scouts-second-ship", forced: chargen.ForceService(traveller.Scouts),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
 		dice: []int{
 			5, 3, 5, 5, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 2, 6, 1, 2, 6, 6,
@@ -392,7 +392,7 @@ var fixtures = []fixture{
 	},
 	// Rejected by the Navy, drafted into Other, and killed there.
 	{
-		name: "drafted-and-died", service: traveller.Navy, forced: true,
+		name: "drafted-and-died", forced: chargen.ForceService(traveller.Navy),
 		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
 		dice: []int{
 			2, 6, 4, 3, 1, 6, 3, 4, 4, 6, 4, 4, 2, 2, 6, 1, 3,
@@ -402,7 +402,7 @@ var fixtures = []fixture{
 	// Holds: The draft is offered, not compelled.
 	// Holds: Declining ends generation with a civilian.
 	{
-		name: "scouts-civilian", service: traveller.Scouts, forced: true,
+		name: "scouts-civilian", forced: chargen.ForceService(traveller.Scouts),
 		policy: chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
 		dice: []int{
 			6, 1, 2, 4, 5, 6, 1, 2, 1, 3, 2, 6, 4, 2,
@@ -414,7 +414,7 @@ var fixtures = []fixture{
 	//
 	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
-		name: "scouts-expertise", service: traveller.Scouts, forced: true,
+		name: "scouts-expertise", forced: chargen.ForceService(traveller.Scouts),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
@@ -427,7 +427,7 @@ var fixtures = []fixture{
 	},
 	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
-		name: "scouts-diversified", service: traveller.Scouts, forced: true,
+		name: "scouts-diversified", forced: chargen.ForceService(traveller.Scouts),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
@@ -439,7 +439,7 @@ var fixtures = []fixture{
 		among: nil,
 	},
 	{
-		name: "other-oneterm", service: traveller.Other, forced: false,
+		name:   "other-oneterm",
 		policy: chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
 		dice: []int{
 			1, 5, 3, 1, 3, 1, 4, 5, 6, 3, 6, 6, 5, 4, 3, 4, 6, 3, 4, 6,
@@ -453,7 +453,7 @@ var fixtures = []fixture{
 	// fixture got the service it asked for, which let the sheet credit the
 	// policy with a draft's outcome and no golden notice.
 	{
-		name: "drafted-over-the-policys-pick", service: traveller.Other, forced: false,
+		name:   "drafted-over-the-policys-pick",
 		policy: chargen.DefaultPolicy(),
 		dice: []int{
 			2, 5, 4, 5, 2, 1, 2, 4, 3, 5, 1, 1, 1, 1, 2, 5, 4, 6, 1, 6,
@@ -471,7 +471,7 @@ var fixtures = []fixture{
 	// Holds: The weapon for a Blade or Gun result is drawn, not always the first
 	// printed.
 	{
-		name: "marines-armed", service: traveller.Marines, forced: true, policy: chargen.DefaultPolicy(),
+		name: "marines-armed", forced: chargen.ForceService(traveller.Marines), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			1, 4, 6, 5, 5, 3, 6, 2, 4, 3, 6, 3, 5, 4, 4, 1, 5, 3, 2, 5,
 			2, 3, 3, 4, 6, 4, 5, 3, 1, 5, 6, 3, 4, 5, 4, 5, 6, 5, 5, 3,
@@ -491,7 +491,7 @@ var fixtures = []fixture{
 	//
 	// Holds: E011 is stamped only where the reading changed the answer.
 	{
-		name: "marines-ennobled", service: traveller.Marines, forced: true, policy: chargen.DefaultPolicy(),
+		name: "marines-ennobled", forced: chargen.ForceService(traveller.Marines), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			3, 5, 3, 1, 6, 6, 4, 5, 2, 6, 6, 2, 6, 2, 3, 3, 3, 4, 4, 4,
 			4, 5, 5, 1, 4, 5, 6, 5, 2, 6, 5, 6, 5, 3, 3, 6, 6, 3, 2, 6,
@@ -504,7 +504,7 @@ var fixtures = []fixture{
 	},
 	// Holds: E011 is stamped only where the reading changed the answer.
 	{
-		name: "other-lost-the-title", service: traveller.Other, forced: true, policy: chargen.DefaultPolicy(),
+		name: "other-lost-the-title", forced: chargen.ForceService(traveller.Other), policy: chargen.DefaultPolicy(),
 		dice: []int{
 			2, 4, 4, 1, 4, 2, 6, 4, 6, 6, 6, 5, 1, 4, 1, 2, 3, 1, 6, 1,
 			6, 4, 1, 3, 4, 6, 5, 6, 4, 3, 5, 3, 6, 2, 2, 2, 4, 4, 6, 5,
@@ -520,7 +520,7 @@ var fixtures = []fixture{
 	// Aging Table's last column is never reached and E014 stays off this
 	// record.
 	{
-		name: "other-recurring-term", service: traveller.Other, forced: true,
+		name: "other-recurring-term", forced: chargen.ForceService(traveller.Other),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash},
 		dice: []int{
 			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 6, 6,
@@ -537,7 +537,7 @@ var fixtures = []fixture{
 	// on a run of 12s no random career produces, which is why the roster
 	// scripts them.
 	{
-		name: "other-past-the-table", service: traveller.Other, forced: true,
+		name: "other-past-the-table", forced: chargen.ForceService(traveller.Other),
 		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash},
 		dice: []int{
 			6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 1, 6, 6,

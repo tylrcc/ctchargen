@@ -100,7 +100,7 @@ func TestSurvivorsGivesUpRatherThanDrawingForever(t *testing.T) {
 	t.Parallel()
 
 	base := chargen.Inputs{
-		Service: traveller.Scouts, Forced: true,
+		Forced: chargen.ForceService(traveller.Scouts),
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 

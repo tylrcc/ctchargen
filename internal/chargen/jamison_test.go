@@ -240,7 +240,7 @@ func replayJamison(t *testing.T) *chargen.Character {
 	t.Helper()
 
 	inputs := chargen.Inputs{
-		Name: "Jamison", Service: traveller.Merchants, Forced: true,
+		Name: "Jamison", Forced: chargen.ForceService(traveller.Merchants),
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}
 

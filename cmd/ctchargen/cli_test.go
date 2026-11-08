@@ -80,7 +80,7 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 	t.Parallel()
 
 	_, searched := eachMember(chargen.Inputs{
-		Service: traveller.Scouts, Forced: true,
+		Forced: chargen.ForceService(traveller.Scouts),
 		Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash,
 	}, chargen.DefaultPolicy(), 20, true, 1, scoutKilled.roller(t), func(int, *chargen.Character) error { return nil })
 

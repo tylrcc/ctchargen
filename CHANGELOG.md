@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `chargen.Inputs` holds a forced service as one value, `Forced`, rather
+  than a `Service` beside a `Forced` flag (#253). Its one field is the
+  service itself, unexported, and its zero value forces nothing, so a forced
+  service with no name, or a named one not forced, cannot be written;
+  `ForceService` makes one and `Forced.Service()` reads it back. The record
+  is unchanged.
 - When each choice point is asked is stated once, on its `Policy` method
   (#252). The `Decider` methods say what they ask and answer with, and
   nothing about when; the `Decider` type comment says "one method per choice
