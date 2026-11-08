@@ -32,6 +32,10 @@ release turns out to be.
   the choice points that offer a list, and the decider's methods (#291).
 - `Retirement.lastTabled`'s comment gives the indexing test for why the 8 is
   data, not the withdrawn "a number the page prints is data" (#292).
+- CODING_STANDARDS.md's marker-placement rule says what the tree does: a
+  promise the test harness keeps is marked on the test code that carries it,
+  never on a test, and only a promise no single declaration carries goes on a
+  package doc (#293).
 
 ## 1.0.0-beta.6
 

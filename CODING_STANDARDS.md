@@ -33,9 +33,15 @@ from the prose is the defect the check exists for.
 ## A marker sits on what carries its rule
 
 An `Implements:` marker belongs on the declaration that carries the rule — the
-function that applies it, the table that holds it — and not on a helper beside
-it or on the test that holds it. A gate's rule is its package's, marked on the
-package doc.
+function that applies it, the table that holds it — and not on a helper that
+only serves that declaration. A helper that carries a rule of its own carries
+that rule's marker. For a promise of the tool's own that the test harness
+keeps, the carrier is test code, a helper or a roster: the stamping conditions
+and the fixture roster carry theirs, and the step lookup the conditions read
+records with carries its own. It is never a test: a test holds a rule rather
+than carrying it. A promise no single declaration carries is marked on its
+package's doc, whether it is spread across the package, as the alphabets'
+spellings are, or is the whole package, as the coverage generator's is.
 
 ## A new invariant is shown killed
 

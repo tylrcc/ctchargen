@@ -36,9 +36,8 @@
 //
 //   - the doc comment of a function, method, type, constant or variable, which
 //     names it as `dir.Name` or `dir.Type.Method`, dir relative to the module;
-//   - a package's doc comment, which names the package, for a rule a whole
-//     package carries (the alphabets' spellings are every alphabet's, and a
-//     gate's rule is its package's, so a gate does not cite itself);
+//   - a package's doc comment, which names the package, where
+//     CODING_STANDARDS.md puts a promise no single declaration carries;
 //   - the comment above an entry of chargen's fixture roster, which names the
 //     golden `name` that fixture generates — a golden is a test, and the roster
 //     is where it is declared;
