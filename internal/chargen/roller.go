@@ -34,8 +34,7 @@ type Vary interface{ Among(n int) int }
 // Among taken off it, so the narrowing is the value's and not only the
 // parameter's. Passing the Roller itself as a Vary would leave its dynamic
 // type behind it, and one type assertion would hand a decider the dice back
-// (#136), and a die thrown there reaches no event: the log would stop
-// carrying every die, and the log is the only way back to the character.
+// (#136), which is what Vary exists to prevent.
 type varyOnly struct{ roller Roller }
 
 func (v varyOnly) Among(n int) int { return v.roller.Among(n) }

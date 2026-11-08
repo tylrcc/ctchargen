@@ -5,6 +5,9 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `WALKTHROUGH.md`'s code excerpts quote the tree as it stands. Eight had
+  drifted, most of them the seed-era doc comments ADR 0001 rewrote, and the
+  prose around them still described a seeded stream; both are current.
 - `go run ./internal/mutate` shows whether a test kills a mutation. It copies
   the tree, makes one exact edit in the copy (refusing text that does not
   occur exactly once), runs the command given, and prints its output with

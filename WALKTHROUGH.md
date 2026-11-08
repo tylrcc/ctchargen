@@ -72,7 +72,7 @@ Read that as four layers:
   characteristics, four skill tables), the values it works in (`Target`, `Age`,
   `Credits`, `Profile`), and the sums that say "exactly one of". It rolls no
   dice, reads no table and marshals no JSON.
-- **`dice`** — a seeded stream. It rolls and never judges; whether a throw met
+- **`dice`** — an unseeded stream. It rolls and never judges; whether a throw met
   its target is a `Target`'s business, which is why `dice` can depend on nothing.
 - **`rules`** — every printed table, embedded as JSON, lifted into domain values.
 - **`chargen`** — the procedure itself, plus the `Decider` interface it asks
@@ -272,6 +272,10 @@ lives. `internal/rules/rules.go`, the package doc:
 // use, a table that will not lift is a build defect that surfaces
 // immediately rather than a runtime condition some path might reach.
 //
+// The readings document, data/ERRATA.md, is embedded and lifted the same
+// way. It stays hand-written prose; only its entries are parsed, and an
+// erratum with no entry or an entry with no erratum fails the lift.
+//
 // Every table is transcribed twice: once into data/, and once into this
 // package's tests, from the same visual reading of the page. The two must
 // agree. That is what the reprint's font requires — its glyph substitutions
@@ -451,39 +455,40 @@ func (r *Rules) Weapons(c traveller.WeaponCategory) []traveller.WeaponName {
 
 ## Layer three: the dice
 
-`dice` is thirty lines of substance. Its whole contract is that a seed means
-something, and the package doc states the properties that make it so.
-`internal/dice/dice.go`, the package doc:
+`dice` is thirty lines of substance. Its stream is not seeded, so no character
+can be rolled again; the record is the only way back to one, and the package doc
+states the properties that still have to hold. `internal/dice/dice.go`, the
+package doc:
 
 `internal/dice/dice.go` — `package dice`
 
 ```go
 // Package dice draws the die rolls Classic Traveller's character generation
-// procedure calls for, from a seeded stream.
+// procedure calls for.
 //
 // It rolls and it never judges. Whether a throw meets its target is the
 // business of a Target (Book 1 pp. 2-3), which lives in the traveller
 // package; keeping that out of here is what lets dice depend on nothing.
 //
-// These properties of this package are load-bearing, in the sense that a
-// seed means nothing without them:
+// The stream is not seeded. No two are alike and none can be brought back:
+// the record is the only way back to a character (ADR 0001), and it logs
+// every die this hands out. Three properties are load-bearing all the same,
+// because every fixture's script and every reader of a record rest on them:
 //
-//   - The die is IntN(6) + 1. An IntN(36), or a masked Uint64, is the same
-//     PCG under the same seed and an entirely different character.
-//   - A 2D throw is two of those in sequence, first die then second.
-//   - Among is IntN(n), drawn from the same stream, for the choices the book
-//     leaves to a player without naming a basis.
-//
-// Changing any of them changes every seeded character. That is an ordinary
-// change, not a breaking one, but it is never an accidental one.
+//   - The die is one of six faces, each as likely as the others.
+//   - A 2D throw is two of those in sequence, first die then second, and
+//     both are handed back because the record logs the dice and not only
+//     their total.
+//   - Among is one index in n, each as likely as the others, for the
+//     choices the book leaves to a player without naming a basis.
 package dice
 ```
 
 `Among` deserves a note, because it is not a die. Where the book hands a choice
 to a player and names no basis for making it — which weapon to take off the p. 12
-blade list — the tool draws rather than always taking the first name. It draws
-from the same stream, so a varied choice consumes like a throw does and the same
-seed still makes the same character. `internal/dice/dice.go`, `Stream.Among`:
+blade list — the tool draws rather than always taking the first name. The index
+it draws is not logged; the weapon it picks is, as the answer to that choice
+point. `internal/dice/dice.go`, `Stream.Among`:
 
 `internal/dice/dice.go` — `Stream.Among`
 
@@ -496,12 +501,8 @@ seed still makes the same character. `internal/dice/dice.go`, `Stream.Among`:
 // modulo would not do: the weapon lists of pp. 12-13 are longer than six, and
 // even where they are not, 6 mod n makes the first names likelier.
 //
-// It draws from the same stream, so a varied choice consumes like a throw
-// does and the same seed still makes the same character. n must be positive;
-// IntN says so itself.
+// n must be positive; IntN says so itself.
 func (s *Stream) Among(n int) int {
-	s.drawn++
-
 	return s.r.IntN(n)
 }
 ```
@@ -516,12 +517,18 @@ and walks the procedure. `internal/chargen/generate.go`, `Generate`:
 
 ```go
 // Generate walks Book 1's character generation procedure, pp. 4-25, rolling
-// from the seed the inputs carry unless a roller is given.
+// dice of its own unless a roller is given.
 //
 // The order within a term is the exposition's, not the worked example's
 // (E002): survival, commission, promotion, skills, reenlistment, and then
-// the aging round at the end of the term (E006). That order is what a seed
-// means, so it is a fixed choice rather than an incidental one.
+// the aging round at the end of the term (E006). That order is what every
+// fixture's script walks, so it is a fixed choice rather than an incidental
+// one.
+//
+// Implements: A fixture generates one golden, and the same one twice
+// [ADR 0001] in The record.
+// Implements: The worked example reproduces [1:23–25] in The book's own
+// character.
 func Generate(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	tables, err := rules.Load()
 	if err != nil {
@@ -532,7 +539,7 @@ func Generate(in Inputs, decider Decider, options ...Option) (*Character, error)
 
 	run := &run{
 		tables: tables,
-		roll:   dice.New(in.Seed),
+		roll:   dice.New(),
 		log:    record,
 		by:     traveller.ByPolicy,
 		char: &Character{
@@ -760,6 +767,9 @@ jobs.
 // spelled the same would let a decider answer with one and have the other
 // recorded, and nothing would notice. It holds, and
 // traveller.TestNoTwoValuesOfAnAlphabetShareASpelling holds it (#48).
+//
+// Implements: An answer outside the offered set is refused, not applied [FR9]
+// in The record.
 func (l logging) record(point traveller.ChoicePoint, from []string, chosen string) error {
 	if !slices.Contains(from, chosen) {
 		return fmt.Errorf("%w: %v offered %v, and was answered %q",
@@ -798,7 +808,7 @@ dynamic type, and one type assertion would give the decider the dice back, so
 // Among taken off it, so the narrowing is the value's and not only the
 // parameter's. Passing the Roller itself as a Vary would leave its dynamic
 // type behind it, and one type assertion would hand a decider the dice back
-// (#136).
+// (#136), which is what Vary exists to prevent.
 type varyOnly struct{ roller Roller }
 
 func (v varyOnly) Among(n int) int { return v.roller.Among(n) }
@@ -1079,7 +1089,10 @@ func exitStatus(err error) int {
 channel — the record, the sheet, the transcript — and `asking` is where the tool
 talks to the person driving it. Note too that help asked for leaves by `out` and
 returns nil, so `--help` exits 0; a bare `ctchargen` with no arguments stays an
-error, because nothing was asked for. `cmd/ctchargen/main.go`, `run`:
+error, because nothing was asked for. Its one option, `withDice`, is how a test
+hands in a scripted roller; `main` passes none, so every character the command
+makes comes from the engine's own unseeded stream. `cmd/ctchargen/main.go`,
+`run`:
 
 `cmd/ctchargen/main.go` — `run`
 
@@ -1087,17 +1100,28 @@ error, because nothing was asked for. `cmd/ctchargen/main.go`, `run`:
 // run takes the two output channels apart. `out` is the data channel - the
 // record, the sheet, the transcript - and `asking` is where the tool talks to
 // the person driving it. Interactive mode writes its questions to the second,
-// so that `ctchargen new --seed 7 | jq` pipes a record and not a conversation.
-func run(args []string, in io.Reader, out, asking io.Writer) error {
+// so that `ctchargen new | jq` pipes a record and not a conversation.
+//
+// Implements: What the command writes matches the schema, build stamp and all
+// [JSON conventions] in The record.
+// Implements: The questions go to stderr, not into the record [CLI sketch] in
+// The record.
+func run(args []string, in io.Reader, out, asking io.Writer, options ...option) error {
+	var chosen settings
+
+	for _, apply := range options {
+		apply(&chosen)
+	}
+
 	if len(args) == 0 {
 		return fmt.Errorf("%w: ctchargen %s; run `ctchargen --help`", errUsage, commandList)
 	}
 
 	switch args[0] {
 	case "new":
-		return newCharacter(args[1:], in, out, asking)
+		return newCharacter(args[1:], in, out, asking, chosen.dice)
 	case "batch":
-		return batch(args[1:], out, asking)
+		return batch(args[1:], out, asking, chosen.dice)
 	case "render":
 		return renderRecord(args[1:], out)
 	case "version":
@@ -1159,7 +1183,6 @@ so five adjacent strings cannot be transposed on the way in.
 // then reports as the one the operator asked for (#132).
 type characterFlags struct {
 	set                                   *flag.FlagSet
-	seed                                  *uint64
 	name, service, career, skills, muster *string
 }
 ```
@@ -1429,9 +1452,9 @@ func (t tally) reportStopped(asking io.Writer) error {
 ### Reading a record back
 
 `render` takes a record written earlier and writes it as a sheet or a transcript.
-It **reads** the record rather than regenerating it from the seed: regenerating
-would give the same character within this build and a different one across
-builds, which is precisely the promise the tool does not make.
+It **reads** the record rather than regenerating anything: the dice are not
+seeded, so there is nothing to regenerate from, and the record is the only way
+back to the character (ADR 0001).
 
 The repository's goldens are records, so they are what `render` can be pointed
 at directly:
