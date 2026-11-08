@@ -1306,7 +1306,7 @@ A transcript of `ctchargen render --history internal/chargen/testdata/army-serve
 Three things to read out of that.
 
 The `(from N)` suffixes are the causal edges: an `OutcomeEvent` carries the
-sequence number of the throw or choice that produced it, so "enlisted in the
+sequence number of the throw, roll or choice that produced it, so "enlisted in the
 Army" points at the throw one line above it. That is what makes the log
 auditable rather than merely verbose.
 

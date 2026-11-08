@@ -406,7 +406,7 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 	t.Parallel()
 
-	for name, path := range map[string]func(dir string) (args []string, blocked string){
+	for name, plant := range map[string]func(dir string) (args []string, blocked string){
 		"new": func(dir string) ([]string, string) {
 			blocked := filepath.Join(dir, "sheet.json")
 
@@ -422,7 +422,7 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 			t.Parallel()
 
 			dir := t.TempDir()
-			args, blocked := path(dir)
+			args, blocked := plant(dir)
 
 			err := os.Mkdir(blocked, 0o700)
 			if err != nil {
@@ -436,6 +436,8 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 				t.Fatal("a record was written over a directory")
 			case !strings.Contains(err.Error(), "is a directory"):
 				t.Errorf("a directory in the way was reported as %q, which does not say so", err)
+			case !strings.Contains(err.Error(), blocked):
+				t.Errorf("a directory in the way was reported as %q, which does not name %s", err, blocked)
 			case strings.Contains(err.Error(), "--force"):
 				t.Errorf("a directory in the way was reported as %q, advising --force, which cannot help", err)
 			}

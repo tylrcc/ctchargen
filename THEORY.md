@@ -220,9 +220,8 @@ The log is not added afterwards, "because a log that is added afterwards records
 what the author remembered." Every event carries a sequence number, and an
 `OutcomeEvent` carries `Because` — the sequence number of the throw, roll or
 choice that caused it, or zero where it follows from the procedure itself.
-(The field's own comment says "throw or choice", which is narrower than what
-the engine writes; #254.) That causal edge is
-what makes the record auditable rather than merely verbose.
+That causal edge is what makes the record auditable rather than merely
+verbose.
 
 ### 6. `logging` is the single gate, and it rests on a stated assumption
 
@@ -717,8 +716,8 @@ had drifted from their source.
 
 **What I tested by breaking it**, in a scratch copy and not in this tree. Nine
 mutations across `cmd/ctchargen`, `render` and `chargen`. Those that survived
-are the claims above that cite #247 (the player's weapon menu), #250 (the
-survivors bound and its tally exemption) and #254 (the service compare); the
+became #247 (the player's weapon menu), #250 (the survivors bound and its
+tally exemption) and #254 (the service compare), each since closed; the
 batch tally of #246 was reproduced on a built binary. A change to goods'
 `MusterTable2DM` answer was killed, by `TestMusterStrategies` alone, which is
 how #248 was confirmed.
