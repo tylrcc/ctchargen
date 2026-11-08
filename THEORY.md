@@ -324,10 +324,10 @@ either are that statement or are generated from it:
   exactly, and each "A sample of" is a random run held only to still run.
   The code excerpts beside them are held by nothing but review.
 
-One second copy survives that sweep. Each choice point says when it is asked
-twice, once on the `Decider` method and again on the `Policy` method, and the
-engine's own conditions are a third statement. The pairs agree today, and
-nothing holds them (#252). The `Erratum` constants in
+When each choice point is asked is said once, on its `Policy` method, beside
+what each strategy answers; the `Decider` method says only what it asks and
+answers with (#252). The engine's own conditions remain a second statement,
+in code, and nothing holds the prose to them but review. The `Erratum` constants in
 `internal/traveller/erratum.go` state nothing about their readings: each
 carries only its id and its entry's title, as the heading prints it, and
 `rules`' `TestEachErratumIsCommentedWithItsTitle` holds the one to the other

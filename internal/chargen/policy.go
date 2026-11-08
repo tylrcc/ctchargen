@@ -326,8 +326,9 @@ func (p Policy) AttemptPromotion() (bool, error) { return true, nil }
 
 // AssumeTitle is asked when the character survived generation and his final
 // Social Standing is 11 or greater - once, at the end of generation (E011).
-// The dead are assessed but not asked. The title is the one Book 3 p. 22
-// confers at that value.
+// The dead are assessed but not asked: assuming a title is an act a dead
+// character does not perform. The title is the one Book 3 p. 22 confers at
+// that value.
 //
 // All three strategies answer yes.
 func (p Policy) AssumeTitle(traveller.Title) (bool, error) { return true, nil }

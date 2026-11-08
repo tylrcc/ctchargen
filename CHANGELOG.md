@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- When each choice point is asked is stated once, on its `Policy` method
+  (#252). The `Decider` methods say what they ask and answer with, and
+  nothing about when; the `Decider` type comment says "one method per choice
+  point closes the set" once and points at `Policy`. Comment-only.
 - The two decider-guard tests walk the fixtures' scripted dice (#251), so
   they reach the same weapon choices on every run. The forge test forges at
   `Weapon` and at `MusterWeapon` in separate walks and requires each to be

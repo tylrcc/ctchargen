@@ -712,25 +712,25 @@ implementation at compile time.
 A transcript of `grep -nE '^	[A-Z][A-Za-z0-9]*\(' internal/chargen/decider.go | sed 's/(.*//' | cat -n`, run while writing:
 
 ```text
-     1	33:	Service
-     2	37:	SubmitToDraft
-     3	42:	AttemptCommission
-     4	46:	AttemptPromotion
-     5	57:	SkillTable
-     6	66:	Weapon
-     7	75:	ReenlistIntent
-     8	81:	MusterTable
-     9	85:	MusterTable1DM
-    10	89:	MusterTable2DM
-    11	96:	MusterWeapon
-    12	106:	AssumeTitle
+     1	30:	Service
+     2	33:	SubmitToDraft
+     3	37:	AttemptCommission
+     4	41:	AttemptPromotion
+     5	49:	SkillTable
+     6	58:	Weapon
+     7	66:	ReenlistIntent
+     8	70:	MusterTable
+     9	74:	MusterTable1DM
+    10	78:	MusterTable2DM
+    11	85:	MusterWeapon
+    12	93:	AssumeTitle
 ```
 
 Twelve, and the enum `traveller.ChoicePoint` has twelve constants whose
 `String()` is each method's name. That is unavoidably a second list kept
 parallel to the interface, so a reflection check in `chargen`'s tests holds the
-two together. What the auto policy answers at each is in the doc comment of
-`Policy`'s method of the same name.
+two together. When the engine asks each, and what the auto policy answers,
+is in the doc comment of `Policy`'s method of the same name.
 
 Every decider — the auto policy, the interactive player, the scripted test
 deciders — reaches the engine through one decorator, `internal/chargen/logging.go`. It
