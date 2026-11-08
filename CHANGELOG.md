@@ -5,8 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- `THEORY.md` and `WALKTHROUGH.md` are removed, and with them
-  `internal/walkthrough`, the gate that re-ran the walkthrough's transcripts.
+- `THEORY.md` and `WALKTHROUGH.md` become release snapshots: regenerated in
+  each release prep PR, stamped with that tag, and ignored between releases.
+  `internal/walkthrough`, the gate that held the walkthrough to the tree, is
+  removed.
 
 ## 1.0.0-beta.5
 

@@ -153,6 +153,7 @@ readings are the fallback.
 | `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                                                               |
 | `docs/COVERAGE.md`              | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
 | `docs/character.schema.json`    | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
+| `THEORY.md`, `WALKTHROUGH.md`   | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                                                                      |
 | `CODING_STANDARDS.md`           | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                                                        |
 | `CLAUDE.md`                     | This file.                                                                                                                                                                                                                                  |
 
@@ -284,6 +285,12 @@ go run ./cmd/ctchargen new --auto --sheet
   built or attached; a release is a tag, installed with `go install`. A
   published document that went stale while nobody noticed is what issue #31
   was, and neither of these is held by the gate.
+- **Release snapshots.** `THEORY.md` and `WALKTHROUGH.md` describe the
+  release they were written for, not `main`, and each opens with a stamp
+  naming that tag. The release prep PR regenerates them with `/code-theory`
+  and `/code-walkthrough`, overwriting the last release's copies. Between
+  releases they are ignored: no change reads, sweeps or updates them, drift
+  in them is never a finding, and nothing in the gate holds them.
 
 ## Agent skills
 
