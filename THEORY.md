@@ -1,6 +1,6 @@
 # A theory of ctchargen
 
-> Release snapshot for `v1.0.0-beta.6`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-beta.7`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots").
 
@@ -47,6 +47,14 @@ only when the misreading resolves to nothing, which is why a skill name the
 three books never define is treated as a broken glyph (`Rifl3`) and not as a
 new skill.
 
+The same discipline governs what may be said about the page. A visual read
+shows shapes, not encodings: an image cannot say which character a minus is
+set in, so nothing in the tree claims one. And a quotation of the page carries
+the page's emphasis and no other. ERRATA.md's quotations once carried bold the
+page never printed, added to stress the words a reading turned on; it was
+removed against each page (#310), because a reading argues in its own prose
+and quotes the page plain.
+
 A **reading** is a decision where the page is silent or contradicts itself.
 Each has an id, a page cite, a rationale, and a **stamping condition**: a
 predicate over the finished record saying when that reading governed it. A
@@ -90,6 +98,16 @@ recorded. `traveller`'s spelling tests hold injectivity, and a second test
 greps the package for every `var X = [...]T` so a new alphabet cannot escape
 the first.
 
+The notation of pp. 2–3 is also the domain's. A throw's sign follows its
+number and a modifier's precedes it, so a target with a leading sign is a
+modifier passed off as a throw and is refused. Which glyphs count as a sign is
+said once, by `traveller.Sign`: a plus, the ASCII hyphen a data file is typed
+with, and U+2212, the way the minus the page prints may be typed. The en dash
+looks the same on screen and is not one. In a target and at the head of a
+skills cell it is refused by name (`ErrEnDash`), so the slip a transcriber
+makes is reported as what it is (#296, #288, #297); a Table 1 cell opening
+with one is refused too, but only as no benefit the table prints.
+
 Zero values fail closed: the zero `Target` is "0 exactly", which no throw
 meets. A characteristic has two floors because the page has two: an ordinary
 alteration floors at 1, aging at 0 (E010), and zero is the doorway to the
@@ -103,8 +121,11 @@ anything on its own behalf. Every question goes to a `Decider`, which has one
 method per choice point, each typed to its own alphabet. The interface is wide
 on purpose. A single method over a label would let a new choice point be added
 without every decider noticing, and `TestChoicePointsMatchTheDecider` holds the
-method names, the `ChoicePoint` alphabet and the schema's `point` enum to one
-another. Renaming a Decider method therefore changes the record.
+method names to the `ChoicePoint` alphabet. The schema's `point` enum is held
+only through the goldens, which every choice point must reach and which are
+validated against the schema, so it is held one way: a value the engine stops
+offering would linger in the enum unnoticed. Renaming a Decider method
+therefore changes the record.
 
 There are two ways in, and the difference is a fact the record states once.
 `chargen.Auto(in, policy)` is an **auto run**: the `--auto` policy answers
@@ -128,9 +149,10 @@ character was offered (#55, #137). It refuses a list question with fewer than
 two alternatives, because the Decider contract is that a method is called only
 when more than one answer is legal, and a question no reader could have
 decided differently has no business in the record. The sites that can reach
-one answer (reenlistment at the seventh term, the third roll on Table 2)
-settle it themselves as readings of the page. The gate's refusal is there for
-the site that forgets.
+one answer (reenlistment from the seventh term, and every mustering-out roll
+after three have gone to Table 2) settle it themselves as readings of the
+page. The decorator's refusal is there
+for the site that forgets.
 
 The `--auto` policy describes itself. Each `Policy` method's doc comment says
 what each strategy answers at that choice point, and there is no other policy
@@ -154,17 +176,25 @@ script extracted from a record the tool wrote, proven only by the test that
 drives it. Both are played through `internal/scripted`, which is strict both
 ways: asking past the end of a script fails, and so does finishing with any of
 it unread. A 2D throw is two dice in sequence, and a throw the procedure does
-not make consumes nothing. Changing the order is an ordinary change. The
-fixture that felt it fails, and its dice are re-scripted from a record that
-walks the new path. A change that keeps the count and moves the order fails
-only as a golden diff (#289), so the diff, not the roller, is what names the
-throw that moved.
+not make consumes nothing.
+
+Changing the order is an ordinary change, and the fixture's dice are
+re-scripted from a record that walks the new path. But no failure names the
+throw that moved. A script that runs out or is left unread names an index; a
+reorder usually re-paths a fixture, changes its count, and fails wherever the
+new path diverges; and a change that moves no path, such as swapping the two
+dice of one throw, fails nothing but a golden, whose message says to
+regenerate. So a golden diff after a change to consumption is read before it
+is regenerated, or the fixture is silently re-pathed (#289).
 
 Goldens are regenerated (`go test ./internal/chargen -regenerate`), never
 hand-edited. The same fixtures write the schema's two published examples, so
-the documented record cannot drift from the emitted one.
+the documented record cannot drift from the emitted one. A golden holds more
+than its path. It pins every value, so a rule such as "values 2–12 initially"
+is held by the goldens that roll both ends, not by a test that names the
+range (#294).
 
-## The rules lift: validation by construction
+## The rules lift, and the second transcription
 
 `internal/rules` embeds every table of pp. 4–25 and lifts it once per process
 (`sync.OnceValues`). "The lift is the validation" means that every string in
@@ -174,19 +204,43 @@ errors are refused before any character is generated:
 - columns other than the six services in p. 10 order;
 - a bare "4" where a Table 1 cell should be a benefit, which is the font trap;
 - a commission printed without ranks;
-- retirement rows that do not ascend.
+- retirement rows that do not ascend;
+- a skills cell that opens with a sign and is not an alteration, or with an
+  en dash.
 
 Past the lift, a `Career` is a `Career`, and nothing re-checks it. Everything
 the lift hands out is a copy, because `Load` gives every caller in a process
 the same `Rules`.
 
+A file broken two ways reports the same fault every run, the first in the
+order the page prints its tables: the Prior Service Table's rows as p. 10
+lists them, the Acquired Skills tables as p. 11 does, and table names in
+sorted order. A reader fixing a fault must be able to tell whether the fix
+worked, which an answer that changed with Go's map order denied (#53, #286).
+
+What the lift validates is the shape of a cell and the alphabet of a name.
+What it does not validate is that a value is the one the page prints, and that
+is the second transcription's work. The division is principled for cells: a
+sign at the head of a cell decides whether it is an alteration or a skill, so
+the lift checks it, while an en dash inside a name is no different from any
+other typo and is left to the second copy (#300). Keys fall the same way.
+`read` decodes with plain `json.Unmarshal`, which tolerates an unknown key
+because the data files carry their own `_cite` and `_note` keys beside the
+ones the wire types read. So a misspelled key leaves its field at zero, and
+of four keys tried, three accepted a zero the page never prints: a medical
+crisis lasting "0D months" lifts cleanly, and only `tables_test.go` refuses
+it. A wrong value is the second transcription's to catch, and the claim that
+the lift is the whole validation is the thing narrowed, not the decoding
+(#317).
+
 Where a number lives is decided by one rule rather than argued case by case.
-A number that **indexes** a printed table is data (the Aging Table's last
-printed term, which E014 turns on, lives in `aging.json`). A bare procedural
-bound is a constant beside the code that applies it, with its cite: the
-three-roll cap on Table 2, the rank thresholds, the seven-term voluntary cap.
-Being printed is not the test. A number on the wrong side is a finding in
-either direction (#65).
+A number that **indexes** a printed table is data: the Aging Table's last
+printed term, which E014 turns on, lives in `aging.json`, and the Annual
+Retirement Pay table's last row, from which pay "per additional term" counts,
+lives in `services.json` (#292, #312). A bare procedural bound is a constant
+beside the code that applies it, with its cite: the three-roll cap on Table 2,
+the rank thresholds, the seven-term voluntary cap. Being printed is not the
+test. A number on the wrong side is a finding in either direction (#65).
 
 ## The record and its projections
 
@@ -234,14 +288,25 @@ There is no CI (#149). `task` is the gate, and much of what it holds is the
 repo's own documents. `docs/COVERAGE.md`'s tables are generated from
 `Implements:` markers beside the code and `Holds:` markers on tests. A rule
 implemented and held by nothing, or held and implemented by nothing, fails the
-generator, and so does a cite to an authority that does not exist. A page
-cite's internals are not checked (#287). The schema's strategy enums are held
-to the code by a test. The CLI's flags and defaults are typed out in
-`cli_test.go` and held one way, because a new flag breaks nobody. And a new
-invariant is not considered done until a deliberate mutation has been shown to
-kill it: `go run ./internal/mutate` edits a scratch copy, runs a command, and
-prints `KILLED` or `SURVIVED`. Note that it prints `KILLED` for any failure,
-compile errors included.
+generator. So does a cite outside a closed set, and a page cite is checked
+whole: its shape (pages or en-dash ranges, then any readings), every book it
+names (1 to 3), and every reading it names (#287, #311).
+
+Where a marker sits is a rule of its own (#293). It goes on the declaration
+that carries the rule: engine code for a rule of the book; test code, a helper
+or a roster, for a promise of the tool's own that the harness keeps (the
+stamping conditions, the fixture roster). It never goes on a test, which holds
+a rule rather than carrying it. A rule several declarations carry is marked on
+each, and only a promise no single declaration carries goes on a package doc:
+the alphabets' spellings, and the coverage generator's own.
+
+The schema's strategy enums are held to the code by a test. The CLI's flags
+and defaults are typed out in `cli_test.go` and held one way, because a new
+flag breaks nobody. And a new invariant is not considered done until a
+deliberate mutation has been shown to kill it: `go run ./internal/mutate`
+edits a scratch copy, runs a command, and prints `KILLED` or `SURVIVED`. Note
+that it prints `KILLED` for any failure, compile errors included, so a kill is
+read from its output, not its verdict.
 
 The tests call code the way its user does. The interactive session is tested
 through the command, because what is under test is what a person sees:
@@ -259,8 +324,8 @@ questions on stderr, the record kept off stdout, the stop and what it cost
   comment, plus a bump of `PolicyVersion` if any answer changes. The schema's
   enum test will demand the new word.
 - **A new choice point.** It breaks every Decider at compile time, the logging
-  gate included, and needs a fixture that reaches it, a schema `point` value,
-  and a choice-point check.
+  decorator included, and needs a fixture that reaches it, a schema `point`
+  value, and a choice-point check.
 - **A corrected table cell.** Change both transcriptions from a fresh visual
   read of that page alone.
 
@@ -281,10 +346,15 @@ questions on stderr, the record kept off stdout, the stop and what it cost
 **Where a maintainer who missed the theory would do damage:**
 
 - **`task fix`.** It has already rewritten verbatim quotations of the book:
-  `godot` and `dupword` are configured off now, but read the diff.
+  `godot` and `dupword` are configured off that behaviour now, but read the
+  diff.
 - **Trusting `pdftotext`, or reading a table in a page range.** The prerelease
   review lost a cell to a six-page read.
-- **Hand-editing a golden.**
+- **Writing about the page from memory or from extraction.** A claim about
+  the page needs the page itself. The books are held on disk as PDFs that may
+  be iCloud placeholders, and the answer to one that is not local is to fetch
+  it and wait, not to reason around it.
+- **Hand-editing a golden, or regenerating one without reading its diff.**
 - **Rewording a transcript step name** without checking the stamping
   predicates.
 - **Editing an ERRATA heading** without the same edit, verbatim, in
@@ -320,10 +390,3 @@ issues. The rest is held by tests, and that half I trust.
   reading I would expect those readers to see a half-written file now and
   then and report a stale golden on the regenerating run. I have not seen it
   happen.
-- **Where the boundaries of "gate" fall** is unsettled in the documents
-  (#293). The word names both the logging decorator ("the single gate") and
-  the checks `task` runs. The coverage markers for check rules sit on test
-  helpers, not on package docs as CODING_STANDARDS.md says.
-- **Two lifts still range over maps** when counting rows (#286), against a
-  rule (#53) their own marker promises. That looks like drift from a fix that
-  reached one loop and not the others, not a design choice.

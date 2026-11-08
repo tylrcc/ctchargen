@@ -5,61 +5,75 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- A target typed with an en dash (`8–`, `–3`) is refused with an error that
-  says an en dash is not a minus, rather than a bare parse error (#296).
-- An Acquired Skills cell typed with an en dash (`–1 Social Standing`) is
-  refused the same way, where it used to lift silently as a skill of that
-  name (#288).
-- Which glyphs are a sign, and that an en dash is not one, is defined once in
-  `traveller` and read by both targets and table cells, where three lists
-  across two packages said it before. No behaviour changes (#297).
-- A data file broken two ways now reports the same fault every run in the
-  Prior Service Table's row counts and the Acquired Skills tables, as it
-  already did for ranks, commissions and promotions (#286).
-- The coverage generator checks a page cite whole: its form, every book it
-  names (1, 2 or 3) and every reading it names (a heading in ERRATA.md).
-  Before, anything opening with a book and page passed, and only a reading
-  cited alone was checked (#287).
-- CLAUDE.md and the scripted roller's doc no longer say a fixture whose dice
-  moved fails naming the throw that moved: nothing names it, and some changes
-  fail only a golden, whose diff is read before regenerating (#289).
+## 1.0.0-beta.7
+
+Nothing a referee sees at the table changes: the record, its shape, the sheet
+and the transcript are what beta.6 wrote, and every golden is unchanged. This
+release is the rules data, the checks that hold it, and the readings document,
+brought closer to the page and to what the tree does.
+
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-beta.7
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### What a referee will notice
+
+**Nothing at the table.** A record written by beta.6 reads back, renders and
+validates as it did, and `record` stays 1 (#96).
+
+### The rules data and its checks
+
+- **An en dash is never a minus.** A target typed with one (`8–`, `–3`) is
+  refused with an error saying so, rather than a bare parse error (#296), and
+  an Acquired Skills cell opening with one (`–1 Social Standing`), which used
+  to lift silently as a skill of that name, is refused the same way (#288).
+  Which glyphs are a sign is defined once, in `traveller`, and read by both
+  (#297).
+- **A data file broken two ways reports the same fault every run** in the
+  Prior Service Table's row counts and the Acquired Skills tables, the first
+  fault in the order pp. 10 and 11 print them (#286).
+- **The coverage generator checks a page cite whole**: its shape, every book
+  it names (1, 2 or 3) and every reading it names (#287). A range takes an
+  en dash, and a hyphenated one is refused (#311).
+- `services.json` names the retirement increment `perAdditionalTerm`, after
+  p. 21's own words, where it was `perTermBeyondEight`; the 8 lives only in
+  the table's last row (#312).
+
+### The readings and the page
+
+- **ERRATA.md's quotations carry only the emphasis the page prints.** Ten
+  bold passages across seven readings were added here and are removed, each
+  read against its page; E011's quotation of p. 5 regains a dropped "the"
+  (#310).
 - ERRATA.md no longer argues from the withdrawn PRD Determinism section: E002
-  and E013 say what the order and the throw change, which is what the record
-  shows. The worked example is "reproduced", not "replayed", wherever the
-  glossary's withdrawn word was used for it (#290).
-- Comments and CODING_STANDARDS.md no longer count things that grow: the
-  alphabets, the schema's nested objects, the event kinds, the readings,
-  the choice points that offer a list, and the decider's methods (#291).
-- `Retirement.lastTabled`'s comment gives the indexing test for why the 8 is
-  data, not the withdrawn "a number the page prints is data" (#292).
-- CODING_STANDARDS.md's marker-placement rule says what the tree does: a
-  promise the test harness keeps is marked on the test code that carries it,
-  never on a test, and only a promise no single declaration carries goes on a
-  package doc (#293).
-- "Values 2–12 initially" is marked on the six 2D rolls that carry it, and
-  `Profile.Alter` carries only "Never above 15" (#294).
+  and E013 say what the order and the throw change in the record (#290).
 - Comments no longer say the page is set in U+2212, which no page image can
-  show; `traveller`'s package doc points to Authority point 6 for when a
-  printed range is data; and CODING_STANDARDS.md says a rule carried by several
-  declarations is marked on each.
-- ERRATA.md's quotations carry only the emphasis the page prints: ten bold
-  passages in E001, E003, E006, E008, E010, E011 and E015 were added here and
-  are removed, read against each page; E011's bold run-in "Titles:" and
-  E002's italic aside from the Jamison example are the page's own and stay,
-  and E011's quotation of p. 5 regains a dropped "the" (#310).
-- A page range in a cite is written with an en dash, and the coverage
-  generator refuses a hyphen: one marker cited `1:11-13` beside the tree's
-  `1:11–13` (#311).
-- `services.json`'s retirement pay names its per-term increment
-  `perAdditionalTerm`, after p. 21's "per additional term", where it was
-  `perTermBeyondEight`: the 8 lives only in the table's last row (#312).
-- The comment on the decorator's one-answer refusal names what the sites
-  that settle themselves settle: reenlistment from the seventh term, and every
-  roll after three have gone to Table 2 (#318).
-- `rules`' package doc and CLAUDE.md no longer say "The lift is the
-  validation": it checks cells and names, and a value, a misspelled key's zero
-  included, is the second transcription's to catch. `read` says why unknown
-  keys are tolerated: the files' own `_cite` and `_note` keys (#317).
+  show (#313).
+
+### Notes
+
+- "Values 2–12 initially" is marked on the six 2D rolls that carry it, and
+  `Profile.Alter` on "Never above 15" alone (#294).
+- CODING_STANDARDS.md's marker rule says what the tree does: a promise the
+  test harness keeps is marked on the test code that carries it, never on a
+  test; a rule several declarations carry is marked on each; only a promise
+  no single declaration carries goes on a package doc (#293, #313).
+- CLAUDE.md says what a dice-consumption change does to a fixture: nothing
+  names the throw that moved, so a golden diff is read before it is
+  regenerated (#289).
+- The worked example is "reproduced", not "replayed" (#290); comments stop
+  counting things that grow (#291); `Retirement.lastTabled`'s comment gives
+  the indexing test (#292), and `traveller`'s package doc points to Authority
+  point 6 (#313).
+- `rules`' package doc and CLAUDE.md say the lift checks cells and names and
+  leaves values, a misspelled key's zero included, to the second
+  transcription; `read` tolerates an unknown key for the files' own `_cite`
+  and `_note` notes (#317). `asked`'s comment names what the one-answer sites
+  settle (#318).
 
 ## 1.0.0-beta.6
 

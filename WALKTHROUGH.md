@@ -1,6 +1,6 @@
 # Walkthrough
 
-> Release snapshot for `v1.0.0-beta.6`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-beta.7`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots"). `THEORY.md` explains why the system is shaped this way; this
 > document follows one character through the code.
@@ -563,6 +563,74 @@ func named[T fmt.Stringer](values []T) map[string]T {
 So the spelling a record prints and the spelling the data is checked against
 are the same function.
 
+P. 12 makes skills "of three basic types: characteristic alterations …,
+weapon expertise …, and basic skill". Only a basic skill's name is open, an
+alphabet the code does not close, so the guards that matter sit in front of
+it. A cell that opens with a sign and did not
+parse as an alteration would otherwise lift as a skill whose name is the whole
+cell, and so would one that opens with an en dash, which looks like a minus
+and is not one:
+
+`internal/rules/parse.go` — `parseTableResult`
+
+```go
+	if isAlteration {
+		return traveller.AlterationResult{Characteristic: characteristic, Delta: size}, nil
+	}
+
+	if glyph, _ := utf8.DecodeRuneInString(cell); glyph == traveller.EnDash {
+		return nil, fmt.Errorf("%w: %q: %w", errMalformed, cell, traveller.ErrEnDash)
+	}
+
+	if startsWithSign(cell) {
+		return nil, fmt.Errorf("%w: %q begins with a sign but is not a characteristic alteration", errMalformed, cell)
+	}
+```
+
+Which glyphs are a sign is answered in one place, in `traveller`, and a
+target reads the same function, so the two cannot disagree (#297):
+
+`internal/traveller/target.go` — `Sign`
+
+```go
+func Sign(glyph rune) (int, bool) {
+	switch glyph {
+	case '+':
+		return 1, true
+	case '-', '\u2212':
+		return -1, true
+	default:
+		return 0, false
+	}
+}
+```
+
+A data file broken two ways reports the same fault every run, so a lift that
+finds faults in a loop walks a slice in a fixed order rather than a map, whose
+order Go randomises (#53). The Prior Service Table's row counts and the skill
+tables were the last two to change (#286). The skill tables are read by name
+in sorted order and then lifted in `traveller.SkillTables` order, which is
+p. 11's:
+
+`internal/rules/lift.go` — `liftSkillTables`
+
+```go
+	for _, table := range traveller.SkillTables {
+		rows := byTable[table]
+
+		if len(rows) != Faces {
+			return fmt.Errorf("%w: acquired skills, %v: %d rows, want %d", errMalformed, table, len(rows), Faces)
+		}
+```
+
+What the lift checks is the shape of a cell and the alphabet of a name, not
+that a value is the one the page prints. That is the second transcription's
+work, in this package's tests. Each file is decoded with plain
+`json.Unmarshal`, which tolerates an unknown key because the files carry
+their own `_cite` and `_note` keys. So a misspelled key leaves its field at
+zero; of four keys tried, three lifted that zero, and only the second
+transcription noticed (#317).
+
 ## 8. The record and what is rendered from it
 
 `render.JSON` projects the character into the record and marshals it. The
@@ -722,8 +790,11 @@ func (r *Roller) Die() int {
 ```
 
 A change to the order dice are consumed in changes which path a fixture walks.
-When the count changes, the script fails. When only the order changes, the
-golden fails (#289). Either way the fixture is re-scripted from a record that
-walks the new path, and the goldens are regenerated with
-`go test ./internal/chargen -regenerate`, which also writes the schema's two
-published examples.
+No failure names the throw that moved. The roller names only an index, when a
+script runs out or is left unread; a reorder usually re-paths a fixture and
+changes its count, so it fails there and wherever the new path diverges; and a
+change that moves no path at all fails nothing but a golden, whose message
+says to regenerate. So the golden diff is read before it is regenerated (#289).
+The fixture is then re-scripted from a record that walks the new path, and the
+goldens are regenerated with `go test ./internal/chargen -regenerate`, which
+also writes the schema's two published examples.
