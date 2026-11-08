@@ -15,12 +15,14 @@
 //
 //	// Holds: Six 2D rolls, in order.
 //
-// The bracket is the rule's authority, from a closed set: a page cite, which
-// opens with book:page and may name readings, "1:5; 3:22 (E011)"; a reading
-// alone, "(E011)", that ERRATA.md has a heading for; "ADR 0001", naming a file
-// in docs/adr; or one of the promise labels below, for a promise of the
-// tool's own. The readings and the ADRs are read from those documents, and a
-// cite outside the set fails the generator, naming the rule.
+// The bracket is the rule's authority, from a closed set: a page cite, pages
+// or ranges joined by ", " or "; ", the first with its book, then any readings
+// in one pair of parentheses, naming only Books 1 to 3 and readings ERRATA.md
+// has a heading for, "1:5; 3:22 (E011)"; a reading alone, "(E011)", that it
+// has a heading for; "ADR 0001", naming a file in docs/adr; or one of
+// the promise labels below, for a promise of the tool's own. The readings and
+// the ADRs are read from those documents, and a cite outside the set fails the
+// generator, naming the rule.
 //
 // A marker runs on to the following comment lines until a blank comment line,
 // the next marker or the end of the comment, so a long one wraps like prose.
@@ -113,6 +115,19 @@ var (
 
 	// pageCite is a page cite's leading book and page, "1:4" or "3:22".
 	pageCite = regexp.MustCompile(`^(\d+):(\d+)`)
+
+	// citedBook is every book a page cite names, "1:5; 3:22" naming 1 and 3,
+	// and citedReading every reading it names, "(E006, E007)" naming two.
+	citedBook    = regexp.MustCompile(`(\d+):\d+`)
+	citedReading = regexp.MustCompile(`E\d{3}`)
+
+	// pageCiteShape is the whole of a page cite as the tree writes one: pages
+	// or ranges, the first with its book and any later one with or without,
+	// joined by ", " or "; ", then any readings in one pair of parentheses.
+	// "1:5, 10", "1:4, 7–9 (E010)", "1:5; 3:22 (E011)", "1:9 (E006, E007)".
+	pageCiteShape = regexp.MustCompile(
+		`^\d+:\d+(?:[–-]\d+)?(?:(?:, |; )(?:\d+:)?\d+(?:[–-]\d+)?)*(?: \(E\d{3}(?:, E\d{3})*\))?$`,
+	)
 
 	// The labels the other cites are drawn from, as each document writes
 	// them: an ADR's file, a reading's heading.
@@ -267,19 +282,46 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 
 	victim := found.implementations[0]
 
-	for _, cite := range []string{"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain", "Determinism"} {
+	// Every form a page cite takes is accepted when what it names exists.
+	for _, cite := range []string{
+		"1:5", "1:2–3", "1:11-13", "1:5, 10", "1:4, 7–9 (E010)", "1:5, 1:7–8",
+		"1:5; 3:22 (E011)", "2:18–19", "1:9 (E006, E007)",
+	} {
+		err := known.check(withFirstCite(t, found, cite))
+		if err != nil {
+			t.Errorf("[%s] is a page cite naming what exists, and is refused: %v", cite, err)
+		}
+	}
+
+	// A page cite is checked too: every book it names is in authority, and
+	// every reading it names has a heading.
+	for _, cite := range []string{
+		"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain", "Determinism",
+		"1:5 (E099)", "4:5", "1:5; 4:22", "1:5; 3:22 (E099)", "0:5",
+		"1:9 (E006, E099)", "1:9 E099", "1:9 (e099)", "1:9 (e006)",
+		"1:5 garbage", "1:5; Book 4 p. 5", "1:5 (E99)", "1:5 (E0999)", "1:5,6", "1:5 (E006,E007)",
+	} {
 		t.Run(cite, func(t *testing.T) {
 			t.Parallel()
 
-			implementations := slices.Clone(found.implementations)
-
-			implementations[0].page = cite
-
-			broken := markers{implementations: implementations, holdings: found.holdings}
-
-			refused(t, known.check(broken), victim.rule)
+			refused(t, known.check(withFirstCite(t, found, cite)), victim.rule)
 		})
 	}
+}
+
+// withFirstCite is the tree's markers with the first implementation's cite
+// replaced, the rest untouched.
+func withFirstCite(t *testing.T, found markers, cite string) markers {
+	t.Helper()
+
+	implementations := slices.Clone(found.implementations)
+	if len(implementations) == 0 {
+		t.Fatal("the tree has no Implements: marker to re-cite")
+	}
+
+	implementations[0].page = cite
+
+	return markers{implementations: implementations, holdings: found.holdings}
 }
 
 // A hand edit to a table does not survive generation, and a hand edit to the
@@ -1095,14 +1137,17 @@ func (known authorities) readADRs(dir string) error {
 	return nil
 }
 
-// check refuses every implementation whose cite is neither a page nor an
-// authority that exists and is in force. A page cite's form is the page's own
-// business.
+// check refuses every implementation whose cite is not a page cite naming
+// only what exists, or an authority that exists and is in force. A page cite
+// is checked for what it names: every book is in authority and every reading
+// has a heading.
 func (known authorities) check(found markers) error {
 	var errs []error
 
 	for _, impl := range found.implementations {
 		if pageCite.MatchString(impl.page) {
+			errs = append(errs, known.checkPage(impl)...)
+
 			continue
 		}
 
@@ -1115,6 +1160,35 @@ func (known authorities) check(found markers) error {
 	}
 
 	return errors.Join(errs...)
+}
+
+// checkPage refuses a page cite that is not in pageCiteShape, or that names a
+// book outside authority or a reading ERRATA.md has no heading for.
+func (known authorities) checkPage(impl implementation) []error {
+	if !pageCiteShape.MatchString(impl.page) {
+		return []error{fmt.Errorf("%w: %q: %s cites [%s], which is no page cite's shape",
+			errMarker, impl.rule, impl.site, impl.page)}
+	}
+
+	var errs []error
+
+	for _, match := range citedBook.FindAllStringSubmatch(impl.page, -1) {
+		// Book 1, and Books 2 and 3 where Book 1 points at them (CLAUDE.md,
+		// Authority).
+		if !slices.Contains([]string{"1", "2", "3"}, match[1]) {
+			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], and Book %s is not in authority",
+				errMarker, impl.rule, impl.site, impl.page, match[1]))
+		}
+	}
+
+	for _, reading := range citedReading.FindAllString(impl.page, -1) {
+		if !known.cites["("+reading+")"] {
+			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], and ERRATA.md has no %s",
+				errMarker, impl.rule, impl.site, impl.page, reading))
+		}
+	}
+
+	return errs
 }
 
 // byPage orders rows Book 1 before 2 before 3, by page within a book, and

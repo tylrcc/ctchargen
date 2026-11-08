@@ -16,6 +16,10 @@ release turns out to be.
 - A data file broken two ways now reports the same fault every run in the
   Prior Service Table's row counts and the Acquired Skills tables, as it
   already did for ranks, commissions and promotions (#286).
+- The coverage generator checks a page cite whole: its form, every book it
+  names (1, 2 or 3) and every reading it names (a heading in ERRATA.md).
+  Before, anything opening with a book and page passed, and only a reading
+  cited alone was checked (#287).
 
 ## 1.0.0-beta.6
 
