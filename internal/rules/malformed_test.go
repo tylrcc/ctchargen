@@ -4,6 +4,8 @@ import (
 	"errors"
 	"strings"
 	"testing"
+
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // A malformed table must fail loudly, and must say which cell.
@@ -209,8 +211,8 @@ func TestMalformedSkills(t *testing.T) {
 			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "+x Social Standing" },
 			"begins with a sign",
 		},
-		// An en dash looks like a minus on screen and is neither minus in
-		// signs, so the cell is refused by name rather than lifted as a skill.
+		// An en dash looks like a minus on screen and is no sign, so the
+		// cell is refused by name rather than lifted as a skill.
 		"an alteration typed with an en dash": {
 			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "–1 Social Standing" },
 			"an en dash is not a minus",
@@ -231,6 +233,26 @@ func TestMalformedSkills(t *testing.T) {
 		wire := mustRead[wireSkills](t, "skills.json")
 		tc.breaks(&wire)
 		refuses(t, name, (&Rules{normalize: map[string]string{}}).liftSkills(wire), tc.mentions)
+	}
+}
+
+// An en-dash cell's refusal is the same error a target's is, so a caller
+// can tell it from any other malformed cell.
+func TestAnEnDashCellWrapsErrEnDash(t *testing.T) {
+	t.Parallel()
+
+	wire := mustRead[wireSkills](t, "skills.json")
+
+	table := wire.Tables["Service Skills Table"]
+	if len(table) == 0 || len(table[0]) == 0 {
+		t.Fatal("skills.json has no Service Skills Table cell to break")
+	}
+
+	table[0][0] = "–1 Social Standing"
+
+	err := (&Rules{normalize: map[string]string{}}).liftSkills(wire)
+	if !errors.Is(err, traveller.ErrEnDash) {
+		t.Errorf("lifting an en-dash cell: %v; want it to wrap traveller.ErrEnDash", err)
 	}
 }
 

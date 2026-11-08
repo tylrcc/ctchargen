@@ -1,6 +1,7 @@
 package traveller_test
 
 import (
+	"errors"
 	"strings"
 	"testing"
 
@@ -53,6 +54,29 @@ func TestParseTargetRefusesNonsense(t *testing.T) {
 	}
 }
 
+// A sign is a plus or either minus a data file may carry. An en dash looks
+// like a minus and is not one.
+func TestSign(t *testing.T) {
+	t.Parallel()
+
+	for _, tc := range []struct {
+		glyph rune
+		sign  int
+		ok    bool
+	}{
+		{'+', 1, true},
+		{'-', -1, true},
+		{'−', -1, true},
+		{'–', 0, false},
+		{'x', 0, false},
+	} {
+		sign, ok := traveller.Sign(tc.glyph)
+		if sign != tc.sign || ok != tc.ok {
+			t.Errorf("Sign(%q) = %d, %v; want %d, %v", tc.glyph, sign, ok, tc.sign, tc.ok)
+		}
+	}
+}
+
 // An en dash is refused in either position, and the error says why.
 func TestParseTargetRefusesAnEnDashByName(t *testing.T) {
 	t.Parallel()
@@ -63,6 +87,10 @@ func TestParseTargetRefusesAnEnDashByName(t *testing.T) {
 			t.Errorf("ParseTarget(%q) = %v, want an error", in, got)
 
 			continue
+		}
+
+		if !errors.Is(err, traveller.ErrEnDash) {
+			t.Errorf("ParseTarget(%q): %v; want it to wrap ErrEnDash", in, err)
 		}
 
 		if !strings.Contains(err.Error(), "an en dash is not a minus") {

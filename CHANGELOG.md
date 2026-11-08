@@ -10,6 +10,9 @@ release turns out to be.
 - An Acquired Skills cell typed with an en dash (`–1 Social Standing`) is
   refused the same way, where it used to lift silently as a skill of that
   name (#288).
+- Which glyphs are a sign, and that an en dash is not one, is defined once in
+  `traveller` and read by both targets and table cells, where three lists
+  across two packages said it before. No behaviour changes (#297).
 
 ## 1.0.0-beta.6
 

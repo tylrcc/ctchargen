@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
@@ -65,12 +66,12 @@ func parseTitle(name string) (traveller.Title, error) {
 // alteration matches a characteristic alteration as the tables print one:
 // "+1 Strength", "-1 Social Standing", "+2 Education".
 //
-// Both minus glyphs are accepted, the ASCII hyphen a data file is typed with
-// and the U+2212 the page is set in, for the same reason traveller.Target
-// accepts both: someone transcribing p. 11 will type what he sees, and the
-// two are indistinguishable on screen. A signed cell that does not parse
+// The sign is whatever traveller.Sign reads as one, so a cell accepts the
+// same minus glyphs a target does: someone transcribing p. 11 will type what
+// he sees, and the two minuses are indistinguishable on screen. A cell whose
+// first glyph is no sign is no alteration. A signed cell that does not parse
 // here is refused outright rather than accumulating as a skill of that name.
-var alteration = regexp.MustCompile(`^([+\-−])(\d+) (.+)$`)
+var alteration = regexp.MustCompile(`^(.)(\d+) (.+)$`)
 
 // parseAlteration reads a characteristic alteration, reporting whether the
 // cell is one at all.
@@ -80,14 +81,19 @@ func parseAlteration(cell string) (traveller.Characteristic, int, bool, error) {
 		return 0, 0, false, nil
 	}
 
+	glyph, _ := utf8.DecodeRuneInString(match[1])
+
+	sign, ok := traveller.Sign(glyph)
+	if !ok {
+		return 0, 0, false, nil
+	}
+
 	size, err := strconv.Atoi(match[2])
 	if err != nil {
 		return 0, 0, false, fmt.Errorf("%w: alteration %q: %w", errMalformed, cell, err)
 	}
 
-	if match[1] != "+" {
-		size = -size
-	}
+	size *= sign
 
 	characteristic, err := parseCharacteristic(match[3])
 	if err != nil {
@@ -119,27 +125,14 @@ func parseDM(amount int, condition string) (DM, error) {
 	return DM{Amount: amount, Characteristic: characteristic, Threshold: target}, nil
 }
 
-// signs are the three characters a cell may open a characteristic
-// alteration with: the ASCII plus and hyphen a data file is typed with, and
-// the U+2212 the page is set in.
-var signs = []string{"+", "-", "−"}
-
-// enDash is not a minus. It looks like one on screen, so a cell opening
-// with one is a slip, and it is refused by name rather than read as either
-// minus in signs.
-const enDash = "–"
-
 // startsWithSign reports whether a cell opens with the sign of an
 // alteration. P. 3 puts the sign of a modifier before its number, so a cell
 // beginning with one is an alteration or it is a defect — never a skill.
 func startsWithSign(cell string) bool {
-	for _, sign := range signs {
-		if strings.HasPrefix(cell, sign) {
-			return true
-		}
-	}
+	glyph, _ := utf8.DecodeRuneInString(cell)
+	_, ok := traveller.Sign(glyph)
 
-	return false
+	return ok
 }
 
 // parseTableResult reads one cell of the Acquired Skills Table (p. 11).
@@ -161,8 +154,8 @@ func parseTableResult(cell string, normalize map[string]string) (traveller.Table
 		return traveller.AlterationResult{Characteristic: characteristic, Delta: size}, nil
 	}
 
-	if strings.HasPrefix(cell, enDash) {
-		return nil, fmt.Errorf("%w: %q: an en dash is not a minus", errMalformed, cell)
+	if glyph, _ := utf8.DecodeRuneInString(cell); glyph == traveller.EnDash {
+		return nil, fmt.Errorf("%w: %q: %w", errMalformed, cell, traveller.ErrEnDash)
 	}
 
 	if startsWithSign(cell) {

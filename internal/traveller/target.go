@@ -61,14 +61,31 @@ func NewTarget(number int, modality Modality) Target {
 	return Target{number: number, modality: modality}
 }
 
-// minusSigns are the two characters a minus may arrive as: the ASCII hyphen
-// a data file is typed with, and the U+2212 the page is set in.
-const minusSigns = "-−"
+// Sign reads one glyph as the sign of a number: +1 for a plus, and -1 for
+// either of the two characters a minus may arrive as, the ASCII hyphen a
+// data file is typed with and the U+2212 the page is set in. Anything else
+// is no sign, EnDash included.
+//
+// It is the one place that says which glyphs are signs, so a target and a
+// table cell agree on it.
+func Sign(glyph rune) (int, bool) {
+	switch glyph {
+	case '+':
+		return 1, true
+	case '-', '\u2212':
+		return -1, true
+	default:
+		return 0, false
+	}
+}
 
-// enDash is not a minus. It looks like one on screen, so one typed into a
-// target is a slip, and it is refused by name rather than read as either of
-// minusSigns.
-const enDash = '–'
+// EnDash is not a minus. It looks like one on screen, so one typed where a
+// sign belongs is a slip, and it is refused by name, with ErrEnDash, rather
+// than read as a minus.
+const EnDash = '\u2013'
+
+// ErrEnDash is wrapped by every refusal of an EnDash.
+var ErrEnDash = errors.New("an en dash is not a minus")
 
 // ParseTarget reads a target in the book's own notation: "8+", "3-", "12".
 //
@@ -84,19 +101,19 @@ func ParseTarget(s string) (Target, error) {
 		return Target{}, fmt.Errorf("%w: it is empty", errTarget)
 	}
 
-	if slices.Contains(runes, enDash) {
-		return Target{}, fmt.Errorf("%w %q: an en dash is not a minus", errTarget, s)
+	if slices.Contains(runes, EnDash) {
+		return Target{}, fmt.Errorf("%w %q: %w", errTarget, s, ErrEnDash)
 	}
 
 	modality := Exactly
 
-	if last := runes[len(runes)-1]; last == '+' || strings.ContainsRune(minusSigns, last) {
+	if sign, ok := Sign(runes[len(runes)-1]); ok {
 		if len(runes) == 1 {
 			return Target{}, fmt.Errorf("%w %q: a sign with no number", errTarget, s)
 		}
 
 		modality = AtLeast
-		if last != '+' {
+		if sign < 0 {
 			modality = AtMost
 		}
 
@@ -107,12 +124,11 @@ func ParseTarget(s string) (Target, error) {
 	// modifier before it: "throws are always followed by a sign unless the
 	// number must be thrown exactly, and DMs are always preceded by a
 	// sign." A leading sign here means a DM was passed off as a target.
-	digits := string(runes)
-	if digits == "" || digits[0] == '+' || digits[0] == '-' || strings.HasPrefix(digits, "−") {
+	if _, ok := Sign(runes[0]); ok {
 		return Target{}, fmt.Errorf("%w %q: a leading sign marks a modifier, not a throw", errTarget, s)
 	}
 
-	number, err := strconv.Atoi(digits)
+	number, err := strconv.Atoi(string(runes))
 	if err != nil {
 		return Target{}, fmt.Errorf("%w %q: %w", errTarget, s, err)
 	}
