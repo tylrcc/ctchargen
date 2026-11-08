@@ -338,9 +338,9 @@ type Retirement struct {
 	PerAdditionalTerm traveller.Credits
 
 	// lastTabled is the largest term the table prints a row for, taken from
-	// the data rather than written here. P. 21's table ends at 8 terms, but
-	// that 8 is a number the page prints, and a number the page prints is
-	// data with a cite, never a constant in the code beside it.
+	// the data rather than written here. P. 21's table ends at 8 terms, and
+	// pay beyond it is counted from that last row, so the 8 indexes a printed
+	// table (CLAUDE.md's Authority point 6).
 	lastTabled int
 }
 

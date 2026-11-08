@@ -30,6 +30,8 @@ release turns out to be.
 - Comments and CODING_STANDARDS.md no longer count things that grow: the
   alphabets, the schema's nested objects, the event kinds, the readings,
   the choice points that offer a list, and the decider's methods (#291).
+- `Retirement.lastTabled`'s comment gives the indexing test for why the 8 is
+  data, not the withdrawn "a number the page prints is data" (#292).
 
 ## 1.0.0-beta.6
 
