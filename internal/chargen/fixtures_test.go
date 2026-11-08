@@ -52,11 +52,22 @@ func (f fixture) generate(t *testing.T) *chargen.Character {
 func (f fixture) run(t *testing.T, options ...chargen.Option) (*chargen.Character, error) {
 	t.Helper()
 
+	return f.runWith(t, f.policy, options...)
+}
+
+// runWith is run with another decider. One that answers as the fixture's
+// policy does walks the same path, and a run that finishes is held to the
+// whole script as run's is. One that answers otherwise walks somewhere the
+// script was not written for: it fails if it asks for a die past the end,
+// and, finishing, if it leaves any unread.
+func (f fixture) runWith(t *testing.T, decider chargen.Decider, options ...chargen.Option) (*chargen.Character, error) {
+	t.Helper()
+
 	roller := f.roller(t)
 
 	options = append(slices.Clip(options), chargen.WithRoller(roller))
 
-	character, err := chargen.Generate(f.inputs(), f.policy, options...)
+	character, err := chargen.Generate(f.inputs(), decider, options...)
 	if err != nil {
 		return nil, err //nolint:wrapcheck // the engine's own error, for the caller to judge
 	}

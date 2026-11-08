@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The two decider-guard tests walk the fixtures' scripted dice (#251), so
+  they reach the same weapon choices on every run. The forge test forges at
+  `Weapon` and at `MusterWeapon` in separate walks and requires each to be
+  reached; before, a forged `Weapon` answer ended its run, and nothing made
+  any run reach `MusterWeapon`.
 - The kept transcript numbers its step headings, as the live view does
   (#249): `## 20. term 1 (pp. 5-7)` rather than `## term 1 (pp. 5-7)`, so no
   `--history` transcript skips a number. Every golden transcript is

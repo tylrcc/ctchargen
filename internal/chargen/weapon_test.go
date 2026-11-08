@@ -114,17 +114,28 @@ func (r reaching) Weapon(
 // The narrowing was by static type alone, so vary.(chargen.Roller) gave a
 // decider Die and TwoDice back, and the dice it threw reached no event: a
 // different character from the same dice, recorded as an honest one (#136).
+//
+// Every fixture walks its own script, so the same Weapon choices are reached
+// on every run (#251): reaching answers as the policy does, so each fixture
+// is asked exactly as often as its own walk records a Weapon choice.
 func TestADeciderCannotReachTheRollerThroughVary(t *testing.T) {
 	t.Parallel()
 
 	asked, reached := 0, 0
 
 	for _, fixture := range fixtures {
+		want := chosenAt(fixture.generate(t), traveller.ChoiceWeapon)
+		before := asked
+
 		decider := reaching{Policy: fixture.policy, asked: &asked, reached: &reached}
 
-		_, err := chargen.Generate(fixture.inputs(), decider)
+		_, err := fixture.runWith(t, decider)
 		if err != nil {
 			t.Fatalf("%s: %v", fixture.name, err)
+		}
+
+		if got := asked - before; got != want {
+			t.Errorf("%s: asked Weapon %d times, and its walk records %d", fixture.name, got, want)
 		}
 	}
 
@@ -137,25 +148,36 @@ func TestADeciderCannotReachTheRollerThroughVary(t *testing.T) {
 	}
 }
 
-// forging is the --auto policy, except that at both weapon choices it writes
-// a weapon of its own into the offer and answers with it.
+// forging is the --auto policy, except that at one weapon choice it writes a
+// weapon of its own into the offer and answers with it. The other is the
+// policy's, so a walk forging at MusterWeapon reaches it along the fixture's
+// own path, its skill-table Weapon answered as the script expects.
 type forging struct {
 	chargen.Policy
 
+	at    traveller.ChoicePoint
 	asked *int
 }
 
 const forged traveller.WeaponName = "Lightsaber"
 
 func (f forging) Weapon(
-	_ traveller.WeaponCategory, from []traveller.WeaponName, _ chargen.Vary,
+	category traveller.WeaponCategory, from []traveller.WeaponName, vary chargen.Vary,
 ) (traveller.WeaponName, error) {
+	if f.at != traveller.ChoiceWeapon {
+		return f.Policy.Weapon(category, from, vary) //nolint:wrapcheck // the policy's own error, unchanged
+	}
+
 	return f.forge(from), nil
 }
 
 func (f forging) MusterWeapon(
-	_ traveller.WeaponCategory, from, _ []traveller.WeaponName,
+	category traveller.WeaponCategory, from, received []traveller.WeaponName,
 ) (traveller.WeaponBenefit, error) {
+	if f.at != traveller.ChoiceMusterWeapon {
+		return f.Policy.MusterWeapon(category, from, received) //nolint:wrapcheck // the policy's own error, unchanged
+	}
+
 	return traveller.TakeWeapon{Weapon: f.forge(from)}, nil
 }
 
@@ -175,27 +197,65 @@ func (f forging) forge(from []traveller.WeaponName) traveller.WeaponName {
 // The offer is named before the decider is asked. Named afterwards, it read
 // the slice the decider had written to, and the gate passed a weapon no page
 // prints (#174).
+//
+// Each weapon choice is forged in a walk of its own (#251): a forged Weapon
+// answer ends the run, so a walk forging at both never reached MusterWeapon.
+// Every fixture walks its script, so the same choices are reached every run:
+// a fixture whose own walk makes the choice is refused there, and one whose
+// walk does not finishes cleanly, never asked.
 func TestADeciderCannotForgeItsOwnOffer(t *testing.T) {
 	t.Parallel()
 
-	asked := 0
+	for _, point := range []traveller.ChoicePoint{traveller.ChoiceWeapon, traveller.ChoiceMusterWeapon} {
+		t.Run(point.String(), func(t *testing.T) {
+			t.Parallel()
 
-	for _, fixture := range fixtures {
-		before := asked
+			reachedBy := 0
 
-		_, err := chargen.Generate(fixture.inputs(), forging{Policy: fixture.policy, asked: &asked})
+			for _, fixture := range fixtures {
+				reaches := chosenAt(fixture.generate(t), point) > 0
+				asked := 0
 
-		switch {
-		case asked == before:
-			continue
-		case err == nil:
-			t.Errorf("%s: a forged weapon was accepted as offered", fixture.name)
-		case !strings.Contains(err.Error(), string(forged)):
-			t.Errorf("%s: refused, but not for the forgery: %v", fixture.name, err)
+				_, err := fixture.runWith(t, forging{Policy: fixture.policy, at: point, asked: &asked})
+
+				switch {
+				case reaches != (asked > 0):
+					t.Errorf("%s: asked %v = %v, and its walk records it = %v",
+						fixture.name, point, asked > 0, reaches)
+
+					continue
+				case !reaches:
+					if err != nil {
+						t.Errorf("%s: never asked %v, and failed anyway: %v", fixture.name, point, err)
+					}
+
+					continue
+				case err == nil:
+					t.Errorf("%s: a forged %v was accepted as offered", fixture.name, point)
+				case !strings.Contains(err.Error(), string(forged)):
+					t.Errorf("%s: refused at %v, but not for the forgery: %v", fixture.name, point, err)
+				}
+
+				reachedBy++
+			}
+
+			if reachedBy == 0 {
+				t.Fatalf("no fixture reaches %v, so this checks nothing", point)
+			}
+		})
+	}
+}
+
+// chosenAt counts the choices a character's walk made at a point.
+func chosenAt(character *chargen.Character, point traveller.ChoicePoint) int {
+	n := 0
+
+	for _, event := range character.Events {
+		choice, isChoice := event.(traveller.ChoiceEvent)
+		if isChoice && choice.Point == point {
+			n++
 		}
 	}
 
-	if asked == 0 {
-		t.Fatal("no fixture reaches a weapon choice, so this checks nothing")
-	}
+	return n
 }

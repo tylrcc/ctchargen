@@ -164,9 +164,10 @@ unread; a test whose session stops partway on purpose takes the walk through
 `partly` and says why (#245). A walk a person answers scripts no draws,
 because a person answers what the policy would have drawn.
 
-Not every test that borrows a fixture walks it. The two weapon-choice tests
-take a fixture's inputs and roll unscripted dice, so which choices they reach
-varies from run to run (#251).
+A test that needs a decider of its own still walks the fixture's script,
+through `runWith`. The two weapon-choice tests do (#251), so they reach the
+same choices on every run, and each fixture is held to the choices its own
+walk records.
 
 The fixtures are also where the record proves it is a way back. Every
 script was extracted from its golden's own event log, and the goldens
@@ -190,8 +191,9 @@ Three corollaries you must hold:
   `WeaponPick`) passes `varyOnly{a.run.roll}`, a wrapper with nothing on it but
   `Among`, so a type assertion back to `Roller` finds nothing. The run's own
   `Roller` passed bare would have kept its dynamic type, and the dice with it.
-  `TestADeciderCannotReachTheRollerThroughVary` holds it, on random dice and
-  refusing to pass if no run reached the Weapon choice (#251).
+  `TestADeciderCannotReachTheRollerThroughVary` holds it, walking every
+  fixture's script and asking each as often as its walk makes the Weapon
+  choice (#251).
 - The record is the only way back to a character (ADR 0001). Every rendering ends
   by saying so, and nothing prints a command to re-run.
 
@@ -616,8 +618,8 @@ reach a later character. Nor can it pass for an offer in this one: each
 so an answer the decider wrote into its own slice is not in what `record`
 checks against, and is refused. `takeWeapon` does not re-check the answer
 because that gate already has. `chargen.TestADeciderCannotForgeItsOwnOffer`
-holds it at whichever weapon choice its random dice reach, and a forged
-`Weapon` answer ends the run before `MusterWeapon` can be asked (#251).
+holds it at both weapon choices, each forged in a walk of its own, because a
+forged `Weapon` answer ends the run before `MusterWeapon` can be asked (#251).
 The premise covers deciders only. The yes-or-no pair in idea 6 is never handed
 to a decider; it is built per question, so a write through a finished
 record's event reaches that event and no other question's offer.
