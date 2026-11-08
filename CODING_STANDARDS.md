@@ -35,7 +35,8 @@ from the prose is the defect the check exists for.
 An `Implements:` marker belongs on the declaration that carries the rule — the
 function that applies it, the table that holds it — and not on a helper that
 only serves that declaration. A helper that carries a rule of its own carries
-that rule's marker. For a promise of the tool's own that the test harness
+that rule's marker, and a rule carried by several declarations is marked on
+each. For a promise of the tool's own that the test harness
 keeps, the carrier is test code, a helper or a roster: the stamping conditions
 and the fixture roster carry theirs, and the step lookup the conditions read
 records with carries its own. It is never a test: a test holds a rule rather

@@ -38,6 +38,10 @@ release turns out to be.
   package doc (#293).
 - "Values 2–12 initially" is marked on the six 2D rolls that carry it, and
   `Profile.Alter` carries only "Never above 15" (#294).
+- Comments no longer say the page is set in U+2212, which no page image can
+  show; `traveller`'s package doc points to Authority point 6 for when a
+  printed range is data; and CODING_STANDARDS.md says a rule carried by several
+  declarations is marked on each.
 
 ## 1.0.0-beta.6
 

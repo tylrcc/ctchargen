@@ -9,8 +9,8 @@
 // The dividing rule between what is a type here and what is data in the
 // rules package: types carry identity, never rule invariants. A service that
 // is not one of the six is not a service; a characteristic outside the six
-// does not exist. A range a page prints is not a type — it is data, with its
-// cite, where a reader will look for it.
+// does not exist. A range a page prints is not a type; whether it is data or
+// a constant beside the code is CLAUDE.md's Authority point 6.
 //
 // Exhaustiveness comes in two strengths here, and the difference matters:
 //

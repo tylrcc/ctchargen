@@ -20,8 +20,8 @@ func TestParseTarget(t *testing.T) {
 		{"8+", 8, traveller.AtLeast},
 		{"3+", 3, traveller.AtLeast},
 		{"10+", 10, traveller.AtLeast},
-		// The book sets its minus as U+2212; a data file is typed with an
-		// ASCII hyphen. Both must read as the same target.
+		// A data file is typed with an ASCII hyphen, and the minus the book
+		// prints may be typed as U+2212. Both must read as the same target.
 		{"3-", 3, traveller.AtMost},
 		{"3−", 3, traveller.AtMost},
 		{"12", 12, traveller.Exactly},
