@@ -50,6 +50,9 @@ release turns out to be.
 - A page range in a cite is written with an en dash, and the coverage
   generator refuses a hyphen: one marker cited `1:11-13` beside the tree's
   `1:11–13` (#311).
+- `services.json`'s retirement pay names its per-term increment
+  `perAdditionalTerm`, after p. 21's "per additional term", where it was
+  `perTermBeyondEight`: the 8 lives only in the table's last row (#312).
 
 ## 1.0.0-beta.6
 

@@ -45,8 +45,8 @@ type wireServices struct {
 			Terms int   `json:"terms"`
 			Pay   int64 `json:"pay"`
 		} `json:"byTerms"`
-		PerTermBeyondEight int64    `json:"perTermBeyondEight"`
-		PaidBy             []string `json:"paidBy"`
+		PerAdditionalTerm int64    `json:"perAdditionalTerm"`
+		PaidBy            []string `json:"paidBy"`
 	} `json:"retirementPay"`
 }
 
@@ -468,12 +468,12 @@ func (r *Rules) liftRetirement(wire wireServices) error {
 		r.retirement.lastTabled = row.Terms
 	}
 
-	if pay.PerTermBeyondEight <= 0 {
+	if pay.PerAdditionalTerm <= 0 {
 		return fmt.Errorf("%w: retirement pay: %d per additional term past the table", errMalformed,
-			pay.PerTermBeyondEight)
+			pay.PerAdditionalTerm)
 	}
 
-	r.retirement.PerAdditionalTerm = traveller.Credits(pay.PerTermBeyondEight)
+	r.retirement.PerAdditionalTerm = traveller.Credits(pay.PerAdditionalTerm)
 
 	if len(pay.PaidBy) == 0 {
 		return fmt.Errorf("%w: retirement pay: no service pays it", errMalformed)

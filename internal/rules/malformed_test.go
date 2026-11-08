@@ -161,7 +161,7 @@ func TestMalformedRetirement(t *testing.T) {
 	refuses(t, "pension rows out of order", r.liftRetirement(wire), "the table's rows ascend")
 
 	r, wire = retirementFixture(t)
-	wire.RetirementPay.PerTermBeyondEight = 0
+	wire.RetirementPay.PerAdditionalTerm = 0
 	refuses(t, "nothing paid past the table", r.liftRetirement(wire), "per additional term")
 
 	// The two cases that empty a slice come last: nothing may index these

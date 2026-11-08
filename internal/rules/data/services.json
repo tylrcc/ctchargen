@@ -72,7 +72,7 @@
       { "terms": 7, "pay": 8000 },
       { "terms": 8, "pay": 10000 }
     ],
-    "perTermBeyondEight": 2000,
+    "perAdditionalTerm": 2000,
     "paidBy": ["Navy", "Marines", "Army", "Merchants"]
   }
 }
