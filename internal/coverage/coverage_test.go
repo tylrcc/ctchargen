@@ -18,11 +18,11 @@
 // The bracket is the rule's authority, from a closed set: a page cite, pages
 // or ranges (an en dash) joined by ", " or "; ", the first with its book,
 // then any readings in one pair of parentheses, naming only Books 1 to 3 and
-// readings ERRATA.md has a heading for, "1:5; 3:22 (E011)"; a reading alone,
-// "(E011)", that it has a heading for; "ADR 0001", naming a file in docs/adr;
-// or one of the promise labels below, for a promise of the tool's own. The readings and
-// the ADRs are read from those documents, and a cite outside the set fails the
-// generator, naming the rule.
+// readings rules declares, "1:5; 3:22 (E011)"; a reading alone, "(E011)",
+// that it declares; "ADR 0001", naming a file in docs/adr; or one of the
+// promise labels below, for a promise of the tool's own. The readings are
+// read from rules' values and the ADRs from their files, and a cite outside
+// the set fails the generator, naming the rule.
 //
 // A marker runs on to the following comment lines until a blank comment line,
 // the next marker or the end of the comment, so a long one wraps like prose.
@@ -84,6 +84,8 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/philoserf/ctchargen/internal/rules"
 )
 
 //nolint:gochecknoglobals // the flag package has no other shape.
@@ -97,8 +99,7 @@ const (
 	schema   = "docs/character.schema.json"
 
 	// The documents a cite that is not a page may name.
-	adrDir   = "docs/adr"
-	readings = "internal/rules/data/ERRATA.md"
+	adrDir = "docs/adr"
 
 	// rosterDir and rosterVar are where chargen's fixture roster is declared.
 	rosterDir = "internal/chargen"
@@ -129,10 +130,8 @@ var (
 		`^\d+:\d+(?:–\d+)?(?:(?:, |; )(?:\d+:)?\d+(?:–\d+)?)*(?: \(E\d{3}(?:, E\d{3})*\))?$`,
 	)
 
-	// The labels the other cites are drawn from, as each document writes
-	// them: an ADR's file, a reading's heading.
-	adrFile        = regexp.MustCompile(`^(\d{4})-.+\.md$`)
-	readingHeading = regexp.MustCompile(`(?m)^### (E\d{3}) — `)
+	// The label an ADR cite is drawn from, as its file is named.
+	adrFile = regexp.MustCompile(`^(\d{4})-.+\.md$`)
 )
 
 // promises are the labels a promise of the tool's own cites. They are the
@@ -294,7 +293,7 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 	}
 
 	// A page cite is checked too: its shape, every book it names is in
-	// authority, and every reading it names has a heading.
+	// authority, and every reading it names is declared.
 	for _, cite := range []string{
 		"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain", "Determinism",
 		"1:5 (E099)", "4:5", "1:5; 4:22", "1:5; 3:22 (E099)", "0:5",
@@ -1089,8 +1088,8 @@ func joined(found markers) (map[string]row, []error) {
 }
 
 // authorities is every cite that is not a page and names something that
-// exists: the promise labels, and the ADRs and readings read from the
-// documents themselves.
+// exists: the promise labels, the ADRs read from their files, and the
+// readings rules declares.
 type authorities struct {
 	cites map[string]bool
 }
@@ -1107,13 +1106,8 @@ func readAuthorities(dir string) (authorities, error) {
 		return authorities{}, err
 	}
 
-	text, err := os.ReadFile(filepath.Join(dir, readings))
-	if err != nil {
-		return authorities{}, fmt.Errorf("%w: %w", errMarker, err)
-	}
-
-	for _, match := range readingHeading.FindAllStringSubmatch(string(text), -1) {
-		known.cites["("+match[1]+")"] = true
+	for _, r := range rules.Readings() {
+		known.cites["("+r.ID.String()+")"] = true
 	}
 
 	return known, nil
@@ -1164,7 +1158,7 @@ func (known authorities) check(found markers) error {
 }
 
 // checkPage refuses a page cite that is not in pageCiteShape, or that names a
-// book outside authority or a reading ERRATA.md has no heading for.
+// book outside authority or a reading rules does not declare.
 func (known authorities) checkPage(impl implementation) []error {
 	if !pageCiteShape.MatchString(impl.page) {
 		return []error{fmt.Errorf("%w: %q: %s cites [%s], which is no page cite's shape",
@@ -1184,7 +1178,7 @@ func (known authorities) checkPage(impl implementation) []error {
 
 	for _, reading := range citedReading.FindAllString(impl.page, -1) {
 		if !known.cites["("+reading+")"] {
-			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], and ERRATA.md has no %s",
+			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], and no reading is %s",
 				errMarker, impl.rule, impl.site, impl.page, reading))
 		}
 	}

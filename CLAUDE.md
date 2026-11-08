@@ -150,7 +150,7 @@ readings are the fallback.
 
 | File                            | Governs                                                                                                                                                                                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition. Embedded and lifted by `rules`, so an erratum with no entry or an entry with no erratum is a build defect.                                                               |
+| `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition, as prose. The readings themselves are values in `rules`; this copy is held to them by a test until #323 removes it.                                                      |
 | `docs/COVERAGE.md`              | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
 | `docs/character.schema.json`    | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
 | `THEORY.md`, `WALKTHROUGH.md`   | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                                                                      |
@@ -158,9 +158,10 @@ readings are the fallback.
 | `CLAUDE.md`                     | This file.                                                                                                                                                                                                                                  |
 
 Each fact lives in one place, so there is no second copy to hold to the
-first. The readings document is the readings, and `rules` lifts it: an
-`Erratum` constant with no entry, or an entry with no constant, fails the
-lift. The `--auto` policy is its own doc comments. `COVERAGE.md`'s tables are
+first, with one exception until #323: the readings are values in `rules`,
+one per `Erratum` constant, so a reading missing or one too many does not
+compile, and the readings document is held to them field by field until it
+goes. The `--auto` policy is its own doc comments. `COVERAGE.md`'s tables are
 generated from markers beside the code, and a rule an implementation names
 and no test holds, or the reverse, fails the generator. What still describes
 the code from outside it — the schema's strategy enums — is
@@ -180,9 +181,9 @@ promise (#199).
 
 - `traveller`: the domain. Alphabets, values, and the sums that say "exactly
   one of".
-- `rules`: every table of pp. 4–25 and the readings document, embedded and
-  lifted once. The lift validates cells and names; values are the second
-  transcription's.
+- `rules`: every table of pp. 4–25, embedded and lifted once, and the
+  readings, declared as values. The lift validates the tables' cells and
+  names; their values are the second transcription's.
 - `dice`: an unseeded stream. The record is the only way back (ADR 0001).
 - `chargen`: the procedure, the `Decider` it asks, and the `--auto` `Policy`,
   which describes itself. Its tests hold the readings, the choice points and
@@ -258,10 +259,10 @@ go run ./cmd/ctchargen new --auto --sheet
   `go run ./internal/mutate`, which makes the edit in a scratch copy and never
   in the tree, prints the command's output, and says `KILLED` or `SURVIVED`.
 - **An erratum's stamping condition is machine-checked, not just reachable**
-  (#66). `ERRATA.md` states each as a predicate over the finished record, and
-  `internal/chargen/stamping_test.go` holds what a record stamps to what the document
-  says it should, quoting the lifted stamped-on prose when it fails. Write the
-  predicate from the document's prose, never from the stamping code: a condition
+  (#66). Each reading states it as a predicate over the finished record, and
+  `internal/chargen/stamping_test.go` holds what a record stamps to what the
+  reading says it should, quoting its stamped-on prose when it fails. Write the
+  predicate from the reading's prose, never from the stamping code: a condition
   transcribed from the thing it checks is one reading written twice, which is
   the same trap rule 3 above exists for.
 

@@ -8,9 +8,10 @@
 // defect that surfaces immediately rather than a runtime condition some path
 // might reach.
 //
-// The readings document, data/ERRATA.md, is embedded and lifted the same
-// way. It stays hand-written prose; only its entries are parsed, and an
-// erratum with no entry or an entry with no erratum fails the lift.
+// The readings are Go values here, one per erratum, so a reading missing or
+// one with no erratum does not compile. The readings document,
+// data/ERRATA.md, is still embedded and lifted, and its tests hold it to
+// those values field by field until it goes.
 //
 // Every table is transcribed twice: once into data/, and once into this
 // package's tests, from the same visual reading of the page. The two must
@@ -64,7 +65,6 @@ type Rules struct {
 	eligibility Eligibility
 	education   Gate
 	retirement  Retirement
-	readings    [len(traveller.Errata)]Reading
 }
 
 // Load returns the lifted rules, loading and validating them once.

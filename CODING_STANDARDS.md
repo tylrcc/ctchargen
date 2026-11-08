@@ -2,7 +2,7 @@
 
 The rules a reviewer holds a diff to. Each is a judgement no check makes;
 what a check makes — formatting, lint, links, the coverage map's markers, the
-readings' lift — is the gate's, and is not repeated here. `CLAUDE.md` carries
+readings' count — is the gate's, and is not repeated here. `CLAUDE.md` carries
 the authority rules every change answers to; these are the ones a diff can be
 read against.
 
@@ -20,8 +20,8 @@ name-only sweep left stale prose in every ticket of #203 and #204.
 Comments and documents quote Book 1 to 3 to show where a rule comes from. A
 quotation moved, rewrapped or retyped must match its source word for word,
 punctuation and emphasis included; compare it against the same quotation
-elsewhere in the tree. A reading's stamped-on prose is quoted by lifting it
-(`rules.Reading`), never by a copy beside the predicate.
+elsewhere in the tree. A reading's stamped-on prose is quoted from its value
+(`rules.ReadingOf`), never by a copy beside the predicate.
 
 ## A stamping predicate is written from the prose
 

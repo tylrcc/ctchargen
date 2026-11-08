@@ -18,7 +18,7 @@ import (
 const goldens = "testdata"
 
 // nobility is the Social Standing at which Book 3 p. 22 confers a title, as
-// the readings document's E011 states it: "final Social Standing is 11 or
+// E011's reading states it: "final Social Standing is 11 or
 // greater".
 const nobility = 11
 
@@ -44,13 +44,13 @@ const (
 	aRoll  = "roll"
 )
 
-// A reading, and the condition the readings document states for it.
+// A reading, and the condition it states.
 //
 // The predicate is written by hand from the reading's stamped-on prose, and
 // never from the code that does the stamping. A condition transcribed from
 // the thing it checks is one reading written twice, which would make the
 // check decorative (CLAUDE.md, and #77). A failure quotes the prose itself,
-// lifted by rules, rather than a copy typed beside the predicate; the
+// as rules declares it, rather than a copy typed beside the predicate; the
 // comments below quote it only where a predicate needs its reason shown.
 type reading struct {
 	id    traveller.Erratum
@@ -79,8 +79,8 @@ type reading struct {
 // list is the tool's claim about which readings its character rests on.
 //
 // Holds: E011 is stamped only where the reading changed the answer.
-// Holds: The errata a record stamps are exactly those whose condition ERRATA.md
-// states.
+// Holds: The errata a record stamps are exactly those whose reading's condition
+// holds.
 func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 	t.Parallel()
 
@@ -120,10 +120,10 @@ func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 			switch {
 			case want && !got:
 				t.Errorf("%s: satisfies %v but does not stamp it. Stamped on: %s",
-					rec.name, r.id, stampedOn(tables, r.id))
+					rec.name, r.id, stampedOn(r.id))
 			case got && !want:
 				t.Errorf("%s: stamps %v but does not satisfy it. Stamped on: %s",
-					rec.name, r.id, stampedOn(tables, r.id))
+					rec.name, r.id, stampedOn(r.id))
 			}
 		}
 	}
@@ -315,17 +315,17 @@ func unreached(t *testing.T, readings []reading, stamped map[traveller.Erratum]b
 	}
 }
 
-// stampedOn is a reading's stamped-on prose as the readings document states
-// it, on one line.
-func stampedOn(tables *rules.Rules, id traveller.Erratum) string {
-	return strings.Join(strings.Fields(tables.Reading(id).StampedOn), " ")
+// stampedOn is a reading's stamped-on prose as its reading states it, on one
+// line.
+func stampedOn(id traveller.Erratum) string {
+	return strings.Join(strings.Fields(rules.ReadingOf(id).StampedOn), " ")
 }
 
 // conditions is the readings' stamped-on prose as predicates over a finished
 // record, one per reading.
 //
-// Implements: The errata a record stamps are exactly those whose condition
-// ERRATA.md states [Documents] in The record.
+// Implements: The errata a record stamps are exactly those whose reading's
+// condition holds [Documents] in The record.
 func conditions(tables *rules.Rules) []reading {
 	return slices.Concat(
 		enlistmentAndService(),

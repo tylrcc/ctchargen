@@ -2,10 +2,10 @@ package traveller
 
 import "fmt"
 
-// Erratum identifies one recorded reading from internal/rules/data/ERRATA.md.
+// Erratum identifies one recorded reading.
 //
 // Every place the held text is silent, ambiguous, or self-contradictory has
-// a reading recorded there with its page cite and its stamping condition,
+// a reading recorded with its page cite and its stamping condition,
 // and the reading is named on every record it governed. A reading applied
 // with neither an entry nor a stamp is the one defect no comparison between
 // the documents and the code can find.
@@ -13,12 +13,13 @@ import "fmt"
 // Ids are stable: never reused, never renumbered. A withdrawn reading keeps
 // its constant and its heading.
 //
-// The rules package lifts ERRATA.md and holds its entries and these
-// constants to each other in both directions: a constant with no entry, or
-// an entry with no constant, fails the lift.
+// The rules package declares one reading per constant, so a reading missing
+// or one too many does not compile, and its tests hold each to its constant's
+// place. It still lifts internal/rules/data/ERRATA.md, and holds it to those
+// readings field by field.
 type Erratum int
 
-// The readings of internal/rules/data/ERRATA.md.
+// The recorded readings.
 const (
 	// E001 — The draft is _may_, not _must_.
 	E001 Erratum = iota + 1
@@ -73,5 +74,5 @@ var Errata = [...]Erratum{
 	E008, E009, E010, E011, E012, E013, E014, E015,
 }
 
-// String is the erratum's id, as ERRATA.md's heading prints it.
+// String is the erratum's id: E001.
 func (e Erratum) String() string { return fmt.Sprintf("E%03d", int(e)) }

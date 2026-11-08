@@ -10,6 +10,11 @@ release turns out to be.
   decision for good, a reading is withdrawn rather than deleted, and the
   coverage map becomes a check (#321–#325). The glossary defines a withdrawn
   reading and says an erratum's decision never changes.
+- The readings are Go values in `rules`, one per erratum, so a reading
+  missing or one too many does not compile. A test holds them to ERRATA.md
+  byte for byte, and the stamping and coverage checks read them rather than
+  the document (#321). E007's rationale gains the comma "printed in, in the
+  UPP" needed, and nothing else in any reading changes.
 
 ## 1.0.0-beta.7
 

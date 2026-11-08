@@ -297,7 +297,7 @@ deferred to the end of the round.
 
 **Why.** The table's row order is the page's only statement of sequence, and
 it is also the order the six characteristics are rolled in at p. 4 and
-printed in in the UPP at p. 8. Any other order would have to be invented. The
+printed in, in the UPP at p. 8. Any other order would have to be invented. The
 crisis resolves inline because p. 7 says so of the recovery it describes —
 "his recovery is made immediately" — and because deferring it would leave the
 character standing at 0 through the rest of a round the table indexes by term

@@ -191,7 +191,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | Every step the errata conditions read is found, as the kind they read it as | Documents | `internal/chargen.record.dice` | `internal/chargen.TestEveryStepTheConditionsReadIsFound` |
 | Every step, throw, choice and consequence, in order | Generation record | `internal/chargen.log` | `internal/chargen.TestGoldens` |
 | The alternatives offered are exactly the engine's | Choice points | `cmd/ctchargen.player.choose` | `cmd/ctchargen.TestInteractiveAsksTheYesOrNoPoints` |
-| The errata a record stamps are exactly those whose condition ERRATA.md states | Documents | `internal/chargen.conditions` | `internal/chargen.TestEveryReadingIsStampedWhereItsConditionHolds` |
+| The errata a record stamps are exactly those whose reading's condition holds | Documents | `internal/chargen.conditions` | `internal/chargen.TestEveryReadingIsStampedWhereItsConditionHolds` |
 | The errata are on the transcript and not the sheet | Generation record | `internal/render.sheetOf` | `internal/render.TestTheErrataAreOnTheTranscriptAndNotTheSheet` |
 | The input ending is an error, not a default | Choice points | `cmd/ctchargen.errNoAnswer` | `cmd/ctchargen.TestInteractiveRefusesToInventAnAnswer` |
 | The kept transcript numbers every event, so no number is skipped | Generation record | `internal/render.writeEvent` | `internal/chargen.TestNoTranscriptSkipsANumber` |
