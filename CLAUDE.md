@@ -181,7 +181,8 @@ promise (#199).
 - `traveller`: the domain. Alphabets, values, and the sums that say "exactly
   one of".
 - `rules`: every table of pp. 4–25 and the readings document, embedded and
-  lifted once. The lift is the validation.
+  lifted once. The lift validates cells and names; values are the second
+  transcription's.
 - `dice`: an unseeded stream. The record is the only way back (ADR 0001).
 - `chargen`: the procedure, the `Decider` it asks, and the `--auto` `Policy`,
   which describes itself. Its tests hold the readings, the choice points and

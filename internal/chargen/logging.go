@@ -258,9 +258,10 @@ const aChoice = 2
 // that can come to hold one; a yes-or-no point offers two by construction.
 //
 // It refuses rather than settling the question here. Each site that can reach
-// one answer settles it itself, as a reading of the page - reenlistment at
-// the seventh term (p. 7), the third roll on Table 2 (p. 9) - and a site that
-// forgot would be an engine bug the record should not quietly absorb.
+// one answer settles it itself, as a reading of the page - reenlistment from
+// the seventh term (p. 7), and every roll after three have gone to Table 2
+// (p. 9) - and a site that forgot would be an engine bug the record should not
+// quietly absorb.
 //
 // Implements: A question with one legal answer is never put to a decider
 // [Choice points] in The record.

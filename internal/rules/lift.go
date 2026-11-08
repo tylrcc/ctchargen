@@ -136,6 +136,10 @@ func withoutNotes[T any](m map[string]T) map[string]T {
 	return kept
 }
 
+// read decodes one data file into its wire type. An unknown key is
+// tolerated, not refused, because the files carry their own _-prefixed notes
+// (_cite, _note and the like) beside the keys the wire types read. What that
+// leaves to the tests is the package doc's to say.
 func read[T any](name string) (T, error) {
 	var wire T
 

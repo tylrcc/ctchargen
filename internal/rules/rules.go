@@ -1,11 +1,12 @@
 // Package rules holds every table of Book 1 pp. 4-25 as embedded data, and
 // lifts it into the domain values of the traveller package.
 //
-// The lift is the validation. A cell that names no service, no
-// characteristic, no benefit any row prints, or a target in a notation
-// pp. 2-3 do not use, fails here — and because loading happens once on first
-// use, a table that will not lift is a build defect that surfaces
-// immediately rather than a runtime condition some path might reach.
+// The lift validates the shape of every cell and the alphabet of every name.
+// A cell that names no service, no characteristic, no benefit any row prints,
+// or a target in a notation pp. 2-3 do not use, fails here — and because
+// loading happens once on first use, a table that will not lift is a build
+// defect that surfaces immediately rather than a runtime condition some path
+// might reach.
 //
 // The readings document, data/ERRATA.md, is embedded and lifted the same
 // way. It stays hand-written prose; only its entries are parsed, and an
@@ -18,6 +19,11 @@
 // extract as the digit 4 and "Travellers' Aid" extracts as Travellers9. A
 // run that trusted the extraction would give a Scout a seventh benefit he
 // does not have.
+//
+// So a value is the second transcription's to check, not the lift's. A key
+// misspelled in data/ leaves its field at zero, and the lift accepts that
+// zero wherever no check of its own refuses it; the tests' copy is what
+// notices that the page prints something else.
 package rules
 
 import (

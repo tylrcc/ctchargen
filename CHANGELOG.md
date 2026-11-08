@@ -53,6 +53,13 @@ release turns out to be.
 - `services.json`'s retirement pay names its per-term increment
   `perAdditionalTerm`, after p. 21's "per additional term", where it was
   `perTermBeyondEight`: the 8 lives only in the table's last row (#312).
+- The comment on the decorator's one-answer refusal names what the sites
+  that settle themselves settle: reenlistment from the seventh term, and every
+  roll after three have gone to Table 2 (#318).
+- `rules`' package doc and CLAUDE.md no longer say "The lift is the
+  validation": it checks cells and names, and a value, a misspelled key's zero
+  included, is the second transcription's to catch. `read` says why unknown
+  keys are tolerated: the files' own `_cite` and `_note` keys (#317).
 
 ## 1.0.0-beta.6
 

@@ -7,8 +7,9 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// The lift is the validation, so these are the tests that a malformed table
-// fails loudly rather than lifting into a plausible wrong value. Every case
+// The lift validates the shape of every cell, so these are the tests that a
+// malformed table fails loudly rather than lifting into a plausible wrong
+// value. Every case
 // is one the reprint's font could produce: a target whose sign became a
 // digit, a dash that became a 4, a name that lost a glyph.
 
