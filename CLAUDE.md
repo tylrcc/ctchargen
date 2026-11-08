@@ -15,7 +15,7 @@ rebuilt from that contract.
 and the prerelease code audit (#27) are closed.**
 **What governs the work now is what Classic Traveller referees report about
 using the tool** (#26 was the first such report); the page and the clean room
-govern how a report gets answered. `v1.0.0-beta.5` is the current release.
+govern how a report gets answered. `v1.0.0-beta.6` is the current release.
 `v1.0.0-alpha.1` and `v1.0.0-alpha.2` predate the rebuild at `41a213a` and
 install a different tool; their notes say so.
 

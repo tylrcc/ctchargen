@@ -5,44 +5,56 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- `THEORY.md` and `WALKTHROUGH.md` become release snapshots: regenerated in
-  each release prep PR, stamped with that tag, and ignored between releases.
-  `internal/walkthrough`, the gate that held the walkthrough to the tree, is
-  removed.
-- A record names who answered it once, at the top (#276). `policy` becomes an
-  object carrying the version and the three strategies, present on every
-  `--auto` record and absent from every guided one; `inputs` no longer
-  carries the strategies, and a choice event no longer carries `by`. A
-  beta.5 `--auto` record, whose `policy` is a bare number, is refused by
-  `render` rather than read back as one the player made. `new` without
-  `--auto` refuses `--career`, `--skills` and `--muster`, which decided
-  nothing there. In the code, `chargen.Generate` becomes `chargen.Auto` and
-  `chargen.Guided`, so a run cannot be credited to an answerer it did not
-  have; the worked-example test was crediting the policy with its scripted
-  choices.
+## 1.0.0-beta.6
 
-- The gate every decider is reached through keeps the offer's two rules
-  (#278): it hands each decider its own copy of what it is offered, so a
-  decider writing to its offer changes nothing offered afterwards, and it
-  refuses a question with one legal answer as the engine's bug rather than
-  recording it as a choice. The muster-table site no longer copies on its
-  own, and the copy it made for #55 is held by a test for the first time.
+A record says who answered it once, at the top. The record's shape changed to
+say it, so a beta.5 `--auto` record no longer reads back; the rest is the code
+behind it, simplified in four places.
 
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-beta.6
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### What a referee will notice
+
+**`policy` is an object, present exactly when `--auto` answered** (#276). It
+carries the policy's version and its three strategies, on every `--auto`
+record whether or not the policy was asked anything, and a record a person
+answered carries none. `inputs` no longer carries the strategies, and a choice
+event no longer carries `by`. The transcript still says `policy chose` or
+`player chose`, and the sheet still says "(service chosen by the policy)".
+
+**A beta.5 `--auto` record no longer reads back.** Its `policy` is a bare
+number, and `render` refuses it rather than reading it as a record the player
+made. A beta.5 interactive record still renders. Until `v1.0.0` a record is
+not promised to be readable by the next build (#62); `record` stays 1 (#96).
+
+**`new` without `--auto` refuses `--career`, `--skills` and `--muster`**,
+which decided nothing there (#276).
+
+### Notes
+
+- `chargen.Generate` becomes `chargen.Auto` and `chargen.Guided` (#276), so a
+  run cannot be credited to an answerer it did not have; the worked-example
+  test had been crediting the policy with its scripted choices.
+- The gate every decider passes through hands each one its own copy of what
+  it is offered, and refuses a question with one legal answer (#278).
 - One scripted roller, `internal/scripted`, drives both the fixtures and the
-  command's walks (#280), where two identical copies did; its strictness both
-  ways is tested for the first time.
-
-- The command names the build on a record through the options every
-  generation takes (#282), as `chargen.WithBuild`, rather than stamping it
-  afterwards at each generating site; a batch member's `build` is held by a
-  test for the first time. The batch's settings travel as one value.
-
-- A golden for the scout killed by his first survival throw, before anything
-  is asked: the record that holds an auto run naming its policy even when the
-  policy answered nothing (#276). It is a quarter of forced-scout records.
-
+  command's walks (#280).
+- The build reaches a record through the options every generation takes,
+  `chargen.WithBuild`, and a batch member's `build` is tested for the first
+  time (#282).
+- A golden for an `--auto` run the policy answered nothing in, which is a
+  quarter of forced-scout records (#284).
 - ADR 0003 records that the interactive session is tested through the
-  command, so a review does not propose testing the player past it again.
+  command (#285).
+- `THEORY.md` and `WALKTHROUGH.md` are release snapshots: regenerated in each
+  release's prep, stamped with its tag, and ignored between releases (#274,
+  #275).
 
 ## 1.0.0-beta.5
 

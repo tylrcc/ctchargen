@@ -12,7 +12,7 @@ cite, and every place the text is silent or ambiguous has a recorded reading.
 ## Install
 
 ```sh
-go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-beta.5
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-beta.6
 ```
 
 Go excludes prereleases from `@latest`, so a prerelease installs by name. That
