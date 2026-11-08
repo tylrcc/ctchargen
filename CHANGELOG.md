@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `Policy.MusterTable2DM`'s doc comment says which strategies reach it
+  (#248): only cash rolls on Table 2, so only cash is ever asked under
+  `--auto`. It had called spartan the only strategy that never rolls there,
+  and goods never does either. Nothing the policy answers changes.
 - Each line of the interactive weapon-benefit menu is held to the benefit it
   names (#247). A new walk, `navyRearmed`, musters out with Blade Combat
   twice, and a test answers the second menu with its expertise line and with

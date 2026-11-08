@@ -519,11 +519,13 @@ func (p Policy) MusterTable1DM() (bool, error) { return p.Muster != MusterSparta
 // "Individuals with gambling expertise are allowed a DM of +1 on table 2") and
 // the roll is on Table 2.
 //
-// cash and goods answer yes; spartan answers no, and no strategy reaches that
-// no. spartan is the only strategy that would decline and also the only one
-// that never rolls on Table 2, because it prefers Table 1 and Table 1 is
-// always on offer. The declined branch is reachable only from outside the
-// policy, where a person is asked and answers no
+// cash and goods answer yes; spartan answers no. Under --auto only cash is
+// ever asked: it is the only strategy that rolls on Table 2, because goods
+// and spartan both prefer Table 1 and Table 1 is always on offer. So --auto
+// reaches only cash's yes, and goods' yes and spartan's no are answers no
+// generated character is given, held by TestMusterStrategies alone. The
+// declined branch is reachable only from outside the policy, where a person
+// is asked and answers no
 // (cmd/ctchargen.TestInteractiveOffersTheGamblingModifier).
 func (p Policy) MusterTable2DM() (bool, error) { return p.Muster != MusterSpartan, nil }
 
