@@ -83,7 +83,6 @@ import (
 	"strconv"
 	"strings"
 	"testing"
-	"unicode/utf8"
 )
 
 //nolint:gochecknoglobals // the flag package has no other shape.
@@ -293,13 +292,19 @@ func TestOnlyTheTablesAreGenerated(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	committed := readDocument(t)
+	// From what the markers generate, not from the committed document, so
+	// this holds under -regenerate too, when the committed one is stale and
+	// is being rewritten beside it.
+	base, err := generate(readDocument(t), found)
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	rule := found.implementations[0].rule
-	edited := strings.Replace(committed, "| "+rule+" ", "| "+rule+"!", 1)
+	edited := strings.Replace(base, "| "+rule+" ", "| "+rule+"!", 1)
 
-	if edited == committed {
-		t.Fatalf("the committed document has no row %q to edit", rule)
+	if edited == base {
+		t.Fatalf("the generated document has no row %q to edit", rule)
 	}
 
 	generated, err := generate(edited, found)
@@ -307,11 +312,11 @@ func TestOnlyTheTablesAreGenerated(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if generated != committed {
+	if generated != base {
 		t.Errorf("a hand edit to a row survived generation")
 	}
 
-	prose := strings.Replace(committed, "## What the engine walks\n", "## What the engine walks\n\nA note.\n", 1)
+	prose := strings.Replace(base, "## What the engine walks\n", "## What the engine walks\n\nA note.\n", 1)
 
 	generated, err = generate(prose, found)
 	if err != nil {
@@ -1190,45 +1195,20 @@ func rewrite(doc string, sections map[string][]row) string {
 	return strings.Join(out, "\n") + "\n"
 }
 
-// table is a section's rows as a Markdown table, padded the way the
-// repository's formatter pads one.
+// table is a section's rows as a Markdown table, one row to a line and
+// unpadded.
+//
+// Padded to its widest cell, one long name rewrote every row of its table, so
+// a change adding one rule moved forty lines and the pressure fell on naming
+// tests short. Unpadded, a row's diff is that row. The formatter is told to
+// leave the document alone (.prettierignore), or it would pad it back.
 func table(rows []row) []string {
-	cells := make([][]string, 0, 1+len(rows))
+	out := make([]string, 0, 2+len(rows))
 
-	cells = append(cells, []string{"Rule", "Page", "Implementation", "Test"})
+	out = append(out, "| Rule | Page | Implementation | Test |", "| --- | --- | --- | --- |")
 
 	for _, r := range rows {
-		cells = append(cells, []string{r.rule, r.page, ticked(r.implementations), tests(r)})
-	}
-
-	widths := make([]int, len(cells[0]))
-
-	for _, line := range cells {
-		for i, cell := range line {
-			widths[i] = max(widths[i], utf8.RuneCountInString(cell))
-		}
-	}
-
-	format := func(line []string) string {
-		padded := make([]string, len(line))
-		for i, cell := range line {
-			padded[i] = cell + strings.Repeat(" ", widths[i]-utf8.RuneCountInString(cell))
-		}
-
-		return "| " + strings.Join(padded, " | ") + " |"
-	}
-
-	separator := make([]string, len(widths))
-	for i, width := range widths {
-		separator[i] = strings.Repeat("-", width)
-	}
-
-	out := make([]string, 0, 1+len(cells))
-
-	out = append(out, format(cells[0]), format(separator))
-
-	for _, line := range cells[1:] {
-		out = append(out, format(line))
+		out = append(out, "| "+strings.Join([]string{r.rule, r.page, ticked(r.implementations), tests(r)}, " | ")+" |")
 	}
 
 	return out

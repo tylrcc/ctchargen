@@ -17,6 +17,11 @@
 // command prints, and samples are left as they are: a sample's prose
 // describes the run it shows, so a fresh run would leave the prose wrong.
 //
+// A transcript whose command prints nothing fails, compared or regenerated.
+// A filter that stops matching - a sed range over a heading that changed -
+// prints nothing, and regenerating wrote the empty block that then compared
+// equal, so a transcript emptied itself with the gate still passing (#249).
+//
 // Every command runs under bash with pipefail, with a ctchargen built from
 // this tree first on PATH. A line that says "A transcript of" and names no
 // command in backticks fails, since it claims what nothing can check.
@@ -84,18 +89,20 @@ func TestEachTranscriptIsWhatItsCommandPrints(t *testing.T) {
 		return
 	}
 
-	for _, c := range claims {
-		out, err := run(t, bin, c.command)
+	for _, tc := range claims {
+		out, err := run(t, bin, tc.command)
 
 		switch {
-		case c.sample && err != nil:
-			t.Errorf("%s:%d: the sample `%s` no longer runs: %v\n%s", document, c.line, c.command, err, out)
-		case c.sample && strings.TrimSpace(out) == "":
-			t.Errorf("%s:%d: the sample `%s` prints nothing", document, c.line, c.command)
-		case !c.sample && strings.TrimRight(out, "\n") != c.printed:
+		case !tc.sample && strings.TrimSpace(out) == "":
+			t.Errorf("%s:%d: the transcript `%s` prints nothing", document, tc.line, tc.command)
+		case tc.sample && err != nil:
+			t.Errorf("%s:%d: the sample `%s` no longer runs: %v\n%s", document, tc.line, tc.command, err, out)
+		case tc.sample && strings.TrimSpace(out) == "":
+			t.Errorf("%s:%d: the sample `%s` prints nothing", document, tc.line, tc.command)
+		case !tc.sample && strings.TrimRight(out, "\n") != tc.printed:
 			t.Errorf("%s:%d: `%s` no longer prints what the walkthrough transcribes.\n"+
 				"Re-run it and replace the block with its output.\n--- transcribed\n%s\n--- printed\n%s",
-				document, c.line, c.command, c.printed, strings.TrimRight(out, "\n"))
+				document, tc.line, tc.command, tc.printed, strings.TrimRight(out, "\n"))
 		}
 	}
 }
@@ -167,19 +174,23 @@ func blockAfter(lines []string, from int) (int, int, bool) {
 func rewrite(t *testing.T, bin string, lines []string, claims []claim) {
 	t.Helper()
 
-	for _, c := range slices.Backward(claims) {
-		if c.sample {
+	for _, tc := range slices.Backward(claims) {
+		if tc.sample {
 			continue
 		}
 
-		out, err := run(t, bin, c.command)
+		out, err := run(t, bin, tc.command)
 		if err != nil {
-			t.Fatalf("%s:%d: `%s` failed: %v\n%s", document, c.line, c.command, err, out)
+			t.Fatalf("%s:%d: `%s` failed: %v\n%s", document, tc.line, tc.command, err, out)
+		}
+
+		if strings.TrimSpace(out) == "" {
+			t.Fatalf("%s:%d: the transcript `%s` prints nothing", document, tc.line, tc.command)
 		}
 
 		printed := strings.Split(strings.TrimRight(out, "\n"), "\n")
 
-		lines = slices.Replace(lines, c.start, c.end, printed...)
+		lines = slices.Replace(lines, tc.start, tc.end, printed...)
 	}
 
 	path := filepath.Join(root, document)

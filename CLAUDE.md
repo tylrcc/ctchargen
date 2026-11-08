@@ -25,34 +25,10 @@ frozen and supported. The `v1` label carries which issues that covers today —
 this paragraph states the bar and never the list, because a list here goes
 stale every time one closes.
 
-**The record freezes at `v1.0.0`, and is free to move before it (#62).** Until
-that tag, a record written by one build is not promised to be readable by the
-next; from it, the shape is a public contract and a build that changes it says
-so in the record itself. `record` is the field it says it in: a required
-integer set in `project()` beside every other field, so it is present on every
-record, and counting the shape and nothing else — `build` names the writer and
-`ruleset` names the source text, and neither says what the file looks like.
-
-**`additionalProperties` is open at the root, and closed at every object
-inside it (#113).** A later build may add a top-level section, and a reader
-holding this schema will load the record and render what it understands. A key
-added inside an existing object is still refused: the fourteen nested objects
-are what a sheet is rendered from, and pinning them is what keeps the schema
-worth validating against. **An event kind is closed the same way (#129):** the
-log is one of the five kinds the procedure writes, because the schema describes
-the rules we have and not an extension nobody has made. `render` printing
-`(unknown event kind %q)` is how a reader survives a record it cannot
-validate, and not a reason to validate it.
-
-**`record` is 1 until `v1.0.0` and counts from there (#96).** Not from every
-change: the record moves freely before the freeze, so a build that changes the
-shape before it leaves the number alone, and two pre-release shapes that both
-say 1 are what that freedom costs. Do not bump it to mark a pre-v1 change —
-that is the reading #96 declined. The **schema** accepts any shape from 1
-upward, which is a different statement: a reader must be able to validate a
-record from a later build rather than refuse it before looking at its contents,
-so `minimum` is what the schema says and `TestThisBuildWritesShapeOne` is what
-holds this build to 1.
+**Before changing the record's shape, its `record` field or the schema**, read
+`CODING_STANDARDS.md`'s "The record's shape": the freeze at `v1.0.0` (#62),
+the schema's open root and closed objects (#113, #129), and what `record`
+counts (#96).
 
 **The paragraphs above the `v1.0.0` ones** are the thing here that goes
 stale on its own — what is delivered, and which release is current. Bring
@@ -295,10 +271,11 @@ go run ./cmd/ctchargen new --auto --sheet
   calling a change done; the reviewer holds the diff to it.
 - **What a change does to the narrative documents.** The global release-docs
   rule brings `README.md`, `CLAUDE.md`, `THEORY.md` and `WALKTHROUGH.md`
-  current at release; here a change also fixes, in all of them, every line
-  that names something it removed or moved — a path, a package, a test, a
-  command — and adds its bullet to the changelog's Unreleased section.
-  Everything else in them waits for the release pass.
+  current at release; here a change also sweeps them as `CODING_STANDARDS.md`'s
+  "A removal is swept by its vocabulary" says — every sentence that still
+  tells the old story, not only the lines that name it — and adds its bullet
+  to the changelog's Unreleased section. Everything else in them waits for
+  the release pass.
 - Markdown written here is reflowed by `bun fmt` immediately after the write
   (a user-level `PostToolUse` hook, not repo config). The reflow is expected;
   leave it alone rather than reverting it.

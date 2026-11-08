@@ -5,6 +5,16 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The working environment, from the retrospective on #246–#254. A
+  `WALKTHROUGH.md` transcript whose command prints nothing fails, compared or
+  regenerated, where a sed range that stopped matching once emptied one with
+  the gate passing. Its four `grep -n` transcripts drop their line numbers, so
+  a comment edit no longer breaks them. `go test ./internal/coverage
+-regenerate` writes a stale map and passes in one run, and the map's tables
+  are unpadded, so adding a rule changes only its row. `CLAUDE.md` defers to
+  `CODING_STANDARDS.md`'s sweep rule, which now greps the narrative documents
+  for the number of an issue a change closes, and the record-shape paragraphs
+  (#62, #96, #113, #129) move from `CLAUDE.md` to `CODING_STANDARDS.md`.
 - A directory where a record is to go is reported as a directory on the
   first attempt, for `new -o` and for a batch member, with no `--force`
   advice (#254); it read as an existing file to replace, and `--force` then

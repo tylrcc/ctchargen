@@ -243,15 +243,15 @@ The six sums are `Enlistment`, `TableResult`, `BenefitRow`, `Departure`,
 `WeaponBenefit` and `Event`. Their cases interfaces are where you will feel the
 compiler if you add a case:
 
-A transcript of `grep -n 'Cases interface' internal/traveller/*.go`, run while writing:
+A transcript of `grep 'Cases interface' internal/traveller/*.go`, run while writing:
 
 ```text
-internal/traveller/event.go:19:type EventCases interface {
-internal/traveller/sums.go:26:type EnlistmentCases interface {
-internal/traveller/sums.go:108:type TableResultCases interface {
-internal/traveller/sums.go:148:type BenefitRowCases interface {
-internal/traveller/sums.go:220:type DepartureCases interface {
-internal/traveller/sums.go:271:type WeaponBenefitCases interface {
+internal/traveller/event.go:type EventCases interface {
+internal/traveller/sums.go:type EnlistmentCases interface {
+internal/traveller/sums.go:type TableResultCases interface {
+internal/traveller/sums.go:type BenefitRowCases interface {
+internal/traveller/sums.go:type DepartureCases interface {
+internal/traveller/sums.go:type WeaponBenefitCases interface {
 ```
 
 ## Layer two: the tables
@@ -709,21 +709,21 @@ The engine never decides anything on its own behalf. Every question goes to a
 That typing is what closes the set: adding a thirteenth question breaks every
 implementation at compile time.
 
-A transcript of `grep -nE '^	[A-Z][A-Za-z0-9]*\(' internal/chargen/decider.go | sed 's/(.*//' | cat -n`, run while writing:
+A transcript of `grep -E '^	[A-Z][A-Za-z0-9]*\(' internal/chargen/decider.go | sed 's/(.*//' | cat -n`, run while writing:
 
 ```text
-     1	30:	Service
-     2	33:	SubmitToDraft
-     3	37:	AttemptCommission
-     4	41:	AttemptPromotion
-     5	49:	SkillTable
-     6	58:	Weapon
-     7	66:	ReenlistIntent
-     8	70:	MusterTable
-     9	74:	MusterTable1DM
-    10	78:	MusterTable2DM
-    11	85:	MusterWeapon
-    12	93:	AssumeTitle
+     1		Service
+     2		SubmitToDraft
+     3		AttemptCommission
+     4		AttemptPromotion
+     5		SkillTable
+     6		Weapon
+     7		ReenlistIntent
+     8		MusterTable
+     9		MusterTable1DM
+    10		MusterTable2DM
+    11		MusterWeapon
+    12		AssumeTitle
 ```
 
 Twelve, and the enum `traveller.ChoicePoint` has twelve constants whose
@@ -786,11 +786,11 @@ That injectivity assumption is itself held by a test — and that test's claim t
 cover _every_ alphabet is held by a second test that reads the package's own
 source for `var X = [...]` declarations and fails on one nobody checks:
 
-A transcript of `grep -n 'var alphabet' -A 1 internal/traveller/spelling_test.go; grep -c 'spelledOnce(t,' internal/traveller/spelling_test.go`, run while writing:
+A transcript of `grep 'var alphabet' -A 1 internal/traveller/spelling_test.go; grep -c 'spelledOnce(t,' internal/traveller/spelling_test.go`, run while writing:
 
 ```text
-87:var alphabet = regexp.MustCompile(`(?m)^var ([A-Z]\w*) = \[\.\.\.\]`)
-88-
+var alphabet = regexp.MustCompile(`(?m)^var ([A-Z]\w*) = \[\.\.\.\]`)
+
 12
 ```
 
@@ -1005,14 +1005,14 @@ halves.
 The write side is held by folds — one codec per sum, so adding a case stops this
 package compiling until the projection learns to write it:
 
-A transcript of `grep -n 'Codec struct\|^func fold' internal/render/fold.go`, run while writing:
+A transcript of `grep 'Codec struct\|^func fold' internal/render/fold.go`, run while writing:
 
 ```text
-13:type enlistmentCodec struct{ out enlistmentRecord }
-33:func foldEnlistment(from traveller.Enlistment) enlistmentRecord {
-46:type departureCodec struct{ out departureRecord }
-80:func foldDeparture(from traveller.Departure) departureRecord {
-161:type eventCodec struct {
+type enlistmentCodec struct{ out enlistmentRecord }
+func foldEnlistment(from traveller.Enlistment) enlistmentRecord {
+type departureCodec struct{ out departureRecord }
+func foldDeparture(from traveller.Departure) departureRecord {
+type eventCodec struct {
 ```
 
 The **read** side is not. `internal/render/decode.go` unmarshals into the same `record`

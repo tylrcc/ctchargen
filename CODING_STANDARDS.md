@@ -15,6 +15,11 @@ the thing — what it did, what it promised, what held it ("the gate", "the
 document", "row", "decision table") — not only its identifiers and paths. A
 name-only sweep left stale prose in every ticket of #203 and #204.
 
+A change that closes an issue also greps `THEORY.md` and `WALKTHROUGH.md` for
+that issue's number: they cite an open drift by it ("nothing holds them
+(#252)"), so every hit is a sentence that may now describe something fixed.
+Four of #246–#254 shipped or nearly shipped such a sentence.
+
 ## A quotation from the page is verbatim
 
 Comments and documents quote Book 1 to 3 to show where a rule comes from. A
@@ -57,3 +62,34 @@ and fails on a difference, and `go test ./internal/walkthrough -regenerate`
 rewrites them. A run whose output depends on the dice is labelled "A sample
 of", is held only to still run, and keeps the output its prose describes. The
 excerpts are not held by the gate, so they are still the reviewer's to check.
+
+## The record's shape
+
+**The record freezes at `v1.0.0`, and is free to move before it (#62).** Until
+that tag, a record written by one build is not promised to be readable by the
+next; from it, the shape is a public contract and a build that changes it says
+so in the record itself. `record` is the field it says it in: a required
+integer set in `project()` beside every other field, so it is present on every
+record, and counting the shape and nothing else — `build` names the writer and
+`ruleset` names the source text, and neither says what the file looks like.
+
+**`additionalProperties` is open at the root, and closed at every object
+inside it (#113).** A later build may add a top-level section, and a reader
+holding this schema will load the record and render what it understands. A key
+added inside an existing object is still refused: the fourteen nested objects
+are what a sheet is rendered from, and pinning them is what keeps the schema
+worth validating against. **An event kind is closed the same way (#129):** the
+log is one of the five kinds the procedure writes, because the schema describes
+the rules we have and not an extension nobody has made. `render` printing
+`(unknown event kind %q)` is how a reader survives a record it cannot
+validate, and not a reason to validate it.
+
+**`record` is 1 until `v1.0.0` and counts from there (#96).** Not from every
+change: the record moves freely before the freeze, so a build that changes the
+shape before it leaves the number alone, and two pre-release shapes that both
+say 1 are what that freedom costs. Do not bump it to mark a pre-v1 change —
+that is the reading #96 declined. The **schema** accepts any shape from 1
+upward, which is a different statement: a reader must be able to validate a
+record from a later build rather than refuse it before looking at its contents,
+so `minimum` is what the schema says and `TestThisBuildWritesShapeOne` is what
+holds this build to 1.
