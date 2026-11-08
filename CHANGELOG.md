@@ -41,6 +41,9 @@ release turns out to be.
   is asked: the record that holds an auto run naming its policy even when the
   policy answered nothing (#276). It is a quarter of forced-scout records.
 
+- ADR 0003 records that the interactive session is tested through the
+  command, so a review does not propose testing the player past it again.
+
 ## 1.0.0-beta.5
 
 The dice are no longer seeded. A character cannot be brought back by running
