@@ -254,7 +254,7 @@ func own[T any](from []T) []T {
 const aChoice = 2
 
 // asked refuses a question whose offer holds fewer than two alternatives,
-// before the decider sees it. The six points that offer a list are the ones
+// before the decider sees it. The points that offer a list are the ones
 // that can come to hold one; a yes-or-no point offers two by construction.
 //
 // It refuses rather than settling the question here. Each site that can reach
@@ -305,7 +305,7 @@ func (d *describeWeaponBenefit) TakeExpertise(weapon traveller.WeaponName) error
 // the typed offered set and the typed answer in hand before rendering. That
 // is deliberate: MusterWeapon answers with a sum, and comparing a sum against
 // a list of them needs a fold, so one path here would have to be strings
-// whatever the other eleven did.
+// whatever the others did.
 //
 // What it costs is an assumption. The check is sound exactly as long as
 // String() is injective on every alphabet the engine offers - two values that

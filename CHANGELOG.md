@@ -27,6 +27,9 @@ release turns out to be.
   and E013 say what the order and the throw change, which is what the record
   shows. The worked example is "reproduced", not "replayed", wherever the
   glossary's withdrawn word was used for it (#290).
+- Comments and CODING_STANDARDS.md no longer count things that grow: the
+  alphabets, the schema's nested objects, the event kinds, the readings,
+  the choice points that offer a list, and the decider's methods (#291).
 
 ## 1.0.0-beta.6
 

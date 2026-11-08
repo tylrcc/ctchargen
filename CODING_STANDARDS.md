@@ -57,10 +57,10 @@ record, and counting the shape and nothing else — `build` names the writer and
 **`additionalProperties` is open at the root, and closed at every object
 inside it (#113).** A later build may add a top-level section, and a reader
 holding this schema will load the record and render what it understands. A key
-added inside an existing object is still refused: the fourteen nested objects
-are what a sheet is rendered from, and pinning them is what keeps the schema
+added inside an existing object is still refused: the nested objects are what
+a sheet is rendered from, and pinning them is what keeps the schema
 worth validating against. **An event kind is closed the same way (#129):** the
-log is one of the five kinds the procedure writes, because the schema describes
+log is one of the kinds the procedure writes, because the schema describes
 the rules we have and not an extension nobody has made. `render` printing
 `(unknown event kind %q)` is how a reader survives a record it cannot
 validate, and not a reason to validate it.

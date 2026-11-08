@@ -231,7 +231,7 @@ func TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders(t *testing.T) {
 // A key this schema does not know, inside an event, still does not validate.
 //
 // #113 opened `additionalProperties` at the root object and at none of the
-// fourteen objects inside it. That is the narrower half of the promise, and it
+// objects inside it. That is the narrower half of the promise, and it
 // is the point rather than an oversight: the structures inside a record are
 // what a sheet is rendered from, and pinning them is what keeps this schema
 // worth validating against. A later build may add a section; it may not

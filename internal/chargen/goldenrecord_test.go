@@ -12,7 +12,7 @@ import (
 // twelve is the reenlistment throw p. 6 singles out, and E003 turns on.
 const twelve = 12
 
-// record is as much of the written record as the fifteen conditions need.
+// record is as much of the written record as the conditions need.
 //
 // It is decoded from the golden files rather than generated, because the
 // readings state every condition over a record - "records where the

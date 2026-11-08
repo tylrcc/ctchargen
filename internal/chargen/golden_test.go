@@ -260,7 +260,7 @@ func pathsReached(character *chargen.Character, reached map[string]bool) {
 	for _, erratum := range character.Errata {
 		// A slice and not a map keyed by Erratum: a map keyed by the enum
 		// claims to be a complete table of every reading, and this looks
-		// for four of fifteen.
+		// for four of them.
 		for _, watched := range []struct {
 			erratum traveller.Erratum
 			path    string

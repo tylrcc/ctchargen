@@ -18,7 +18,7 @@ import "fmt"
 // an entry with no constant, fails the lift.
 type Erratum int
 
-// The fifteen readings of internal/rules/data/ERRATA.md.
+// The readings of internal/rules/data/ERRATA.md.
 const (
 	// E001 — The draft is _may_, not _must_.
 	E001 Erratum = iota + 1

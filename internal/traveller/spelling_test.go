@@ -88,7 +88,7 @@ var alphabet = regexp.MustCompile(`(?m)^var ([A-Z]\w*) = \[\.\.\.\]`)
 // Every alphabet this package declares is checked above.
 //
 // The list up there is written by hand, and a hand-written list of everything
-// is a claim that goes stale the first time someone adds the thirteenth. The
+// is a claim that goes stale the first time someone adds another. The
 // gap it would leave is the one #48 is about: a Decider method that starts
 // offering a new alphabet, and a spelling gate that never looks at it.
 //
