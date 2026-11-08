@@ -228,9 +228,11 @@ func (r *Rules) Draft(n int) (traveller.ServiceName, error) {
 
 // Weapons is the printed list for a category (pp. 12-13), column-major.
 //
-// A copy: Load hands every caller in a process the same Rules, and the list
-// goes straight to a decider, so returning the ruleset's own slice would let
-// one decider's write change what every later character is offered (#137).
+// A copy: Load hands every caller in a process the same Rules, so returning
+// the ruleset's own slice would let any caller's write change what every
+// later character is offered (#137). A decider is handed a copy of its own
+// besides, by the gate that asks it (#278); this one keeps the ruleset
+// whole for every other caller.
 func (r *Rules) Weapons(c traveller.WeaponCategory) []traveller.WeaponName {
 	list := make([]traveller.WeaponName, len(r.weapons[c]))
 	copy(list, r.weapons[c])

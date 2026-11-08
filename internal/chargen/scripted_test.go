@@ -57,6 +57,7 @@ func TestACareerPastTheTablesLastColumn(t *testing.T) {
 // term", and "Service beyond the seventh term is normally impossible".
 //
 // Holds: Seven terms of voluntary service.
+// Holds: A question with one legal answer is never put to a decider.
 // Holds: Leaving at the end of term 5 or later is retirement.
 func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 	t.Parallel()

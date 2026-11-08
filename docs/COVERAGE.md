@@ -164,6 +164,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A key a later build adds inside an existing object is still refused | JSON conventions | `docs/character.schema.json` | `internal/render.TestAnUnknownKeyInsideAnEventDoesNotValidate` |
 | A one-term character reads as one term | Character record | `internal/render.terms` | `internal/render.TestOneTermIsSingular` |
 | A player nobody can be shown anything is not asked | Choice points | `cmd/ctchargen.player.sayf` | `cmd/ctchargen.TestInteractiveStopsWhenItCannotBeRead` |
+| A question with one legal answer is never put to a decider | Choice points | `internal/chargen.asked` | `internal/chargen.TestVoluntaryServiceStopsAtSeven` |
 | A read that fails is not the input ending | Choice points | `cmd/ctchargen.player.stopped` | `cmd/ctchargen.TestAFailedReadIsNotTheInputEnding` |
 | A record from a later build validates and renders, which is what v1 promises | JSON conventions | `docs/character.schema.json` | `internal/render.TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders` |
 | A record names the policy that answered it | JSON conventions | `internal/chargen.Auto` | `cmd/ctchargen.TestOnlyARecordThePolicyAnsweredNamesOne` |
@@ -178,6 +179,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A write that fails partway stops the batch, naming the member | CLI sketch | `cmd/ctchargen.writingTo` | `cmd/ctchargen.TestABatchReportsAWriteThatFailedPartway` |
 | An answer outside the offered set is refused, not applied | Choice points | `internal/chargen.logging.record` | `internal/chargen.TestAnAnswerOutsideTheOfferIsRefused` |
 | An event kind this build does not know is said to be unknown | Generation record | `internal/render.writeEvent` | `internal/render.TestAnUnknownEventKindIsSaidToBeUnknown` |
+| An offer is the decider's own, and writing to it changes nothing the engine offers | Choice points | `internal/chargen.logging` | `internal/chargen.TestAnOfferIsTheDecidersOwn` |
 | An unreadable answer is asked again, never guessed at | Choice points | `cmd/ctchargen.player.choose` | `cmd/ctchargen.TestInteractiveReAsksWhatItCannotRead` |
 | Each choice names what was offered and what was chosen | Generation record | `internal/chargen.logging` | `internal/chargen.TestGoldens` |
 | Each weapon-benefit line records the benefit it says | Choice points | `cmd/ctchargen.player.MusterWeapon` | `cmd/ctchargen.TestEachWeaponLineRecordsWhatItSays` |

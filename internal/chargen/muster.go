@@ -61,16 +61,9 @@ func (r *run) chooseMusterTable(onTableTwo int) (traveller.MusterTable, error) {
 		return traveller.TableOne, nil
 	}
 
-	// Cloned: MusterTables is an exported array and [:] is a window onto it,
-	// so a decider given that slice could write through it and change what
-	// every later character is offered. The gochecknoglobals exemption is
-	// argued and right; this is where the immutability was reachable through
-	// a global (#55), as rules.Weapons is where it was reachable through the
-	// shared ruleset (#137).
-	offered := make([]traveller.MusterTable, len(traveller.MusterTables))
-	copy(offered, traveller.MusterTables[:])
-
-	table, err := r.decide.MusterTable(offered)
+	// A window onto the exported array, handed over uncopied: the gate gives
+	// every decider its own copy of what it is offered (#55, #278).
+	table, err := r.decide.MusterTable(traveller.MusterTables[:])
 	if err != nil {
 		return table, fmt.Errorf("designating a mustering out table: %w", err)
 	}

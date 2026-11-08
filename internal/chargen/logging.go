@@ -10,6 +10,16 @@ import (
 // logging wraps a Decider, writes each answer into the generation record,
 // and delegates.
 //
+// It keeps the offer's two rules, so that no asking site has to (#278). Every
+// slice a decider is handed is its own copy, made after the offer is named:
+// a decider may write to what it is given, and the copy is what keeps that
+// write from reaching anything the engine offers afterwards - an exported
+// table, the shared ruleset, or the next question's offer (#55, #137). And a
+// question with one legal answer is refused before it is asked.
+//
+// Implements: An offer is the decider's own, and writing to it changes nothing
+// the engine offers [Choice points] in The record.
+//
 // It must implement every method of Decider to compile, which is the whole
 // point of the shape: a choice point cannot reach the engine without
 // reaching the log. Adding a method to Decider breaks this type until the
@@ -57,7 +67,12 @@ func offered() []string {
 func (l logging) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
 	offer := names(from, func(o traveller.EnlistmentOffer) string { return o.Service.String() })
 
-	chosen, err := l.to.Service(from)
+	err := asked(traveller.ChoiceService, offer)
+	if err != nil {
+		return 0, err
+	}
+
+	chosen, err := l.to.Service(own(from))
 	if err != nil {
 		return chosen, err
 	}
@@ -97,7 +112,12 @@ func (l logging) SkillTable(
 ) (traveller.SkillTable, error) {
 	offer := names(from, traveller.SkillTable.String)
 
-	chosen, err := l.to.SkillTable(from, taken)
+	err := asked(traveller.ChoiceSkillTable, offer)
+	if err != nil {
+		return 0, err
+	}
+
+	chosen, err := l.to.SkillTable(own(from), own(taken))
 	if err != nil {
 		return chosen, err
 	}
@@ -110,7 +130,12 @@ func (l logging) Weapon(
 ) (traveller.WeaponName, error) {
 	offer := names(from, func(w traveller.WeaponName) string { return string(w) })
 
-	chosen, err := l.to.Weapon(category, from, vary)
+	err := asked(traveller.ChoiceWeapon, offer)
+	if err != nil {
+		return "", err
+	}
+
+	chosen, err := l.to.Weapon(category, own(from), vary)
 	if err != nil {
 		return chosen, err
 	}
@@ -121,7 +146,12 @@ func (l logging) Weapon(
 func (l logging) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error) {
 	offer := names(from, traveller.Intent.String)
 
-	chosen, err := l.to.ReenlistIntent(from)
+	err := asked(traveller.ChoiceReenlistIntent, offer)
+	if err != nil {
+		return 0, err
+	}
+
+	chosen, err := l.to.ReenlistIntent(own(from))
 	if err != nil {
 		return chosen, err
 	}
@@ -132,7 +162,12 @@ func (l logging) ReenlistIntent(from []traveller.Intent) (traveller.Intent, erro
 func (l logging) MusterTable(from []traveller.MusterTable) (traveller.MusterTable, error) {
 	offer := names(from, traveller.MusterTable.String)
 
-	chosen, err := l.to.MusterTable(from)
+	err := asked(traveller.ChoiceMusterTable, offer)
+	if err != nil {
+		return 0, err
+	}
+
+	chosen, err := l.to.MusterTable(own(from))
 	if err != nil {
 		return chosen, err
 	}
@@ -170,7 +205,12 @@ func (l logging) MusterWeapon(
 		alternatives = append(alternatives, expertiseIn(held))
 	}
 
-	chosen, err := l.to.MusterWeapon(category, from, received)
+	err := asked(traveller.ChoiceMusterWeapon, alternatives)
+	if err != nil {
+		return nil, err
+	}
+
+	chosen, err := l.to.MusterWeapon(category, own(from), own(received))
 	if err != nil {
 		return chosen, err
 	}
@@ -192,6 +232,41 @@ func (l logging) AssumeTitle(title traveller.Title) (bool, error) {
 	}
 
 	return chosen, l.record(traveller.ChoiceAssumeTitle, offered(), yesNo(chosen))
+}
+
+// own is a copy of a slice for the decider to keep: an offer, or what it is
+// handed beside one. It is made rather than taken from slices.Clone, which
+// hands back nil for nil, so a decider indexing what it is given is handed a
+// slice and never a nil one.
+func own[T any](from []T) []T {
+	out := make([]T, len(from))
+	copy(out, from)
+
+	return out
+}
+
+// aChoice is the fewest alternatives that make a question a choice: more
+// than one answer legal, as the Decider contract puts it.
+const aChoice = 2
+
+// asked refuses a question whose offer holds fewer than two alternatives,
+// before the decider sees it. The six points that offer a list are the ones
+// that can come to hold one; a yes-or-no point offers two by construction.
+//
+// It refuses rather than settling the question here. Each site that can reach
+// one answer settles it itself, as a reading of the page - reenlistment at
+// the seventh term (p. 7), the third roll on Table 2 (p. 9) - and a site that
+// forgot would be an engine bug the record should not quietly absorb.
+//
+// Implements: A question with one legal answer is never put to a decider
+// [Choice points] in The record.
+func asked(point traveller.ChoicePoint, alternatives []string) error {
+	if len(alternatives) < aChoice {
+		return fmt.Errorf("%w: %v offered only %v; the engine asks only when more than one answer is legal",
+			errOneAnswer, point, alternatives)
+	}
+
+	return nil
 }
 
 // describeWeaponBenefit renders what was taken for a weapon row, by folding,

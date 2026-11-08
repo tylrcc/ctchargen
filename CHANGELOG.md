@@ -21,6 +21,13 @@ release turns out to be.
   have; the worked-example test was crediting the policy with its scripted
   choices.
 
+- The gate every decider is reached through keeps the offer's two rules
+  (#278): it hands each decider its own copy of what it is offered, so a
+  decider writing to its offer changes nothing offered afterwards, and it
+  refuses a question with one legal answer as the engine's bug rather than
+  recording it as a choice. The muster-table site no longer copies on its
+  own, and the copy it made for #55 is held by a test for the first time.
+
 ## 1.0.0-beta.5
 
 The dice are no longer seeded. A character cannot be brought back by running

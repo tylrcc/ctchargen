@@ -26,6 +26,11 @@ Handing the tool the same inputs and getting the same character back. Not
 offered since #200; the record is the only way back to a character.
 _Avoid_: Repeatability, reproducibility, regenerate
 
+**Offer**:
+What a choice point puts in front of a decider: two or more legal
+alternatives, the decider's own to keep.
+_Avoid_: Options, menu, choices (for the set)
+
 **Reading**:
 A decision recorded where the page is silent or contradicts itself, with its
 page cite and the condition under which it governs a record.

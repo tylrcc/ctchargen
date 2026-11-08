@@ -22,7 +22,9 @@ import "github.com/philoserf/ctchargen/internal/traveller"
 //
 // A method is called only when more than one answer is legal. A question
 // with one answer is not a choice, and asking it would put an entry in the
-// generation record that no reader could have decided differently.
+// generation record that no reader could have decided differently. The gate
+// every decider is reached through refuses such a question, and hands each
+// decider its own copy of what it is offered.
 //
 //nolint:interfacebloat // one method per choice point closes the set
 type Decider interface {

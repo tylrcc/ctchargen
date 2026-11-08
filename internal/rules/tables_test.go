@@ -166,8 +166,8 @@ func TestWeaponLists(t *testing.T) {
 
 // A caller cannot write through a weapon list into the ruleset.
 //
-// Load is once per process, and the list goes straight to a decider, so a
-// write through it changed what every later character was offered (#137).
+// Load is once per process, so a write through the ruleset's own list changed
+// what every later character was offered (#137).
 func TestAWeaponListIsTheCallersOwn(t *testing.T) {
 	t.Parallel()
 

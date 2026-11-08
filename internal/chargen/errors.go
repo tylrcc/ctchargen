@@ -12,5 +12,12 @@ import "errors"
 // refuses rather than applying it.
 var errNotOffered = errors.New("answered outside what was offered")
 
+// errOneAnswer reports a question the engine put to a decider with only one
+// legal answer. A Decider method is called only when more than one answer is
+// legal, so this is the engine breaking its own contract, not the decider
+// answering badly: a question no reader could have decided differently would
+// otherwise reach the record as a choice.
+var errOneAnswer = errors.New("asked with one answer")
+
 // errNoSuchStrategy reports a word that names none of a flag's strategies.
 var errNoSuchStrategy = errors.New("no such strategy")
