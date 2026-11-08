@@ -192,6 +192,8 @@ promise (#199).
 - `internal/mutate`: a tool, not part of the CLI. Runs a command against a
   scratch copy of the tree with one exact edit made, and says whether it
   failed.
+- `internal/scripted`: test support, imported only by test files. The strict
+  roller that fixtures and walks both drive their runs through.
 - `cmd/ctchargen`: the subcommands. The record goes to stdout and the
   conversation to stderr, so `ctchargen new | jq` pipes a record.
 

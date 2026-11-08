@@ -117,7 +117,7 @@ func (r reaching) Weapon(
 //
 // Every fixture walks its own script, so the same Weapon choices are reached
 // on every run (#251): reaching answers as the policy does, so each fixture
-// is asked exactly as often as its own walk records a Weapon choice.
+// is asked exactly as often as its own run records a Weapon choice.
 func TestADeciderCannotReachTheRollerThroughVary(t *testing.T) {
 	t.Parallel()
 
@@ -135,7 +135,7 @@ func TestADeciderCannotReachTheRollerThroughVary(t *testing.T) {
 		}
 
 		if got := asked - before; got != want {
-			t.Errorf("%s: asked Weapon %d times, and its walk records %d", fixture.name, got, want)
+			t.Errorf("%s: asked Weapon %d times, and its run records %d", fixture.name, got, want)
 		}
 	}
 
@@ -150,7 +150,7 @@ func TestADeciderCannotReachTheRollerThroughVary(t *testing.T) {
 
 // forging is the --auto policy, except that at one weapon choice it writes a
 // weapon of its own into the offer and answers with it. The other is the
-// policy's, so a walk forging at MusterWeapon reaches it along the fixture's
+// policy's, so a run forging at MusterWeapon reaches it along the fixture's
 // own path, its skill-table Weapon answered as the script expects.
 type forging struct {
 	chargen.Policy
@@ -198,11 +198,11 @@ func (f forging) forge(from []traveller.WeaponName) traveller.WeaponName {
 // the slice the decider had written to, and the gate passed a weapon no page
 // prints (#174).
 //
-// Each weapon choice is forged in a walk of its own (#251): a forged Weapon
-// answer ends the run, so a walk forging at both never reached MusterWeapon.
+// Each weapon choice is forged in a run of its own (#251): a forged Weapon
+// answer ends the run, so a run forging at both never reached MusterWeapon.
 // Every fixture walks its script, so the same choices are reached every run:
-// a fixture whose own walk makes the choice is refused there, and one whose
-// walk does not finishes cleanly, never asked.
+// a fixture whose own run makes the choice is refused there, and one whose
+// run does not finishes cleanly, never asked.
 func TestADeciderCannotForgeItsOwnOffer(t *testing.T) {
 	t.Parallel()
 
@@ -220,7 +220,7 @@ func TestADeciderCannotForgeItsOwnOffer(t *testing.T) {
 
 				switch {
 				case reaches != (asked > 0):
-					t.Errorf("%s: asked %v = %v, and its walk records it = %v",
+					t.Errorf("%s: asked %v = %v, and its run records it = %v",
 						fixture.name, point, asked > 0, reaches)
 
 					continue
@@ -246,7 +246,7 @@ func TestADeciderCannotForgeItsOwnOffer(t *testing.T) {
 	}
 }
 
-// chosenAt counts the choices a character's walk made at a point.
+// chosenAt counts the choices a character's run made at a point.
 func chosenAt(character *chargen.Character, point traveller.ChoicePoint) int {
 	n := 0
 

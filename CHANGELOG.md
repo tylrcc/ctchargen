@@ -28,6 +28,10 @@ release turns out to be.
   recording it as a choice. The muster-table site no longer copies on its
   own, and the copy it made for #55 is held by a test for the first time.
 
+- One scripted roller, `internal/scripted`, drives both the fixtures and the
+  command's walks (#280), where two identical copies did; its strictness both
+  ways is tested for the first time.
+
 ## 1.0.0-beta.5
 
 The dice are no longer seeded. A character cannot be brought back by running

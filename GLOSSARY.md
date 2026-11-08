@@ -47,8 +47,13 @@ _Avoid_: Tagging, applying, flagging
 
 **Fixture**:
 A scripted sequence of dice and draws that walks the procedure down one chosen
-path, named for the path it reaches.
+path, named for the path it reaches, whose record is checked in as a golden.
 _Avoid_: Seed, magic number, case
+
+**Walk**:
+The command tests' scripted path: dice and draws extracted from a record the
+tool wrote, with no golden. The test that drives it is its proof.
+_Avoid_: Fixture (a fixture has a golden), replay
 
 **Golden**:
 The record a fixture generates, checked in and regenerated never hand-edited.

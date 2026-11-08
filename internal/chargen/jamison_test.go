@@ -424,7 +424,7 @@ func TestTheWorkedExamplesDepartures(t *testing.T) {
 
 	// Both kinds, because the two halves of this comparison are now
 	// different events: a skills table is rolled against nothing and is a
-	// RollEvent, while reenlistment is thrown against a target (#50). A walk
+	// RollEvent, while reenlistment is thrown against a target (#50). A pass
 	// over throws alone sees the reenlistment and not the skills, and
 	// concludes the order is wrong.
 	for _, event := range jamison.Events {

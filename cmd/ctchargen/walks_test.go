@@ -1,10 +1,10 @@
 package main
 
 import (
-	"slices"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/scripted"
 )
 
 // The walks the command tests take. Each is a scripted list of dice and
@@ -15,10 +15,9 @@ import (
 // record is checked in for a walk; the proof it still reaches its path is
 // the assertion the test that drives it makes.
 //
-// A walk is strict both ways, as a fixture is: a die or a draw asked for
-// beyond the list fails the test naming it, and so does one the run never
-// asked for. A walk a person answers scripts no draws, because a person, not
-// a draw, answers the choices the policy would draw for.
+// A walk is consumed exactly, as the scripted package says. A walk a person
+// answers scripts no draws, because a person, not a draw, answers the
+// choices the policy would draw for.
 
 // otherWalked is Other, forced, answered 1 at every question: four terms,
 // discharged. It is the walk most interactive tests take, so their event
@@ -143,18 +142,17 @@ var otherKilled = walk{
 	among: []int{3},
 }
 
-// walk is a scripted roller for the command: the dice and draws of one path.
+// walk is the dice and draws of one path the command's tests take.
 type walk struct {
 	name  string
 	dice  []int
 	among []int
 }
 
-// roller hands out the walk's dice in order, failing the test when asked
-// for one it does not have. Each call starts the walk again, so a batch
-// test can hand the same walk to every member. When the test ends, every
-// playing must have been read to its end: a walk states the dice of its
-// path, and a die or draw left over is one the path never throws.
+// roller plays the walk through a scripted roller. Each call starts the walk
+// again, so a batch test can hand the same walk to every member. When the
+// test ends, every playing must have been read to its end: a walk states the
+// dice of its path, and a die or draw left over is one the path never throws.
 func (w walk) roller(t *testing.T) source {
 	t.Helper()
 
@@ -173,7 +171,7 @@ func (w walk) partly(t *testing.T) source {
 func (w walk) played(t *testing.T, exactly bool) source {
 	t.Helper()
 
-	var playings []*scripted
+	var playings []*scripted.Roller
 
 	if exactly {
 		t.Cleanup(func() {
@@ -182,81 +180,16 @@ func (w walk) played(t *testing.T, exactly bool) source {
 			}
 
 			for _, s := range playings {
-				s.finished()
+				s.Finished()
 			}
 		})
 	}
 
 	return func() chargen.Roller {
-		s := &scripted{t: t, name: w.name, dice: slices.Clone(w.dice), among: slices.Clone(w.among)}
+		s := scripted.New(t, w.name, w.dice, w.among)
 
 		playings = append(playings, s)
 
 		return s
-	}
-}
-
-// scripted is one playing of a walk.
-type scripted struct {
-	t     *testing.T
-	name  string
-	dice  []int
-	among []int
-	die   int
-	draw  int
-}
-
-func (s *scripted) Die() int {
-	s.t.Helper()
-
-	if s.die == len(s.dice) {
-		s.t.Fatalf("%s: the procedure asked for die %d, and the walk scripts %d", s.name, s.die+1, len(s.dice))
-	}
-
-	face := s.dice[s.die]
-	s.die++
-
-	return face
-}
-
-func (s *scripted) TwoDice() (int, int) {
-	s.t.Helper()
-
-	first := s.Die()
-	second := s.Die()
-
-	return first, second
-}
-
-func (s *scripted) Among(n int) int {
-	s.t.Helper()
-
-	if s.draw == len(s.among) {
-		s.t.Fatalf("%s: the procedure asked for draw %d, and the walk scripts %d", s.name, s.draw+1, len(s.among))
-	}
-
-	index := s.among[s.draw]
-	s.draw++
-
-	if index >= n {
-		s.t.Fatalf("%s: draw %d is index %d of %d alternatives", s.name, s.draw, index, n)
-	}
-
-	return index
-}
-
-// finished fails if the run left any of the walk unread, naming how much and
-// where it starts.
-func (s *scripted) finished() {
-	s.t.Helper()
-
-	if s.die < len(s.dice) {
-		s.t.Errorf("%s: the run finished with %d of the walk's %d dice unread, from die %d",
-			s.name, len(s.dice)-s.die, len(s.dice), s.die+1)
-	}
-
-	if s.draw < len(s.among) {
-		s.t.Errorf("%s: the run finished with %d of the walk's %d draws unread, from draw %d",
-			s.name, len(s.among)-s.draw, len(s.among), s.draw+1)
 	}
 }
