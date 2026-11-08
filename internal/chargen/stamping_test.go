@@ -284,7 +284,7 @@ func stillParked(t *testing.T, readings []reading, disagreements map[traveller.E
 // Both are correct and permanent: E012 is a spelling, which is a
 // transcription rather than a reading and changes nothing about a character;
 // E015 settles the worked example against the table it illustrates, and only
-// the replay of that example depends on it. Each says "No record" in its own
+// the reproduction of that example depends on it. Each says "No record" in its own
 // stamped-on prose. E003 and E014 were on this list while fixtures were
 // seeds found by search, because no seed produced the run of 12s they turn
 // on; since #205 the roster scripts its dice and two goldens carry them.

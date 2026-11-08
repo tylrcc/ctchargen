@@ -32,7 +32,7 @@ go build ./cmd/ctchargen
 ## Status
 
 All six services generate, the book's own worked character (pp. 23–25)
-replays against the engine, the record has a schema, and characters can be
+is reproduced by the engine, the record has a schema, and characters can be
 written to files, generated in batches and read back. `new` without
 `--auto` walks the procedure a question at a time, showing each throw
 between the questions.

@@ -91,8 +91,8 @@ reenlistment throw and then the term's skills: "He signs up for a third term
 of service _[reenlistment throw of 4+ required, no DMs, he throws 6]_ and is
 accepted. He is eligible for two skills this term…"
 
-**The gap.** Two orders for one term, and the order fixes dice-stream
-consumption (PRD, Determinism), so it cannot be left open.
+**The gap.** Two orders for one term, and the record lists a term's throws
+in the order they are made, so it cannot be left open.
 
 **Reading.** The exposition's order governs. Each term runs: survival throw →
 commission attempt → promotion attempt → skill eligibilities rolled →
@@ -102,8 +102,8 @@ reenlistment throw → aging round (see [E006](#e006--where-the-aging-round-sits
 elsewhere explicit that it takes liberties for readability — the same
 example batches two aging rounds and says so on p. 25 ("but is instead being
 resolved at this time for simplicity"). The set of throws is identical under
-either order and no outcome changes; only the sequence in which the stream
-is drawn differs, which is exactly why the rule text, not the narration,
+either order and no outcome changes; only the order the record lists the
+throws in differs, which is exactly why the rule text, not the narration,
 should fix it.
 
 **Stamped on.** Records in which at least one term proceeded past its
@@ -569,8 +569,8 @@ non-existent in the scout and other services."
 
 **The gap.** The page never says what a character already holding his
 service's highest printed rank does with his promotion eligibility. Whether
-the throw is made is not cosmetic — a throw that is made consumes two dice
-from the stream (PRD, Determinism).
+the throw is made is not cosmetic — a throw that is made sits in the record
+with its dice, and at the top rank it could change nothing.
 
 **Reading.** No promotion throw is made once the character holds the highest
 rank his service's column prints. The eligibility does not arise, so no dice
@@ -668,7 +668,7 @@ nothing but the worked example ever claims a result the table does not
 print. It is recorded because a reader who reaches p. 25 with p. 9 open will
 find the contradiction and needs to know which way this tool read it.
 
-The visible consequence, for the replay of Jamison in `chargen`: the same
+The visible consequence, for the reproduction of Jamison in `chargen`: the same
 six rolls yield the same +1 Education and the same four merchant ships, and
 differ in exactly one benefit — a **Low** Passage where p. 25 claims a
 Middle one.

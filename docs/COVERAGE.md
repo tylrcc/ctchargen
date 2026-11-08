@@ -30,7 +30,7 @@ All six services. P. 10 makes ranks, commissions and promotions one fact —
 services" — so the four that print a rank column have all three, and the two
 that print none have none.
 
-The book's own worked character (pp. 23–25) is replayed against the engine,
+The book's own worked character (pp. 23–25) is reproduced by the engine,
 and Book 2 pp. 18–19 give the two ships the benefits name.
 
 ## Characteristics and the record

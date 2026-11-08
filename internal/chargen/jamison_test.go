@@ -10,7 +10,7 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// The worked example of Book 1 pp. 23-25, replayed.
+// The worked example of Book 1 pp. 23-25, reproduced.
 //
 // The choice points make the instrument free: the procedure asks through a Decider and
 // throws through a Roller, so a narrated pair walks the example's own
@@ -103,7 +103,7 @@ type narrated struct {
 
 // Among is never called: the worked example drives its own decider, which
 // names each weapon the book names rather than choosing one. If this ever
-// fires, the replay has stopped following p. 25 and started guessing.
+// fires, the reproduction has stopped following p. 25 and started guessing.
 func (s *narrated) Among(int) int {
 	s.t.Fatalf("the worked example drew among alternatives; p. 25 names them")
 
@@ -236,7 +236,7 @@ func (d *decisions) AssumeTitle(traveller.Title) (bool, error) {
 	return false, nil
 }
 
-func replayJamison(t *testing.T) *chargen.Character {
+func reproduceJamison(t *testing.T) *chargen.Character {
 	t.Helper()
 
 	inputs := chargen.Inputs{
@@ -269,7 +269,7 @@ func replayJamison(t *testing.T) *chargen.Character {
 
 	character, err := chargen.Guided(inputs, chosen, chargen.WithRoller(rolls))
 	if err != nil {
-		t.Fatalf("replaying the example: %v", err)
+		t.Fatalf("reproducing the example: %v", err)
 	}
 
 	if len(rolls.throws) != 0 || len(rolls.dice) != 0 {
@@ -287,7 +287,7 @@ func replayJamison(t *testing.T) *chargen.Character {
 func TestTheWorkedExampleReproduces(t *testing.T) {
 	t.Parallel()
 
-	jamison := replayJamison(t)
+	jamison := reproduceJamison(t)
 
 	// The book's author made these choices, not the policy, so the record
 	// names none.
@@ -340,7 +340,7 @@ func TestTheWorkedExamplesSkills(t *testing.T) {
 	}
 
 	got := make([]string, 0, len(want))
-	for _, skill := range replayJamison(t).Skills {
+	for _, skill := range reproduceJamison(t).Skills {
 		got = append(got, skill.String())
 	}
 
@@ -359,7 +359,7 @@ func TestTheWorkedExamplesSkills(t *testing.T) {
 func TestTheWorkedExamplesPossessions(t *testing.T) {
 	t.Parallel()
 
-	jamison := replayJamison(t)
+	jamison := reproduceJamison(t)
 
 	if len(jamison.Benefits.Ships) != 1 {
 		t.Fatalf("owns %d ships, want one", len(jamison.Benefits.Ships))
@@ -400,7 +400,7 @@ func TestTheWorkedExamplesPossessions(t *testing.T) {
 func TestTheWorkedExamplesDepartures(t *testing.T) {
 	t.Parallel()
 
-	jamison := replayJamison(t)
+	jamison := reproduceJamison(t)
 
 	// E015. The page's six Table 1 rolls yield the same +1 Education and the
 	// same four merchant ships either way; the whole visible difference is

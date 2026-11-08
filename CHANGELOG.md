@@ -23,6 +23,10 @@ release turns out to be.
 - CLAUDE.md and the scripted roller's doc no longer say a fixture whose dice
   moved fails naming the throw that moved: nothing names it, and some changes
   fail only a golden, whose diff is read before regenerating (#289).
+- ERRATA.md no longer argues from the withdrawn PRD Determinism section: E002
+  and E013 say what the order and the throw change, which is what the record
+  shows. The worked example is "reproduced", not "replayed", wherever the
+  glossary's withdrawn word was used for it (#290).
 
 ## 1.0.0-beta.6
 
