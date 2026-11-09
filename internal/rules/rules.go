@@ -52,7 +52,6 @@ const (
 type Rules struct {
 	services    [len(traveller.ServiceNames)]Service
 	weapons     [len(traveller.WeaponCategories)][]traveller.WeaponName
-	passages    [len(traveller.PassageClasses)]traveller.Credits
 	hulls       [len(traveller.ShipKinds)]int
 	grants      []Grant
 	nobility    []Nobility
@@ -248,9 +247,6 @@ func (r *Rules) Weapons(c traveller.WeaponCategory) []traveller.WeaponName {
 // Implements: The ships the two benefits name: Type S, Type A [2:18–19].
 func (r *Rules) Hull(kind traveller.ShipKind) int { return r.hulls[kind] }
 
-// Passage is the purchase price of a passage class (pp. 21-22).
-func (r *Rules) Passage(c traveller.PassageClass) traveller.Credits { return r.passages[c] }
-
 // Normalize applies E012: a name as a table prints it becomes the name its
 // own description carries.
 //
@@ -382,8 +378,6 @@ type Muster struct {
 	// notice. The lift applies that normalization to this name too, so the
 	// two sides cannot spell the skill differently.
 	Table2ModifierFrom traveller.SkillName
-
-	ResalePercent int
 }
 
 // The benefit roll counts and the rank thresholds that earn them (p. 9).

@@ -156,8 +156,7 @@ type servicesTranscription struct {
 }
 
 // musteringTranscription is the two Mustering Out Tables as p. 9 prints
-// them, the services across, with the two DMs, the benefits' names, and the
-// passage prices and resale rate.
+// them, the services across, with the two DMs and the benefits' names.
 type musteringTranscription struct {
 	table1               [MusterRows][len(traveller.ServiceNames)]string
 	table2               [MusterRows][len(traveller.ServiceNames)]int64
@@ -165,8 +164,6 @@ type musteringTranscription struct {
 	table2DMFromGambling int
 	table2ModifierFrom   string
 	names                map[string]string
-	prices               [len(traveller.PassageClasses)]int64
-	resalePercent        int
 }
 
 // printedSpan is one cell of an Aging Table row as p. 9 prints it: its text,
@@ -294,7 +291,7 @@ var boxServices = map[string]traveller.ServiceName{
 	"Merchant": traveller.Merchants,
 }
 
-// transcribedMustering is Book 1 p. 9 (Mustering Out Tables); pp. 21-22 (what
+// transcribedMustering is Book 1 p. 9 (Mustering Out Tables); pp. 21-23 (what
 // each benefit is).
 //
 // Seven rows, not six: a die of 1-6 plus the +1 a rank of 5 or 6 allows reaches
@@ -340,14 +337,6 @@ var transcribedMustering = musteringTranscription{
 		"Scout":       "Scout ship, Type S",
 		"Merchant":    "Free Trader, Type A",
 	},
-
-	// Book 1 pp. 21-22
-	prices: [len(traveller.PassageClasses)]int64{
-		traveller.HighPassage:   10000,
-		traveller.MiddlePassage: 8000,
-		traveller.LowPassage:    1000,
-	},
-	resalePercent: 90,
 }
 
 // transcribedAging is Book 1 p. 9 (Aging Table); p. 7 (when a round is run).

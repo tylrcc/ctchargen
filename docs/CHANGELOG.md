@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The passage prices and the 90% resale rate of pp. 21-22 are no longer
+  transcribed: they were lifted and checked, and nothing read them, since
+  selling a passage is play after generation. Passages are still benefits a
+  character holds, by class (#365).
 - Table 1's benefit sum has the six kinds of row p. 9 prints: passage,
   characteristic, weapon, Travellers' Aid, ship and the dash. It also had a
   cash kind no Table 1 row produces, so the engine's case for it could never

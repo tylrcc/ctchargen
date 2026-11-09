@@ -356,11 +356,11 @@ func TestEligibility(t *testing.T) {
 	}
 }
 
-// The mustering out notes (pp. 7, 9) and the passages (pp. 21-22).
+// The mustering out notes (pp. 7, 9).
 //
 // Holds: One roll per term, plus rank extras.
 // Holds: The +1 with gambling on Table 2.
-func TestMusterRollsAndPassages(t *testing.T) {
+func TestMusteringOutNotes(t *testing.T) {
 	t.Parallel()
 
 	r := load(t)
@@ -400,18 +400,6 @@ func TestMusterRollsAndPassages(t *testing.T) {
 	// mismatch would not fail, it would silently stop the modifier applying.
 	if r.Muster().Table2ModifierFrom != "Gambling" {
 		t.Errorf("the table 2 modifier is earned by %q, want Gambling", r.Muster().Table2ModifierFrom)
-	}
-
-	for class, want := range map[traveller.PassageClass]traveller.Credits{
-		traveller.HighPassage: 10000, traveller.MiddlePassage: 8000, traveller.LowPassage: 1000,
-	} {
-		if got := r.Passage(class); got != want {
-			t.Errorf("%v costs %v, want %v", class, got, want)
-		}
-	}
-
-	if r.Muster().ResalePercent != 90 {
-		t.Errorf("passages resell at %d%%, want 90%%", r.Muster().ResalePercent)
 	}
 }
 

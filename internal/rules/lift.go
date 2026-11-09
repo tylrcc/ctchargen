@@ -495,7 +495,7 @@ func (r *Rules) liftMustering(t musteringTranscription) error {
 		Table2ModifierFrom:   earnedBy,
 	}
 
-	return r.liftPassages(t)
+	return nil
 }
 
 // liftBenefits lifts Mustering Out Table 1, Material Benefits (p. 9).
@@ -530,26 +530,6 @@ func (r *Rules) liftCash(t musteringTranscription) error {
 			r.services[i].Cash[n] = traveller.Credits(cash)
 		}
 	}
-
-	return nil
-}
-
-// liftPassages lifts the purchase prices of pp. 21-22 and the resale rate.
-func (r *Rules) liftPassages(t musteringTranscription) error {
-	for _, class := range traveller.PassageClasses {
-		price := t.prices[class]
-		if price <= 0 {
-			return fmt.Errorf("%w: passages: no price for %v", errMalformed, class)
-		}
-
-		r.passages[class] = traveller.Credits(price)
-	}
-
-	if t.resalePercent <= 0 {
-		return fmt.Errorf("%w: passages: no resale percentage", errMalformed)
-	}
-
-	r.muster.ResalePercent = t.resalePercent
 
 	return nil
 }

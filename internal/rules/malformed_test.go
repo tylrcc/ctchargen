@@ -373,14 +373,6 @@ func TestMalformedMustering(t *testing.T) {
 			func(m *musteringTranscription) { m.table2ModifierFrom = "" },
 			"earns the table 2 modifier",
 		},
-		"a passage with no price": {
-			func(m *musteringTranscription) { m.prices[traveller.LowPassage] = 0 },
-			"no price for Low Passage",
-		},
-		"no resale percentage": {
-			func(m *musteringTranscription) { m.resalePercent = 0 },
-			"resale",
-		},
 	} {
 		broken := musteringCopy()
 

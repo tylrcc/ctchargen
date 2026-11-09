@@ -38,7 +38,7 @@ import (
 //
 // It decides nothing a flag already decides - --service forces the enlistment
 // attempt and suppresses Service, and --name is not a choice point - and
-// nothing after generation: selling a passage at 90% (p. 22), buying
+// nothing after generation: selling a passage back (p. 22), buying
 // Travellers' Aid membership for CR 1,000,000 (p. 22) and flying the ship are
 // play, and the record carries the assets and stops.
 // Interactive mode implements the same Decider and asks the player instead.
