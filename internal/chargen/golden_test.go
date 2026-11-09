@@ -113,9 +113,15 @@ func documentedExample(t *testing.T, name string, encoded []byte) {
 // attach to.
 // Holds: The two documented examples are generated, not written.
 func TestGoldens(t *testing.T) {
+	// withReadings is the fixture whose transcript is also kept with its
+	// readings. It names E002, whose prose carries the page's own italic, so
+	// the golden shows that emphasis reaching the transcript unchanged.
+	const withReadings = "army-serve"
+
 	t.Parallel()
 
 	written := map[string]bool{}
+	keptWithReadings := false
 
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
@@ -138,13 +144,28 @@ func TestGoldens(t *testing.T) {
 			t.Fatalf("%s: %v", fixture.name, err)
 		}
 
-		transcript, err := render.Transcript(character)
+		transcript, err := render.Transcript(character, false)
 		if err != nil {
 			t.Fatalf("%s: %v", fixture.name, err)
 		}
 
 		golden(t, fixture.name+".sheet.md", []byte(sheet))
 		golden(t, fixture.name+".transcript.md", []byte(transcript))
+
+		if fixture.name == withReadings {
+			full, err := render.Transcript(character, true)
+			if err != nil {
+				t.Fatalf("%s: %v", fixture.name, err)
+			}
+
+			golden(t, fixture.name+".readings.transcript.md", []byte(full))
+
+			keptWithReadings = true
+		}
+	}
+
+	if !keptWithReadings {
+		t.Errorf("%s keeps the transcript with its readings but is not in the fixture roster", withReadings)
 	}
 
 	// Without this, renaming or dropping a fixture that documents an
@@ -325,7 +346,7 @@ func TestNoTranscriptSkipsANumber(t *testing.T) {
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		transcript, err := render.Transcript(character)
+		transcript, err := render.Transcript(character, false)
 		if err != nil {
 			t.Fatalf("%s: %v", fixture.name, err)
 		}

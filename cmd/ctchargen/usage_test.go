@@ -31,13 +31,13 @@ const (
 var (
 	newFlags = []string{
 		flagAuto, flagService, flagName, flagCareer, flagSkills,
-		flagMuster, flagSheet, flagHistory, flagOutput, flagForce,
+		flagMuster, flagSheet, flagHistory, flagReadings, flagOutput, flagForce,
 	}
 	batchFlags = []string{
 		flagCount, flagAuto, flagService, flagName, flagCareer,
 		flagSkills, flagMuster, flagOutput, flagForce, flagSurvivors,
 	}
-	renderFlags = []string{flagHistory, flagOutput, flagForce}
+	renderFlags = []string{flagHistory, flagReadings, flagOutput, flagForce}
 )
 
 // Help is not an error: it exits 0, and it names every flag the command has.
@@ -166,7 +166,7 @@ func TestTopLevelHelpNamesEverySubcommand(t *testing.T) {
 			continue
 		}
 
-		for _, command := range []string{cmdNew, cmdBatch, cmdRender, cmdVersion} {
+		for _, command := range []string{cmdNew, cmdBatch, cmdRender, cmdReadings, cmdVersion} {
 			if !strings.Contains(out.String(), command) {
 				t.Errorf("ctchargen %s: does not name %s", asked, command)
 			}
@@ -185,8 +185,9 @@ func TestAPositionalArgumentIsRefused(t *testing.T) {
 		cmdNew:            {cmdNew, wantTypo},
 		"new before auto": {cmdNew, wantTypo, flagAuto},
 		cmdBatch:          {cmdBatch, flagAuto, flagCount, "1", wantTypo},
-		// The two that have no flag set of their own refuse a word too,
-		// rather than printing as though nothing had been typed.
+		// The two that take no word and have no flag set refuse one too,
+		// rather than printing as though nothing had been typed. readings
+		// has no flag set either, but its words are ids.
 		cmdVersion: {cmdVersion, wantTypo},
 		cmdHelp:    {cmdHelp, wantTypo},
 	} {
@@ -251,6 +252,7 @@ func TestHelpReportsAWriteThatFailed(t *testing.T) {
 	}{
 		"top level":       {[]string{flagHelp}, brokenPipe{}},
 		cmdNew:            {[]string{cmdNew, flagHelp}, brokenPipe{}},
+		cmdReadings:       {[]string{cmdReadings, flagHelp}, brokenPipe{}},
 		"the flags alone": {[]string{cmdNew, flagHelp}, &haltingPipe{}},
 	} {
 		err := run(tc.args, nil, tc.out, io.Discard)
@@ -264,25 +266,31 @@ func TestHelpReportsAWriteThatFailed(t *testing.T) {
 	}
 }
 
-// `version --help` is a help and not the build. The top-level help tells the
-// reader that every command it lists answers --help, and version is one of
-// the four; answering with the build breaks that promise for a script that
-// asked what the command takes.
-func TestVersionAnswersHelp(t *testing.T) {
+// `version --help` is a help and not the build, and `readings --help` is a
+// help and not the index. The top-level help tells the reader that every
+// command it lists answers --help, and these two have no flag set to answer
+// it for them; answering with the build or the readings breaks that promise
+// for a script that asked what the command takes.
+func TestTheCommandsWithoutFlagsAnswerHelp(t *testing.T) {
 	t.Parallel()
 
-	for _, asked := range []string{flagHelp, flagShort} {
-		var out strings.Builder
+	for command, want := range map[string]string{
+		cmdVersion:  "usage: ctchargen version\n",
+		cmdReadings: "usage: ctchargen readings [E001 ...]\n",
+	} {
+		for _, asked := range []string{flagHelp, flagShort} {
+			var out strings.Builder
 
-		err := run([]string{cmdVersion, asked}, nil, &out, io.Discard)
-		if err != nil {
-			t.Errorf("version %s: %v", asked, err)
+			err := run([]string{command, asked}, nil, &out, io.Discard)
+			if err != nil {
+				t.Errorf("%s %s: %v", command, asked, err)
 
-			continue
-		}
+				continue
+			}
 
-		if out.String() != "usage: ctchargen version\n" {
-			t.Errorf("version %s: not the usage: %q", asked, out.String())
+			if out.String() != want {
+				t.Errorf("%s %s: not the usage: %q", command, asked, out.String())
+			}
 		}
 	}
 }
@@ -305,6 +313,7 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 		"top level, -h": {flagShort, wantTypo},
 		cmdHelp:         {cmdHelp, wantTypo},
 		cmdVersion:      {cmdVersion, flagHelp, wantTypo},
+		cmdReadings:     {cmdReadings, flagHelp, wantTypo},
 		cmdNew:          {cmdNew, flagHelp, wantTypo},
 		cmdBatch:        {cmdBatch, flagHelp, wantTypo},
 		cmdRender:       {cmdRender, flagHelp, wantTypo},

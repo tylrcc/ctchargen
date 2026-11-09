@@ -54,6 +54,18 @@ func (r Reading) Withdrawn() bool { return r.Withdrawal != Withdrawal{} }
 // ReadingOf is the reading an erratum names.
 func ReadingOf(e traveller.Erratum) Reading { return readings[e-1] }
 
+// ReadingNamed is the reading whose erratum is spelled id, as a record spells
+// it ("E002"), and whether there is one.
+func ReadingNamed(id string) (Reading, bool) {
+	for _, r := range readings {
+		if r.ID.String() == id {
+			return r, true
+		}
+	}
+
+	return Reading{}, false
+}
+
 // Readings is every reading, in erratum order. Its result type is the count
 // check: readings is sized by its literal, so a reading missing, or one past
 // the last erratum, does not compile here. TestTheReadings holds each to its
@@ -123,7 +135,7 @@ var readings = [...]Reading{
 			"in the order they are made, so it cannot be left open.",
 		Reading: "The exposition's order governs. Each term runs: survival throw →\n" +
 			"commission attempt → promotion attempt → skill eligibilities rolled →\n" +
-			"reenlistment throw → aging round (see [E006](#e006--where-the-aging-round-sits-within-the-term)).",
+			"reenlistment throw → aging round (see E006).",
 		Why: "The exposition is the rule; the example illustrates it and is\n" +
 			"elsewhere explicit that it takes liberties for readability — the same\n" +
 			"example batches two aging rounds and says so on p. 25 (\"but is instead being\n" +
@@ -184,9 +196,9 @@ var readings = [...]Reading{
 			"term N is recorded with N terms of service, and the fatal term's four years\n" +
 			"are added to the character's own age at death, including any months already\n" +
 			"accrued from an earlier crisis (pp. 7–8), as " +
-			"[E008](#e008--the-outcome-of-a-failed-medical-crisis-saving-throw) records a crisis death.\n" +
+			"E008 records a crisis death.\n" +
 			"The record names the term and the cause. No aging round is run for the fatal\n" +
-			"term (the round sits at the end of the term — [E006](#e006--where-the-aging-round-sits-within-the-term) — " +
+			"term (the round sits at the end of the term — E006 — " +
 			"and the character did not reach it),\n" +
 			"and no mustering out occurs.",
 		Why: "P. 5 attaches the four years to the term itself — \"a term of service\n" +
@@ -198,7 +210,7 @@ var readings = [...]Reading{
 			"recomputed as 18 + 4N: that is the age only when no crisis was survived.\n" +
 			"Pp. 7–8 put a recovery's months on the age at once — \"The character ages\n" +
 			"(one die equals the number of months in added age) immediately\" — nothing on\n" +
-			"the pages takes them off, and [E006](#e006--where-the-aging-round-sits-within-the-term) already lets them " +
+			"the pages takes them off, and E006 already lets them " +
 			"carry the age past the\n" +
 			"term's own arithmetic.",
 		StampedOn: "Records ending in death by a failed survival throw.",
@@ -262,7 +274,7 @@ var readings = [...]Reading{
 			"row to physiological age, which the months added by a medical crisis\n" +
 			"(pp. 7–8) can push past the term's own arithmetic, and the term is the\n" +
 			"unambiguous index. That row stops at 14; what governs a term past it is\n" +
-			"[E014](#e014--the-aging-tables-last-column-is-terminal).",
+			"E014.",
 		Why: "The two pages use different prepositions for the two steps and the\n" +
 			"distinction is the only one available: the reenlistment throw is made\n" +
 			"\"during each term of service\" (p. 6), the aging round comes \"at the end of\"\n" +
@@ -300,10 +312,10 @@ var readings = [...]Reading{
 			"crisis resolves inline because p. 7 says so of the recovery it describes —\n" +
 			"\"his recovery is made immediately\" — and because deferring it would leave the\n" +
 			"character standing at 0 through the rest of a round the table indexes by term\n" +
-			"of service ([E006](#e006--where-the-aging-round-sits-within-the-term)), not by\n" +
+			"of service (E006), not by\n" +
 			"the character's condition.",
 		StampedOn: "Records in which at least one aging round was run. Stamped\n" +
-			"alongside [E006](#e006--where-the-aging-round-sits-within-the-term).",
+			"alongside E006.",
 	},
 	{
 		ID:    traveller.E008,
@@ -355,7 +367,7 @@ var readings = [...]Reading{
 			"forbids (PRD, Authority); a character's own Medical skill is not \"attending\n" +
 			"medical personnel\" treating him.",
 		StampedOn: "Records in which a medical-crisis saving throw was made.\n" +
-			"Stamped alongside [E008](#e008--the-outcome-of-a-failed-medical-crisis-saving-throw).",
+			"Stamped alongside E008.",
 	},
 	{
 		ID:    traveller.E010,
@@ -375,8 +387,8 @@ var readings = [...]Reading{
 			"reachable.",
 		Reading: "Aging reductions floor at **0**. A reduction that would carry a\n" +
 			"characteristic below 0 stops at 0, and 0 is a medical crisis, resolved per\n" +
-			"pp. 7–8 (and [E008](#e008--the-outcome-of-a-failed-medical-crisis-saving-throw),\n" +
-			"[E009](#e009--the-medical-expertise-dm-during-solo-generation)). Every other\n" +
+			"pp. 7–8 (and E008,\n" +
+			"E009). Every other\n" +
 			"alteration in the procedure — the skills tables' one negative result, Other's\n" +
 			"−1 Social on p. 11, and every characteristic alteration from a table or a\n" +
 			"rank — floors at **1**.",
@@ -576,9 +588,9 @@ var readings = [...]Reading{
 		Gap: "The Term of Service row is a closed list that stops at 14. The\n" +
 			"Age row is not — its last cell is open-ended. `Term` has no upper bound\n" +
 			"(PRD, Domain model) and a 12 on the reenlistment throw recurs without limit\n" +
-			"([E003](#e003--a-12-on-the-reenlistment-throw-recurs-past-term-7)), so a\n" +
+			"(E003), so a\n" +
 			"character can reach term 15, and\n" +
-			"[E006](#e006--where-the-aging-round-sits-within-the-term) sends the round to\n" +
+			"E006 sends the round to\n" +
 			"a row with no cell for him. The Age row would have covered him; the Term row\n" +
 			"does not.",
 		Reading: "The table's last column is terminal: every term from the 14th on\n" +

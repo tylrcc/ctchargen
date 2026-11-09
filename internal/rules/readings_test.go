@@ -138,3 +138,21 @@ func refusedWithdrawal(r rules.Reading) error {
 
 	return nil
 }
+
+// A reading is found by the id a record spells it with, and only by that.
+func TestAReadingIsNamedByItsID(t *testing.T) {
+	t.Parallel()
+
+	for _, e := range traveller.Errata {
+		got, ok := rules.ReadingNamed(e.String())
+		if !ok || got.ID != e {
+			t.Errorf("%v: found %v, %v", e, got.ID, ok)
+		}
+	}
+
+	for _, id := range []string{"", "E000", "E016", "e002", "E02", "E0002", "2", " E002"} {
+		if _, ok := rules.ReadingNamed(id); ok {
+			t.Errorf("%q names a reading", id)
+		}
+	}
+}

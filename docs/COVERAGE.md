@@ -149,6 +149,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | The skills table designated is the one he has trained on least | 1:11 | `internal/chargen.Policy.SkillTable` | `internal/chargen.TestOneCharacterTrainsOnMoreThanOneTable` |
 | The weapon for a Blade or Gun result is drawn, not always the first printed | 1:11–13 | `internal/chargen.Policy.Weapon` | `internal/chargen.TestTheAutoPolicyNamesMoreThanOneWeapon`, golden `marines-armed` |
 | A ship's terms follow its kind, not its numbers | 1:22–23 | `internal/render.shipLine` | `internal/render.TestAShipsTermsFollowItsKind` |
+| --readings without --history is refused, not ignored | CLI sketch | `cmd/ctchargen.readingsWithoutHistory` | `cmd/ctchargen.TestReadingsNeedsTheTranscript` |
 | A batch checks for collisions without generating anybody | CLI sketch | `cmd/ctchargen.plannedPaths` | `cmd/ctchargen.TestTheCollisionCheckNeedsNoCharacters` |
 | A batch says how many it wrote and how many died | CLI sketch | `cmd/ctchargen.tally` | `cmd/ctchargen.TestABatchReportsASummaryThatCouldNotBeWritten`, `cmd/ctchargen.TestABatchSaysHowManyDied` |
 | A batch to a file is written all at once, never a record at a time | CLI sketch | `cmd/ctchargen.batchRun.buffered` | `cmd/ctchargen.TestABatchToAFileIsStillWrittenAtOnce` |
@@ -174,6 +175,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A roll with nothing to meet is not recorded as a throw that succeeded | Generation record | `internal/traveller.RollEvent` | `internal/render.TestEveryGoldenMatchesTheSchema`, `internal/render.TestTheFlatShapeIsWhatWasWritten` |
 | A stopped session says what was answered and that nothing was written | ADR 0001 | `cmd/ctchargen.player.stopped` | `cmd/ctchargen.TestAStoppedSessionSaysWhatWasLost` |
 | A strategy given without --auto is refused, not ignored | CLI sketch | `cmd/ctchargen.strategiesWithoutAuto` | `cmd/ctchargen.TestAStrategyWithoutAutoIsRefused` |
+| A transcript with its readings ends with each reading its record names, in full | CLI sketch | `internal/render.writeReadings` | `internal/render.TestATranscriptWithItsReadingsEndsWithThem` |
 | A withdrawal says why, and its replacement is another erratum that exists | Documents | `internal/rules.refusedWithdrawal` | `internal/rules.TestAWithdrawalNamesARealReplacement` |
 | A withdrawn reading is stamped on no new record | Documents | `internal/chargen.verdict` | `internal/chargen.TestAWithdrawnReadingOnAGoldenIsRefused` |
 | A word after a help flag is refused, not discarded | CLI sketch | `cmd/ctchargen.writeHelp` | `cmd/ctchargen.TestAWordAfterAHelpFlagIsRefused` |
@@ -199,6 +201,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | The kept transcript numbers every event, so no number is skipped | Generation record | `internal/render.writeEvent` | `internal/chargen.TestNoTranscriptSkipsANumber` |
 | The procedure is shown between the questions | Generation record | `internal/chargen.WithObserver`, `internal/render.EventLine` | `cmd/ctchargen.TestInteractiveShowsWhatAutoDoesNot` |
 | The questions go to stderr, not into the record | CLI sketch | `cmd/ctchargen.run` | `cmd/ctchargen.TestTheQuestionsStayOutOfTheRecord` |
+| The readings are listed, and those asked for are written in full | CLI sketch | `cmd/ctchargen.readings`, `internal/render.ReadingsIndex`, `internal/render.ReadingsNamed` | `cmd/ctchargen.TestReadingsWritesTheIndexOrThoseAskedFor`, `internal/render.TestTheIndexListsEveryReading`, `internal/render.TestTheReadingsNamedAreWrittenInFull` |
 | The record matches the schema that describes it | JSON conventions | `docs/character.schema.json` | `internal/render.TestEveryGoldenMatchesTheSchema` |
 | The record names its ruleset and the build that wrote it | ADR 0002 | `cmd/ctchargen.source.options`, `internal/chargen.Ruleset` | `cmd/ctchargen.TestRunWritesEachRendering` |
 | The shape a reader gets back is the shape that was written | Generation record | `internal/render.eventCodec` | `internal/render.TestTheFlatShapeIsWhatWasWritten` |

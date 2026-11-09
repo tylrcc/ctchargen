@@ -105,6 +105,8 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 		return batch(args[1:], out, asking, chosen.dice)
 	case "render":
 		return renderRecord(args[1:], out)
+	case "readings":
+		return readings(args[1:], out)
 	case "version":
 		return version(args[1:], out)
 	// Help asked for is not a misuse: it leaves by out and exits 0. A bare
@@ -131,8 +133,8 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 //
 // It takes no flags, so --help is answered here rather than by a flag set:
 // the top-level help promises that every command answers --help, and version
-// is one of the four it lists. Anything else is refused rather than ignored,
-// which is what the other three do with a word they were not expecting.
+// is one of those it lists. Anything else is refused rather than ignored,
+// which is what the others do with a word they were not expecting.
 func version(args []string, out io.Writer) error {
 	if len(args) > 0 {
 		if isHelpFlag(args[0]) {
@@ -183,7 +185,7 @@ func buildVersion(info *debug.BuildInfo) string {
 }
 
 // isHelpFlag reports the spellings of --help the flag package itself answers,
-// for the one command that has no flag set to answer them.
+// for the commands that have no flag set to answer them: version and readings.
 func isHelpFlag(arg string) bool {
 	return arg == "-h" || arg == "-help" || arg == "--help"
 }

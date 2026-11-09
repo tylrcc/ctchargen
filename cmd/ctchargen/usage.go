@@ -12,7 +12,7 @@ import (
 // commandList is the subcommands in the order run's switch takes them. Both
 // messages that name them read it here, so the two cannot come to disagree
 // about the order again.
-const commandList = "new|batch|render|version"
+const commandList = "new|batch|render|readings|version"
 
 // The usage line of each subcommand: what it takes that is not a flag.
 //
@@ -24,20 +24,22 @@ const commandList = "new|batch|render|version"
 // writeFlags prints from the set itself is what carries the detail, and it
 // cannot go stale.
 const (
-	newUsage     = "new [flags]"
-	batchUsage   = "batch --auto --count N [flags]"
-	renderUsage  = "render [flags] <character.json>"
-	versionUsage = "version"
+	newUsage      = "new [flags]"
+	batchUsage    = "batch --auto --count N [flags]"
+	renderUsage   = "render [flags] <character.json>"
+	readingsUsage = "readings [E001 ...]"
+	versionUsage  = "version"
 )
 
 // topLevelUsage answers `ctchargen --help`: what the commands are, and where
 // to ask about one of them.
 const topLevelUsage = "usage: ctchargen <command> [flags]\n" +
 	"\n" +
-	"  new      generate one character, asking at every choice unless --auto\n" +
-	"  batch    generate many characters, under --auto\n" +
-	"  render   write a record saved earlier as a sheet or as a transcript\n" +
-	"  version  write the build\n" +
+	"  new       generate one character, asking at every choice unless --auto\n" +
+	"  batch     generate many characters, under --auto\n" +
+	"  render    write a record saved earlier as a sheet or as a transcript\n" +
+	"  readings  list the readings, or write the ones named in full\n" +
+	"  version   write the build\n" +
 	"\n" +
 	"Run `ctchargen <command> --help` for that command's flags.\n"
 

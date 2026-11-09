@@ -26,6 +26,14 @@ release turns out to be.
   questions it recorded as settled by the page are doc comments on the
   declarations that implement them. The erratum constants no longer repeat
   their readings' titles (#323).
+- The tool explains its readings. `--readings` on `new --history` and
+  `render --history` ends the transcript with the full text of each reading
+  the record names, and is refused without `--history`. `ctchargen readings`
+  lists every reading with its status, or writes the ones named in full; an
+  id that names no reading is a usage error. Without `--readings`, every
+  transcript is what it was. The twelve links between readings, anchors into
+  the deleted document, are plain ids now, since a link out of an emitted
+  reading has nowhere to land (#324).
 
 ## 1.0.0-beta.7
 

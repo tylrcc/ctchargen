@@ -47,8 +47,8 @@ func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags
 type newFlagSet struct {
 	characterFlags
 
-	auto, sheet, history, force *bool
-	output                      *string
+	auto, sheet, history, readings, force *bool
+	output                                *string
 }
 
 func declareNewFlags() newFlagSet {
@@ -63,11 +63,12 @@ func declareNewFlags() newFlagSet {
 			skills:  "the --auto skills `strategy`: ",
 			muster:  "the --auto mustering out `strategy`: ",
 		}),
-		auto:    set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
-		sheet:   set.Bool("sheet", false, "write the character sheet rather than JSON"),
-		history: set.Bool("history", false, "write the generation record rather than JSON"),
-		output:  set.String("o", "", "write to this file rather than to standard output"),
-		force:   set.Bool("force", false, "replace the output file if it already exists"),
+		auto:     set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
+		sheet:    set.Bool("sheet", false, "write the character sheet rather than JSON"),
+		history:  set.Bool("history", false, "write the generation record rather than JSON"),
+		readings: set.Bool("readings", false, readingsHelp),
+		output:   set.String("o", "", "write to this file rather than to standard output"),
+		force:    set.Bool("force", false, "replace the output file if it already exists"),
 	}
 }
 
@@ -107,8 +108,13 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 		return err
 	}
 
+	err = readingsWithoutHistory(*flags.readings, *flags.history)
+	if err != nil {
+		return err
+	}
+
 	return writeCharacter(inputs, policy, newRendering{
-		auto: *flags.auto, sheet: *flags.sheet, history: *flags.history,
+		auto: *flags.auto, sheet: *flags.sheet, history: *flags.history, readings: *flags.readings,
 		output: *flags.output, force: *flags.force,
 	}, in, out, asking, dice)
 }
@@ -172,12 +178,31 @@ func flagsThatContradict(sheet, history bool) error {
 	return nil
 }
 
+// readingsHelp is --readings' description, on both commands that write a
+// transcript.
+const readingsHelp = "end the generation record with the full text of each reading it names"
+
+// readingsWithoutHistory refuses --readings where no transcript is written.
+// The readings end a transcript, and nothing else: a flag accepted on a sheet
+// or a JSON record would add nothing and say nothing, which is the defect
+// flagsThatContradict exists for.
+//
+// Implements: --readings without --history is refused, not ignored [CLI
+// sketch] in The record.
+func readingsWithoutHistory(readings, history bool) error {
+	if readings && !history {
+		return fmt.Errorf("%w: --readings ends a transcript, and needs --history", errUsage)
+	}
+
+	return nil
+}
+
 // newRendering is what the flags say to do with the character once it exists,
 // gathered so that newCharacter reads as the four steps it takes rather than
 // as its whole flag set threaded through them.
 type newRendering struct {
-	auto, sheet, history, force bool
-	output                      string
+	auto, sheet, history, readings, force bool
+	output                                string
 }
 
 func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRendering,
@@ -188,7 +213,7 @@ func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRenderi
 		return err
 	}
 
-	text, err := rendered(character, how.sheet, how.history)
+	text, err := rendered(character, how)
 	if err != nil {
 		return err
 	}
@@ -269,14 +294,14 @@ func generate(inputs chargen.Inputs, policy chargen.Policy, auto bool,
 }
 
 // rendered is the character in whichever of the three shapes was asked for.
-func rendered(character *chargen.Character, sheet, history bool) (string, error) {
+func rendered(character *chargen.Character, how newRendering) (string, error) {
 	switch {
-	case sheet:
+	case how.sheet:
 		text, err := render.Sheet(character)
 
 		return text, wrapRender(err)
-	case history:
-		text, err := render.Transcript(character)
+	case how.history:
+		text, err := render.Transcript(character, how.readings)
 
 		return text, wrapRender(err)
 	default:

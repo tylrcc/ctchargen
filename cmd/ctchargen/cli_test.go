@@ -18,15 +18,16 @@ import (
 // so it is accepted here and held by TestEveryDeclaredFlagIsListed instead.
 // Typed out rather than read back, for the reason usage_test.go gives.
 const (
-	baseForce   = "force bool false"
-	baseOutput  = "o string "
-	baseHistory = "history bool false"
+	baseForce    = "force bool false"
+	baseOutput   = "o string "
+	baseHistory  = "history bool false"
+	baseReadings = "readings bool false"
 )
 
 var cliBaseline = map[string][]string{
 	cmdNew: {
 		"auto bool false", "career string serve", baseForce,
-		baseHistory, "muster string cash", "name string ", baseOutput,
+		baseHistory, "muster string cash", "name string ", baseOutput, baseReadings,
 		"service string ", "sheet bool false", "skills string advanced",
 	},
 	cmdBatch: {
@@ -34,7 +35,7 @@ var cliBaseline = map[string][]string{
 		"muster string cash", "name string ", baseOutput,
 		"service string ", "skills string advanced", "survivors bool false",
 	},
-	cmdRender: {baseForce, baseHistory, baseOutput},
+	cmdRender: {baseForce, baseHistory, baseOutput, baseReadings},
 }
 
 func TestEveryBaselineFlagIsStillDeclared(t *testing.T) {
@@ -98,6 +99,8 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 		"search":     {searched, 1},
 		"unreadable": {run([]string{cmdRender, "no-such-record.json"}, nil, io.Discard, io.Discard), 1},
 		"a death":    {died, 0},
+		"readings":   {run([]string{cmdReadings}, nil, io.Discard, io.Discard), 0},
+		"no reading": {run([]string{cmdReadings, "E099"}, nil, io.Discard, io.Discard), 1},
 	} {
 		if got := exitStatus(tc.err); got != tc.want {
 			t.Errorf("%s: exit status %d, want %d (%v)", name, got, tc.want, tc.err)

@@ -40,6 +40,11 @@ func renderRecord(args []string, out io.Writer) error {
 		return fmt.Errorf("%w: %s", errUsage, renderUsage)
 	}
 
+	err = readingsWithoutHistory(*flags.readings, *flags.history)
+	if err != nil {
+		return err
+	}
+
 	path := flags.set.Arg(0)
 
 	text, err := os.ReadFile(path)
@@ -47,7 +52,7 @@ func renderRecord(args []string, out io.Writer) error {
 		return fmt.Errorf("reading %s: %w", path, err)
 	}
 
-	rendered, err := renderText(text, *flags.history)
+	rendered, err := renderText(text, *flags.history, *flags.readings)
 	if err != nil {
 		return fmt.Errorf("%s: %w", path, err)
 	}
@@ -63,9 +68,9 @@ func renderRecord(args []string, out io.Writer) error {
 // renderFlagSet is render's flag set, declared apart from running the
 // command so a test can walk the set it declares.
 type renderFlagSet struct {
-	set            *flag.FlagSet
-	history, force *bool
-	output         *string
+	set                      *flag.FlagSet
+	history, readings, force *bool
+	output                   *string
 }
 
 func declareRenderFlags() renderFlagSet {
@@ -73,16 +78,17 @@ func declareRenderFlags() renderFlagSet {
 	set.SetOutput(io.Discard)
 
 	return renderFlagSet{
-		set:     set,
-		history: set.Bool("history", false, "write the generation record rather than the sheet"),
-		output:  set.String("o", "", "write to this file rather than to standard output"),
-		force:   set.Bool("force", false, "replace the output file if it already exists"),
+		set:      set,
+		history:  set.Bool("history", false, "write the generation record rather than the sheet"),
+		readings: set.Bool("readings", false, readingsHelp),
+		output:   set.String("o", "", "write to this file rather than to standard output"),
+		force:    set.Bool("force", false, "replace the output file if it already exists"),
 	}
 }
 
-func renderText(text []byte, history bool) (string, error) {
+func renderText(text []byte, history, readings bool) (string, error) {
 	if history {
-		rendered, err := render.TranscriptFrom(text)
+		rendered, err := render.TranscriptFrom(text, readings)
 
 		return rendered, wrapRender(err)
 	}

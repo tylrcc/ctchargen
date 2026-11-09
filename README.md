@@ -46,9 +46,9 @@ ctchargen new --help      # one command's flags, with their values and defaults
 
 ## Using it
 
-Four commands. `new` generates one character; `batch` generates many; `render`
-reads a record back as a sheet or as the transcript; and `version` writes the
-build.
+Five commands. `new` generates one character; `batch` generates many; `render`
+reads a record back as a sheet or as the transcript; `readings` explains the
+readings a record names; and `version` writes the build.
 
 ```sh
 ctchargen new --auto --service merchants --sheet
@@ -61,7 +61,19 @@ ctchargen batch --count 20 --auto --service merchants -o characters/
 
 ctchargen render characters/01.json
 ctchargen render --history characters/01.json
+ctchargen render --history --readings characters/01.json
+
+ctchargen readings                              # every reading, and whether it is in force
+ctchargen readings E002 E011                    # those two, in full
 ```
+
+**A reading is how the tool decides where the page is silent or contradicts
+itself**, and a transcript names the reading beside each outcome it governed,
+as an id like `E002`. **`--readings`** on `new --history` or
+`render --history` ends the transcript with the full text of each reading the
+record names: what the page says, the gap, the reading and why. `ctchargen
+readings` lists them all, or writes the ones named in full. The sheet leaves
+the ids out, since it is the page a player keeps.
 
 **The dice are not seeded, and the record is the only way back to a
 character.** Every run rolls fresh dice; nothing brings a character back but

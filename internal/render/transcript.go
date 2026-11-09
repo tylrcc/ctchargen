@@ -12,25 +12,27 @@ import (
 // every throw made, every choice answered, every consequence.
 //
 // It is what makes a character auditable against Book 1 - walk the log with
-// the page open - and it is the narrative service record besides.
-func Transcript(character *chargen.Character) (string, error) {
+// the page open - and it is the narrative service record besides. With
+// readings, it ends with the full text of each reading the record names, so
+// the ids beside the outcomes can be read without the tool to hand.
+func Transcript(character *chargen.Character, readings bool) (string, error) {
 	projected, err := project(character)
 	if err != nil {
 		return "", err
 	}
 
-	return transcriptOf(projected)
+	return transcriptOf(projected, readings)
 }
 
 // TranscriptFrom renders the log of a record written earlier, through the
 // same renderer, for the same reason SheetFrom does.
-func TranscriptFrom(text []byte) (string, error) {
+func TranscriptFrom(text []byte, readings bool) (string, error) {
 	projected, err := decode(text)
 	if err != nil {
 		return "", err
 	}
 
-	return transcriptOf(projected)
+	return transcriptOf(projected, readings)
 }
 
 // eventJSON is every event kind at once. On the wire they are a
@@ -54,7 +56,7 @@ type eventJSON struct {
 	Errata       []string `json:"errata"`
 }
 
-func transcriptOf(r record) (string, error) {
+func transcriptOf(r record, readings bool) (string, error) {
 	var out strings.Builder
 
 	fmt.Fprintf(&out, "# Generation record: %s\n", nameOrBlank(r.Name))
@@ -77,6 +79,11 @@ func transcriptOf(r record) (string, error) {
 	}
 
 	out.WriteString("\n")
+
+	if readings {
+		writeReadings(&out, r.Errata)
+	}
+
 	endWithKeep(&out)
 
 	return out.String(), nil

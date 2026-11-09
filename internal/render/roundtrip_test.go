@@ -48,7 +48,7 @@ func TestARecordRendersToWhatGeneratedItRendered(t *testing.T) {
 
 		compare(t, name+".sheet.md", sheet)
 
-		transcript, err := render.TranscriptFrom(text)
+		transcript, err := render.TranscriptFrom(text, false)
 		if err != nil {
 			t.Errorf("%s: %v", name, err)
 
@@ -145,7 +145,7 @@ func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 
 	transcript, err := render.TranscriptFrom(minimalRecord(
 		`"events":[{"seq":9,"kind":"portent"}]`,
-	))
+	), false)
 	if err != nil {
 		t.Fatalf("reading a record with an unknown event kind: %v", err)
 	}
@@ -184,7 +184,7 @@ func TestAPolicyNamedByVersionAloneIsRefused(t *testing.T) {
 		t.Errorf("the sheet read a policy named by its version alone: %v", err)
 	}
 
-	_, err = render.TranscriptFrom(old)
+	_, err = render.TranscriptFrom(old, false)
 	if err == nil || !strings.Contains(err.Error(), "not a character record") {
 		t.Errorf("the transcript read a policy named by its version alone: %v", err)
 	}
@@ -216,7 +216,7 @@ func TestAnEventThatWillNotReadIsRefused(t *testing.T) {
 			t.Errorf("%s: the sheet rendered a record it could not read: %v", name, err)
 		}
 
-		_, err = render.TranscriptFrom(unreadable)
+		_, err = render.TranscriptFrom(unreadable, false)
 		if err == nil || !strings.Contains(err.Error(), "an event will not read") {
 			t.Errorf("%s: the transcript rendered a record it could not read: %v", name, err)
 		}
@@ -402,7 +402,7 @@ func TestTheErrataAreOnTheTranscriptAndNotTheSheet(t *testing.T) {
 		t.Errorf("the sheet carries an erratum id:\n%s", sheet)
 	}
 
-	transcript, err := render.TranscriptFrom(record)
+	transcript, err := render.TranscriptFrom(record, false)
 	if err != nil {
 		t.Fatalf("the transcript: %v", err)
 	}
@@ -430,7 +430,7 @@ func TestBothRenderingsEndBySayingToKeepTheRecord(t *testing.T) {
 		t.Fatalf("sheet: %v", err)
 	}
 
-	transcript, err := render.TranscriptFrom(body)
+	transcript, err := render.TranscriptFrom(body, false)
 	if err != nil {
 		t.Fatalf("transcript: %v", err)
 	}
