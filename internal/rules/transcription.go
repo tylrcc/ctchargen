@@ -6,11 +6,13 @@ import "github.com/philoserf/ctchargen/internal/traveller"
 // its notation and its dashes. The layouts are the page's where its text
 // carries them, as the Aging Table's spans and the DM rows' headings do; where
 // only position does, which table a grid is, which service a column belongs
-// to and which ship a hull is are keyed by traveller's own types (ADR 0005),
-// so the Table of Ranks is held a column per service, as the Prior Service
-// Table beside it is. The education gate is not a cell: p. 11 says it in
-// prose, "education 8 or greater", and printedGate names the characteristic
-// as p. 4 does.
+// to and which ship a hull is are keyed by traveller's own types (ADR 0005).
+// The service tables (pp. 9, 10 and 11) keep the page's rows as rows: a line
+// of their literals is a row the page prints, the services across, so the
+// second transcription, which walks each service down its column, reads them
+// the other way. The education gate is not a cell: p. 11 says it in prose,
+// "education 8 or greater", and printedGate names the characteristic as p. 4
+// does.
 
 // skillsTranscription is the Acquired Skills Table as p. 11 prints it, with
 // the eligibility and the education gate that govern it.
@@ -103,7 +105,7 @@ var transcribedSkills = skillsTranscription{
 	},
 }
 
-// perService is one printed row of a table laid out a column per service, in
+// perService is one printed row of a service table, the services across in
 // traveller.ServiceNames order.
 type perService [len(traveller.ServiceNames)]string
 
@@ -139,14 +141,14 @@ type printedPension struct {
 const rankRows = 6
 
 // servicesTranscription is the Prior Service Table and the Table of Ranks as
-// p. 10 prints them, a column per service in traveller.ServiceNames order,
+// p. 10 prints them, the services across in traveller.ServiceNames order,
 // with the Rank and Service Skills box and the retirement pay table.
 type servicesTranscription struct {
 	enlistment, survival  printedThrows
 	commission, promotion printedThrows
 	draft                 [len(traveller.ServiceNames)]int
 	reenlist              perService
-	ranks                 [len(traveller.ServiceNames)][rankRows]string
+	ranks                 [rankRows]perService
 	grants                []printedGrant
 	pensions              []printedPension
 	perAdditionalTerm     int64
@@ -154,7 +156,7 @@ type servicesTranscription struct {
 }
 
 // musteringTranscription is the two Mustering Out Tables as p. 9 prints
-// them, a column per service, with the two DMs, the benefits' names, and the
+// them, the services across, with the two DMs, the benefits' names, and the
 // passage prices and resale rate.
 type musteringTranscription struct {
 	table1               [MusterRows][len(traveller.ServiceNames)]string
@@ -249,13 +251,13 @@ var transcribedServices = servicesTranscription{
 
 	draft:    [len(traveller.ServiceNames)]int{1, 2, 3, 4, 5, 6},
 	reenlist: perService{"6+", "6+", "7+", "3+", "4+", "5+"},
-	ranks: [len(traveller.ServiceNames)][rankRows]string{
-		{"Ensign", "Lieutenant", "Lt Cmdr", "Commander", "Captain", "Admiral"},
-		{"Lieutenant", "Captain", "Force Cmdr", "Lt Colonel", "Colonel", "Brigadier"},
-		{"Lieutenant", "Captain", "Major", "Lt Colonel", "Colonel", "General"},
-		{"—", "—", "—", "—", "—", "—"},
-		{"4th Officer", "3rd Officer", "2nd Officer", "1st Officer", "Captain", "—"},
-		{"—", "—", "—", "—", "—", "—"},
+	ranks: [rankRows]perService{
+		{"Ensign", "Lieutenant", "Lieutenant", "—", "4th Officer", "—"},
+		{"Lieutenant", "Captain", "Captain", "—", "3rd Officer", "—"},
+		{"Lt Cmdr", "Force Cmdr", "Major", "—", "2nd Officer", "—"},
+		{"Commander", "Lt Colonel", "Lt Colonel", "—", "1st Officer", "—"},
+		{"Captain", "Colonel", "Colonel", "—", "Captain", "—"},
+		{"Admiral", "Brigadier", "General", "—", "—", "—"},
 	},
 	grants: []printedGrant{
 		{label: "Navy Captain", grant: "+1 Social"},

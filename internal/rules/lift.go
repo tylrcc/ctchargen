@@ -108,7 +108,7 @@ func checkDraft(draft [len(traveller.ServiceNames)]int) error {
 // Implements: A table broken two ways reports the same one every run [JSON
 // conventions].
 func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceName) (Service, error) {
-	ranks, err := liftRanks(t.ranks[i])
+	ranks, err := liftRanks(rankColumn(t.ranks, i))
 	if err != nil {
 		return Service{}, fmt.Errorf("%v: %w", name, err)
 	}
@@ -168,6 +168,18 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 	}
 
 	return service, nil
+}
+
+// rankColumn is one service's cells of the Table of Ranks, Rank 1 down, read
+// out of the rows the page prints.
+func rankColumn(rows [rankRows]perService, i int) [rankRows]string {
+	var column [rankRows]string
+
+	for row, cells := range rows {
+		column[row] = cells[i]
+	}
+
+	return column
 }
 
 // liftRanks reads a service's column of the Table of Ranks (p. 10): a name

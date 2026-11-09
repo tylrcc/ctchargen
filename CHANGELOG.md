@@ -5,6 +5,13 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The Table of Ranks is transcribed as p. 10 prints it: Rank 1 to Rank 6 as
+  rows, the services across. It was held a service's column at a time, the
+  same way the second transcription walks it, so a slip made reading down a
+  column could have passed both; the two copies now read it in opposite
+  directions, as they do the other service tables. Every lifted rank is unchanged.
+  `muster.go` no longer names the deleted `mustering.json` (#354, #355).
+
 ## 1.0.0-rc.2
 
 The second release candidate for `v1.0.0`. One command line changes: `batch`

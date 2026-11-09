@@ -10,8 +10,8 @@ import (
 // The two bounds the mustering procedure applies (p. 9). Neither indexes a
 // printed table - one caps how many rolls may go on Table 2, the other is the
 // rank at which the Table 1 modifier becomes available - so both are
-// constants here beside the code that applies them rather than rows of
-// mustering.json (#43, and CLAUDE.md's Authority point 6).
+// constants here beside the code that applies them rather than cells of the
+// transcription (#43, and CLAUDE.md's Authority point 6).
 const (
 	maxRollsOnTableTwo       = 3
 	minRankForTable1Modifier = 5
