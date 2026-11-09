@@ -89,6 +89,36 @@ func TestAMutationIsKilledOrSurvivesInACopy(t *testing.T) {
 	}
 }
 
+// A mutation that does not build kills nothing: the command would fail on
+// the build before any test ran, so it is reported as not built, and never as
+// killed. A build is what go test makes of it, its vet checks included.
+func TestAMutationThatDoesNotBuildIsNotKilled(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range map[string]struct{ old, replacement string }{
+		"a mutation that does not compile": {old: "return 1", replacement: "return x"},
+		"a mutation go test's vet refuses": {
+			old:         "// One is one.",
+			replacement: "import \"fmt\"\n\nvar _ = fmt.Sprintf(\"%d\", \"x\")\n\n// One is one.",
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			var out strings.Builder
+
+			err := run(t.Context(), args(tc.old, tc.replacement), module(t), &out)
+			if !errors.Is(err, errNotBuilt) {
+				t.Errorf("%v, want the mutation reported as not built", err)
+			}
+
+			if strings.Contains(out.String(), "KILLED") || !strings.Contains(out.String(), "NOT BUILT") {
+				t.Errorf("the verdict does not say NOT BUILT, or says KILLED:\n%s", out.String())
+			}
+		})
+	}
+}
+
 // Text that occurs more than once, or not at all, is refused rather than
 // replaced somewhere it was not meant for.
 func TestAMutationMustLandOnce(t *testing.T) {

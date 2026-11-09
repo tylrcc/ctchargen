@@ -185,9 +185,9 @@ promise (#199).
 - `internal/coverage`: test code only. Holds the `Implements:` and `Holds:`
   markers to each other and their cites to what exists, writing nothing;
   `-print` shows the map.
-- `internal/mutate`: a tool, not part of the CLI. Runs a command against a
-  scratch copy of the tree with one exact edit made, and says whether it
-  failed.
+- `internal/mutate`: a tool, not part of the CLI. Builds a scratch copy of
+  the tree with one exact edit made, runs a command against it, and says
+  whether the edit was killed.
 - `internal/scripted`: test support, imported only by test files. The strict
   roller that fixtures and walks both drive their runs through.
 - `cmd/ctchargen`: the subcommands. The record goes to stdout and the
@@ -249,7 +249,8 @@ go run ./cmd/ctchargen new --auto --sheet
 - **A new invariant is not done until a deliberate mutation has been shown to
   kill it**, and the failure names what was broken. Show it with
   `go run ./internal/mutate`, which makes the edit in a scratch copy and never
-  in the tree, prints the command's output, and says `KILLED` or `SURVIVED`.
+  in the tree, prints the command's output, and says `KILLED` or `SURVIVED`,
+  or `NOT BUILT` for a mutation that does not build, so no test ran.
 - **An erratum's stamping condition is machine-checked, not just reachable**
   (#66). Each reading states it as a predicate over the finished record, and
   `internal/chargen/stamping_test.go` holds what a record stamps to what the

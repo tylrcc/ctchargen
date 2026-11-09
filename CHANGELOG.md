@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `internal/mutate` builds the mutated copy and its test binaries before it
+  runs the command, the way `go test` builds them, vet checks included, and
+  reports a mutation that does not build as `NOT BUILT`, exiting 1. It said
+  `KILLED` for one before, since the command failed on the build before any
+  test ran, so a mutation could read as shown killed when nothing had been
+  tested.
 - The Table of Ranks is transcribed as p. 10 prints it: Rank 1 to Rank 6 as
   rows, the services across. It was held a service's column at a time, the
   same way the second transcription walks it, so a slip made reading down a

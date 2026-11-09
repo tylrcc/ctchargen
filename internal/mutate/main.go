@@ -5,17 +5,20 @@
 // failure it produced be quoted. Doing that by editing the tree and copying the
 // file back is how a mutation gets left behind, or lands on a line it was not
 // meant for. This copies the module's tracked and unignored files into a
-// scratch directory, makes one exact replacement there, runs the command
-// given, and says whether it failed:
+// scratch directory, makes one exact replacement there, builds the copy,
+// runs the command given, and says whether the mutation was killed:
 //
 //	go run ./internal/mutate -file internal/chargen/logging.go \
 //	    -old 'return []string{"yes", "no"}' -new 'return shared' \
 //	    go test ./internal/chargen -run TestAYesOrNoOfferIsEachEventsOwn
 //
 // The old text must occur in the file exactly once, so a mutation lands where
-// it was meant to or not at all. The command's output is printed, and mutate
-// exits 0 when the command failed (the mutation was killed) and 1 when it
-// passed (the mutation survived), so the result reads as a test of the test.
+// it was meant to or not at all. The mutated copy is built, tests and all, as
+// go test builds it, vet checks included, and nothing is run: a mutation that
+// does not build would fail the command before a test ran, so it is reported
+// NOT BUILT and never KILLED. The command's output is printed, and mutate
+// exits 0 only when the command failed on a copy that builds (the mutation
+// was killed), and 1 otherwise, so the result reads as a test of the test.
 package main
 
 import (
@@ -41,6 +44,7 @@ const (
 var (
 	errUsage     = errors.New("usage")
 	errSurvived  = errors.New("the mutation survived")
+	errNotBuilt  = errors.New("the mutation does not build, so no test ran")
 	errNotUnique = errors.New("the text to replace must occur exactly once")
 )
 
@@ -95,7 +99,72 @@ func run(ctx context.Context, args []string, root string, out io.Writer) error {
 		return fmt.Errorf("%s: %w", *file, err)
 	}
 
+	err = compile(ctx, scratch, out)
+	if err != nil {
+		return err
+	}
+
 	return verdict(ctx, scratch, command, out)
+}
+
+// compile builds every package in dir and every test binary, as go test
+// builds them, vet checks included, and runs nothing, so no TestMain or init
+// can fail it. A build that fails is errNotBuilt, with what go said.
+func compile(ctx context.Context, dir string, out io.Writer) error {
+	binaries, err := os.MkdirTemp("", "ctchargen-mutate-tests-*")
+	if err != nil {
+		return fmt.Errorf("making a directory for the test binaries: %w", err)
+	}
+
+	defer func() { _ = os.RemoveAll(binaries) }()
+
+	for _, args := range [][]string{
+		{"build", "./..."},
+		{"test", "-c", "-o", binaries, "./..."},
+	} {
+		//nolint:gosec // go itself, with arguments fixed above
+		build := exec.CommandContext(ctx, "go", args...)
+
+		build.Dir = dir
+
+		printed, err := build.CombinedOutput()
+
+		failed, err := commandFailed(err)
+		if err != nil {
+			return fmt.Errorf("building the mutated copy: %w", err)
+		}
+
+		if failed {
+			return say(out, errNotBuilt, "%sNOT BUILT: %v\n", printed, errNotBuilt)
+		}
+	}
+
+	return nil
+}
+
+// commandFailed reports whether a command ran and exited non-zero, and
+// returns any other error, such as a command that could not be started.
+func commandFailed(err error) (bool, error) {
+	var exit *exec.ExitError
+
+	switch {
+	case errors.As(err, &exit):
+		return true, nil
+	case err != nil:
+		return false, err
+	}
+
+	return false, nil
+}
+
+// say writes a verdict and returns result, or the error writing it.
+func say(out io.Writer, result error, format string, args ...any) error {
+	_, err := fmt.Fprintf(out, format, args...)
+	if err != nil {
+		return fmt.Errorf("writing the verdict: %w", err)
+	}
+
+	return result
 }
 
 // copyModule copies every file git tracks, and every untracked file it does
@@ -185,24 +254,14 @@ func verdict(ctx context.Context, dir string, command []string, out io.Writer) e
 		return fmt.Errorf("writing the command's output: %w", writeErr)
 	}
 
-	var exit *exec.ExitError
-
-	switch {
-	case errors.As(err, &exit):
-		_, err = fmt.Fprintln(out, "KILLED: the command failed with the mutation in place")
-		if err != nil {
-			return fmt.Errorf("writing the verdict: %w", err)
-		}
-
-		return nil
-	case err != nil:
+	failed, err := commandFailed(err)
+	if err != nil {
 		return fmt.Errorf("running %s: %w", command[0], err)
 	}
 
-	_, err = fmt.Fprintln(out, "SURVIVED: the command passed with the mutation in place")
-	if err != nil {
-		return fmt.Errorf("writing the verdict: %w", err)
+	if failed {
+		return say(out, nil, "KILLED: the command failed with the mutation in place\n")
 	}
 
-	return errSurvived
+	return say(out, errSurvived, "SURVIVED: the command passed with the mutation in place\n")
 }
