@@ -142,6 +142,29 @@ var otherKilled = walk{
 	among: []int{3},
 }
 
+// navyOfficer is the Navy under --career oneterm: commissioned Lieutenant in
+// his one term, then forced out.
+//
+//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
+var navyOfficer = walk{
+	name: "navyOfficer",
+	dice: []int{
+		6, 4, 6, 2, 3, 2, 1, 2, 2, 4, 6, 3, 6, 4, 5, 4, 6, 5, 6, 5,
+		6, 1, 6, 4, 2, 1, 6, 6,
+	},
+	among: nil,
+}
+
+// navyDeclined is the Navy under --career oneterm, refused at enlistment and
+// declining the draft: an 18-year-old civilian (E001).
+//
+//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
+var navyDeclined = walk{
+	name:  "navyDeclined",
+	dice:  []int{4, 4, 1, 6, 5, 1, 5, 1, 4, 1, 6, 5, 3, 4},
+	among: nil,
+}
+
 // walk is the dice and draws of one path the command's tests take.
 type walk struct {
 	name  string

@@ -18,12 +18,17 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   answered. The note is the only way back to a character. `render`,
   `new --sheet` and `new --history`, the schema and its examples, and
   `batch`'s NDJSON stream are removed. `batch` writes one note per member into
-  a directory, named by position and padded to the batch's width (`1.md`, or
-  `01.md` in a batch of ten or more), or the
-  notes one after another to standard output. Records written by rc.3 and
-  earlier can no longer be rendered; `ctchargen readings <id>` still explains
-  any reading id one names. The note's shape is not frozen at `v1.0.0`; what
-  the release freezes is the command line.
+  a directory, or the notes one after another to standard output. Records
+  written by rc.3 and earlier can no longer be rendered;
+  `ctchargen readings <id>` still explains any reading id one names. The
+  note's shape is not frozen at `v1.0.0`; what the release freezes is the
+  command line.
+- A batch names each note for its character as well as its position —
+  `01 Army Captain 938788.md` where it wrote `01.md` — so a vault lists the
+  roster by who is in it. A position is held by any note named for it: a
+  second batch into the directory is refused before anyone is generated, and
+  `--force` replaces each position's note rather than leaving the old one
+  beside it. `--name` names the character on its heading, not the file (#400).
 
 ## 1.0.0-rc.3
 

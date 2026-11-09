@@ -89,8 +89,13 @@ character.** Every run rolls fresh dice; nothing brings a character back but
 the generation record in its note, which carries every die thrown and every
 choice made, and which every note ends by telling you to keep whole.
 
-Batch members are named by their position, `01.md` through `20.md`, padded
-to the width of the batch.
+Batch members are named by their position and for the character in each —
+`01 Army Captain 938788.md`, `02 Civilian 87665B.md` — the position padded to
+the width of the batch. A position is held by any note named for it, so a
+second batch into the same directory is refused before anyone is generated,
+and with `--force` it replaces each position's note rather than leaving the
+old one beside it. `--name` names the character, on its heading, and never
+the file: it gives every member the same name.
 
 **`batch` with no `-o` writes the notes to standard output**, one after
 another, and it streams, so the first note arrives before the run finishes

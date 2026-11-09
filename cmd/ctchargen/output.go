@@ -167,9 +167,17 @@ func (d destination) write(text string) error {
 	return nil
 }
 
-// memberPath is where batch writes member index of count when -o names a
-// directory: the one-based index, zero-padded to the width of the count, so a
-// directory sorts in generation order and its names say nothing about seeds.
-func memberPath(dir string, index, count int) string {
-	return filepath.Join(dir, fmt.Sprintf("%0*d.md", len(strconv.Itoa(count)), index))
+// position is member index of count as a note's name opens: the one-based
+// index, zero-padded to the width of the count, so a directory sorts in
+// generation order.
+func position(index, count int) string {
+	return fmt.Sprintf("%0*d", len(strconv.Itoa(count)), index)
+}
+
+// memberPath is where batch writes the member at a position: the position,
+// then the title the character is known by.
+//
+// Implements: A batch member's note is named for its character [CLI sketch].
+func memberPath(dir, at, title string) string {
+	return filepath.Join(dir, at+" "+title+".md")
 }

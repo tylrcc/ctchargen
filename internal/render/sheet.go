@@ -55,12 +55,7 @@ func headline(r view) string {
 		return strings.Join(append(parts, "civilian, no prior service"), ", ")
 	}
 
-	serving := r.Service
-	if r.RankName != "" {
-		serving += " " + r.RankName
-	}
-
-	parts = append(parts, serving+whoseService(r)+", "+terms(r.Terms))
+	parts = append(parts, serving(r)+whoseService(r)+", "+terms(r.Terms))
 
 	if r.Nobility != nil && r.Nobility.Assumed {
 		parts = append(parts, r.Nobility.Title)
@@ -315,4 +310,14 @@ func joinNonEmpty(separator string, parts ...string) string {
 	}
 
 	return strings.Join(kept, separator)
+}
+
+// serving is the service and the rank held in it, as the headline says them
+// and a batch member's note is named by them.
+func serving(r view) string {
+	if r.RankName == "" {
+		return r.Service
+	}
+
+	return r.Service + " " + r.RankName
 }

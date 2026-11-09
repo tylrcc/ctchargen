@@ -72,3 +72,19 @@ func provenance(r view) string {
 	return fmt.Sprintf("%s; every choice answered by the policy, version %d: career %s, skills %s, muster %s.",
 		generated, r.Policy.Version, r.Policy.Career, r.Policy.Skills, r.Policy.Muster)
 }
+
+// Title is what a batch names a character's note by, whatever --name he was
+// given: his service and the rank he holds, as the headline says them, or
+// "Civilian", and his UPP (#400). A given name stays out of it: --name gives
+// every member of a batch the same one, which tells no file from another.
+//
+// Implements: A batch member's note is named for its character [CLI sketch].
+func Title(character *chargen.Character) string {
+	r := viewOf(character)
+
+	if r.Service == "" {
+		return "Civilian " + r.UPP
+	}
+
+	return serving(r) + " " + r.UPP
+}

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -269,14 +270,14 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 // A --survivors batch is refused over a member it would write, and not over a
 // file beyond the batch.
 //
-// Members are named by index, so who survives does not change which
-// files the batch writes: 1 through count, whoever fills them. The check can
-// key on those without generating anyone, and a file one past the count is
+// Members are named first by position, so who survives does not change which
+// positions the batch fills: 1 through count, whoever fills them. The check can
+// key on those without generating anyone, and a note one past the count is
 // nobody's to refuse over or to touch.
 //
 // Holds: A refused batch writes none of itself, on the members it will actually
 // write.
-func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
+func TestARefusedSurvivorBatchKeysOnThePositionsItFills(t *testing.T) {
 	t.Parallel()
 
 	const (
@@ -284,7 +285,7 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 		wanted = 5
 	)
 
-	// The names are typed out rather than asked of memberPath, so a roster
+	// The names are typed out rather than asked of position, so a roster
 	// that started counting from zero would be caught here and not only in
 	// the plain batch's test.
 	for name, tc := range map[string]struct {
@@ -292,8 +293,8 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 		refuses bool
 		left    int
 	}{
-		"the last member it writes": {"5.md", true, 1},
-		"a name past the end":       {"6.md", false, wanted + 1},
+		"the last member it writes": {"5 Navy Admiral 777777.md", true, 1},
+		"a name past the end":       {"6 Navy Admiral 777777.md", false, wanted + 1},
 	} {
 		dir := t.TempDir()
 		planted := filepath.Join(dir, tc.plant)
@@ -396,7 +397,7 @@ func TestOnlyANoteThePolicyAnsweredNamesOne(t *testing.T) {
 // It is deliberately NOT a test that the run writes as it goes. I wrote it as
 // one and it could not have been: an obstruction sits in the write, which a
 // buffered run reaches as well, so both designs leave the same two files.
-// What holds the memory property is plannedPaths' signature - no policy, no
+// What holds the memory property is occupied's signature - no policy, no
 // roller, so it cannot generate - and the test below holds that.
 //
 // Holds: A directory batch that cannot write a member leaves what came before.
@@ -408,7 +409,9 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	// The third member of six, so two are written before the obstruction.
 	const blockedMember = 2
 
-	blocked := filepath.Join(dir, "3.md")
+	// Every member walks the same dice, so the third is named before it is
+	// generated, and a directory can sit where it will be written.
+	blocked := filepath.Join(dir, "3 Other 644776.md")
 
 	err := os.Mkdir(blocked, noteDirMode)
 	if err != nil {
@@ -418,7 +421,7 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	err = run([]string{
 		cmdBatch, flagCount, "6", flagService, other,
 		flagOutput, dir, flagForce,
-	}, nil, io.Discard, io.Discard)
+	}, nil, io.Discard, io.Discard, withDice(otherByPolicy.partly(t)))
 	if err == nil {
 		t.Fatal("a batch wrote a member over a directory")
 	}
@@ -449,11 +452,14 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	}
 }
 
-// The collision check cannot generate a character.
+// The collision check cannot generate a character, and reads a position from
+// a note's name as a number.
 //
-// That is its signature, not its body: plannedPaths takes a count and a
-// directory, and no policy and no roller. It is the whole of why checking a
-// batch for collisions costs arithmetic and not a run (#99).
+// The first is its signature, not its body: occupied takes a directory and a
+// count, and no policy and no roller. It is the whole of why checking a batch
+// for collisions costs a directory listing and not a run (#99). The second is
+// what makes a batch of twelve refuse over a note a batch of three wrote:
+// "1 X.md" holds the position "01" names.
 //
 // Holds: A batch checks for collisions without generating anybody.
 func TestTheCollisionCheckNeedsNoCharacters(t *testing.T) {
@@ -461,13 +467,35 @@ func TestTheCollisionCheckNeedsNoCharacters(t *testing.T) {
 
 	dir := t.TempDir()
 
-	paths := plannedPaths(3, dir)
-
-	want := []string{
-		filepath.Join(dir, "1.md"), filepath.Join(dir, "2.md"), filepath.Join(dir, "3.md"),
+	for _, name := range []string{
+		"1 Old Title.md",                      // titled, and narrower than the batch
+		"02.md",                               // bare, as earlier builds wrote them
+		"3 Not a note.txt", "04x.md", "+5.md", // none of them a note at a position
+		"13 Past the end.md",
+	} {
+		err := os.WriteFile(filepath.Join(dir, name), nil, 0o600)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 
-	if !slices.Equal(paths, want) {
-		t.Errorf("3 members are planned at %v, want %v", paths, want)
+	err := os.Mkdir(filepath.Join(dir, "06 A directory.md"), noteDirMode)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	held, err := occupied(dir, 12)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := map[int][]heldNote{
+		1: {{path: filepath.Join(dir, "1 Old Title.md")}},
+		2: {{path: filepath.Join(dir, "02.md")}},
+		6: {{path: filepath.Join(dir, "06 A directory.md"), directory: true}},
+	}
+
+	if !maps.EqualFunc(held, want, slices.Equal) {
+		t.Errorf("held %v, want %v", held, want)
 	}
 }

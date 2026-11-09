@@ -5,10 +5,11 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"slices"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
 const (
@@ -31,7 +32,7 @@ func TestBatchRefusesWithoutACount(t *testing.T) {
 	}
 }
 
-// -o naming a directory writes one file per character, named by its index.
+// -o naming a directory writes one note per character, named by its position.
 func TestBatchIntoADirectory(t *testing.T) {
 	t.Parallel()
 
@@ -99,8 +100,8 @@ func TestARefusedBatchWritesNothing(t *testing.T) {
 
 	dir := t.TempDir()
 
-	// The second member's file, already there.
-	blocked := filepath.Join(dir, "2.md")
+	// A note at the second position, already there.
+	blocked := filepath.Join(dir, "2 Navy Admiral 777777.md")
 
 	err := os.WriteFile(blocked, []byte("{}\n"), 0o600)
 	if err != nil {
@@ -184,7 +185,8 @@ func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
 // A batch that stops partway still says what it left behind, and says it
 // stopped.
 //
-// Here the third member's file is already a directory, and --force skips the
+// Here the third member's note is already a directory - every member walks
+// the same dice, so its name is known - and --force skips the
 // up-front check that would have refused the run before writing anything, so
 // two notes are on disk when it fails. It printed the error and no tally,
 // and the tally is the only place the run says how many of what it wrote are
@@ -194,7 +196,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 
 	dir := t.TempDir()
 
-	err := os.Mkdir(filepath.Join(dir, "3.md"), 0o700)
+	err := os.Mkdir(filepath.Join(dir, "3 Other 644776.md"), 0o700)
 	if err != nil {
 		t.Fatalf("planting the directory: %v", err)
 	}
@@ -204,7 +206,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 	err = run([]string{
 		cmdBatch, flagCount, "5", flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
-	}, nil, io.Discard, &asking)
+	}, nil, io.Discard, &asking, withDice(otherByPolicy.partly(t)))
 	if err == nil {
 		t.Fatal("a batch wrote a note over a directory")
 	}
@@ -221,7 +223,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 
 	dir := t.TempDir()
 
-	err := os.Mkdir(filepath.Join(dir, "3.md"), 0o700)
+	err := os.Mkdir(filepath.Join(dir, "3 Other 644776.md"), 0o700)
 	if err != nil {
 		t.Fatalf("planting the directory: %v", err)
 	}
@@ -229,7 +231,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 	err = run([]string{
 		cmdBatch, flagCount, "5", flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
-	}, nil, io.Discard, &failsAfter{})
+	}, nil, io.Discard, &failsAfter{}, withDice(otherByPolicy.partly(t)))
 	if err == nil {
 		t.Fatal("a batch wrote a note over a directory")
 	}
@@ -343,20 +345,20 @@ func TestForceThatCannotStageLeavesTheOldRecord(t *testing.T) {
 	}
 }
 
-// Members are named by their one-based index, zero-padded to the width of
-// the batch, so a directory sorts in generation order and says nothing about
-// seeds.
-func TestBatchMembersAreNamedByIndex(t *testing.T) {
+// Members are named first by their one-based position, zero-padded to the
+// width of the batch and followed by a space, so a directory sorts in
+// generation order and says nothing about seeds.
+func TestBatchMembersAreNamedByPosition(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]struct {
 		count int
 		wants []string
 	}{
-		"a batch of three": {count: 3, wants: []string{"1.md", "2.md", "3.md"}},
+		"a batch of three": {count: 3, wants: []string{"1 ", "2 ", "3 "}},
 		"a batch of twelve": {count: 12, wants: []string{
-			"01.md", "02.md", "03.md", "04.md", "05.md", "06.md",
-			"07.md", "08.md", "09.md", "10.md", "11.md", "12.md",
+			"01 ", "02 ", "03 ", "04 ", "05 ", "06 ",
+			"07 ", "08 ", "09 ", "10 ", "11 ", "12 ",
 		}},
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -368,18 +370,19 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 				cmdBatch, flagCount, strconv.Itoa(tc.count), flagService, other, flagOutput, dir,
 			}, nil)
 
-			found, err := filepath.Glob(filepath.Join(dir, "*.md"))
+			entries, err := os.ReadDir(dir)
 			if err != nil {
 				t.Fatalf("looking for the members: %v", err)
 			}
 
-			got := make([]string, 0, len(found))
-			for _, path := range found {
-				got = append(got, filepath.Base(path))
+			if len(entries) != len(tc.wants) {
+				t.Fatalf("%d members written, want %d", len(entries), len(tc.wants))
 			}
 
-			if !slices.Equal(got, tc.wants) {
-				t.Errorf("the members are named %v, want %v", got, tc.wants)
+			for i, entry := range entries {
+				if !strings.HasPrefix(entry.Name(), tc.wants[i]) || !strings.HasSuffix(entry.Name(), ".md") {
+					t.Errorf("member %d is named %q, want it to open %q and end .md", i+1, entry.Name(), tc.wants[i])
+				}
 			}
 		})
 	}
@@ -404,7 +407,7 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 			return []string{cmdNew, flagAuto, flagService, other, flagOutput, blocked}, blocked
 		},
 		"a batch member": func(dir string) ([]string, string) {
-			blocked := filepath.Join(dir, "2.md")
+			blocked := filepath.Join(dir, "2 Navy Admiral 777777.md")
 
 			return []string{cmdBatch, flagCount, "3", flagService, other, flagOutput, dir}, blocked
 		},
@@ -464,5 +467,158 @@ func TestABatchIsAlwaysAuto(t *testing.T) {
 		t.Error("batch --auto was accepted")
 	case !errors.Is(err, errUsage) || !strings.Contains(err.Error(), "auto"):
 		t.Errorf("batch --auto: %v, want a usage error naming the flag", err)
+	}
+}
+
+// A batch names each note for the character in it, after its position: the
+// position, the service and rank, and the UPP, so a referee's vault lists
+// "01 Army Captain 938788" where it listed "01" (#400). The names are typed
+// out from the walks' notes, not read from the code that writes them.
+//
+// Holds: A batch member's note is named for its character.
+func TestABatchNamesEachNoteForItsCharacter(t *testing.T) {
+	t.Parallel()
+
+	oneterm := []string{flagService, navy, flagCareer, "oneterm"}
+
+	for name, tc := range map[string]struct {
+		walk  walk
+		flags []string
+		want  string
+	}{
+		"an officer":            {navyOfficer, oneterm, "1 Navy Lieutenant A85379.md"},
+		"a civilian":            {navyDeclined, oneterm, "1 Civilian 87665B.md"},
+		"a service of no ranks": {otherByPolicy, []string{flagService, other}, "1 Other 644776.md"},
+		"a death":               {scoutKilled, []string{flagService, scouts}, "1 Scouts 4387B9.md"},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			dir := t.TempDir()
+
+			args := append([]string{cmdBatch, flagCount, "1", flagOutput, dir}, tc.flags...)
+
+			err := run(args, nil, io.Discard, io.Discard, withDice(tc.walk.roller(t)))
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			entries, err := os.ReadDir(dir)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if len(entries) != 1 || entries[0].Name() != tc.want {
+				t.Errorf("wrote %v, want [%s]", entries, tc.want)
+			}
+		})
+	}
+}
+
+// plantedNote is the note plantHeld leaves at the first position, for a
+// character the batch will not generate.
+const plantedNote = "1 Navy Admiral 777777.md"
+
+// plantHeld is a directory whose first position is held by plantedNote.
+func plantHeld(t *testing.T) string {
+	t.Helper()
+
+	dir := t.TempDir()
+
+	err := os.WriteFile(filepath.Join(dir, plantedNote), []byte(oldRecord), 0o600)
+	if err != nil {
+		t.Fatalf("planting the old note: %v", err)
+	}
+
+	return dir
+}
+
+// A position is held by any note named for it, whatever character it was
+// for (#400), and without --force the batch is refused before anyone is
+// generated, naming the note in the way.
+//
+// Holds: A refused batch writes none of itself, on the members it will
+// actually write.
+func TestAHeldPositionRefusesTheBatch(t *testing.T) {
+	t.Parallel()
+
+	err := run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, plantHeld(t)},
+		nil, io.Discard, io.Discard, withDice(func() chargen.Roller {
+			t.Fatal("a refused batch generated a character")
+
+			return nil
+		}))
+	if err == nil || !strings.Contains(err.Error(), plantedNote) {
+		t.Errorf("a batch over a held position said %v, want it refused naming %s", err, plantedNote)
+	}
+}
+
+// With --force, the old note at a position is replaced by the new one rather
+// than left beside it.
+func TestForceReplacesAPositionsNote(t *testing.T) {
+	t.Parallel()
+
+	dir := plantHeld(t)
+
+	err := run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir, flagForce},
+		nil, io.Discard, io.Discard, withDice(otherByPolicy.roller(t)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(entries) != 1 || entries[0].Name() != "1 Other 644776.md" {
+		t.Errorf("--force left %v, want the new note alone", entries)
+	}
+}
+
+// A directory at a position is not a note, and --force leaves it.
+func TestForceLeavesADirectoryAtAPosition(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	beside := filepath.Join(dir, "1 Not a note.md")
+
+	err := os.Mkdir(beside, noteDirMode)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir, flagForce},
+		nil, io.Discard, io.Discard, withDice(otherByPolicy.roller(t)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !isDirectory(beside) {
+		t.Error("--force removed a directory at the position, which is not a note")
+	}
+}
+
+// With --force the new note is written before the old one goes, so a write
+// that fails leaves the old note where it was (#191).
+func TestAFailedForceKeepsThePositionsNote(t *testing.T) {
+	t.Parallel()
+
+	dir := plantHeld(t)
+
+	err := os.Mkdir(filepath.Join(dir, "1 Other 644776.md"), noteDirMode)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir, flagForce},
+		nil, io.Discard, io.Discard, withDice(otherByPolicy.roller(t)))
+	if err == nil {
+		t.Fatal("a batch wrote a note over a directory")
+	}
+
+	kept, err := os.ReadFile(filepath.Join(dir, plantedNote))
+	if err != nil || string(kept) != oldRecord {
+		t.Errorf("a failed --force write left the old note as %q (%v)", kept, err)
 	}
 }

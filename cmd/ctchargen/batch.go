@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"strconv"
+	"strings"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
@@ -306,77 +309,133 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 	}
 }
 
-// intoDirectory writes one file per character, named by its index.
+// intoDirectory writes one note per character, named by its position and for
+// the character in it: "01 Army Captain 938788.md" (#400).
 //
-// One character is held at a time (#99). The collision check needs every path
-// the batch will write before it writes any, and because members are named by
-// index those are 1 through count whether or not --survivors passes anyone
-// over: plannedPaths takes a count and a directory, no policy and no roller,
-// so it cannot generate, and the check is arithmetic.
+// One character is held at a time (#99). A name is not known until its
+// character is, so the collision check is by position: a note named for a
+// position, alone or followed by a title, holds it, and the positions a batch
+// fills are 1 through count whether or not --survivors passes anyone over.
+// The check reads the directory once, before anyone is generated, and without
+// --force a held position refuses the batch.
+//
+// Under --force a member's new note is written first, through the same
+// staged replace as any other (#191), and only once it is in place are the
+// position's other notes removed, so a write that fails leaves the old note
+// where it was. A directory at a position is never removed: it is not a
+// note.
 //
 // A batch that fails partway leaves what it has written. The guarantee here is
-// that a run never silently replaces a file, not that a directory is written
+// that a run never silently replaces a note, not that a directory is written
 // atomically.
 //
 // Implements: A directory batch that cannot write a member leaves what came
 // before [CLI sketch].
+//
+// Implements: A refused batch writes none of itself, on the members it will
+// actually write [CLI sketch].
 func (b batchRun) intoDirectory(dir string, force bool) (tally, error) {
 	err := os.MkdirAll(dir, noteDirMode)
 	if err != nil {
 		return tally{}, fmt.Errorf("creating %s: %w", dir, err)
 	}
 
+	held, err := occupied(dir, b.count)
+	if err != nil {
+		return tally{}, err
+	}
+
 	if !force {
-		err = noMemberExists(plannedPaths(b.count, dir))
-		if err != nil {
-			return tally{}, err
+		for index := 1; index <= b.count; index++ {
+			if notes := held[index]; len(notes) > 0 {
+				return tally{}, inTheWay(notes[0].path)
+			}
 		}
 	}
 
 	return b.each(
 		func(index int, character *chargen.Character) error {
-			where, err := openDestination(nil, memberPath(dir, index, b.count), force)
+			path := memberPath(dir, position(index, b.count), render.Title(character))
+
+			where, err := openDestination(nil, path, force)
 			if err != nil {
 				return err
 			}
 
-			return where.write(render.Note(character, false))
+			err = where.write(render.Note(character, false))
+			if err != nil {
+				return err
+			}
+
+			return clearStale(held[index], path)
 		},
 	)
 }
 
-// plannedPaths is where members 1 through count will be written.
+// heldNote is an entry in the directory that holds a position.
+type heldNote struct {
+	path      string
+	directory bool
+}
+
+// occupied is what already holds each position from 1 through count in dir:
+// an entry named for the position alone, as earlier builds named notes, or
+// for the position and a title, after a space. The position is read as a
+// number, so "1 Kira.md" holds the first position of a batch of twelve as
+// "01 Kira.md" does.
 //
-// It takes a count and a directory, and no policy and no roller, so it cannot
+// It takes a directory and a count, and no policy and no roller, so it cannot
 // generate a character even by accident. That signature is the guarantee:
-// checking for collisions costs nothing but arithmetic (#99), with or without
-// --survivors, because a member is named by its position among the files
-// written and not by who survived to fill it.
+// checking for collisions costs a directory listing and nothing more (#99),
+// with or without --survivors, because a member's position is his place among
+// the notes written and not who survived to fill it.
 //
 // Implements: A batch checks for collisions without generating anybody [CLI
 // sketch].
-func plannedPaths(count int, dir string) []string {
-	paths := make([]string, 0, count)
-	for i := range count {
-		paths = append(paths, memberPath(dir, i+1, count))
+func occupied(dir string, count int) (map[int][]heldNote, error) {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return nil, fmt.Errorf("reading %s: %w", dir, err)
 	}
 
-	return paths
+	held := map[int][]heldNote{}
+
+	for _, entry := range entries {
+		stem, isNote := strings.CutSuffix(entry.Name(), ".md")
+		at, _, _ := strings.Cut(stem, " ")
+
+		index, err := strconv.Atoi(at)
+		if !isNote || err != nil || !allDigits(at) || index < 1 || index > count {
+			continue
+		}
+
+		held[index] = append(held[index], heldNote{
+			path: filepath.Join(dir, entry.Name()), directory: entry.IsDir(),
+		})
+	}
+
+	return held, nil
 }
 
-// noMemberExists refuses the batch if any member's file is already there.
-//
-// It takes the paths the run will write, which are the same with and without
-// --survivors: members are named by position, so passing a dead character
-// over changes who fills a file and never which files are filled.
-//
-// Implements: A refused batch writes none of itself, on the members it will
-// actually write [CLI sketch].
-func noMemberExists(paths []string) error {
-	for _, path := range paths {
-		_, err := os.Stat(path)
-		if err == nil {
-			return inTheWay(path)
+// allDigits is whether a word is a position as a batch writes one: digits
+// and nothing else, where strconv.Atoi would also take a sign.
+func allDigits(word string) bool {
+	return word != "" && strings.Trim(word, "0123456789") == ""
+}
+
+// clearStale removes a position's other notes once its new one is written.
+// Only a note is removed: a directory at the position is left, because it is
+// not a note. Without --force nothing is held at a position the batch writes,
+// so there is nothing to remove.
+func clearStale(held []heldNote, written string) error {
+	for _, note := range held {
+		if note.path == written || note.directory {
+			continue
+		}
+
+		err := os.Remove(note.path)
+		if err != nil {
+			return fmt.Errorf("replacing %s: %w", note.path, err)
 		}
 	}
 
