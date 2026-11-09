@@ -42,6 +42,11 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   hundred characters per one asked for without finding them living (#410's
   died count went with it).
 
+- The generation record sits under its one `## Generation record` heading,
+  each step a bold line (`**18. term 1 (pp. 5-7)**`) rather than a heading of
+  its own, so a note's outline shows the sheet's sections and one entry for
+  the record. The live view prints each step as a plain numbered line (#422).
+
 ## 1.0.0-rc.3
 
 The third release candidate for `v1.0.0`, and the first with every `v1`

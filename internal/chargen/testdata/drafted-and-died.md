@@ -9,7 +9,7 @@ UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed b
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 2+6
   3. Strength 8 (from 2)
@@ -25,7 +25,7 @@ UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed b
  13. Social Standing 8 (from 12)
  14. UPP 8777A8 at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Navy: rolled 2+2 +2 = 6 against 8+, missed
  17. the Navy rejected him (from 16)
@@ -33,7 +33,7 @@ UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed b
  19. draft: rolled 6
  20. drafted into the Other (from 19) [E001]
 
-### 21. term 1 (pp. 5-7)
+**21. term 1 (pp. 5-7)**
 
  22. survival: rolled 1+3 = 4 against 5+, missed
  23. died in term 1, aged 22 (from 22) [E004]

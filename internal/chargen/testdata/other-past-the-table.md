@@ -31,7 +31,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 6+6
   3. Strength 12 (from 2)
@@ -47,17 +47,17 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  13. Social Standing 12 (from 12)
  14. UPP CCCCCC at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Other: rolled 6+6 = 12 against 3+, made
  17. enlisted in the Other (from 16)
 
-### 18. term 1 (pp. 5-7)
+**18. term 1 (pp. 5-7)**
 
  19. survival: rolled 6+6 +2 = 14 against 5+, made
  20. survived term 1 (from 19)
 
-### 21. skills and training (pp. 6, 11)
+**21. skills and training (pp. 6, 11)**
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 1
@@ -68,12 +68,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  28. reenlistment: rolled 6+6 = 12 against 5+, made
  29. a 12 exactly: the service requires another term (from 28)
 
-### 30. term 2 (pp. 5-7)
+**30. term 2 (pp. 5-7)**
 
  31. survival: rolled 6+6 +2 = 14 against 5+, made
  32. survived term 2 (from 31)
 
-### 33. skills and training (pp. 6, 11)
+**33. skills and training (pp. 6, 11)**
 
  34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Service Skills Table: rolled 1
@@ -81,12 +81,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  37. reenlistment: rolled 6+6 = 12 against 5+, made
  38. a 12 exactly: the service requires another term (from 37)
 
-### 39. term 3 (pp. 5-7)
+**39. term 3 (pp. 5-7)**
 
  40. survival: rolled 6+6 +2 = 14 against 5+, made
  41. survived term 3 (from 40)
 
-### 42. skills and training (pp. 6, 11)
+**42. skills and training (pp. 6, 11)**
 
  43. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  44. Personal Development Table: rolled 1
@@ -94,12 +94,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  46. reenlistment: rolled 6+6 = 12 against 5+, made
  47. a 12 exactly: the service requires another term (from 46)
 
-### 48. term 4 (pp. 5-7)
+**48. term 4 (pp. 5-7)**
 
  49. survival: rolled 6+6 +2 = 14 against 5+, made
  50. survived term 4 (from 49)
 
-### 51. skills and training (pp. 6, 11)
+**51. skills and training (pp. 6, 11)**
 
  52. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  53. Advanced Education Table (education 8+): rolled 1
@@ -107,7 +107,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  55. reenlistment: rolled 6+6 = 12 against 5+, made
  56. a 12 exactly: the service requires another term (from 55)
 
-### 57. aging, end of term 4 (pp. 7-9)
+**57. aging, end of term 4 (pp. 7-9)**
 
  58. aging, Strength: rolled 6+6 = 12 against 8+, made
  59. Strength holds (from 58) [E006 E007]
@@ -116,12 +116,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  62. aging, Endurance: rolled 6+6 = 12 against 8+, made
  63. Endurance holds (from 62) [E006 E007]
 
-### 64. term 5 (pp. 5-7)
+**64. term 5 (pp. 5-7)**
 
  65. survival: rolled 6+6 +2 = 14 against 5+, made
  66. survived term 5 (from 65)
 
-### 67. skills and training (pp. 6, 11)
+**67. skills and training (pp. 6, 11)**
 
  68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Advanced Education Table: rolled 1
@@ -129,7 +129,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  71. reenlistment: rolled 6+6 = 12 against 5+, made
  72. a 12 exactly: the service requires another term (from 71)
 
-### 73. aging, end of term 5 (pp. 7-9)
+**73. aging, end of term 5 (pp. 7-9)**
 
  74. aging, Strength: rolled 6+6 = 12 against 8+, made
  75. Strength holds (from 74) [E006 E007]
@@ -138,12 +138,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  78. aging, Endurance: rolled 6+6 = 12 against 8+, made
  79. Endurance holds (from 78) [E006 E007]
 
-### 80. term 6 (pp. 5-7)
+**80. term 6 (pp. 5-7)**
 
  81. survival: rolled 6+6 +2 = 14 against 5+, made
  82. survived term 6 (from 81)
 
-### 83. skills and training (pp. 6, 11)
+**83. skills and training (pp. 6, 11)**
 
  84. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  85. Service Skills Table: rolled 1
@@ -151,7 +151,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  87. reenlistment: rolled 6+6 = 12 against 5+, made
  88. a 12 exactly: the service requires another term (from 87)
 
-### 89. aging, end of term 6 (pp. 7-9)
+**89. aging, end of term 6 (pp. 7-9)**
 
  90. aging, Strength: rolled 6+6 = 12 against 8+, made
  91. Strength holds (from 90) [E006 E007]
@@ -160,12 +160,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
  94. aging, Endurance: rolled 6+6 = 12 against 8+, made
  95. Endurance holds (from 94) [E006 E007]
 
-### 96. term 7 (pp. 5-7)
+**96. term 7 (pp. 5-7)**
 
  97. survival: rolled 6+6 +2 = 14 against 5+, made
  98. survived term 7 (from 97)
 
-### 99. skills and training (pp. 6, 11)
+**99. skills and training (pp. 6, 11)**
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Personal Development Table: rolled 1
@@ -173,7 +173,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 103. reenlistment: rolled 6+6 = 12 against 5+, made
 104. a 12 exactly: the service requires another term (from 103)
 
-### 105. aging, end of term 7 (pp. 7-9)
+**105. aging, end of term 7 (pp. 7-9)**
 
 106. aging, Strength: rolled 6+6 = 12 against 8+, made
 107. Strength holds (from 106) [E006 E007]
@@ -182,12 +182,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 110. aging, Endurance: rolled 6+6 = 12 against 8+, made
 111. Endurance holds (from 110) [E006 E007]
 
-### 112. term 8 (pp. 5-7)
+**112. term 8 (pp. 5-7)**
 
 113. survival: rolled 6+6 +2 = 14 against 5+, made
 114. survived term 8 (from 113)
 
-### 115. skills and training (pp. 6, 11)
+**115. skills and training (pp. 6, 11)**
 
 116. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 117. Advanced Education Table (education 8+): rolled 1
@@ -195,7 +195,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 119. reenlistment: rolled 6+6 = 12 against 5+, made
 120. a 12 exactly: the service requires another term (from 119) [E003]
 
-### 121. aging, end of term 8 (pp. 7-9)
+**121. aging, end of term 8 (pp. 7-9)**
 
 122. aging, Strength: rolled 6+6 = 12 against 9+, made
 123. Strength holds (from 122) [E006 E007]
@@ -204,12 +204,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 126. aging, Endurance: rolled 6+6 = 12 against 9+, made
 127. Endurance holds (from 126) [E006 E007]
 
-### 128. term 9 (pp. 5-7)
+**128. term 9 (pp. 5-7)**
 
 129. survival: rolled 6+6 +2 = 14 against 5+, made
 130. survived term 9 (from 129)
 
-### 131. skills and training (pp. 6, 11)
+**131. skills and training (pp. 6, 11)**
 
 132. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 133. Advanced Education Table: rolled 1
@@ -217,7 +217,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 135. reenlistment: rolled 6+6 = 12 against 5+, made
 136. a 12 exactly: the service requires another term (from 135) [E003]
 
-### 137. aging, end of term 9 (pp. 7-9)
+**137. aging, end of term 9 (pp. 7-9)**
 
 138. aging, Strength: rolled 6+6 = 12 against 9+, made
 139. Strength holds (from 138) [E006 E007]
@@ -226,12 +226,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 142. aging, Endurance: rolled 6+6 = 12 against 9+, made
 143. Endurance holds (from 142) [E006 E007]
 
-### 144. term 10 (pp. 5-7)
+**144. term 10 (pp. 5-7)**
 
 145. survival: rolled 6+6 +2 = 14 against 5+, made
 146. survived term 10 (from 145)
 
-### 147. skills and training (pp. 6, 11)
+**147. skills and training (pp. 6, 11)**
 
 148. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 149. Service Skills Table: rolled 1
@@ -239,7 +239,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 151. reenlistment: rolled 6+6 = 12 against 5+, made
 152. a 12 exactly: the service requires another term (from 151) [E003]
 
-### 153. aging, end of term 10 (pp. 7-9)
+**153. aging, end of term 10 (pp. 7-9)**
 
 154. aging, Strength: rolled 6+6 = 12 against 9+, made
 155. Strength holds (from 154) [E006 E007]
@@ -248,12 +248,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 158. aging, Endurance: rolled 6+6 = 12 against 9+, made
 159. Endurance holds (from 158) [E006 E007]
 
-### 160. term 11 (pp. 5-7)
+**160. term 11 (pp. 5-7)**
 
 161. survival: rolled 6+6 +2 = 14 against 5+, made
 162. survived term 11 (from 161)
 
-### 163. skills and training (pp. 6, 11)
+**163. skills and training (pp. 6, 11)**
 
 164. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 165. Personal Development Table: rolled 1
@@ -261,7 +261,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 167. reenlistment: rolled 6+6 = 12 against 5+, made
 168. a 12 exactly: the service requires another term (from 167) [E003]
 
-### 169. aging, end of term 11 (pp. 7-9)
+**169. aging, end of term 11 (pp. 7-9)**
 
 170. aging, Strength: rolled 6+6 = 12 against 9+, made
 171. Strength holds (from 170) [E006 E007]
@@ -270,12 +270,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 174. aging, Endurance: rolled 6+6 = 12 against 9+, made
 175. Endurance holds (from 174) [E006 E007]
 
-### 176. term 12 (pp. 5-7)
+**176. term 12 (pp. 5-7)**
 
 177. survival: rolled 6+6 +2 = 14 against 5+, made
 178. survived term 12 (from 177)
 
-### 179. skills and training (pp. 6, 11)
+**179. skills and training (pp. 6, 11)**
 
 180. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 181. Advanced Education Table (education 8+): rolled 1
@@ -283,7 +283,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 183. reenlistment: rolled 6+6 = 12 against 5+, made
 184. a 12 exactly: the service requires another term (from 183) [E003]
 
-### 185. aging, end of term 12 (pp. 7-9)
+**185. aging, end of term 12 (pp. 7-9)**
 
 186. aging, Strength: rolled 6+6 = 12 against 9+, made
 187. Strength holds (from 186) [E006 E007]
@@ -294,12 +294,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 192. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 193. Intelligence holds (from 192) [E006 E007]
 
-### 194. term 13 (pp. 5-7)
+**194. term 13 (pp. 5-7)**
 
 195. survival: rolled 6+6 +2 = 14 against 5+, made
 196. survived term 13 (from 195)
 
-### 197. skills and training (pp. 6, 11)
+**197. skills and training (pp. 6, 11)**
 
 198. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 199. Advanced Education Table: rolled 1
@@ -307,7 +307,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 201. reenlistment: rolled 6+6 = 12 against 5+, made
 202. a 12 exactly: the service requires another term (from 201) [E003]
 
-### 203. aging, end of term 13 (pp. 7-9)
+**203. aging, end of term 13 (pp. 7-9)**
 
 204. aging, Strength: rolled 6+6 = 12 against 9+, made
 205. Strength holds (from 204) [E006 E007]
@@ -318,12 +318,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 210. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 211. Intelligence holds (from 210) [E006 E007]
 
-### 212. term 14 (pp. 5-7)
+**212. term 14 (pp. 5-7)**
 
 213. survival: rolled 6+6 +2 = 14 against 5+, made
 214. survived term 14 (from 213)
 
-### 215. skills and training (pp. 6, 11)
+**215. skills and training (pp. 6, 11)**
 
 216. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 217. Service Skills Table: rolled 1
@@ -331,7 +331,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 219. reenlistment: rolled 6+6 = 12 against 5+, made
 220. a 12 exactly: the service requires another term (from 219) [E003]
 
-### 221. aging, end of term 14 (pp. 7-9)
+**221. aging, end of term 14 (pp. 7-9)**
 
 222. aging, Strength: rolled 6+6 = 12 against 9+, made
 223. Strength holds (from 222) [E006 E007]
@@ -342,12 +342,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 228. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 229. Intelligence holds (from 228) [E006 E007]
 
-### 230. term 15 (pp. 5-7)
+**230. term 15 (pp. 5-7)**
 
 231. survival: rolled 6+6 +2 = 14 against 5+, made
 232. survived term 15 (from 231)
 
-### 233. skills and training (pp. 6, 11)
+**233. skills and training (pp. 6, 11)**
 
 234. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 235. Personal Development Table: rolled 1
@@ -355,7 +355,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 237. reenlistment: rolled 6+6 = 12 against 5+, made
 238. a 12 exactly: the service requires another term (from 237) [E003]
 
-### 239. aging, end of term 15 (pp. 7-9)
+**239. aging, end of term 15 (pp. 7-9)**
 
 240. aging, Strength: rolled 6+6 = 12 against 9+, made
 241. Strength holds (from 240) [E006 E007 E014]
@@ -366,12 +366,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 246. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 247. Intelligence holds (from 246) [E006 E007 E014]
 
-### 248. term 16 (pp. 5-7)
+**248. term 16 (pp. 5-7)**
 
 249. survival: rolled 6+6 +2 = 14 against 5+, made
 250. survived term 16 (from 249)
 
-### 251. skills and training (pp. 6, 11)
+**251. skills and training (pp. 6, 11)**
 
 252. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 253. Advanced Education Table (education 8+): rolled 1
@@ -379,7 +379,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 255. reenlistment: rolled 6+6 = 12 against 5+, made
 256. a 12 exactly: the service requires another term (from 255) [E003]
 
-### 257. aging, end of term 16 (pp. 7-9)
+**257. aging, end of term 16 (pp. 7-9)**
 
 258. aging, Strength: rolled 6+6 = 12 against 9+, made
 259. Strength holds (from 258) [E006 E007 E014]
@@ -390,12 +390,12 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 264. aging, Intelligence: rolled 1+1 = 2 against 9+, missed
 265. Intelligence -1, 12 to 11 (from 264) [E006 E007 E014]
 
-### 266. term 17 (pp. 5-7)
+**266. term 17 (pp. 5-7)**
 
 267. survival: rolled 1+1 +2 = 4 against 5+, missed
 268. died in term 17, aged 86 (from 267) [E004]
 
-### 269. titles (p. 5; Book 3 p. 22)
+**269. titles (p. 5; Book 3 p. 22)**
 
 270. held a social standing of 12 at death, which is baron/baroness [E011]
 

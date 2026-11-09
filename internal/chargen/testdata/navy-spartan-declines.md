@@ -36,7 +36,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 5+5
   3. Strength 10 (from 2)
@@ -52,12 +52,12 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  13. Social Standing 12 (from 12)
  14. UPP A68AAC at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Navy: rolled 5+1 +3 = 9 against 8+, made
  17. enlisted in the Navy (from 16)
 
-### 18. term 1 (pp. 5-7)
+**18. term 1 (pp. 5-7)**
 
  19. survival: rolled 2+5 +2 = 9 against 5+, made
  20. survived term 1 (from 19)
@@ -65,7 +65,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  22. commission: rolled 2+3 +1 = 6 against 10+, missed
  23. not commissioned this term (from 22)
 
-### 24. skills and training (pp. 6, 11)
+**24. skills and training (pp. 6, 11)**
 
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table (education 8+): rolled 2
@@ -77,7 +77,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  32. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
 
-### 34. term 2 (pp. 5-7)
+**34. term 2 (pp. 5-7)**
 
  35. survival: rolled 4+6 +2 = 12 against 5+, made
  36. survived term 2 (from 35)
@@ -88,7 +88,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  41. promotion: rolled 3+2 +1 = 6 against 8+, missed
  42. not promoted this term (from 41)
 
-### 43. skills and training (pp. 6, 11)
+**43. skills and training (pp. 6, 11)**
 
  44. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  45. Service Skills Table: rolled 1
@@ -100,7 +100,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  52. reenlisted for term 3 (from 50)
 
-### 53. term 3 (pp. 5-7)
+**53. term 3 (pp. 5-7)**
 
  54. survival: rolled 6+3 +2 = 11 against 5+, made
  55. survived term 3 (from 54)
@@ -108,7 +108,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  57. promotion: rolled 5+3 +1 = 9 against 8+, made
  58. promoted: Lieutenant (from 57)
 
-### 59. skills and training (pp. 6, 11)
+**59. skills and training (pp. 6, 11)**
 
  60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  61. Advanced Education Table (education 8+): rolled 2
@@ -120,7 +120,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  67. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  68. reenlisted for term 4 (from 66)
 
-### 69. term 4 (pp. 5-7)
+**69. term 4 (pp. 5-7)**
 
  70. survival: rolled 1+4 +2 = 7 against 5+, made
  71. survived term 4 (from 70)
@@ -128,7 +128,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  73. promotion: rolled 6+6 +1 = 13 against 8+, made
  74. promoted: Lt Cmdr (from 73)
 
-### 75. skills and training (pp. 6, 11)
+**75. skills and training (pp. 6, 11)**
 
  76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  77. Service Skills Table: rolled 3
@@ -140,7 +140,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  83. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  84. reenlisted for term 5 (from 82)
 
-### 85. aging, end of term 4 (pp. 7-9)
+**85. aging, end of term 4 (pp. 7-9)**
 
  86. aging, Strength: rolled 2+5 = 7 against 8+, missed
  87. Strength -1, 10 to 9 (from 86) [E006 E007]
@@ -149,7 +149,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  90. aging, Endurance: rolled 4+3 = 7 against 8+, missed
  91. Endurance -1, 9 to 8 (from 90) [E006 E007]
 
-### 92. term 5 (pp. 5-7)
+**92. term 5 (pp. 5-7)**
 
  93. survival: rolled 5+2 +2 = 9 against 5+, made
  94. survived term 5 (from 93)
@@ -157,7 +157,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
  96. promotion: rolled 5+6 +1 = 12 against 8+, made
  97. promoted: Commander (from 96)
 
-### 98. skills and training (pp. 6, 11)
+**98. skills and training (pp. 6, 11)**
 
  99. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 100. Advanced Education Table (education 8+): rolled 5
@@ -169,7 +169,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 106. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 107. reenlisted for term 6 (from 105)
 
-### 108. aging, end of term 5 (pp. 7-9)
+**108. aging, end of term 5 (pp. 7-9)**
 
 109. aging, Strength: rolled 1+2 = 3 against 8+, missed
 110. Strength -1, 9 to 8 (from 109) [E006 E007]
@@ -178,7 +178,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 113. aging, Endurance: rolled 3+5 = 8 against 8+, made
 114. Endurance holds (from 113) [E006 E007]
 
-### 115. term 6 (pp. 5-7)
+**115. term 6 (pp. 5-7)**
 
 116. survival: rolled 2+5 +2 = 9 against 5+, made
 117. survived term 6 (from 116)
@@ -186,7 +186,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 119. promotion: rolled 1+2 +1 = 4 against 8+, missed
 120. not promoted this term (from 119)
 
-### 121. skills and training (pp. 6, 11)
+**121. skills and training (pp. 6, 11)**
 
 122. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 123. Service Skills Table: rolled 1
@@ -195,7 +195,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 126. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 127. reenlisted for term 7 (from 125)
 
-### 128. aging, end of term 6 (pp. 7-9)
+**128. aging, end of term 6 (pp. 7-9)**
 
 129. aging, Strength: rolled 6+2 = 8 against 8+, made
 130. Strength holds (from 129) [E006 E007]
@@ -204,7 +204,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 133. aging, Endurance: rolled 4+1 = 5 against 8+, missed
 134. Endurance -1, 8 to 7 (from 133) [E006 E007]
 
-### 135. term 7 (pp. 5-7)
+**135. term 7 (pp. 5-7)**
 
 136. survival: rolled 4+6 +2 = 12 against 5+, made
 137. survived term 7 (from 136)
@@ -213,7 +213,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 140. promoted: Captain (from 139)
 141. Social Standing +1, 13 to 14 (from 139)
 
-### 142. skills and training (pp. 6, 11)
+**142. skills and training (pp. 6, 11)**
 
 143. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 144. Personal Development Table: rolled 6
@@ -224,7 +224,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 149. reenlistment: rolled 2+2 = 4 against 6+, missed
 150. left the service after term 7 and is retired: reenlistment denied (from 149)
 
-### 151. aging, end of term 7 (pp. 7-9)
+**151. aging, end of term 7 (pp. 7-9)**
 
 152. aging, Strength: rolled 2+4 = 6 against 8+, missed
 153. Strength -1, 8 to 7 (from 152) [E006 E007]
@@ -233,7 +233,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 156. aging, Endurance: rolled 4+2 = 6 against 8+, missed
 157. Endurance -1, 7 to 6 (from 156) [E006 E007]
 
-### 158. mustering out, 9 rolls (pp. 7, 9, 21-23)
+**158. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 
 159. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 160. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose no from yes, no
@@ -276,7 +276,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 197. a Low Passage (from 196)
 198. retirement pay of CR 8000 a year
 
-### 199. titles (p. 5; Book 3 p. 22)
+**199. titles (p. 5; Book 3 p. 22)**
 
 200. assume the hereditary title (p. 5): policy chose yes from yes, no
 201. social standing 14 confers count/countess, and it is assumed

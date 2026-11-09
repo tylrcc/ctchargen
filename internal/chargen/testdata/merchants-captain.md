@@ -35,7 +35,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 6+2
   3. Strength 8 (from 2)
@@ -51,12 +51,12 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  13. Social Standing 11 (from 12)
  14. UPP 84699B at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Merchants: rolled 3+4 +3 = 10 against 7+, made
  17. enlisted in the Merchants (from 16)
 
-### 18. term 1 (pp. 5-7)
+**18. term 1 (pp. 5-7)**
 
  19. survival: rolled 2+4 +2 = 8 against 5+, made
  20. survived term 1 (from 19)
@@ -67,7 +67,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  25. promotion: rolled 5+3 +1 = 9 against 10+, missed
  26. not promoted this term (from 25)
 
-### 27. skills and training (pp. 6, 11)
+**27. skills and training (pp. 6, 11)**
 
  28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  29. Advanced Education Table (education 8+): rolled 3
@@ -82,7 +82,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  38. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  39. reenlisted for term 2 (from 37)
 
-### 40. term 2 (pp. 5-7)
+**40. term 2 (pp. 5-7)**
 
  41. survival: rolled 3+1 +2 = 6 against 5+, made
  42. survived term 2 (from 41)
@@ -90,7 +90,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  44. promotion: rolled 2+4 +1 = 7 against 10+, missed
  45. not promoted this term (from 44)
 
-### 46. skills and training (pp. 6, 11)
+**46. skills and training (pp. 6, 11)**
 
  47. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  48. Personal Development Table: rolled 1
@@ -99,7 +99,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  52. reenlisted for term 3 (from 50)
 
-### 53. term 3 (pp. 5-7)
+**53. term 3 (pp. 5-7)**
 
  54. survival: rolled 4+3 +2 = 9 against 5+, made
  55. survived term 3 (from 54)
@@ -107,7 +107,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  57. promotion: rolled 6+3 +1 = 10 against 10+, made
  58. promoted: 3rd Officer (from 57)
 
-### 59. skills and training (pp. 6, 11)
+**59. skills and training (pp. 6, 11)**
 
  60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  61. Advanced Education Table (education 8+): rolled 2
@@ -119,7 +119,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  67. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  68. reenlisted for term 4 (from 66)
 
-### 69. term 4 (pp. 5-7)
+**69. term 4 (pp. 5-7)**
 
  70. survival: rolled 4+1 +2 = 7 against 5+, made
  71. survived term 4 (from 70)
@@ -127,7 +127,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  73. promotion: rolled 6+3 +1 = 10 against 10+, made
  74. promoted: 2nd Officer (from 73)
 
-### 75. skills and training (pp. 6, 11)
+**75. skills and training (pp. 6, 11)**
 
  76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  77. Service Skills Table: rolled 4
@@ -140,7 +140,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  85. reenlisted for term 5 (from 83)
 
-### 86. aging, end of term 4 (pp. 7-9)
+**86. aging, end of term 4 (pp. 7-9)**
 
  87. aging, Strength: rolled 1+6 = 7 against 8+, missed
  88. Strength -1, 9 to 8 (from 87) [E006 E007]
@@ -149,7 +149,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  91. aging, Endurance: rolled 5+4 = 9 against 8+, made
  92. Endurance holds (from 91) [E006 E007]
 
-### 93. term 5 (pp. 5-7)
+**93. term 5 (pp. 5-7)**
 
  94. survival: rolled 3+1 +2 = 6 against 5+, made
  95. survived term 5 (from 94)
@@ -157,7 +157,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  97. promotion: rolled 1+4 +1 = 6 against 10+, missed
  98. not promoted this term (from 97)
 
-### 99. skills and training (pp. 6, 11)
+**99. skills and training (pp. 6, 11)**
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Advanced Education Table (education 8+): rolled 2
@@ -166,7 +166,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 104. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 105. reenlisted for term 6 (from 103)
 
-### 106. aging, end of term 5 (pp. 7-9)
+**106. aging, end of term 5 (pp. 7-9)**
 
 107. aging, Strength: rolled 5+1 = 6 against 8+, missed
 108. Strength -1, 8 to 7 (from 107) [E006 E007]
@@ -175,7 +175,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 111. aging, Endurance: rolled 6+4 = 10 against 8+, made
 112. Endurance holds (from 111) [E006 E007]
 
-### 113. term 6 (pp. 5-7)
+**113. term 6 (pp. 5-7)**
 
 114. survival: rolled 2+3 +2 = 7 against 5+, made
 115. survived term 6 (from 114)
@@ -184,7 +184,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 118. promoted: 1st Officer (from 117)
 119. Pilot-1 (from 117)
 
-### 120. skills and training (pp. 6, 11)
+**120. skills and training (pp. 6, 11)**
 
 121. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 122. Advanced Education Table: rolled 2
@@ -197,7 +197,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 129. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 130. reenlisted for term 7 (from 128)
 
-### 131. aging, end of term 6 (pp. 7-9)
+**131. aging, end of term 6 (pp. 7-9)**
 
 132. aging, Strength: rolled 4+4 = 8 against 8+, made
 133. Strength holds (from 132) [E006 E007]
@@ -206,7 +206,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 136. aging, Endurance: rolled 6+3 = 9 against 8+, made
 137. Endurance holds (from 136) [E006 E007]
 
-### 138. term 7 (pp. 5-7)
+**138. term 7 (pp. 5-7)**
 
 139. survival: rolled 4+2 +2 = 8 against 5+, made
 140. survived term 7 (from 139)
@@ -214,7 +214,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 142. promotion: rolled 5+5 +1 = 11 against 10+, made
 143. promoted: Captain (from 142)
 
-### 144. skills and training (pp. 6, 11)
+**144. skills and training (pp. 6, 11)**
 
 145. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 146. Personal Development Table: rolled 4
@@ -225,7 +225,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 151. reenlistment: rolled 1+5 = 6 against 4+, made
 152. left the service after term 7 and is retired: retire (from 151)
 
-### 153. aging, end of term 7 (pp. 7-9)
+**153. aging, end of term 7 (pp. 7-9)**
 
 154. aging, Strength: rolled 4+5 = 9 against 8+, made
 155. Strength holds (from 154) [E006 E007]
@@ -234,7 +234,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 158. aging, Endurance: rolled 2+3 = 5 against 8+, missed
 159. Endurance -1, 6 to 5 (from 158) [E006 E007]
 
-### 160. mustering out, 9 rolls (pp. 7, 9, 21-23)
+**160. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 
 161. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 162. Table 2, Cash Allowances: rolled 2
@@ -268,7 +268,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 190. expertise instead: Dagger-2 (from 188)
 191. retirement pay of CR 8000 a year
 
-### 192. titles (p. 5; Book 3 p. 22)
+**192. titles (p. 5; Book 3 p. 22)**
 
 193. assume the hereditary title (p. 5): policy chose yes from yes, no
 194. social standing 11 confers knight/dame, and it is assumed

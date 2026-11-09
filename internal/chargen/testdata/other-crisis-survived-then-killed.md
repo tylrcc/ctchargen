@@ -21,7 +21,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 1+1
   3. Strength 2 (from 2)
@@ -37,17 +37,17 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  13. Social Standing 10 (from 12)
  14. UPP 2AA48A at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Other: rolled 4+4 = 8 against 3+, made
  17. enlisted in the Other (from 16)
 
-### 18. term 1 (pp. 5-7)
+**18. term 1 (pp. 5-7)**
 
  19. survival: rolled 6+4 = 10 against 5+, made
  20. survived term 1 (from 19)
 
-### 21. skills and training (pp. 6, 11)
+**21. skills and training (pp. 6, 11)**
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 3
@@ -59,12 +59,12 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  29. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  30. reenlisted for term 2 (from 28)
 
-### 31. term 2 (pp. 5-7)
+**31. term 2 (pp. 5-7)**
 
  32. survival: rolled 3+2 = 5 against 5+, made
  33. survived term 2 (from 32)
 
-### 34. skills and training (pp. 6, 11)
+**34. skills and training (pp. 6, 11)**
 
  35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  36. Service Skills Table: rolled 5
@@ -74,12 +74,12 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  40. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  41. reenlisted for term 3 (from 39)
 
-### 42. term 3 (pp. 5-7)
+**42. term 3 (pp. 5-7)**
 
  43. survival: rolled 1+4 = 5 against 5+, made
  44. survived term 3 (from 43)
 
-### 45. skills and training (pp. 6, 11)
+**45. skills and training (pp. 6, 11)**
 
  46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  47. Personal Development Table: rolled 5
@@ -88,12 +88,12 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  50. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  51. reenlisted for term 4 (from 49)
 
-### 52. term 4 (pp. 5-7)
+**52. term 4 (pp. 5-7)**
 
  53. survival: rolled 5+2 = 7 against 5+, made
  54. survived term 4 (from 53)
 
-### 55. skills and training (pp. 6, 11)
+**55. skills and training (pp. 6, 11)**
 
  56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  57. Advanced Education Table (education 8+): rolled 3
@@ -102,7 +102,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  60. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  61. reenlisted for term 5 (from 59)
 
-### 62. aging, end of term 4 (pp. 7-9)
+**62. aging, end of term 4 (pp. 7-9)**
 
  63. aging, Strength: rolled 4+3 = 7 against 8+, missed
  64. Strength -1, 2 to 1 (from 63) [E006 E007]
@@ -111,12 +111,12 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  67. aging, Endurance: rolled 2+2 = 4 against 8+, missed
  68. Endurance -1, 10 to 9 (from 67) [E006 E007]
 
-### 69. term 5 (pp. 5-7)
+**69. term 5 (pp. 5-7)**
 
  70. survival: rolled 5+1 = 6 against 5+, made
  71. survived term 5 (from 70)
 
-### 72. skills and training (pp. 6, 11)
+**72. skills and training (pp. 6, 11)**
 
  73. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  74. Advanced Education Table: rolled 2
@@ -125,7 +125,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  77. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  78. reenlisted for term 6 (from 76)
 
-### 79. aging, end of term 5 (pp. 7-9)
+**79. aging, end of term 5 (pp. 7-9)**
 
  80. aging, Strength: rolled 3+1 = 4 against 8+, missed
  81. Strength -1, 1 to 0 (from 80) [E006 E007 E010]
@@ -137,7 +137,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
  87. aging, Endurance: rolled 5+2 = 7 against 8+, missed
  88. Endurance -1, 9 to 8 (from 87) [E006 E007]
 
-### 89. term 6 (pp. 5-7)
+**89. term 6 (pp. 5-7)**
 
  90. survival: rolled 1+2 = 3 against 5+, missed
  91. died in term 6, aged 42 years 3 months (from 90) [E004]

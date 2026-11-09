@@ -37,7 +37,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 5+5
   3. Strength 10 (from 2)
@@ -53,16 +53,16 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  13. Social Standing 12 (from 12)
  14. UPP A68AAC at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Army: rolled 5+1 +3 = 9 against 5+, made
  17. enlisted in the Army (from 16)
 
-### 18. rank and service skills (p. 23)
+**18. rank and service skills (p. 23)**
 
  19. Rifle-1 [E005]
 
-### 20. term 1 (pp. 5-7)
+**20. term 1 (pp. 5-7)**
 
  21. survival: rolled 2+5 +2 = 9 against 5+, made
  22. survived term 1 (from 21)
@@ -74,7 +74,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  28. promotion: rolled 2+1 +1 = 4 against 6+, missed
  29. not promoted this term (from 28)
 
-### 30. skills and training (pp. 6, 11)
+**30. skills and training (pp. 6, 11)**
 
  31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  32. Advanced Education Table (education 8+): rolled 3
@@ -91,7 +91,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  43. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  44. reenlisted for term 2 (from 42)
 
-### 45. term 2 (pp. 5-7)
+**45. term 2 (pp. 5-7)**
 
  46. survival: rolled 2+1 +2 = 5 against 5+, made
  47. survived term 2 (from 46)
@@ -99,7 +99,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  49. promotion: rolled 3+5 +1 = 9 against 6+, made
  50. promoted: Captain (from 49)
 
-### 51. skills and training (pp. 6, 11)
+**51. skills and training (pp. 6, 11)**
 
  52. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  53. Personal Development Table: rolled 4
@@ -111,7 +111,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  60. reenlisted for term 3 (from 58)
 
-### 61. term 3 (pp. 5-7)
+**61. term 3 (pp. 5-7)**
 
  62. survival: rolled 3+2 +2 = 7 against 5+, made
  63. survived term 3 (from 62)
@@ -119,7 +119,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  65. promotion: rolled 6+4 +1 = 11 against 6+, made
  66. promoted: Major (from 65)
 
-### 67. skills and training (pp. 6, 11)
+**67. skills and training (pp. 6, 11)**
 
  68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Advanced Education Table: rolled 3
@@ -131,7 +131,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  75. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  76. reenlisted for term 4 (from 74)
 
-### 77. term 4 (pp. 5-7)
+**77. term 4 (pp. 5-7)**
 
  78. survival: rolled 6+3 +2 = 11 against 5+, made
  79. survived term 4 (from 78)
@@ -139,7 +139,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  81. promotion: rolled 4+5 +1 = 10 against 6+, made
  82. promoted: Lt Colonel (from 81)
 
-### 83. skills and training (pp. 6, 11)
+**83. skills and training (pp. 6, 11)**
 
  84. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  85. Personal Development Table: rolled 6
@@ -151,7 +151,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  91. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  92. reenlisted for term 5 (from 90)
 
-### 93. aging, end of term 4 (pp. 7-9)
+**93. aging, end of term 4 (pp. 7-9)**
 
  94. aging, Strength: rolled 6+4 = 10 against 8+, made
  95. Strength holds (from 94) [E006 E007]
@@ -160,7 +160,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
  98. aging, Endurance: rolled 2+5 = 7 against 8+, missed
  99. Endurance -1, 8 to 7 (from 98) [E006 E007]
 
-### 100. term 5 (pp. 5-7)
+**100. term 5 (pp. 5-7)**
 
 101. survival: rolled 6+5 +2 = 13 against 5+, made
 102. survived term 5 (from 101)
@@ -168,7 +168,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 104. promotion: rolled 1+6 +1 = 8 against 6+, made
 105. promoted: Colonel (from 104)
 
-### 106. skills and training (pp. 6, 11)
+**106. skills and training (pp. 6, 11)**
 
 107. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 108. Advanced Education Table: rolled 3
@@ -180,7 +180,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 114. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 115. reenlisted for term 6 (from 113)
 
-### 116. aging, end of term 5 (pp. 7-9)
+**116. aging, end of term 5 (pp. 7-9)**
 
 117. aging, Strength: rolled 6+3 = 9 against 8+, made
 118. Strength holds (from 117) [E006 E007]
@@ -189,7 +189,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 121. aging, Endurance: rolled 5+1 = 6 against 8+, missed
 122. Endurance -1, 7 to 6 (from 121) [E006 E007]
 
-### 123. term 6 (pp. 5-7)
+**123. term 6 (pp. 5-7)**
 
 124. survival: rolled 2+1 +2 = 5 against 5+, made
 125. survived term 6 (from 124)
@@ -197,7 +197,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 127. promotion: rolled 4+2 +1 = 7 against 6+, made
 128. promoted: General (from 127)
 
-### 129. skills and training (pp. 6, 11)
+**129. skills and training (pp. 6, 11)**
 
 130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 6
@@ -209,7 +209,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 137. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 138. reenlisted for term 7 (from 136)
 
-### 139. aging, end of term 6 (pp. 7-9)
+**139. aging, end of term 6 (pp. 7-9)**
 
 140. aging, Strength: rolled 4+1 = 5 against 8+, missed
 141. Strength -1, 10 to 9 (from 140) [E006 E007]
@@ -218,13 +218,13 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 144. aging, Endurance: rolled 6+5 = 11 against 8+, made
 145. Endurance holds (from 144) [E006 E007]
 
-### 146. term 7 (pp. 5-7)
+**146. term 7 (pp. 5-7)**
 
 147. survival: rolled 6+3 +2 = 11 against 5+, made
 148. survived term 7 (from 147)
 149. already General, the highest rank the Army print, so no promotion is thrown for in term 7 [E013]
 
-### 150. skills and training (pp. 6, 11)
+**150. skills and training (pp. 6, 11)**
 
 151. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 152. Advanced Education Table: rolled 2
@@ -232,7 +232,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 154. reenlistment: rolled 2+2 = 4 against 7+, missed
 155. left the service after term 7 and is retired: reenlistment denied (from 154)
 
-### 156. aging, end of term 7 (pp. 7-9)
+**156. aging, end of term 7 (pp. 7-9)**
 
 157. aging, Strength: rolled 4+6 = 10 against 8+, made
 158. Strength holds (from 157) [E006 E007]
@@ -241,7 +241,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 161. aging, Endurance: rolled 2+5 = 7 against 8+, missed
 162. Endurance -1, 6 to 5 (from 161) [E006 E007]
 
-### 163. mustering out, 9 rolls (pp. 7, 9, 21-23)
+**163. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 
 164. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 165. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
@@ -275,7 +275,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 193. a High Passage (from 192)
 194. retirement pay of CR 8000 a year
 
-### 195. titles (p. 5; Book 3 p. 22)
+**195. titles (p. 5; Book 3 p. 22)**
 
 196. assume the hereditary title (p. 5): policy chose yes from yes, no
 197. social standing 13 confers marquis/marchioness, and it is assumed

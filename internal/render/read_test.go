@@ -390,3 +390,39 @@ func TestARollClaimsNothingMet(t *testing.T) {
 		}
 	}
 }
+
+// The generation record sits under one heading, its steps as bold lines
+// rather than headings of their own, so a note's outline shows the sheet's
+// sections and one entry for the record (#422). Each step keeps its number
+// (#249).
+//
+// Holds: The generation record is one heading, its steps bold lines.
+func TestTheGenerationRecordIsOneHeading(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = []traveller.Event{
+			traveller.StepEvent{Seq: 1, Step: "characteristics", Pages: "p. 4"},
+			traveller.OutcomeEvent{Seq: 2, Description: "UPP 777777 at age 18"},
+			traveller.StepEvent{Seq: 3, Step: "enlistment", Pages: "pp. 5, 10"},
+		}
+	})
+
+	_, record, _ := strings.Cut(note, "## Generation record\n")
+
+	for line := range strings.Lines(record) {
+		if strings.HasPrefix(line, "#") {
+			t.Errorf("the generation record carries a heading of its own: %q", line)
+		}
+	}
+
+	for _, want := range []string{
+		"\n**1. characteristics (p. 4)**\n\n",
+		"  2. UPP 777777 at age 18\n",
+		"\n**3. enlistment (pp. 5, 10)**\n\n",
+	} {
+		if !strings.Contains(record, want) {
+			t.Errorf("the generation record does not read %q:\n%s", want, record)
+		}
+	}
+}

@@ -24,7 +24,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 2+5
   3. Strength 7 (from 2)
@@ -40,7 +40,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  13. Social Standing 2 (from 12)
  14. UPP 793682 at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. service to enlist in (pp. 5, 10): policy chose Other from Navy, Marines, Army, Scouts, Merchants, Other
  17. enlistment, Other: rolled 1+1 = 2 against 3+, missed
@@ -49,16 +49,16 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  20. draft: rolled 2
  21. drafted into the Marines (from 20) [E001]
 
-### 22. rank and service skills (p. 23)
+**22. rank and service skills (p. 23)**
 
  23. Cutlass-1 [E005]
 
-### 24. term 1 (pp. 5-7)
+**24. term 1 (pp. 5-7)**
 
  25. survival: rolled 5+4 = 9 against 6+, made
  26. survived term 1 (from 25)
 
-### 27. skills and training (pp. 6, 11)
+**27. skills and training (pp. 6, 11)**
 
  28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  29. Advanced Education Table (education 8+): rolled 6
@@ -70,7 +70,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  35. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  36. reenlisted for term 2 (from 34)
 
-### 37. term 2 (pp. 5-7)
+**37. term 2 (pp. 5-7)**
 
  38. survival: rolled 5+5 = 10 against 6+, made
  39. survived term 2 (from 38)
@@ -78,7 +78,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  41. commission: rolled 3+3 +1 = 7 against 9+, missed
  42. not commissioned this term (from 41)
 
-### 43. skills and training (pp. 6, 11)
+**43. skills and training (pp. 6, 11)**
 
  44. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  45. Service Skills Table: rolled 4
@@ -88,7 +88,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  49. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  50. reenlisted for term 3 (from 48)
 
-### 51. term 3 (pp. 5-7)
+**51. term 3 (pp. 5-7)**
 
  52. survival: rolled 4+5 = 9 against 6+, made
  53. survived term 3 (from 52)
@@ -96,7 +96,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  55. commission: rolled 1+1 +1 = 3 against 9+, missed
  56. not commissioned this term (from 55)
 
-### 57. skills and training (pp. 6, 11)
+**57. skills and training (pp. 6, 11)**
 
  58. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  59. Personal Development Table: rolled 4
@@ -105,7 +105,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  62. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  63. reenlisted for term 4 (from 61)
 
-### 64. term 4 (pp. 5-7)
+**64. term 4 (pp. 5-7)**
 
  65. survival: rolled 5+1 = 6 against 6+, made
  66. survived term 4 (from 65)
@@ -117,7 +117,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  72. promotion: rolled 5+1 = 6 against 9+, missed
  73. not promoted this term (from 72)
 
-### 74. skills and training (pp. 6, 11)
+**74. skills and training (pp. 6, 11)**
 
  75. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  76. Advanced Education Table (education 8+): rolled 6
@@ -129,7 +129,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  82. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  83. reenlisted for term 5 (from 81)
 
-### 84. aging, end of term 4 (pp. 7-9)
+**84. aging, end of term 4 (pp. 7-9)**
 
  85. aging, Strength: rolled 1+2 = 3 against 8+, missed
  86. Strength -1, 7 to 6 (from 85) [E006 E007]
@@ -138,7 +138,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  89. aging, Endurance: rolled 5+1 = 6 against 8+, missed
  90. Endurance -1, 3 to 2 (from 89) [E006 E007]
 
-### 91. term 5 (pp. 5-7)
+**91. term 5 (pp. 5-7)**
 
  92. survival: rolled 6+3 = 9 against 6+, made
  93. survived term 5 (from 92)
@@ -146,7 +146,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
  95. promotion: rolled 2+5 = 7 against 9+, missed
  96. not promoted this term (from 95)
 
-### 97. skills and training (pp. 6, 11)
+**97. skills and training (pp. 6, 11)**
 
  98. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  99. Service Skills Table: rolled 4
@@ -156,7 +156,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
 103. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 104. reenlisted for term 6 (from 102)
 
-### 105. aging, end of term 5 (pp. 7-9)
+**105. aging, end of term 5 (pp. 7-9)**
 
 106. aging, Strength: rolled 5+4 = 9 against 8+, made
 107. Strength holds (from 106) [E006 E007]
@@ -165,7 +165,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 
 110. aging, Endurance: rolled 2+2 = 4 against 8+, missed
 111. Endurance -1, 2 to 1 (from 110) [E006 E007]
 
-### 112. term 6 (pp. 5-7)
+**112. term 6 (pp. 5-7)**
 
 113. survival: rolled 1+3 = 4 against 6+, missed
 114. died in term 6, aged 42 (from 113) [E004]

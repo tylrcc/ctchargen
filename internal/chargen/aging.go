@@ -120,7 +120,7 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 	errata := []traveller.Erratum{traveller.E008, traveller.E009}
 
 	// No step of its own: the crisis is resolved inside the aging round, and
-	// a heading here would put the round's remaining saving throws under it.
+	// a step line here would put the round's remaining saving throws under it.
 	// The throw names the characteristic instead.
 	throw := roll(r.roll, crisis.Saving, 0)
 	seq := r.log.throw("medical crisis, "+characteristic.String()+" at zero", throw)

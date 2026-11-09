@@ -29,13 +29,16 @@ func writeGenerationRecord(out *strings.Builder, r view) {
 
 // writeEvent writes one entry of the generation record.
 //
-// A step heading carries its number like every other line (#249): bare, it
+// A step line carries its number like every other line (#249): bare, it
 // made the numbers appear to skip, and a record kept for the table opened at
 // event 2.
+//
+// Implements: The generation record is one heading, its steps bold lines
+// [Generation record].
 func writeEvent(out *strings.Builder, event entry, answerer string) {
 	switch event.Kind {
 	case kindStep:
-		fmt.Fprintf(out, "\n### %d. %s (%s)\n\n", event.Seq, event.Step, event.Pages)
+		fmt.Fprintf(out, "\n**%s**\n\n", stepLine(event))
 	case kindThrow, kindRoll:
 		// One line for both: a roll is a throw whose target is empty, which
 		// is exactly what throwLine already prints.
@@ -139,4 +142,10 @@ func outcomeLine(event entry) string {
 	}
 
 	return line
+}
+
+// stepLine is a step's number, name and pages: what the note marks bold and
+// the live view prints plain.
+func stepLine(event entry) string {
+	return fmt.Sprintf("%d. %s (%s)", event.Seq, event.Step, event.Pages)
 }

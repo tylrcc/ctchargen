@@ -24,7 +24,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 
 ## Generation record
 
-### 1. characteristics (p. 4)
+**1. characteristics (p. 4)**
 
   2. Strength: rolled 5+5
   3. Strength 10 (from 2)
@@ -40,16 +40,16 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  13. Social Standing 12 (from 12)
  14. UPP A68AAC at age 18
 
-### 15. enlistment (pp. 5, 10)
+**15. enlistment (pp. 5, 10)**
 
  16. enlistment, Marines: rolled 5+1 +3 = 9 against 9+, made
  17. enlisted in the Marines (from 16)
 
-### 18. rank and service skills (p. 23)
+**18. rank and service skills (p. 23)**
 
  19. Cutlass-1 [E005]
 
-### 20. term 1 (pp. 5-7)
+**20. term 1 (pp. 5-7)**
 
  21. survival: rolled 2+5 +2 = 9 against 6+, made
  22. survived term 1 (from 21)
@@ -57,7 +57,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  24. commission: rolled 2+3 +1 = 6 against 9+, missed
  25. not commissioned this term (from 24)
 
-### 26. skills and training (pp. 6, 11)
+**26. skills and training (pp. 6, 11)**
 
  27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  28. Advanced Education Table (education 8+): rolled 2
@@ -69,7 +69,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  34. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  35. reenlisted for term 2 (from 33)
 
-### 36. term 2 (pp. 5-7)
+**36. term 2 (pp. 5-7)**
 
  37. survival: rolled 4+6 +2 = 12 against 6+, made
  38. survived term 2 (from 37)
@@ -81,7 +81,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  44. promotion: rolled 3+2 +1 = 6 against 9+, missed
  45. not promoted this term (from 44)
 
-### 46. skills and training (pp. 6, 11)
+**46. skills and training (pp. 6, 11)**
 
  47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  48. Service Skills Table: rolled 1
@@ -93,7 +93,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  54. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  55. reenlisted for term 3 (from 53)
 
-### 56. term 3 (pp. 5-7)
+**56. term 3 (pp. 5-7)**
 
  57. survival: rolled 6+3 +2 = 11 against 6+, made
  58. survived term 3 (from 57)
@@ -101,7 +101,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  60. promotion: rolled 5+3 +1 = 9 against 9+, made
  61. promoted: Captain (from 60)
 
-### 62. skills and training (pp. 6, 11)
+**62. skills and training (pp. 6, 11)**
 
  63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  64. Advanced Education Table (education 8+): rolled 2
@@ -113,7 +113,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  70. reenlistment: rolled 3+1 = 4 against 6+, missed
  71. left the service after term 3: reenlistment denied (from 70)
 
-### 72. mustering out, 4 rolls (pp. 7, 9, 21-23)
+**72. mustering out, 4 rolls (pp. 7, 9, 21-23)**
 
  73. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
  74. Table 2, Cash Allowances: rolled 4
@@ -127,7 +127,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
  82. Table 1, Material Benefits: rolled 3
  83. Education +1, 10 to 11 (from 82)
 
-### 84. titles (p. 5; Book 3 p. 22)
+**84. titles (p. 5; Book 3 p. 22)**
 
  85. assume the hereditary title (p. 5): policy chose yes from yes, no
  86. social standing 12 confers baron/baroness, and it is assumed

@@ -38,12 +38,12 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 		withDice(otherWalked.roller(t)))
 
 	for _, want := range []string{
-		// The procedure, shown as it runs. The headings carry their
+		// The procedure, shown as it runs. The step lines carry their
 		// sequence number, which is what stops the numbers appearing to
 		// skip past them.
-		"### 1. characteristics (p. 4)",
+		"\n1. characteristics (p. 4)\n",
 		"Strength: rolled",
-		"### 18. term 1 (pp. 5-7)",
+		"\n18. term 1 (pp. 5-7)\n",
 		"survival: rolled",
 		// A question, with the alternatives the engine offered.
 		"Which skills table? It is designated before the die (p. 11)",
@@ -155,7 +155,7 @@ func TestTheNumbersAPlayerWatchesDoNotSkip(t *testing.T) {
 	_, out := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 200),
 		withDice(otherWalked.roller(t)))
 
-	numbered := regexp.MustCompile(`(?m)^\s*(?:### )?(\d+)\. `)
+	numbered := regexp.MustCompile(`(?m)^\s*(\d+)\. `)
 
 	lines := numbered.FindAllStringSubmatch(out, -1)
 	seen := make([]int, 0, len(lines))
@@ -565,4 +565,22 @@ func isWeapon(possession string) bool {
 	}
 
 	return true
+}
+
+// The live view prints a step as a plain numbered line, without the note's
+// heading or bold marks: a terminal does not render them, and `###` or `**` would
+// reach the player as marks (#422).
+//
+// Holds: The live view marks a step with no markdown.
+func TestTheLiveViewMarksNothing(t *testing.T) {
+	t.Parallel()
+
+	_, shown := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 200),
+		withDice(otherWalked.roller(t)))
+
+	for _, mark := range []string{"###", "**"} {
+		if strings.Contains(shown, mark) {
+			t.Errorf("the live view printed %q:\n%s", mark, shown)
+		}
+	}
 }
