@@ -27,11 +27,11 @@ func (e *enlistmentCodec) DeclinedTheDraft() error {
 	return nil
 }
 
+// foldEnlistment is how the character entered a service, as the view reads
+// it. Only generation sets an Enlistment, and it always does: a nil one is a
+// generation defect, and panics where it is folded rather than reading as no
+// service, as #377 decided for ServedIn (#393).
 func foldEnlistment(from traveller.Enlistment) enlistmentView {
-	if from == nil {
-		return enlistmentView{}
-	}
-
 	var codec enlistmentCodec
 
 	// A fold over a codec cannot fail: every case only assigns.

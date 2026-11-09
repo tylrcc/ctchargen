@@ -58,6 +58,10 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   alongside Authority, Documents and Generation record — rather than the
   section of the removed v1 contract it was first stated under (#391).
 
+- A character with no enlistment, which only a generation defect could
+  produce, now fails loudly in the renderer rather than reading as one who
+  never served, as #377 decided for the engine (#393).
+
 ## 1.0.0-rc.3
 
 The third release candidate for `v1.0.0`, and the first with every `v1`
