@@ -3,14 +3,12 @@ package rules
 import "github.com/philoserf/ctchargen/internal/traveller"
 
 // Where the transcription still departs from the print, and why: the page's
-// cells are typed as printed, but three of its layouts are not. The Rank and
+// cells are typed as printed, but two of its layouts are not. The Rank and
 // Service Skills box (p. 23) labels each grant by its rank's title ("Navy
 // Captain") and suffixes a level ("Cutlass-1"), where printedGrant holds a
-// rank number and the skill alone; the Aging Table (p. 9) prints each cell as
-// "−1 (8+)" across dotted column bands, where printedBand holds a reduction
-// and a saving throw per band; and the Prior Service Table (p. 10) prints its
-// DM amounts once, as row headings ("DM of +1 if"), where printedDM carries
-// each beside its condition, a dash's included. The education gate is not a
+// rank number and the skill alone (#346); and the Aging Table (p. 9) prints
+// each cell as "−1 (8+)" across dotted column bands, where printedBand holds a
+// reduction and a saving throw per band (#345). The education gate is not a
 // cell: p. 11 says it in prose, "education 8 or greater", and printedGate
 // names the characteristic as p. 4 does.
 
@@ -105,16 +103,23 @@ var transcribedSkills = skillsTranscription{
 	},
 }
 
-// printedThrow is a throw as p. 10 prints it: a target and its DMs.
-type printedThrow struct {
-	target string
-	dms    []printedDM
+// perService is one printed row of a table laid out a column per service, in
+// traveller.ServiceNames order.
+type perService [len(traveller.ServiceNames)]string
+
+// printedThrows is one throw's rows of the Prior Service Table as p. 10
+// prints them: a target per service, and under it each DM row, headed by its
+// amount ("DM of +1 if") and giving a condition per service.
+type printedThrows struct {
+	targets perService
+	dms     []printedDMRow
 }
 
-// printedDM is one DM and the condition the page prints for it.
-type printedDM struct {
-	dm        int
-	condition string
+// printedDMRow is one DM row: its heading as printed, and a condition, or a
+// dash, per service.
+type printedDMRow struct {
+	heading    string
+	conditions perService
 }
 
 // printedGrant is one row of the Rank and Service Skills box (p. 23).
@@ -137,10 +142,10 @@ const rankRows = 6
 // p. 10 prints them, a column per service in traveller.ServiceNames order,
 // with the Rank and Service Skills box and the retirement pay table.
 type servicesTranscription struct {
-	enlistment, survival  [len(traveller.ServiceNames)]printedThrow
-	commission, promotion [len(traveller.ServiceNames)]printedThrow
+	enlistment, survival  printedThrows
+	commission, promotion printedThrows
 	draft                 [len(traveller.ServiceNames)]int
-	reenlist              [len(traveller.ServiceNames)]string
+	reenlist              perService
 	ranks                 [len(traveller.ServiceNames)][rankRows]string
 	grants                []printedGrant
 	pensions              []printedPension
@@ -198,40 +203,52 @@ type printedTitle struct {
 // Transcribed from a visual read of the page. Never from extracted text: the
 // reprint's font turns a printed minus into a digit and an em dash into a 4.
 var transcribedServices = servicesTranscription{
-	enlistment: [len(traveller.ServiceNames)]printedThrow{
-		{target: "8+", dms: []printedDM{{dm: 1, condition: "Intel 8+"}, {dm: 2, condition: "Educ 9+"}}},
-		{target: "9+", dms: []printedDM{{dm: 1, condition: "Intel 8+"}, {dm: 2, condition: "Stren 8+"}}},
-		{target: "5+", dms: []printedDM{{dm: 1, condition: "Dext 6+"}, {dm: 2, condition: "Endur 5+"}}},
-		{target: "7+", dms: []printedDM{{dm: 1, condition: "Intel 6+"}, {dm: 2, condition: "Stren 8+"}}},
-		{target: "7+", dms: []printedDM{{dm: 1, condition: "Stren 7+"}, {dm: 2, condition: "Intel 6+"}}},
-		{target: "3+", dms: []printedDM{{dm: 1, condition: "—"}, {dm: 2, condition: "—"}}},
+	enlistment: printedThrows{
+		targets: perService{"8+", "9+", "5+", "7+", "7+", "3+"},
+		dms: []printedDMRow{
+			{
+				heading:    "DM of +1 if",
+				conditions: perService{"Intel 8+", "Intel 8+", "Dext 6+", "Intel 6+", "Stren 7+", "—"},
+			},
+			{
+				heading:    "DM of +2 if",
+				conditions: perService{"Educ 9+", "Stren 8+", "Endur 5+", "Stren 8+", "Intel 6+", "—"},
+			},
+		},
 	},
-	survival: [len(traveller.ServiceNames)]printedThrow{
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intel 7+"}}},
-		{target: "6+", dms: []printedDM{{dm: 2, condition: "Endur 8+"}}},
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Educ 6+"}}},
-		{target: "7+", dms: []printedDM{{dm: 2, condition: "Endur 9+"}}},
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intel 7+"}}},
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intel 9+"}}},
+
+	survival: printedThrows{
+		targets: perService{"5+", "6+", "5+", "7+", "5+", "5+"},
+		dms: []printedDMRow{
+			{
+				heading:    "DM of +2 if",
+				conditions: perService{"Intel 7+", "Endur 8+", "Educ 6+", "Endur 9+", "Intel 7+", "Intel 9+"},
+			},
+		},
 	},
-	commission: [len(traveller.ServiceNames)]printedThrow{
-		{target: "10+", dms: []printedDM{{dm: 1, condition: "Social 9+"}}},
-		{target: "9+", dms: []printedDM{{dm: 1, condition: "Educ 7+"}}},
-		{target: "5+", dms: []printedDM{{dm: 1, condition: "Endur 7+"}}},
-		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
-		{target: "4+", dms: []printedDM{{dm: 1, condition: "Intel 6+"}}},
-		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
+
+	commission: printedThrows{
+		targets: perService{"10+", "9+", "5+", "—", "4+", "—"},
+		dms: []printedDMRow{
+			{
+				heading:    "DM of +1 if",
+				conditions: perService{"Social 9+", "Educ 7+", "Endur 7+", "—", "Intel 6+", "—"},
+			},
+		},
 	},
-	promotion: [len(traveller.ServiceNames)]printedThrow{
-		{target: "8+", dms: []printedDM{{dm: 1, condition: "Educ 8+"}}},
-		{target: "9+", dms: []printedDM{{dm: 1, condition: "Social 8+"}}},
-		{target: "6+", dms: []printedDM{{dm: 1, condition: "Educ 7+"}}},
-		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
-		{target: "10+", dms: []printedDM{{dm: 1, condition: "Intel 9+"}}},
-		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
+
+	promotion: printedThrows{
+		targets: perService{"8+", "9+", "6+", "—", "10+", "—"},
+		dms: []printedDMRow{
+			{
+				heading:    "DM of +1 if",
+				conditions: perService{"Educ 8+", "Social 8+", "Educ 7+", "—", "Intel 9+", "—"},
+			},
+		},
 	},
+
 	draft:    [len(traveller.ServiceNames)]int{1, 2, 3, 4, 5, 6},
-	reenlist: [len(traveller.ServiceNames)]string{"6+", "6+", "7+", "3+", "4+", "5+"},
+	reenlist: perService{"6+", "6+", "7+", "3+", "4+", "5+"},
 	ranks: [len(traveller.ServiceNames)][rankRows]string{
 		{"Ensign", "Lieutenant", "Lt Cmdr", "Commander", "Captain", "Admiral"},
 		{"Lieutenant", "Captain", "Force Cmdr", "Lt Colonel", "Colonel", "Brigadier"},

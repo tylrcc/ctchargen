@@ -43,6 +43,25 @@ func (r *Rules) liftPriorService(t servicesTranscription) error {
 		return err
 	}
 
+	// A DM row's heading belongs to the row, not to a service, so a bad one
+	// is refused as the row's before any service's column is read.
+	for _, throw := range []struct {
+		label string
+		rows  printedThrows
+	}{
+		{"enlistment", t.enlistment},
+		{"survival", t.survival},
+		{"commission", t.commission},
+		{"promotion", t.promotion},
+	} {
+		for _, row := range throw.rows.dms {
+			_, err := parseDMHeading(row.heading)
+			if err != nil {
+				return fmt.Errorf("prior service table, %s: %w", throw.label, err)
+			}
+		}
+	}
+
 	for i, name := range traveller.ServiceNames {
 		service, err := liftServiceColumn(t, i, name)
 		if err != nil {
@@ -91,12 +110,12 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 
 	service := Service{Name: name, Draft: t.draft[i], Ranks: ranks}
 
-	service.Enlistment, err = liftThrow(t.enlistment[i], "enlistment")
+	service.Enlistment, err = liftColumn(t.enlistment, i, "enlistment")
 	if err != nil {
 		return Service{}, fmt.Errorf("%v: %w", name, err)
 	}
 
-	service.Survival, err = liftThrow(t.survival[i], "survival")
+	service.Survival, err = liftColumn(t.survival, i, "survival")
 	if err != nil {
 		return Service{}, fmt.Errorf("%v: %w", name, err)
 	}
@@ -117,13 +136,18 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 	// anything (#53). The order is the page's.
 	for _, printed := range []struct {
 		label string
-		cell  printedThrow
+		rows  printedThrows
 		into  *Throw
 	}{
-		{"commission", t.commission[i], &service.commission},
-		{"promotion", t.promotion[i], &service.promotion},
+		{"commission", t.commission, &service.commission},
+		{"promotion", t.promotion, &service.promotion},
 	} {
-		throw, isPrinted, err := liftOptionalThrow(printed.cell, printed.label)
+		cell, err := printed.rows.column(i, printed.label)
+		if err != nil {
+			return Service{}, fmt.Errorf("%v: %w", name, err)
+		}
+
+		throw, isPrinted, err := liftOptionalThrow(cell, printed.label)
 		if err != nil {
 			return Service{}, fmt.Errorf("%v: %w", name, err)
 		}
@@ -170,6 +194,48 @@ func liftRanks(cells [rankRows]string) ([]string, error) {
 	}
 
 	return ranks, nil
+}
+
+// printedThrow is one service's column of a throw: its target, and its
+// condition from each DM row with the amount that row's heading prints.
+type printedThrow struct {
+	target string
+	dms    []printedDM
+}
+
+// printedDM is one DM: the amount its row's heading prints, and the
+// condition the page prints for the service.
+type printedDM struct {
+	dm        int
+	condition string
+}
+
+// column is the throw the rows print for the service at index i, each DM's
+// amount read off its row's heading.
+func (rows printedThrows) column(i int, what string) (printedThrow, error) {
+	throw := printedThrow{target: rows.targets[i]}
+
+	for _, row := range rows.dms {
+		amount, err := parseDMHeading(row.heading)
+		if err != nil {
+			return printedThrow{}, fmt.Errorf("%s: %w", what, err)
+		}
+
+		throw.dms = append(throw.dms, printedDM{dm: amount, condition: row.conditions[i]})
+	}
+
+	return throw, nil
+}
+
+// liftColumn lifts the throw the rows print for the service at index i, one
+// every service has.
+func liftColumn(rows printedThrows, i int, what string) (Throw, error) {
+	cell, err := rows.column(i, what)
+	if err != nil {
+		return Throw{}, err
+	}
+
+	return liftThrow(cell, what)
 }
 
 // liftOptionalThrow lifts a throw a service may not have: an em dash for a

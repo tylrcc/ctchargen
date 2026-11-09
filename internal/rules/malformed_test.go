@@ -26,11 +26,8 @@ import (
 func servicesCopy() servicesTranscription {
 	s := transcribedServices
 
-	for i := range s.enlistment {
-		s.enlistment[i].dms = slices.Clone(s.enlistment[i].dms)
-		s.survival[i].dms = slices.Clone(s.survival[i].dms)
-		s.commission[i].dms = slices.Clone(s.commission[i].dms)
-		s.promotion[i].dms = slices.Clone(s.promotion[i].dms)
+	for _, rows := range []*printedThrows{&s.enlistment, &s.survival, &s.commission, &s.promotion} {
+		rows.dms = slices.Clone(rows.dms)
 	}
 
 	s.grants = slices.Clone(s.grants)
@@ -38,6 +35,26 @@ func servicesCopy() servicesTranscription {
 	s.pensionPaidBy = slices.Clone(s.pensionPaidBy)
 
 	return s
+}
+
+// copyColumn prints the service at from's throw in the column of the service
+// at to: its target and its condition in every DM row.
+func copyColumn(rows *printedThrows, to, from traveller.ServiceName) {
+	rows.targets[to] = rows.targets[from]
+
+	for r := range rows.dms {
+		rows.dms[r].conditions[to] = rows.dms[r].conditions[from]
+	}
+}
+
+// blankColumn leaves the service's column of a throw empty, as a short Go
+// array would.
+func blankColumn(rows *printedThrows, service traveller.ServiceName) {
+	rows.targets[service] = ""
+
+	for r := range rows.dms {
+		rows.dms[r].conditions[service] = ""
+	}
 }
 
 func musteringCopy() musteringTranscription {
@@ -91,23 +108,35 @@ func TestMalformedServices(t *testing.T) {
 	}{
 		// A short array is padded with an empty throw in silence.
 		"a throw left empty": {
-			func(s *servicesTranscription) { s.survival[5] = printedThrow{} },
+			func(s *servicesTranscription) { blankColumn(&s.survival, traveller.Other) },
 			"survival",
 		},
 		"a target that will not parse": {
-			func(s *servicesTranscription) { s.enlistment[0].target = "eight" },
+			func(s *servicesTranscription) { s.enlistment.targets[0] = "eight" },
 			"enlistment",
+		},
+		"a DM row heading that will not parse": {
+			func(s *servicesTranscription) { s.survival.dms[0].heading = "DM of +x if" },
+			"DM of +x if",
+		},
+		"a DM row heading without its if": {
+			func(s *servicesTranscription) { s.survival.dms[0].heading = "DM of +2" },
+			"DM of +2",
+		},
+		"a DM row heading with no sign": {
+			func(s *servicesTranscription) { s.survival.dms[0].heading = "DM of x2 if" },
+			"has no sign",
 		},
 		"a reenlist target that will not parse": {
 			func(s *servicesTranscription) { s.reenlist[0] = "" },
 			"reenlist",
 		},
 		"a commission printed for a service with no ranks": {
-			func(s *servicesTranscription) { s.commission[3] = s.commission[0] },
+			func(s *servicesTranscription) { copyColumn(&s.commission, traveller.Scouts, traveller.Navy) },
 			"p. 10 makes ranks",
 		},
 		"a commission missing from a service with ranks": {
-			func(s *servicesTranscription) { s.commission[0] = s.commission[3] },
+			func(s *servicesTranscription) { copyColumn(&s.commission, traveller.Navy, traveller.Scouts) },
 			"p. 10 makes ranks",
 		},
 		// Draft scans for the service printing the die, so a face printed
@@ -384,8 +413,8 @@ func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 
 		// Scouts print no ranks, so a commission and a promotion in that
 		// column are both wrong at once.
-		broken.commission[traveller.Scouts] = broken.commission[traveller.Navy]
-		broken.promotion[traveller.Scouts] = broken.promotion[traveller.Navy]
+		copyColumn(&broken.commission, traveller.Scouts, traveller.Navy)
+		copyColumn(&broken.promotion, traveller.Scouts, traveller.Navy)
 
 		return (&Rules{}).liftPriorService(broken)
 	})
@@ -436,8 +465,8 @@ func TestABrokenServiceNamesTheSameRowEveryRun(t *testing.T) {
 	got := sameErrorEveryRun(t, func() error {
 		broken := servicesCopy()
 
-		broken.enlistment[traveller.Other] = printedThrow{}
-		broken.survival[traveller.Other] = printedThrow{}
+		blankColumn(&broken.enlistment, traveller.Other)
+		blankColumn(&broken.survival, traveller.Other)
 
 		return (&Rules{}).liftPriorService(broken)
 	})

@@ -45,6 +45,10 @@ release turns out to be.
   line that passes `batch --auto`, which is refused as an unknown flag: drop
   `--auto` from it. The break is taken before `v1.0.0` freezes the CLI, and
   `new`'s `--auto` is unchanged (#336).
+- The Prior Service Table's DMs are transcribed as p. 10 prints them: the
+  amount once, as a row heading ("DM of +1 if"), and a condition per service
+  beneath it. The lift reads the amount off the heading and refuses one it
+  cannot read. Every lifted value is unchanged (#344).
 
 ## 1.0.0-rc.1
 

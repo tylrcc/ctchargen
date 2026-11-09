@@ -122,9 +122,34 @@ func parseAlteration(cell string) (traveller.Characteristic, int, bool, error) {
 	return characteristic, size, true, nil
 }
 
+// dmHeading is a DM row's heading as p. 10 prints it: "DM of +1 if".
+var dmHeading = regexp.MustCompile(`^DM of (.)(\d+) if$`)
+
+// parseDMHeading reads the amount a DM row's heading prints.
+func parseDMHeading(heading string) (int, error) {
+	match := dmHeading.FindStringSubmatch(heading)
+	if match == nil {
+		return 0, fmt.Errorf("%w: a DM row headed %q, not \"DM of +N if\"", errMalformed, heading)
+	}
+
+	sign, _ := utf8.DecodeRuneInString(match[1])
+
+	direction, ok := traveller.Sign(sign)
+	if !ok {
+		return 0, fmt.Errorf("%w: a DM row headed %q, whose amount has no sign", errMalformed, heading)
+	}
+
+	amount, err := strconv.Atoi(match[2])
+	if err != nil {
+		return 0, fmt.Errorf("%w: a DM row headed %q: %w", errMalformed, heading, err)
+	}
+
+	return direction * amount, nil
+}
+
 // parseDM reads one die modifier as the Prior Service Table prints it: an
 // amount, and the characteristic and threshold that earn it. The
-// transcription spells the condition the way p. 10 does, "Intelligence 8+".
+// transcription spells the condition the way p. 10 does, "Intel 8+".
 func parseDM(amount int, condition string) (DM, error) {
 	name, threshold, ok := strings.CutLast(condition, " ")
 	if !ok {
