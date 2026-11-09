@@ -2,75 +2,11 @@ package render_test
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/render"
 )
-
-// A record written earlier renders to the same sheet and the same transcript
-// the generating run produced.
-//
-// This is what the render subcommand promises, and it is worth asserting
-// rather than assuming: the two go through one renderer precisely so they
-// cannot disagree, and this is the test that would notice if a second one
-// appeared.
-//
-// Holds: A record renders to what generating it rendered.
-func TestARecordRendersToWhatGeneratedItRendered(t *testing.T) {
-	t.Parallel()
-
-	records, err := filepath.Glob(filepath.Join(goldenDir, "*.json"))
-	if err != nil {
-		t.Fatalf("looking for goldens: %v", err)
-	}
-
-	if len(records) == 0 {
-		t.Fatal("no goldens found")
-	}
-
-	for _, path := range records {
-		name := strings.TrimSuffix(filepath.Base(path), ".json")
-
-		text, err := os.ReadFile(path)
-		if err != nil {
-			t.Fatalf("reading %s: %v", path, err)
-		}
-
-		sheet, err := render.SheetFrom(text)
-		if err != nil {
-			t.Errorf("%s: %v", name, err)
-
-			continue
-		}
-
-		compare(t, name+".sheet.md", sheet)
-
-		transcript, err := render.TranscriptFrom(text, false)
-		if err != nil {
-			t.Errorf("%s: %v", name, err)
-
-			continue
-		}
-
-		compare(t, name+".transcript.md", transcript)
-	}
-}
-
-func compare(t *testing.T, name, got string) {
-	t.Helper()
-
-	want, err := os.ReadFile(filepath.Join(goldenDir, name))
-	if err != nil {
-		t.Fatalf("reading %s: %v", name, err)
-	}
-
-	if got != string(want) {
-		t.Errorf("%s rendered from the record differs from what generating it rendered", name)
-	}
-}
 
 // A file that is not a record is refused, rather than rendered as a blank
 // character.
@@ -82,7 +18,7 @@ func TestSomethingElseIsNotARecord(t *testing.T) {
 		"another shape": `{"hello":"world"}`,
 		"empty object":  `{}`,
 	} {
-		_, err := render.SheetFrom([]byte(text))
+		_, err := render.Sheet([]byte(text))
 		if err == nil {
 			t.Errorf("%s was accepted as a record", name)
 		}
@@ -116,7 +52,7 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 			avoid: "owned free and clear",
 		},
 	} {
-		sheet, err := render.SheetFrom(minimalRecord(
+		sheet, err := render.Sheet(minimalRecord(
 			`"benefits":{"cash":0,"ships":[{"kind":"` + tc.kind +
 				`","tons":200,"years":0,"paymentYears":0}]}`,
 		))
@@ -143,7 +79,7 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 	t.Parallel()
 
-	transcript, err := render.TranscriptFrom(minimalRecord(
+	transcript, err := render.Transcript(minimalRecord(
 		`"events":[{"seq":9,"kind":"portent"}]`,
 	), false)
 	if err != nil {
@@ -159,12 +95,12 @@ func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 func TestARecordMustCarryAUPPAndARuleset(t *testing.T) {
 	t.Parallel()
 
-	_, err := render.SheetFrom([]byte(`{"ruleset":"test"}`))
+	_, err := render.Sheet([]byte(`{"ruleset":"test"}`))
 	if err == nil || !strings.Contains(err.Error(), "no UPP") {
 		t.Errorf("a record with no UPP was refused as %v", err)
 	}
 
-	_, err = render.SheetFrom([]byte(`{"upp":"777777"}`))
+	_, err = render.Sheet([]byte(`{"upp":"777777"}`))
 	if err == nil || !strings.Contains(err.Error(), "no ruleset") {
 		t.Errorf("a record with no ruleset was refused as %v", err)
 	}
@@ -179,12 +115,12 @@ func TestAPolicyNamedByVersionAloneIsRefused(t *testing.T) {
 
 	old := minimalRecord(`"policy":3`)
 
-	_, err := render.SheetFrom(old)
+	_, err := render.Sheet(old)
 	if err == nil || !strings.Contains(err.Error(), "not a character record") {
 		t.Errorf("the sheet read a policy named by its version alone: %v", err)
 	}
 
-	_, err = render.TranscriptFrom(old, false)
+	_, err = render.Transcript(old, false)
 	if err == nil || !strings.Contains(err.Error(), "not a character record") {
 		t.Errorf("the transcript read a policy named by its version alone: %v", err)
 	}
@@ -211,12 +147,12 @@ func TestAnEventThatWillNotReadIsRefused(t *testing.T) {
 			`"service":"Navy","terms":2,"enlistment":{"how":"enlisted"},"events":[3]`,
 		),
 	} {
-		_, err := render.SheetFrom(unreadable)
+		_, err := render.Sheet(unreadable)
 		if err == nil || !strings.Contains(err.Error(), "an event will not read") {
 			t.Errorf("%s: the sheet rendered a record it could not read: %v", name, err)
 		}
 
-		_, err = render.TranscriptFrom(unreadable, false)
+		_, err = render.Transcript(unreadable, false)
 		if err == nil || !strings.Contains(err.Error(), "an event will not read") {
 			t.Errorf("%s: the transcript rendered a record it could not read: %v", name, err)
 		}
@@ -311,7 +247,7 @@ func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 func checkHeadline(t *testing.T, name string, tc headlineCase) {
 	t.Helper()
 
-	sheet, err := render.SheetFrom(minimalRecord(tc.body))
+	sheet, err := render.Sheet(minimalRecord(tc.body))
 	if err != nil {
 		t.Errorf("%s: %v", name, err)
 
@@ -360,7 +296,7 @@ func TestOneTermIsSingular(t *testing.T) {
 		"two":  {2, "2 terms", ""},
 		"none": {0, "0 terms", ""},
 	} {
-		sheet, err := render.SheetFrom(minimalRecord(fmt.Sprintf(
+		sheet, err := render.Sheet(minimalRecord(fmt.Sprintf(
 			`"service":"Navy","terms":%d,"enlistment":{"how":"enlisted"},"inputs":{"service":"Navy"}`,
 			tc.terms,
 		)))
@@ -393,7 +329,7 @@ func TestTheErrataAreOnTheTranscriptAndNotTheSheet(t *testing.T) {
 	record := minimalRecord(`"errata":["E001"],` +
 		`"events":[{"seq":1,"kind":"outcome","description":"drafted","errata":["E001"]}]`)
 
-	sheet, err := render.SheetFrom(record)
+	sheet, err := render.Sheet(record)
 	if err != nil {
 		t.Fatalf("the sheet: %v", err)
 	}
@@ -402,7 +338,7 @@ func TestTheErrataAreOnTheTranscriptAndNotTheSheet(t *testing.T) {
 		t.Errorf("the sheet carries an erratum id:\n%s", sheet)
 	}
 
-	transcript, err := render.TranscriptFrom(record, false)
+	transcript, err := render.Transcript(record, false)
 	if err != nil {
 		t.Fatalf("the transcript: %v", err)
 	}
@@ -425,12 +361,12 @@ func TestBothRenderingsEndBySayingToKeepTheRecord(t *testing.T) {
 
 	body := minimalRecord(`"inputs":{"career":"serve","skills":"advanced","muster":"cash"}`)
 
-	sheet, err := render.SheetFrom(body)
+	sheet, err := render.Sheet(body)
 	if err != nil {
 		t.Fatalf("sheet: %v", err)
 	}
 
-	transcript, err := render.TranscriptFrom(body, false)
+	transcript, err := render.Transcript(body, false)
 	if err != nil {
 		t.Fatalf("transcript: %v", err)
 	}

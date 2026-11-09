@@ -6,8 +6,7 @@ import (
 	"fmt"
 )
 
-// errNotARecord reports input the render subcommand cannot read as a
-// character record.
+// errNotARecord reports input that cannot be read as a character record.
 var errNotARecord = errors.New("not a character record")
 
 // decode reads a record back from what JSON wrote.

@@ -4,29 +4,17 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
-	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
-// Transcript renders the generation record as prose: every step entered,
+// Transcript renders a record's generation log as prose: every step entered,
 // every throw made, every choice answered, every consequence.
 //
 // It is what makes a character auditable against Book 1 - walk the log with
 // the page open - and it is the narrative service record besides. With
 // readings, it ends with the full text of each reading the record names, so
-// the ids beside the outcomes can be read without the tool to hand.
-func Transcript(character *chargen.Character, readings bool) (string, error) {
-	projected, err := project(character)
-	if err != nil {
-		return "", err
-	}
-
-	return transcriptOf(projected, readings)
-}
-
-// TranscriptFrom renders the log of a record written earlier, through the
-// same renderer, for the same reason SheetFrom does.
-func TranscriptFrom(text []byte, readings bool) (string, error) {
+// the ids beside the outcomes can be read without the tool to hand. It takes
+// the record's bytes, for the reason Sheet does.
+func Transcript(text []byte, readings bool) (string, error) {
 	projected, err := decode(text)
 	if err != nil {
 		return "", err

@@ -139,12 +139,14 @@ func TestGoldens(t *testing.T) {
 			written[fixture.name] = true
 		}
 
-		sheet, err := render.Sheet(character)
+		// The sheet and the transcript are rendered from the record pinned
+		// above, so the record on disk renders to these goldens (#363).
+		sheet, err := render.Sheet(encoded)
 		if err != nil {
 			t.Fatalf("%s: %v", fixture.name, err)
 		}
 
-		transcript, err := render.Transcript(character, false)
+		transcript, err := render.Transcript(encoded, false)
 		if err != nil {
 			t.Fatalf("%s: %v", fixture.name, err)
 		}
@@ -153,7 +155,7 @@ func TestGoldens(t *testing.T) {
 		golden(t, fixture.name+".transcript.md", []byte(transcript))
 
 		if fixture.name == withReadings {
-			full, err := render.Transcript(character, true)
+			full, err := render.Transcript(encoded, true)
 			if err != nil {
 				t.Fatalf("%s: %v", fixture.name, err)
 			}
@@ -346,7 +348,12 @@ func TestNoTranscriptSkipsANumber(t *testing.T) {
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		transcript, err := render.Transcript(character, false)
+		encoded, err := render.JSON(character)
+		if err != nil {
+			t.Fatalf("%s: %v", fixture.name, err)
+		}
+
+		transcript, err := render.Transcript(encoded, false)
 		if err != nil {
 			t.Fatalf("%s: %v", fixture.name, err)
 		}

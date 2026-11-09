@@ -1,6 +1,6 @@
 // Package render projects a generated character into the shapes a reader
-// wants: JSON, a character sheet in the book's own style, and a transcript
-// of the generation record.
+// wants: the JSON record, and from the record's bytes a character sheet in
+// the book's own style and a transcript of the generation record.
 //
 // It also writes the readings: one in full (Reading), every one as an index
 // (ReadingsIndex), those an id names (ReadingsNamed), and the section a

@@ -5,31 +5,17 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// Sheet renders a character the way Book 1 summarises one: the UPP line,
-// then skills and possessions, as p. 25 does for Jamison.
-func Sheet(character *chargen.Character) (string, error) {
-	projected, err := project(character)
-	if err != nil {
-		return "", err
-	}
-
-	return sheetOf(projected)
-}
-
-// SheetFrom renders a record that was written earlier, which is what the
-// render subcommand reads.
+// Sheet renders a record the way Book 1 summarises a character: the UPP
+// line, then skills and possessions, as p. 25 does for Jamison.
 //
-// It goes through the same renderer as Sheet rather than a second one over
-// the same values: a sheet describes the record, so the record is what it
-// should be written from, and one renderer cannot disagree with itself.
-//
-// Implements: A record renders to what generating it rendered [Character
-// record].
-func SheetFrom(text []byte) (string, error) {
+// It takes the record's bytes and nothing else, whether the record was just
+// generated or written long ago: a sheet describes the record, so the record
+// is what it is written from, and with one route there is no second one to
+// disagree with it (#363).
+func Sheet(text []byte) (string, error) {
 	projected, err := decode(text)
 	if err != nil {
 		return "", err

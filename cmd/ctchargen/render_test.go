@@ -29,6 +29,8 @@ func writeRecord(t *testing.T) string {
 }
 
 // A record read back renders to what generating it rendered.
+//
+// Holds: A record renders to what generating it rendered.
 func TestRenderReadsARecordBack(t *testing.T) {
 	t.Parallel()
 

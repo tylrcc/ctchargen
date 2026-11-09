@@ -100,12 +100,12 @@ func TestATranscriptWithItsReadingsEndsWithThem(t *testing.T) {
 			record := minimalRecord(`"errata":` + tc.errata + `,` +
 				`"events":[{"seq":1,"kind":"outcome","description":"drafted","errata":["E001"]}]`)
 
-			plain, err := render.TranscriptFrom(record, false)
+			plain, err := render.Transcript(record, false)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			got, err := render.TranscriptFrom(record, true)
+			got, err := render.Transcript(record, true)
 			if err != nil {
 				t.Fatal(err)
 			}

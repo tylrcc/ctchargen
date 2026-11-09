@@ -217,7 +217,7 @@ func TestALaterShapeWithAnUnknownFieldStillValidatesAndRenders(t *testing.T) {
 		t.Errorf("a record from a later build does not validate, so the freeze promises nothing:\n%v", invalid)
 	}
 
-	sheet, err := render.SheetFrom(encoded)
+	sheet, err := render.Sheet(encoded)
 	if err != nil {
 		t.Fatalf("rendering a record from a later build: %v", err)
 	}

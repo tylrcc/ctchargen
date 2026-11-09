@@ -88,12 +88,12 @@ func declareRenderFlags() renderFlagSet {
 
 func renderText(text []byte, history, readings bool) (string, error) {
 	if history {
-		rendered, err := render.TranscriptFrom(text, readings)
+		rendered, err := render.Transcript(text, readings)
 
 		return rendered, wrapRender(err)
 	}
 
-	rendered, err := render.SheetFrom(text)
+	rendered, err := render.Sheet(text)
 
 	return rendered, wrapRender(err)
 }

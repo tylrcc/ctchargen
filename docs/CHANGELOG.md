@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The sheet and the transcript are rendered only from the record's bytes.
+  `render.Sheet` and `render.Transcript` take the record, where there were
+  also forms taking the generated character; `new` renders what it encodes,
+  as `render` does with a record written earlier, and the test that held the
+  two routes equal is gone with the second route. Every sheet and transcript
+  is unchanged (#363).
 - A 2D throw is two dice in sequence in one place, `chargen`'s `twoDice`,
   where every roller implemented it. `Roller` drops `TwoDice`, so a test
   roller can no longer make a 2D throw that is not the stream's next two

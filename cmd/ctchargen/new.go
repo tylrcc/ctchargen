@@ -297,24 +297,22 @@ func generate(inputs chargen.Inputs, policy chargen.Policy, auto bool,
 }
 
 // rendered is the character in whichever of the three shapes was asked for.
+// The sheet and the transcript are rendered from the record, the bytes the
+// JSON shape writes, as render does with one written earlier (#363).
+//
+// Implements: A record renders to what generating it rendered [Character
+// record].
 func rendered(character *chargen.Character, how newRendering) (string, error) {
-	switch {
-	case how.sheet:
-		text, err := render.Sheet(character)
+	encoded, err := render.JSON(character)
+	if err != nil {
+		return "", fmt.Errorf("rendering: %w", err)
+	}
 
-		return text, wrapRender(err)
-	case how.history:
-		text, err := render.Transcript(character, how.readings)
-
-		return text, wrapRender(err)
-	default:
-		encoded, err := render.JSON(character)
-		if err != nil {
-			return "", fmt.Errorf("rendering: %w", err)
-		}
-
+	if !how.sheet && !how.history {
 		return string(encoded), nil
 	}
+
+	return renderText(encoded, how.history, how.readings)
 }
 
 // wrapRender gives a rendering failure the context of the command that asked
