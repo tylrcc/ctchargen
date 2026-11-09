@@ -6,9 +6,9 @@ import "github.com/philoserf/ctchargen/internal/traveller"
 // itself, with its page cite and the condition under which it governs a
 // record.
 //
-// Every field but the id is prose, kept verbatim with the page's own
-// emphasis as inline Markdown, so a renderer or a test can quote it without a
-// second transcription of it.
+// Every string field is prose, the withdrawal's reason included, kept
+// verbatim with the page's own emphasis as inline Markdown, so a renderer or
+// a test can quote it without a second transcription of it.
 type Reading struct {
 	ID    traveller.Erratum
 	Title string

@@ -30,12 +30,8 @@ func New() *Stream {
 	return &Stream{r: rand.New(rand.NewPCG(rand.Uint64(), rand.Uint64()))}
 }
 
-// Die returns one six-sided die: 1 through 6.
-//
-// The procedure's one-die throws are the draft (Book 1 p. 5), the acquired
-// skills tables (p. 11), each mustering out roll (p. 9), and the months of
-// age a medical crisis recovery adds (pp. 7-8 — the sentence granting them
-// begins on one page and ends on the other).
+// Die returns one six-sided die: 1 through 6. Which throws are one die is
+// listed once, on chargen's Roller.
 func (s *Stream) Die() int {
 	return s.r.IntN(faces) + 1
 }

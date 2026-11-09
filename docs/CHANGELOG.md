@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Four doc comments that claimed more than the code no longer do: the
+  rules parsers name every list they keep, a reading's prose fields are
+  counted right, two comments name their own identifiers, and the one-die
+  throws are listed once, with the medical crisis months cited as pp. 7-8,
+  read from the page (#375).
 - The schema states once why no record carries both Travellers' Aid and
   ships, on the rule that refuses them, and defines the dice once for the
   throw and the roll events. What it accepts is unchanged, and a test now

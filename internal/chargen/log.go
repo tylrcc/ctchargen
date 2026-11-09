@@ -101,7 +101,7 @@ func (l *log) choice(point traveller.ChoicePoint, from []string, chosen string) 
 	})
 }
 
-// outcome records a consequence, the event that caused it, and any recorded
+// outcomef records a consequence, the event that caused it, and any recorded
 // readings that governed it.
 func (l *log) outcomef(because int, errata []traveller.Erratum, format string, args ...any) {
 	for _, e := range errata {

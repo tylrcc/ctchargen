@@ -10,11 +10,16 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// The lift's parsers. Every one of them checks a printed string against the
-// domain's own closed alphabet rather than against a second list kept here,
-// save one: the abbreviations the tables print for a characteristic, which
-// the type does not spell. A name that names no value of the type is a defect
-// in the transcription, and the lift is where it must be caught.
+// The lift's parsers. Where the domain has a closed alphabet, a printed string
+// is checked against it rather than against a second list kept here. What the
+// domain does not spell is kept in this package instead, in the
+// transcription or beside the parser that reads it: how the tables
+// abbreviate a characteristic, how p. 23's box spells the services, E012's
+// spelling-out of the names the tables print, and the fixed text the page
+// prints around its values - the dashes, the box's level, a weapon row's
+// bare category, the Aging Table's phrases for no effect. A name that names
+// no value of the type is a defect in the transcription, and the lift is
+// where it must be caught.
 
 // named indexes an alphabet by the name its values give themselves, so that
 // the transcription's spelling is checked against the type and nothing else.
