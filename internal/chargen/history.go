@@ -116,12 +116,13 @@ type GainCases interface {
 // SkillGain is a skill, at the level it reached.
 type SkillGain struct{ Skill traveller.Skill }
 
-// Change is a characteristic from what it was to what it became. Both ends
-// are kept rather than a delta, because a floor or a ceiling can make the two
-// differ from the result printed in the table.
+// Change is a characteristic from what it was to what it became, and the
+// change the table gave. Both are kept, because a floor or a ceiling can hold
+// a characteristic where the table would move it (#409).
 type Change struct {
 	Characteristic traveller.Characteristic
 	From, To       int
+	Delta          int
 }
 
 // Fold hands the skill to its case.

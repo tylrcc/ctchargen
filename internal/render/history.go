@@ -81,10 +81,6 @@ func gainWords(gains []chargen.Gain) []string {
 	return out
 }
 
-func changeWords(change chargen.Change) string {
-	return fmt.Sprintf("%v %+d", change.Characteristic, change.To-change.From)
-}
-
 // gainWordsCodec folds a gain into its words. Adding a kind of gain stops
 // this compiling until it has some.
 type gainWordsCodec struct{ out string }
@@ -99,4 +95,18 @@ func (g *gainWordsCodec) Change(change chargen.Change) error {
 	g.out = changeWords(change)
 
 	return nil
+}
+
+// changeWords is a change as the table gave it, and, where a floor or a
+// ceiling held the characteristic short of it, where it was held (#409).
+//
+// Implements: A clamped change says the table's change and where it was held
+// [Sheet].
+func changeWords(change chargen.Change) string {
+	words := fmt.Sprintf("%v %+d", change.Characteristic, change.Delta)
+	if change.To-change.From != change.Delta {
+		words += fmt.Sprintf(" (held at %d)", change.To)
+	}
+
+	return words
 }

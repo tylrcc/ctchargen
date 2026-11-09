@@ -73,7 +73,11 @@ func (r *run) agingErrata(term traveller.Term) []traveller.Erratum {
 	return errata
 }
 
-// age applies one reduction and resolves the crisis if it reaches zero.
+// age applies one reduction and resolves the crisis if it reaches zero. The
+// service history keeps the reduction the table gave beside the two ends,
+// since the floor under aging can hold it short (#409).
+//
+// Implements: A held change keeps the table's change [Generation record].
 func (r *run) age(
 	seq int, term traveller.Term, characteristic traveller.Characteristic, reduction int,
 ) error {
@@ -93,7 +97,7 @@ func (r *run) age(
 
 	r.log.outcomef(seq, errata, "%v -%d, %d to %d", characteristic, reduction, before, after)
 
-	r.serving().aged(Change{Characteristic: characteristic, From: before, To: after})
+	r.serving().aged(Change{Characteristic: characteristic, From: before, To: after, Delta: -reduction})
 
 	if after > crisisFloor {
 		return nil

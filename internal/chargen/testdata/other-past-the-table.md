@@ -49,7 +49,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 - Term 12: Medical-4
 - Term 13: Streetwise-4
 - Term 14: Forgery-4
-- Term 15: Strength +0
+- Term 15: Strength +1 (held at 15)
 - Term 16: Medical-5; aging Dexterity -2, Endurance -2, Intelligence -1
 - killed by the survival throw in term 17
 

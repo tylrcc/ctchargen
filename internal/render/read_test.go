@@ -101,14 +101,14 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 					Term: 2,
 					Raised: []chargen.Raise{{
 						How: chargen.Promoted, Rank: "Major",
-						Grants: []chargen.Gain{chargen.Change{Characteristic: traveller.SocialStanding, From: 9, To: 10}},
+						Grants: []chargen.Gain{chargen.Change{Characteristic: traveller.SocialStanding, From: 9, To: 10, Delta: 1}},
 					}},
 					Gained: []chargen.Gain{
-						chargen.Change{Characteristic: traveller.Education, From: 10, To: 11}, skill("Tactics", 2),
+						chargen.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1}, skill("Tactics", 2),
 					},
 					Aged: []chargen.Change{
-						{Characteristic: traveller.Strength, From: 1, To: 0},
-						{Characteristic: traveller.Endurance, From: 8, To: 7},
+						{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -1},
+						{Characteristic: traveller.Endurance, From: 8, To: 7, Delta: -1},
 					},
 					Recovered: []traveller.Characteristic{traveller.Strength},
 				},
@@ -651,5 +651,33 @@ func TestAnUnnamedNoteIsHeadedByItsTitle(t *testing.T) {
 			heading, _, _ := strings.Cut(note[strings.Index(note, "\n# ")+1:], "\n")
 			t.Errorf("%s is headed %q, want %q", name, heading, strings.TrimSpace(tc.want))
 		}
+	}
+}
+
+// A change the floor or the ceiling held says so (#409): the table's change
+// as it printed it, then where the characteristic stayed - what the
+// generation record's "-1, 1 to 1" says. An unclamped change is the delta alone.
+//
+// Holds: A clamped change says the table's change and where it was held.
+func TestAClampedChangeSaysWhereItWasHeld(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Terms = 1
+		c.Enlistment = traveller.Enlisted{Service: traveller.Other}
+		c.Departure = traveller.Discharged{}
+		c.History = chargen.ServiceHistory{Terms: []chargen.TermServed{{
+			Term: 1,
+			Gained: []chargen.Gain{
+				chargen.Change{Characteristic: traveller.SocialStanding, From: 1, To: 1, Delta: -1},
+				chargen.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1},
+			},
+			Aged: []chargen.Change{{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -2}},
+		}}}
+	})
+
+	want := "- Term 1: Social Standing -1 (held at 1), Education +1; aging Strength -2 (held at 0)\n"
+	if !strings.Contains(note, want) {
+		t.Errorf("the service record does not read %q:\n%s", want, note)
 	}
 }

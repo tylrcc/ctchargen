@@ -3,6 +3,7 @@ package chargen_test
 import (
 	"fmt"
 	"reflect"
+	"slices"
 	"strings"
 	"testing"
 
@@ -155,8 +156,15 @@ func skill(name string, level int) chargen.SkillGain {
 	return chargen.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
 }
 
+// change is a change the floor and the ceiling left alone: the table's
+// change is the distance moved.
 func change(characteristic traveller.Characteristic, from, to int) chargen.Change {
-	return chargen.Change{Characteristic: characteristic, From: from, To: to}
+	return chargen.Change{Characteristic: characteristic, From: from, To: to, Delta: to - from}
+}
+
+// held is a change a floor or a ceiling held short of the table's (#409).
+func held(characteristic traveller.Characteristic, from, to, delta int) chargen.Change {
+	return chargen.Change{Characteristic: characteristic, From: from, To: to, Delta: delta}
 }
 
 func promoted(rank string) []chargen.Raise {
@@ -179,4 +187,59 @@ func historyText(history chargen.ServiceHistory) string {
 	}
 
 	return text.String()
+}
+
+// A change a floor or a ceiling held keeps the table's change beside where
+// it stayed (#409), typed from each fixture's record: the Other career past
+// the table gains "Strength +1, 15 to 15" in term 15, and the Navy career's
+// term 14 aging takes "Endurance -2, 1 to 0". Neither is a change of nothing.
+//
+// Holds: A held change keeps the table's change.
+func TestAHeldChangeKeepsTheTablesChange(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range map[string]struct {
+		fixture string
+		term    traveller.Term
+		want    chargen.Change
+		of      func(chargen.TermServed) []chargen.Change
+	}{
+		"a gain the ceiling held": {
+			"other-past-the-table", 15, held(traveller.Strength, 15, 15, 1),
+			func(term chargen.TermServed) []chargen.Change { return changesIn(term.Gained) },
+		},
+		"aging the floor held": {
+			"navy-aged-past-the-floor", 14, held(traveller.Endurance, 1, 0, -2),
+			func(term chargen.TermServed) []chargen.Change { return term.Aged },
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			for _, term := range byName(t, tc.fixture).generate(t).History.Terms {
+				if term.Term == tc.term {
+					if !slices.Contains(tc.of(term), tc.want) {
+						t.Errorf("term %d holds %+v, want %+v", tc.term, tc.of(term), tc.want)
+					}
+
+					return
+				}
+			}
+
+			t.Errorf("the history has no term %d", tc.term)
+		})
+	}
+}
+
+// changesIn is the characteristic changes among a term's gains.
+func changesIn(gains []chargen.Gain) []chargen.Change {
+	var changes []chargen.Change
+
+	for _, gain := range gains {
+		if change, ok := gain.(chargen.Change); ok {
+			changes = append(changes, change)
+		}
+	}
+
+	return changes
 }

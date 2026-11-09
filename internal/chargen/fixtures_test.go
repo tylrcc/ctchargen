@@ -488,6 +488,28 @@ var fixtures = []fixture{
 		},
 		among: nil,
 	},
+	// Fourteen Navy terms, and term 14's aging takes Endurance 2 from 1: the
+	// floor under aging holds him at 0 where the table would take him past
+	// it. Aging first takes 2 at term 12 (p. 9), which no unweighted random
+	// career was seen to reach in 1.2 million; this one was found among runs
+	// with the dice weighted toward 6, and its dice are scripted here (#409).
+	{
+		name: "navy-aged-past-the-floor", forced: chargen.ForceService(traveller.Navy),
+		policy: chargen.DefaultPolicy(),
+		dice: []int{
+			4, 6, 6, 6, 1, 6, 4, 6, 6, 4, 3, 5, 5, 6, 6, 6, 6, 5, 4, 6,
+			6, 6, 6, 6, 6, 3, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 1, 6,
+			6, 5, 2, 1, 6, 1, 6, 6, 6, 6, 3, 6, 6, 6, 6, 6, 6, 6, 6, 6,
+			6, 6, 6, 2, 1, 6, 6, 2, 2, 5, 4, 6, 6, 1, 6, 2, 6, 6, 6, 6,
+			6, 6, 5, 6, 6, 6, 6, 2, 4, 6, 4, 3, 2, 6, 6, 6, 6, 1, 1, 6,
+			4, 6, 6, 6, 6, 5, 6, 6, 6, 3, 3, 6, 6, 6, 4, 6, 6, 6, 6, 4,
+			6, 6, 6, 3, 1, 1, 2, 2, 6, 6, 6, 6, 5, 5, 6, 2, 5, 6, 6, 6,
+			6, 6, 6, 6, 6, 2, 6, 6, 6, 6, 6, 2, 6, 6, 6, 6, 1, 3, 5, 6,
+			6, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 2, 4, 6, 4, 6, 6, 6, 4, 5,
+			6, 6, 6, 6, 6, 2, 4, 6, 5, 3, 6, 6, 6, 3,
+		},
+		among: nil,
+	},
 	// Eighty 12s in a row: seventeen terms, three past the Aging Table's
 	// last printed column, which E014 reads as terminal. Both readings turn
 	// on a run of 12s no random career produces, which is why the roster

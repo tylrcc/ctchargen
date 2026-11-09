@@ -169,6 +169,11 @@ type applyResult struct {
 	into    *[]Gain
 }
 
+// Alteration applies a characteristic result, and keeps the table's change
+// beside the two ends, so a change the floor or the ceiling held is not read
+// as one of nothing (#409).
+//
+// Implements: A held change keeps the table's change [Generation record].
 func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta int) error {
 	before := a.run.char.Profile[characteristic]
 
@@ -178,7 +183,7 @@ func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta 
 
 	a.run.log.outcomef(a.because, a.errata, "%v %+d, %d to %d", characteristic, delta, before, after)
 
-	a.gained(Change{Characteristic: characteristic, From: before, To: after})
+	a.gained(Change{Characteristic: characteristic, From: before, To: after, Delta: delta})
 
 	return nil
 }
