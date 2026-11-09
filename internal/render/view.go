@@ -24,7 +24,7 @@ type view struct {
 	History    *historyView
 	Departure  *departureView
 	Nobility   *nobilityView
-	Inputs     inputsView
+	Attempt    attemptView
 	Errata     []traveller.Erratum
 	Ruleset    string
 	Policy     *policyView
@@ -73,8 +73,12 @@ type nobilityView struct {
 	Assumed bool
 }
 
-type inputsView struct {
-	Service string
+// attemptView is the service enlistment was attempted in, as chargen reads it
+// from the log, and whether the policy named it (#397). Service is empty for
+// a character who attempted none.
+type attemptView struct {
+	Service  string
+	ByPolicy bool
 }
 
 // policyView is the policy that answered an auto run, and the whole of
@@ -128,7 +132,7 @@ func viewOf(character *chargen.Character) view {
 		Skills:     make([]skillView, 0, len(character.Skills)),
 		Benefits:   projectBenefits(character.Benefits),
 		Pension:    int64(character.Pension),
-		Inputs:     projectInputs(character.Inputs),
+		Attempt:    projectAttempt(character),
 		Errata:     character.Errata,
 		Ruleset:    chargen.Ruleset,
 		Policy:     projectPolicy(character.Policy),
@@ -138,7 +142,7 @@ func viewOf(character *chargen.Character) view {
 
 	if service, served := character.ServedIn(); served {
 		out.Service = service.String()
-		out.History = projectHistory(character.History)
+		out.History = projectHistory(character.History())
 	}
 
 	for _, skill := range character.Skills {
@@ -160,14 +164,15 @@ func viewOf(character *chargen.Character) view {
 	return out
 }
 
-func projectInputs(in chargen.Inputs) inputsView {
-	var out inputsView
-
-	if service, forced := in.Forced.Service(); forced {
-		out.Service = service.String()
+func projectAttempt(character *chargen.Character) attemptView {
+	attempt, attempted := character.Attempted()
+	if !attempted {
+		return attemptView{}
 	}
 
-	return out
+	return attemptView{
+		Service: attempt.Service.String(), ByPolicy: attempt.ByPolicy,
+	}
 }
 
 func projectBenefits(b chargen.Benefits) benefitsView {

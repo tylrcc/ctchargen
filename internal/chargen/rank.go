@@ -43,7 +43,7 @@ func (r *run) commission(term traveller.Term) error {
 		return nil
 	}
 
-	return r.raise(seq, 1, r.tables.Eligibility().OnCommission, Commissioned)
+	return r.raise(seq, 1, r.tables.Eligibility().OnCommission, traveller.Commissioned)
 }
 
 // promote attempts a promotion (p. 6): "In the same term of service that he
@@ -90,7 +90,7 @@ func (r *run) promote(term traveller.Term) error {
 		return nil
 	}
 
-	return r.raise(seq, r.char.Rank+1, r.tables.Eligibility().OnPromotion, Promoted)
+	return r.raise(seq, r.char.Rank+1, r.tables.Eligibility().OnPromotion, traveller.Promoted)
 }
 
 // raise confers a rank, the skill eligibility that comes with it (p. 6), and
@@ -98,22 +98,20 @@ func (r *run) promote(term traveller.Term) error {
 //
 // Implements: A commission or promotion confers one skill eligibility [1:6].
 // Implements: Rank-keyed grants, at the moment the rank is conferred [1:23].
-func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how Advancement) error {
+func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how traveller.Advancement) error {
 	r.char.Rank = conferred
 	r.char.RankName = r.rankName()
 
 	r.eligible += eligibility
 
-	r.log.outcomef(seq, nil, "%v: %s", how, r.rankName())
-
-	raised := r.serving().raised(Raise{How: how, Rank: r.rankName()})
+	r.log.fact(seq, nil, traveller.RaisedFact{How: how, Rank: r.rankName()})
 
 	// No erratum is stamped here. E005 reads the timing of a service-wide
 	// entry, which the page leaves unstated; a rank entry's moment is exact
 	// on p. 23 - "as soon as he becomes eligible" - and the worked example
 	// shows it, so this needed no reading.
 	for _, result := range r.tables.GrantsAtRank(r.service.Name, conferred) {
-		err := r.apply(result, seq, nil, &raised.Grants)
+		err := r.apply(result, seq, nil, traveller.AtRank)
 		if err != nil {
 			return err
 		}

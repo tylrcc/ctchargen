@@ -72,6 +72,9 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   generation record does: `Strength +1 (held at 15)` (#409).
 - A `batch --count` near the top of an int generates instead of giving up at
   once having generated nobody: its search bound overflowed (#423).
+- The service history and the service attempted are stated once, in the
+  generation record (#412, #397): they are read from typed facts in the log
+  rather than kept beside it. No note changes.
 - A character with no enlistment, which only a generation defect could
   produce, now fails loudly in the renderer rather than reading as one who
   never served, as #377 decided for the engine (#393).

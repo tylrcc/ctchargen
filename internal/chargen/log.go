@@ -130,3 +130,21 @@ func (l *log) stamped() []traveller.Erratum {
 
 	return stamped
 }
+
+// fact records an outcome that is part of the service history: its prose is
+// the fact's own String, so the record and the history read from it cannot
+// disagree (#412).
+func (l *log) fact(because int, errata []traveller.Erratum, fact traveller.Fact) {
+	for _, e := range errata {
+		l.errata[e] = true
+	}
+
+	l.add(traveller.OutcomeEvent{
+		Seq: l.next(), Because: because, Description: fact.String(), Errata: errata, Fact: fact,
+	})
+}
+
+// opens records the step that opens a term.
+func (l *log) opens(term traveller.Term, pages string) {
+	l.add(traveller.StepEvent{Seq: l.next(), Step: fmt.Sprintf("term %d", term), Pages: pages, Opens: term})
+}

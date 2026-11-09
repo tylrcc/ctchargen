@@ -28,6 +28,10 @@ type StepEvent struct {
 	Seq   int
 	Step  string
 	Pages string
+
+	// Opens is the term this step opens, and zero for every step that opens
+	// none, so a term a death ended is still read as a term served (#412).
+	Opens Term
 }
 
 // ThrowEvent records one throw against a target: the dice as rolled, the
@@ -106,6 +110,10 @@ type OutcomeEvent struct {
 	Because     int
 	Description string
 	Errata      []Erratum
+
+	// Fact is what the outcome did, typed, where it is part of the service
+	// history; its Description is then its String (#412).
+	Fact Fact
 }
 
 func (e StepEvent) Fold(c EventCases) error    { return c.Step(e) }

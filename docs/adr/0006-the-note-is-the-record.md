@@ -32,3 +32,10 @@ ADR, 2026-11-09.
 Narrowed on 2026-11-09 (#399): a note now opens with properties, YAML a
 vault's queries stand on, so the property names and their meanings freeze at
 `v1.0.0`. Headings and prose stay free.
+
+Finished on 2026-11-09 (#412, #397): dropping the JSON left the service
+history stored twice in memory, beside the events. For the service history
+and the service attempted, the events are now the one store: each outcome
+they are read from carries a typed fact, and its prose is that fact's text.
+The sheet's other facts - skills, benefits, characteristics, departure -
+are still kept on the character beside the record's prose.

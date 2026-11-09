@@ -15,7 +15,7 @@
 // Exhaustiveness comes in two strengths here, and the difference matters:
 //
 //   - The sums (Enlistment, TableResult, BenefitRow, Departure, Event,
-//     WeaponBenefit) are folds. Each has a cases interface with one method
+//     WeaponBenefit, Fact, Gain) are folds. Each has a cases interface with one method
 //     per case, so adding a case adds a method and every implementation
 //     stops compiling. That is the compiler, and nothing can switch it off.
 //   - The plain enums are checked by the exhaustive linter, which the gate

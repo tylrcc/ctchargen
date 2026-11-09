@@ -1,6 +1,7 @@
 package render_test
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 
@@ -78,43 +79,32 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 	t.Parallel()
 
-	skill := func(name string, level int) chargen.Gain {
-		return chargen.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
+	skill := func(name string, level int) traveller.Gain {
+		return traveller.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
 	}
 
 	note := noteOf(func(c *chargen.Character) {
 		c.Terms = 3
 		c.Enlistment = traveller.Enlisted{Service: traveller.Army}
 		c.Departure = traveller.KilledBySurvivalThrow{}
-		c.History = chargen.ServiceHistory{
-			OnEntering: []chargen.Gain{skill("Rifle", 1)},
-			Terms: []chargen.TermServed{
-				{
-					Term: 1,
-					Raised: []chargen.Raise{
-						{How: chargen.Commissioned, Rank: "Lieutenant", Grants: []chargen.Gain{skill("Submachine Gun", 1)}},
-						{How: chargen.Promoted, Rank: captain},
-					},
-					Gained: []chargen.Gain{skill("Tactics", 1), skill("Halberd", 1)},
-				},
-				{
-					Term: 2,
-					Raised: []chargen.Raise{{
-						How: chargen.Promoted, Rank: "Major",
-						Grants: []chargen.Gain{chargen.Change{Characteristic: traveller.SocialStanding, From: 9, To: 10, Delta: 1}},
-					}},
-					Gained: []chargen.Gain{
-						chargen.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1}, skill("Tactics", 2),
-					},
-					Aged: []chargen.Change{
-						{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -1},
-						{Characteristic: traveller.Endurance, From: 8, To: 7, Delta: -1},
-					},
-					Recovered: []traveller.Characteristic{traveller.Strength},
-				},
-				{Term: 3},
-			},
-		}
+		c.Events = logged(
+			applied(skill("Rifle", 1), traveller.OnEntering),
+			traveller.Term(1),
+			traveller.RaisedFact{How: traveller.Commissioned, Rank: "Lieutenant"},
+			applied(skill("Submachine Gun", 1), traveller.AtRank),
+			traveller.RaisedFact{How: traveller.Promoted, Rank: captain},
+			applied(skill("Tactics", 1), traveller.InTerm),
+			applied(skill("Halberd", 1), traveller.InTerm),
+			traveller.Term(2),
+			traveller.RaisedFact{How: traveller.Promoted, Rank: "Major"},
+			applied(traveller.Change{Characteristic: traveller.SocialStanding, From: 9, To: 10, Delta: 1}, traveller.AtRank),
+			applied(traveller.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1}, traveller.InTerm),
+			applied(skill("Tactics", 2), traveller.InTerm),
+			traveller.AgedFact{Change: traveller.Change{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -1}},
+			traveller.AgedFact{Change: traveller.Change{Characteristic: traveller.Endurance, From: 8, To: 7, Delta: -1}},
+			traveller.RecoveredFact{Characteristic: traveller.Strength, To: 1},
+			traveller.Term(3),
+		)
 	})
 
 	want := "## Service record\n\n" +
@@ -189,13 +179,12 @@ func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 		note := noteOf(func(character *chargen.Character) {
 			character.Enlistment = tc.served
 
+			// The enlistment throw's outcome is where the service attempted is
+			// read from, whoever named it (#397).
+			character.Events = logged(traveller.EnlistedFact{Service: tc.chose})
+
 			if tc.forced {
 				character.Inputs.Forced = chargen.ForceService(tc.chose)
-			} else {
-				character.Events = []traveller.Event{traveller.ChoiceEvent{
-					Seq: 15, Point: traveller.ChoiceService, Alternatives: []string{tc.chose.String()},
-					Chosen: tc.chose.String(),
-				}}
 			}
 
 			if tc.byPolicy {
@@ -666,18 +655,42 @@ func TestAClampedChangeSaysWhereItWasHeld(t *testing.T) {
 		c.Terms = 1
 		c.Enlistment = traveller.Enlisted{Service: traveller.Other}
 		c.Departure = traveller.Discharged{}
-		c.History = chargen.ServiceHistory{Terms: []chargen.TermServed{{
-			Term: 1,
-			Gained: []chargen.Gain{
-				chargen.Change{Characteristic: traveller.SocialStanding, From: 1, To: 1, Delta: -1},
-				chargen.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1},
-			},
-			Aged: []chargen.Change{{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -2}},
-		}}}
+		c.Events = logged(
+			traveller.Term(1),
+			applied(traveller.Change{Characteristic: traveller.SocialStanding, From: 1, To: 1, Delta: -1}, traveller.InTerm),
+			applied(traveller.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1}, traveller.InTerm),
+			traveller.AgedFact{Change: traveller.Change{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -2}},
+		)
 	})
 
 	want := "- Term 1: Social Standing -1 (held at 1), Education +1; aging Strength -2 (held at 0)\n"
 	if !strings.Contains(note, want) {
 		t.Errorf("the service record does not read %q:\n%s", want, note)
 	}
+}
+
+// logged is a log built from the terms it opens and the facts its outcomes
+// carry, in order, which is what a note's service record is read from.
+func logged(entries ...any) []traveller.Event {
+	events := make([]traveller.Event, 0, len(entries))
+
+	for _, entry := range entries {
+		seq := len(events) + 1
+
+		switch entry := entry.(type) {
+		case traveller.Term:
+			events = append(events, traveller.StepEvent{
+				Seq: seq, Step: fmt.Sprintf("term %d", entry), Pages: "pp. 5-7", Opens: entry,
+			})
+		case traveller.Fact:
+			events = append(events, traveller.OutcomeEvent{Seq: seq, Description: entry.String(), Fact: entry})
+		}
+	}
+
+	return events
+}
+
+// applied is a result applied from a source.
+func applied(gain traveller.Gain, source traveller.Source) traveller.AppliedFact {
+	return traveller.AppliedFact{Gain: gain, Source: source}
 }

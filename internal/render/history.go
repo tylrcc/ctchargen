@@ -66,7 +66,7 @@ func projectHistory(history chargen.ServiceHistory) *historyView {
 // gainWords is each gain in the order received: a skill at the level it
 // reached, a characteristic change as the delta the page's results are
 // written in.
-func gainWords(gains []chargen.Gain) []string {
+func gainWords(gains []traveller.Gain) []string {
 	out := make([]string, 0, len(gains))
 
 	for _, gain := range gains {
@@ -91,7 +91,7 @@ func (g *gainWordsCodec) Skill(skill traveller.Skill) error {
 	return nil
 }
 
-func (g *gainWordsCodec) Change(change chargen.Change) error {
+func (g *gainWordsCodec) Change(change traveller.Change) error {
 	g.out = changeWords(change)
 
 	return nil
@@ -102,7 +102,7 @@ func (g *gainWordsCodec) Change(change chargen.Change) error {
 //
 // Implements: A clamped change says the table's change and where it was held
 // [Sheet].
-func changeWords(change chargen.Change) string {
+func changeWords(change traveller.Change) string {
 	words := fmt.Sprintf("%v %+d", change.Characteristic, change.Delta)
 	if change.To-change.From != change.Delta {
 		words += fmt.Sprintf(" (held at %d)", change.To)

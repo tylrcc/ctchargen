@@ -92,7 +92,7 @@ const oneTerm = 1
 // Implements: The headline names the service attempted, not the one the draft
 // gave [1:5].
 func whoseService(r view) string {
-	attempted, byPolicy := serviceAttempted(r)
+	attempted, byPolicy := r.Attempt.Service, r.Attempt.ByPolicy
 
 	switch {
 	case attempted == "":
@@ -105,26 +105,6 @@ func whoseService(r view) string {
 		// He asked for this service and is in it. He knows.
 		return ""
 	}
-}
-
-// serviceAttempted is the service the enlistment throw was made against, and
-// whether the policy is what named it.
-//
-// The record holds it in two places for two reasons, and neither is
-// redundant. A forced run carries it in `inputs` and logs no choice at all -
-// there was nothing to ask. An unforced run logs the choice and leaves
-// `inputs.service` empty, and that answer is the one the draft can override.
-func serviceAttempted(r view) (string, bool) {
-	if r.Inputs.Service != "" {
-		return r.Inputs.Service, false
-	}
-
-	choice, asked := choiceAt(r.Events, traveller.ChoiceService)
-	if !asked {
-		return "", false
-	}
-
-	return choice.Chosen, r.Policy != nil
 }
 
 func writeSection(out *strings.Builder, heading string, lines []string) {
@@ -241,23 +221,6 @@ func serviceLines(r view) []string {
 	default:
 		return append(lines, fmt.Sprintf("%s after term %d", r.Departure.How, r.Terms))
 	}
-}
-
-// choiceAt returns a named choice point's event, and whether it was put at
-// all. A point nobody was asked is not the same as one the policy took.
-//
-// It hands back the whole event, because what was chosen is read beside who
-// answered, and who answered is the record's to say rather than the event's.
-// Reading only who leads to crediting a decider with an outcome he did not
-// pick.
-func choiceAt(events []entry, point traveller.ChoicePoint) (entry, bool) {
-	for _, event := range events {
-		if event.Kind == kindChoice && event.Point == point {
-			return event, true
-		}
-	}
-
-	return entry{}, false
 }
 
 // termText is one term's rank, gains and aging, each part left out where the

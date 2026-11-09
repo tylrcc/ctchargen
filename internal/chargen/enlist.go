@@ -28,12 +28,12 @@ func (r *run) enlist() error {
 	seq := r.log.throw("enlistment, "+name.String(), throw)
 
 	if throw.succeeded {
-		r.log.outcomef(seq, nil, "enlisted in the %v", name)
+		r.log.fact(seq, nil, traveller.EnlistedFact{Service: name, Accepted: true})
 
 		return r.join(traveller.Enlisted{Service: name})
 	}
 
-	r.log.outcomef(seq, nil, "the %v rejected him", name)
+	r.log.fact(seq, nil, traveller.EnlistedFact{Service: name})
 
 	return r.draft()
 }
@@ -132,7 +132,7 @@ func (r *run) grantsOnEntering() error {
 	r.log.step("rank and service skills", "p. 23")
 
 	for _, result := range granted {
-		err := r.apply(result, 0, []traveller.Erratum{traveller.E005}, &r.char.History.OnEntering)
+		err := r.apply(result, 0, []traveller.Erratum{traveller.E005}, traveller.OnEntering)
 		if err != nil {
 			return err
 		}
@@ -142,13 +142,14 @@ func (r *run) grantsOnEntering() error {
 }
 
 // apply applies one Acquired Skills table result, or one grant, which take
-// the same three shapes (p. 12), and records what it gives on the service
-// history at into. A mustering out benefit passes nil: mustering out is not a
-// term, and the sheet already lists what it delivered.
+// the same three shapes (p. 12), and logs what it gives as a fact naming its
+// source, which is where the service history files it. A mustering out
+// benefit names AtMusteringOut, which the history leaves out: mustering out
+// is not a term, and the sheet already lists what it delivered.
 func (r *run) apply(
-	result traveller.TableResult, because int, errata []traveller.Erratum, into *[]Gain,
+	result traveller.TableResult, because int, errata []traveller.Erratum, source traveller.Source,
 ) error {
-	applied := &applyResult{run: r, because: because, errata: errata, into: into}
+	applied := &applyResult{run: r, because: because, errata: errata, source: source}
 
 	err := result.Fold(applied)
 	if err != nil {
@@ -166,7 +167,7 @@ type applyResult struct {
 	run     *run
 	because int
 	errata  []traveller.Erratum
-	into    *[]Gain
+	source  traveller.Source
 }
 
 // Alteration applies a characteristic result, and keeps the table's change
@@ -181,17 +182,19 @@ func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta 
 
 	after := a.run.char.Profile[characteristic]
 
-	a.run.log.outcomef(a.because, a.errata, "%v %+d, %d to %d", characteristic, delta, before, after)
-
-	a.gained(Change{Characteristic: characteristic, From: before, To: after, Delta: delta})
+	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
+		Gain:   traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: delta},
+		Source: a.source,
+	})
 
 	return nil
 }
 
 func (a *applyResult) Skill(name traveller.SkillName) error {
 	level := a.run.char.addSkill(name)
-	a.run.log.outcomef(a.because, a.errata, "%s-%d", name, level)
-	a.gained(SkillGain{Skill: traveller.Skill{Name: name, Level: level}})
+	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
+		Gain: traveller.SkillGain{Skill: traveller.Skill{Name: name, Level: level}}, Source: a.source,
+	})
 
 	return nil
 }
@@ -208,19 +211,9 @@ func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 	}
 
 	level := a.run.char.addSkill(traveller.SkillName(chosen))
-	a.run.log.outcomef(a.because, a.errata, "%v: %s-%d", category, chosen, level)
-	a.gained(SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(chosen), Level: level}})
+	a.run.log.fact(a.because, a.errata, traveller.WeaponPickedFact{
+		Category: category, Skill: traveller.Skill{Name: traveller.SkillName(chosen), Level: level}, Source: a.source,
+	})
 
 	return nil
-}
-
-// gained records a gain on the history, where the caller named a place for
-// it.
-//
-// Implements: The service history records each term's rank, gains and aging
-// [Sheet].
-func (a *applyResult) gained(gain Gain) {
-	if a.into != nil {
-		*a.into = append(*a.into, gain)
-	}
 }

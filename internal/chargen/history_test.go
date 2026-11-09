@@ -34,7 +34,7 @@ func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			got := byName(t, name).generate(t).History
+			got := byName(t, name).generate(t).History()
 			if !reflect.DeepEqual(got, want) {
 				t.Errorf("the service history:\n got %s\nwant %s", historyText(got), historyText(want))
 			}
@@ -52,7 +52,7 @@ func armyServeHistory() chargen.ServiceHistory {
 			{
 				Term: 1,
 				Raised: []chargen.Raise{{
-					How: chargen.Commissioned, Rank: "Lieutenant", Grants: gains(skill("Submachine Gun", 1)),
+					How: traveller.Commissioned, Rank: "Lieutenant", Grants: gains(skill("Submachine Gun", 1)),
 				}},
 				Gained: gains(skill("Tactics", 1), skill("Halberd", 1), skill("Submachine Gun", 2)),
 			},
@@ -61,21 +61,21 @@ func armyServeHistory() chargen.ServiceHistory {
 			{
 				Term: 4, Raised: promoted("Lt Colonel"),
 				Gained: gains(change(traveller.Education, 10, 11), skill("Tactics", 2)),
-				Aged:   []chargen.Change{change(traveller.Endurance, 8, 7)},
+				Aged:   []traveller.Change{change(traveller.Endurance, 8, 7)},
 			},
 			{
 				Term: 5, Raised: promoted("Colonel"),
 				Gained: gains(skill("Electronic", 2), skill("ATV", 2)),
-				Aged:   []chargen.Change{change(traveller.Endurance, 7, 6)},
+				Aged:   []traveller.Change{change(traveller.Endurance, 7, 6)},
 			},
 			{
 				Term: 6, Raised: promoted("General"),
 				Gained: gains(change(traveller.Education, 11, 12), skill("Tactics", 3)),
-				Aged:   []chargen.Change{change(traveller.Strength, 10, 9)},
+				Aged:   []traveller.Change{change(traveller.Strength, 10, 9)},
 			},
 			{
 				Term: 7, Gained: gains(skill("Mechanical", 1)),
-				Aged: []chargen.Change{change(traveller.Endurance, 6, 5)},
+				Aged: []traveller.Change{change(traveller.Endurance, 6, 5)},
 			},
 		},
 	}
@@ -89,7 +89,7 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 		Terms: []chargen.TermServed{
 			{Term: 1, Gained: gains(skill("Navigation", 1), skill("Vacc Suit", 1))},
 			{
-				Term: 2, Raised: []chargen.Raise{{How: chargen.Commissioned, Rank: "Ensign"}},
+				Term: 2, Raised: []chargen.Raise{{How: traveller.Commissioned, Rank: "Ensign"}},
 				Gained: gains(skill("Ship's Boat", 1), change(traveller.Endurance, 8, 9)),
 			},
 			{
@@ -99,24 +99,24 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 			{
 				Term: 4, Raised: promoted("Lt Cmdr"),
 				Gained: gains(skill("Forward Observer", 1), change(traveller.SocialStanding, 12, 13)),
-				Aged:   []chargen.Change{change(traveller.Strength, 10, 9), change(traveller.Endurance, 9, 8)},
+				Aged:   []traveller.Change{change(traveller.Strength, 10, 9), change(traveller.Endurance, 9, 8)},
 			},
 			{
 				Term: 5, Raised: promoted("Commander"),
 				Gained: gains(skill("Pilot", 1), skill("Vacc Suit", 2)),
-				Aged:   []chargen.Change{change(traveller.Strength, 9, 8)},
+				Aged:   []traveller.Change{change(traveller.Strength, 9, 8)},
 			},
 			{
 				Term: 6, Gained: gains(skill("Ship's Boat", 2)),
-				Aged: []chargen.Change{change(traveller.Endurance, 8, 7)},
+				Aged: []traveller.Change{change(traveller.Endurance, 8, 7)},
 			},
 			{
 				Term: 7,
 				Raised: []chargen.Raise{{
-					How: chargen.Promoted, Rank: "Captain", Grants: gains(change(traveller.SocialStanding, 13, 14)),
+					How: traveller.Promoted, Rank: "Captain", Grants: gains(change(traveller.SocialStanding, 13, 14)),
 				}},
 				Gained: gains(change(traveller.Education, 10, 11), skill("Engineer", 1)),
-				Aged:   []chargen.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 7, 6)},
+				Aged:   []traveller.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 7, 6)},
 			},
 		},
 	}
@@ -133,47 +133,47 @@ func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 			{Term: 3, Gained: gains(skill("Brawling", 2))},
 			{
 				Term: 4, Gained: gains(skill("Electronic", 2)),
-				Aged: []chargen.Change{change(traveller.Strength, 3, 2), change(traveller.Endurance, 10, 9)},
+				Aged: []traveller.Change{change(traveller.Strength, 3, 2), change(traveller.Endurance, 10, 9)},
 			},
 			{
 				Term: 5, Gained: gains(skill("Mechanical", 1)),
-				Aged: []chargen.Change{change(traveller.Strength, 2, 1), change(traveller.Endurance, 9, 8)},
+				Aged: []traveller.Change{change(traveller.Strength, 2, 1), change(traveller.Endurance, 9, 8)},
 			},
 			{
 				Term: 6, Gained: gains(skill("Forgery", 1)),
-				Aged: []chargen.Change{change(traveller.Dexterity, 10, 9), change(traveller.Endurance, 8, 7)},
+				Aged: []traveller.Change{change(traveller.Dexterity, 10, 9), change(traveller.Endurance, 8, 7)},
 			},
 			{
 				Term: 7, Gained: gains(change(traveller.SocialStanding, 10, 9)),
-				Aged:      []chargen.Change{change(traveller.Strength, 1, 0), change(traveller.Endurance, 7, 6)},
+				Aged:      []traveller.Change{change(traveller.Strength, 1, 0), change(traveller.Endurance, 7, 6)},
 				Recovered: []traveller.Characteristic{traveller.Strength},
 			},
 		},
 	}
 }
 
-func skill(name string, level int) chargen.SkillGain {
-	return chargen.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
+func skill(name string, level int) traveller.SkillGain {
+	return traveller.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
 }
 
 // change is a change the floor and the ceiling left alone: the table's
 // change is the distance moved.
-func change(characteristic traveller.Characteristic, from, to int) chargen.Change {
-	return chargen.Change{Characteristic: characteristic, From: from, To: to, Delta: to - from}
+func change(characteristic traveller.Characteristic, from, to int) traveller.Change {
+	return traveller.Change{Characteristic: characteristic, From: from, To: to, Delta: to - from}
 }
 
 // held is a change a floor or a ceiling held short of the table's (#409).
-func held(characteristic traveller.Characteristic, from, to, delta int) chargen.Change {
-	return chargen.Change{Characteristic: characteristic, From: from, To: to, Delta: delta}
+func held(characteristic traveller.Characteristic, from, to, delta int) traveller.Change {
+	return traveller.Change{Characteristic: characteristic, From: from, To: to, Delta: delta}
 }
 
 func promoted(rank string) []chargen.Raise {
-	return []chargen.Raise{{How: chargen.Promoted, Rank: rank}}
+	return []chargen.Raise{{How: traveller.Promoted, Rank: rank}}
 }
 
 // gains is a list of gains in the order given, which is the order the
 // generation record received them in.
-func gains(given ...chargen.Gain) []chargen.Gain { return given }
+func gains(given ...traveller.Gain) []traveller.Gain { return given }
 
 // historyText is a service history a term to a line, so a failure shows
 // which term differs.
@@ -201,22 +201,22 @@ func TestAHeldChangeKeepsTheTablesChange(t *testing.T) {
 	for name, tc := range map[string]struct {
 		fixture string
 		term    traveller.Term
-		want    chargen.Change
-		of      func(chargen.TermServed) []chargen.Change
+		want    traveller.Change
+		of      func(chargen.TermServed) []traveller.Change
 	}{
 		"a gain the ceiling held": {
 			"other-past-the-table", 15, held(traveller.Strength, 15, 15, 1),
-			func(term chargen.TermServed) []chargen.Change { return changesIn(term.Gained) },
+			func(term chargen.TermServed) []traveller.Change { return changesIn(term.Gained) },
 		},
 		"aging the floor held": {
 			"navy-aged-past-the-floor", 14, held(traveller.Endurance, 1, 0, -2),
-			func(term chargen.TermServed) []chargen.Change { return term.Aged },
+			func(term chargen.TermServed) []traveller.Change { return term.Aged },
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			for _, term := range byName(t, tc.fixture).generate(t).History.Terms {
+			for _, term := range byName(t, tc.fixture).generate(t).History().Terms {
 				if term.Term == tc.term {
 					if !slices.Contains(tc.of(term), tc.want) {
 						t.Errorf("term %d holds %+v, want %+v", tc.term, tc.of(term), tc.want)
@@ -232,11 +232,11 @@ func TestAHeldChangeKeepsTheTablesChange(t *testing.T) {
 }
 
 // changesIn is the characteristic changes among a term's gains.
-func changesIn(gains []chargen.Gain) []chargen.Change {
-	var changes []chargen.Change
+func changesIn(gains []traveller.Gain) []traveller.Change {
+	var changes []traveller.Change
 
 	for _, gain := range gains {
-		if change, ok := gain.(chargen.Change); ok {
+		if change, ok := gain.(traveller.Change); ok {
 			changes = append(changes, change)
 		}
 	}

@@ -95,9 +95,9 @@ func (r *run) age(
 		errata = append(errata, traveller.E010)
 	}
 
-	r.log.outcomef(seq, errata, "%v -%d, %d to %d", characteristic, reduction, before, after)
-
-	r.serving().aged(Change{Characteristic: characteristic, From: before, To: after, Delta: -reduction})
+	r.log.fact(seq, errata, traveller.AgedFact{
+		Change: traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: -reduction},
+	})
 
 	if after > crisisFloor {
 		return nil
@@ -140,8 +140,6 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 
 	r.char.Profile = r.char.Profile.Alter(characteristic, crisis.RecoversTo-r.char.Profile[characteristic])
 
-	r.serving().recovered(characteristic)
-
 	// Every die is kept, not their sum: the record logs what was thrown, and
 	// a sum written into a one-die event would read as a face no die has.
 	faces := make([]int, 0, crisis.MonthsDice)
@@ -158,8 +156,9 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 	r.char.Age = r.char.Age.PlusMonths(months)
 
 	monthSeq := r.log.dice("months of recovery", faces...)
-	r.log.outcomef(monthSeq, errata, "recovered: %v to %d, and %d months older, now aged %v",
-		characteristic, crisis.RecoversTo, months, r.char.Age)
+	r.log.fact(monthSeq, errata, traveller.RecoveredFact{
+		Characteristic: characteristic, To: crisis.RecoversTo, Months: months, Age: r.char.Age,
+	})
 
 	return nil
 }

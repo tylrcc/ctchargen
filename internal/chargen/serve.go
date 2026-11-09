@@ -37,10 +37,9 @@ func (r *run) serve() error {
 // Implements: The dead character's age and term [1:5, 9 (E004)].
 // Implements: The example's per-term order is not followed [1:24 (E002)].
 func (r *run) term(term traveller.Term) (bool, error) {
-	r.log.step(fmt.Sprintf("term %d", term), "pp. 5-7")
+	r.log.opens(term, "pp. 5-7")
 
 	r.char.Terms = int(term)
-	r.char.History.Terms = append(r.char.History.Terms, TermServed{Term: term})
 
 	if !r.survive(term) {
 		// The fatal term counts, and its four years with it (E004).
@@ -88,12 +87,6 @@ func (r *run) term(term traveller.Term) (bool, error) {
 	}
 
 	return true, nil
-}
-
-// serving is the term being served, the last one term added to the history.
-// Only what happens inside a term asks for it, so there is always one.
-func (r *run) serving() *TermServed {
-	return &r.char.History.Terms[len(r.char.History.Terms)-1]
 }
 
 // survive makes the term's survival throw. P. 5: "Failure to successfully
@@ -183,7 +176,7 @@ func (r *run) trainOnce() error {
 
 	seq := r.log.dice(table.String(), face)
 
-	return r.apply(result, seq, []traveller.Erratum{traveller.E002}, &r.serving().Gained)
+	return r.apply(result, seq, []traveller.Erratum{traveller.E002}, traveller.InTerm)
 }
 
 // offeredTables is the three tables always available, and the fourth while
