@@ -48,27 +48,29 @@ func (r *Rules) liftPriorService(t servicesTranscription) error {
 		return err
 	}
 
-	// A DM row's heading belongs to the row, not to a service, so a bad one
-	// is refused as the row's before any service's column is read.
+	// A DM row's heading belongs to the row, not to a service, so each is
+	// read to its amount once, and a bad one refused as the row's, before any
+	// service's column is read.
+	var throws serviceThrows
+
 	for _, throw := range []struct {
 		label string
 		rows  printedThrows
+		into  *throwRows
 	}{
-		{"enlistment", t.enlistment},
-		{"survival", t.survival},
-		{"commission", t.commission},
-		{"promotion", t.promotion},
+		{"enlistment", t.enlistment, &throws.enlistment},
+		{"survival", t.survival, &throws.survival},
+		{"commission", t.commission, &throws.commission},
+		{"promotion", t.promotion, &throws.promotion},
 	} {
-		for _, row := range throw.rows.dms {
-			_, err := parseDMHeading(row.heading)
-			if err != nil {
-				return fmt.Errorf("prior service table, %s: %w", throw.label, err)
-			}
+		*throw.into, err = readHeadings(throw.label, throw.rows)
+		if err != nil {
+			return err
 		}
 	}
 
 	for i, name := range traveller.ServiceNames {
-		service, err := liftServiceColumn(t, i, name)
+		service, err := liftServiceColumn(t, throws, i, name)
 		if err != nil {
 			return err
 		}
@@ -107,7 +109,9 @@ func checkDraft(draft [len(traveller.ServiceNames)]int) error {
 //
 // Implements: A table broken two ways reports the same one every run [JSON
 // conventions].
-func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceName) (Service, error) {
+func liftServiceColumn(
+	t servicesTranscription, throws serviceThrows, i int, name traveller.ServiceName,
+) (Service, error) {
 	ranks, err := liftRanks(rankColumn(t.ranks, i))
 	if err != nil {
 		return Service{}, fmt.Errorf("%v: %w", name, err)
@@ -115,12 +119,12 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 
 	service := Service{Name: name, Draft: t.draft[i], Ranks: ranks}
 
-	service.Enlistment, err = liftColumn(t.enlistment, i, "enlistment")
+	service.Enlistment, err = liftThrow(throws.enlistment.column(i), throws.enlistment.label)
 	if err != nil {
 		return Service{}, fmt.Errorf("%v: %w", name, err)
 	}
 
-	service.Survival, err = liftColumn(t.survival, i, "survival")
+	service.Survival, err = liftThrow(throws.survival.column(i), throws.survival.label)
 	if err != nil {
 		return Service{}, fmt.Errorf("%v: %w", name, err)
 	}
@@ -140,19 +144,13 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 	// different problem run to run and a reader cannot tell whether he fixed
 	// anything (#53). The order is the page's.
 	for _, printed := range []struct {
-		label string
-		rows  printedThrows
-		into  *Throw
+		rows throwRows
+		into *Throw
 	}{
-		{"commission", t.commission, &service.commission},
-		{"promotion", t.promotion, &service.promotion},
+		{throws.commission, &service.commission},
+		{throws.promotion, &service.promotion},
 	} {
-		cell, err := printed.rows.column(i, printed.label)
-		if err != nil {
-			return Service{}, fmt.Errorf("%v: %w", name, err)
-		}
-
-		throw, isPrinted, err := liftOptionalThrow(cell, printed.label)
+		throw, isPrinted, err := liftOptionalThrow(printed.rows.column(i), printed.rows.label)
 		if err != nil {
 			return Service{}, fmt.Errorf("%v: %w", name, err)
 		}
@@ -160,7 +158,7 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 		if isPrinted != hasRanks {
 			return Service{}, fmt.Errorf(
 				"%w: %v prints %s but %s ranks: p. 10 makes ranks, commissions and promotions one fact",
-				errMalformed, name, printed.label, map[bool]string{true: "also", false: "no"}[hasRanks],
+				errMalformed, name, printed.rows.label, map[bool]string{true: "also", false: "no"}[hasRanks],
 			)
 		}
 
@@ -227,32 +225,54 @@ type printedDM struct {
 	condition string
 }
 
-// column is the throw the rows print for the service at index i, each DM's
-// amount read off its row's heading.
-func (rows printedThrows) column(i int, what string) (printedThrow, error) {
-	throw := printedThrow{target: rows.targets[i]}
+// serviceThrows is the Prior Service Table's four throws, each with its DM
+// rows' headings read.
+type serviceThrows struct {
+	enlistment, survival, commission, promotion throwRows
+}
+
+// throwRows is one throw's rows with each DM row's heading read to the amount
+// it prints, once (#371), and the label the throw's errors name it by.
+type throwRows struct {
+	label   string
+	targets perService
+	dms     []dmRow
+}
+
+// dmRow is one DM row: the amount its heading prints, and a condition, or a
+// dash, per service.
+type dmRow struct {
+	amount     int
+	conditions perService
+}
+
+// readHeadings reads each DM row's heading to its amount, refusing a bad one
+// as the row's, named by the throw it heads.
+func readHeadings(label string, rows printedThrows) (throwRows, error) {
+	read := throwRows{label: label, targets: rows.targets}
 
 	for _, row := range rows.dms {
 		amount, err := parseDMHeading(row.heading)
 		if err != nil {
-			return printedThrow{}, fmt.Errorf("%s: %w", what, err)
+			return throwRows{}, fmt.Errorf("prior service table, %s: %w", label, err)
 		}
 
-		throw.dms = append(throw.dms, printedDM{dm: amount, condition: row.conditions[i]})
+		read.dms = append(read.dms, dmRow{amount: amount, conditions: row.conditions})
 	}
 
-	return throw, nil
+	return read, nil
 }
 
-// liftColumn lifts the throw the rows print for the service at index i, one
-// every service has.
-func liftColumn(rows printedThrows, i int, what string) (Throw, error) {
-	cell, err := rows.column(i, what)
-	if err != nil {
-		return Throw{}, err
+// column is the throw the rows print for the service at index i, each DM
+// with the amount its row's heading prints.
+func (r throwRows) column(i int) printedThrow {
+	throw := printedThrow{target: r.targets[i]}
+
+	for _, row := range r.dms {
+		throw.dms = append(throw.dms, printedDM{dm: row.amount, condition: row.conditions[i]})
 	}
 
-	return liftThrow(cell, what)
+	return throw
 }
 
 // liftOptionalThrow lifts a throw a service may not have: an em dash for a
@@ -680,13 +700,9 @@ func liftAgingHeaders(terms, ages []string) (int, int, error) {
 	return first, previous, nil
 }
 
-// agingRow is one characteristic's row, lifted: its effect over each printed
-// span, nil where the cell says it has none.
-type agingRow struct {
-	characteristic traveller.Characteristic
-	cells          []agingCell
-}
-
+// agingCell is one cell of a characteristic's row, lifted: the terms it spans
+// and its effect over them, nil where the cell says it has none. A row is its
+// cells; each effect names the row's characteristic.
 type agingCell struct {
 	from, through int
 	effect        *AgingEffect
@@ -694,13 +710,13 @@ type agingCell struct {
 
 // liftAgingRows reads the six rows, in the order p. 9 prints them, which is
 // p. 4's. Each row's cells cover the term columns once, left to right.
-func liftAgingRows(printed []printedAgingRow, first, last int) ([]agingRow, error) {
+func liftAgingRows(printed []printedAgingRow, first, last int) ([][]agingCell, error) {
 	if len(printed) != len(traveller.Characteristics) {
 		return nil, fmt.Errorf("%w: aging table: %d rows, want %d", errMalformed,
 			len(printed), len(traveller.Characteristics))
 	}
 
-	rows := make([]agingRow, 0, len(printed))
+	rows := make([][]agingCell, 0, len(printed))
 
 	for i, row := range printed {
 		characteristic, err := parseCharacteristic(row.label)
@@ -718,7 +734,7 @@ func liftAgingRows(printed []printedAgingRow, first, last int) ([]agingRow, erro
 			return nil, err
 		}
 
-		rows = append(rows, agingRow{characteristic: characteristic, cells: cells})
+		rows = append(rows, cells)
 	}
 
 	return rows, nil
@@ -805,13 +821,12 @@ func parseAgingCell(text string, characteristic traveller.Characteristic) (*Agin
 }
 
 // agingBands is the table's bands: each begins where some row's cell begins,
-// and holds, in row order, the reduction of each row whose cell over it has
-// one.
-func agingBands(rows []agingRow) []agingBand {
+// and holds, in row order, the effect of each row whose cell over it has one.
+func agingBands(rows [][]agingCell) []agingBand {
 	var starts []int
 
 	for _, row := range rows {
-		for _, cell := range row.cells {
+		for _, cell := range row {
 			if !slices.Contains(starts, cell.from) {
 				starts = append(starts, cell.from)
 			}
@@ -826,7 +841,7 @@ func agingBands(rows []agingRow) []agingBand {
 		band := agingBand{fromTerm: traveller.Term(start)}
 
 		for _, row := range rows {
-			for _, cell := range row.cells {
+			for _, cell := range row {
 				if cell.from <= start && start <= cell.through && cell.effect != nil {
 					band.effects = append(band.effects, *cell.effect)
 				}

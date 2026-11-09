@@ -160,6 +160,25 @@ func TestMalformedServices(t *testing.T) {
 	}
 }
 
+// A bad DM heading is refused as its throw's row, before any service's
+// column is read, so the error names the throw it heads (#371).
+func TestABadDMHeadingNamesItsThrow(t *testing.T) {
+	t.Parallel()
+
+	for throw, rows := range map[string]func(*servicesTranscription) *printedThrows{
+		"enlistment": func(s *servicesTranscription) *printedThrows { return &s.enlistment },
+		"survival":   func(s *servicesTranscription) *printedThrows { return &s.survival },
+		"commission": func(s *servicesTranscription) *printedThrows { return &s.commission },
+		"promotion":  func(s *servicesTranscription) *printedThrows { return &s.promotion },
+	} {
+		broken := servicesCopy()
+
+		rows(&broken).dms[0].heading = "DM of +x if"
+
+		refuses(t, throw, (&Rules{}).liftPriorService(broken), "prior service table, "+throw+": ")
+	}
+}
+
 // retirementFixture lifts the real prior service table and hands back a copy
 // of the transcription beside it, so a case can break exactly one row of one
 // table.

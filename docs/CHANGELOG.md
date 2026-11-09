@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Three leftovers go from the rules lift and the events: the Prior Service
+  Table's DM headings are read to their amounts once, so building a
+  service's throws from them can no longer fail; the aging lift keeps a row as its cells,
+  without a field nothing read; and a throw's and a roll's totals share one
+  sum (#371).
 - Code only tests reached is gone: `traveller.NewTarget` and
   `Target.Modality` (the modality is unexported, and tests build targets
   with `ParseTarget`), `rules.ReadingOf` (tests read `rules.Readings`), the

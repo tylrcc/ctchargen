@@ -69,23 +69,20 @@ type RollEvent struct {
 
 // Total is the roll's result: the dice plus the modifier, which is the row
 // the page is read at.
-func (r RollEvent) Total() int {
-	total := r.DM
-	for _, die := range r.Dice {
-		total += die
-	}
-
-	return total
-}
+func (r RollEvent) Total() int { return total(r.Dice, r.DM) }
 
 // Total is the throw's result: the dice plus the modifier.
-func (t ThrowEvent) Total() int {
-	total := t.DM
-	for _, die := range t.Dice {
-		total += die
+func (t ThrowEvent) Total() int { return total(t.Dice, t.DM) }
+
+// total is dice plus a modifier, the one sum a throw and a roll both take
+// (#371).
+func total(dice []int, modifier int) int {
+	sum := modifier
+	for _, die := range dice {
+		sum += die
 	}
 
-	return total
+	return sum
 }
 
 // ChoiceEvent records a choice point: which one, what the alternatives were,
