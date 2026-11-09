@@ -13,7 +13,6 @@ import (
 // birthdate rules, so the record carries an age and a count of terms, not a
 // date. That is the books, not an omission.
 type Character struct {
-	Name    string
 	Profile traveller.Profile
 	Age     traveller.Age
 	Terms   int
@@ -43,18 +42,14 @@ type Character struct {
 
 	Inputs Inputs
 
-	// Policy is what answered an auto run: the policy and the version it
-	// answered as. It is nil on a guided run, where a person answered and
-	// no policy decided anything.
-	Policy *AutoPolicy
+	// Policy is what answered an auto run. It is nil on a guided run, where a
+	// person answered and no policy decided anything. The version it
+	// answered as is this build's PolicyVersion, which the record writes
+	// beside it (#369).
+	Policy *Policy
 
 	Events []traveller.Event
 	Errata []traveller.Erratum
-
-	// Ruleset is what this record was generated under. It is constant for
-	// this tool, and carried so that a record says so rather than leaving a
-	// reader to assume it.
-	Ruleset string
 
 	// Build is what wrote the record, from debug.ReadBuildInfo - the same
 	// source the version subcommand reports. Naming the build is what lets a
@@ -113,13 +108,6 @@ type Inputs struct {
 	// forced. It forces the attempt only: the throw is still made, and a
 	// failed throw still goes to the draft (p. 5).
 	Forced ForcedService
-}
-
-// AutoPolicy is what an auto run's record carries of the policy that
-// answered it: its strategies, and the version of what it answers.
-type AutoPolicy struct {
-	Policy  Policy
-	Version int
 }
 
 // ForcedService is the service a generation was told to attempt, or none.

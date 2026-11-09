@@ -173,16 +173,20 @@ type policyRecord struct {
 	Muster  string `json:"muster"`
 }
 
-func projectPolicy(answered *chargen.AutoPolicy) *policyRecord {
+// projectPolicy writes the policy that answered an auto run, and the version
+// it answered as, which is this build's (#369). A guided run names none.
+//
+// Implements: A record names the policy that answered it [JSON conventions].
+func projectPolicy(answered *chargen.Policy) *policyRecord {
 	if answered == nil {
 		return nil
 	}
 
 	return &policyRecord{
-		Version: answered.Version,
-		Career:  answered.Policy.Career.String(),
-		Skills:  answered.Policy.Skills.String(),
-		Muster:  answered.Policy.Muster.String(),
+		Version: chargen.PolicyVersion,
+		Career:  answered.Career.String(),
+		Skills:  answered.Skills.String(),
+		Muster:  answered.Muster.String(),
 	}
 }
 
@@ -199,7 +203,7 @@ func (r record) answerer() string {
 func project(character *chargen.Character) (record, error) {
 	out := record{
 		Record:          recordShape,
-		Name:            character.Name,
+		Name:            character.Inputs.Name,
 		UPP:             character.Profile.UPP(),
 		Characteristics: map[string]int{},
 		Age:             ageRecord{Years: character.Age.Years(), Months: character.Age.Months()},
@@ -212,7 +216,7 @@ func project(character *chargen.Character) (record, error) {
 		Pension:         int64(character.Pension),
 		Inputs:          projectInputs(character.Inputs),
 		Errata:          make([]string, 0, len(character.Errata)),
-		Ruleset:         character.Ruleset,
+		Ruleset:         chargen.Ruleset,
 		Policy:          projectPolicy(character.Policy),
 		Events:          nil,
 		Build:           character.Build,

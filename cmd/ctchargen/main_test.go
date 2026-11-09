@@ -129,6 +129,30 @@ func TestRunWritesEachRendering(t *testing.T) {
 	}
 }
 
+// The record carries the name it was given. Every fixture is unnamed, so
+// nothing else would notice a record that wrote no name, or another one
+// (#369).
+func TestTheRecordCarriesTheNameGiven(t *testing.T) {
+	t.Parallel()
+
+	const given = "Alexander Jamison"
+
+	record, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagName, given}, nil)
+
+	var written struct {
+		Name string `json:"name"`
+	}
+
+	err := json.Unmarshal([]byte(record), &written)
+	if err != nil {
+		t.Fatalf("reading the record: %v", err)
+	}
+
+	if written.Name != given {
+		t.Errorf("the record is named %q; want %q", written.Name, given)
+	}
+}
+
 // An auto run that names no strategy applies chargen.DefaultPolicy, and its
 // record says so. The three names are typed out, not read from DefaultPolicy,
 // so a default changed there is caught here, on the command a referee runs

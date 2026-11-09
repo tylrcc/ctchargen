@@ -56,7 +56,8 @@ func WithBuild(build string) Option {
 //
 // Implements: A record names the policy that answered it [JSON conventions].
 func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
-	return generate(in, policy, &AutoPolicy{Policy: policy, Version: PolicyVersion}, options)
+	// The pointer is what marks an auto run: Guided passes nil.
+	return generate(in, policy, &policy, options)
 }
 
 // Guided walks the same procedure as a guided run: decider answers every
@@ -82,7 +83,7 @@ func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
 // Implements: A fixture generates one golden, and the same one twice [ADR
 // 0001].
 // Implements: The worked example reproduces [1:23–25].
-func generate(in Inputs, decider Decider, policy *AutoPolicy, options []Option) (*Character, error) {
+func generate(in Inputs, decider Decider, policy *Policy, options []Option) (*Character, error) {
 	tables, err := rules.Load()
 	if err != nil {
 		return nil, fmt.Errorf("loading the rules: %w", err)
@@ -95,7 +96,7 @@ func generate(in Inputs, decider Decider, policy *AutoPolicy, options []Option) 
 		roll:   dice.New(),
 		log:    record,
 		char: &Character{
-			Name: in.Name, Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
+			Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy,
 		},
 	}
 

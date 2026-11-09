@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `chargen.Character` no longer carries its name, the ruleset or the
+  policy's version: the record takes its name from the inputs, and the
+  ruleset and the version from the build's constants. `AutoPolicy` is gone
+  with the version, and `Character.Policy` is the `Policy` that answered.
+  The record is unchanged, and a test now holds the name it carries
+  (#369).
 - The engine's run state no longer keeps copies of what the character
   holds: whether he died is read off his departure, whether he was drafted
   off his enlistment, the service's name off the service joined, and an
