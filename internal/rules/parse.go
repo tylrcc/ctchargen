@@ -88,7 +88,8 @@ func parseTitle(name string) (traveller.Title, error) {
 // The sign is whatever traveller.Sign reads as one, so a cell accepts the
 // same minus glyphs a target does: someone transcribing p. 11 will type what
 // he sees, and the two minuses are indistinguishable on screen. A cell whose
-// first glyph is no sign is no alteration. A signed cell that does not parse
+// first glyph is no sign is no alteration; parseAlteration refuses one that
+// opens with an en dash, as Sign does. A signed cell that does not parse
 // here is refused outright rather than accumulating as a skill of that name.
 var alteration = regexp.MustCompile(`^(.)(\d+) (.+)$`)
 
@@ -102,8 +103,12 @@ func parseAlteration(cell string) (traveller.Characteristic, int, bool, error) {
 
 	glyph, _ := utf8.DecodeRuneInString(match[1])
 
-	sign, ok := traveller.Sign(glyph)
-	if !ok {
+	sign, err := traveller.Sign(glyph)
+	if err != nil {
+		return 0, 0, false, fmt.Errorf("%w: alteration %q: %w", errMalformed, cell, err)
+	}
+
+	if sign == 0 {
 		return 0, 0, false, nil
 	}
 
@@ -134,8 +139,12 @@ func parseDMHeading(heading string) (int, error) {
 
 	sign, _ := utf8.DecodeRuneInString(match[1])
 
-	direction, ok := traveller.Sign(sign)
-	if !ok {
+	direction, err := traveller.Sign(sign)
+	if err != nil {
+		return 0, fmt.Errorf("%w: a DM row headed %q: %w", errMalformed, heading, err)
+	}
+
+	if direction == 0 {
 		return 0, fmt.Errorf("%w: a DM row headed %q, whose amount has no sign", errMalformed, heading)
 	}
 
@@ -171,12 +180,18 @@ func parseDM(amount int, condition string) (DM, error) {
 
 // startsWithSign reports whether a cell opens with the sign of an
 // alteration. P. 3 puts the sign of a modifier before its number, so a cell
-// beginning with one is an alteration or it is a defect — never a skill.
-func startsWithSign(cell string) bool {
+// beginning with one is an alteration or it is a defect — never a skill. A
+// cell opening with an en dash is refused, since "–1 Social Standing" is
+// indistinguishable on screen from the real cell.
+func startsWithSign(cell string) (bool, error) {
 	glyph, _ := utf8.DecodeRuneInString(cell)
-	_, ok := traveller.Sign(glyph)
 
-	return ok
+	sign, err := traveller.Sign(glyph)
+	if err != nil {
+		return false, fmt.Errorf("%w: %q: %w", errMalformed, cell, err)
+	}
+
+	return sign != 0, nil
 }
 
 // refuseEmpty refuses a cell with nothing in it. A Go array short of a cell is
@@ -196,9 +211,7 @@ func refuseEmpty(cell string) error {
 // is the one on the other two: a cell that opens with a sign and did not
 // parse as an alteration is refused rather than accumulating as a skill of
 // that name. Without it "+x Social Standing" lifts as a skill whose name is
-// the whole cell. A cell opening with an en dash is refused too, ahead of
-// that guard and with an error naming the en dash, since "–1 Social
-// Standing" is indistinguishable on screen from the real cell.
+// the whole cell.
 func parseTableResult(cell string, normalize map[string]string) (traveller.TableResult, error) {
 	err := refuseEmpty(cell)
 	if err != nil {
@@ -214,11 +227,12 @@ func parseTableResult(cell string, normalize map[string]string) (traveller.Table
 		return traveller.AlterationResult{Characteristic: characteristic, Delta: size}, nil
 	}
 
-	if glyph, _ := utf8.DecodeRuneInString(cell); glyph == traveller.EnDash {
-		return nil, fmt.Errorf("%w: %q: %w", errMalformed, cell, traveller.ErrEnDash)
+	signed, err := startsWithSign(cell)
+	if err != nil {
+		return nil, err
 	}
 
-	if startsWithSign(cell) {
+	if signed {
 		return nil, fmt.Errorf("%w: %q begins with a sign but is not a characteristic alteration", errMalformed, cell)
 	}
 
@@ -284,22 +298,29 @@ func parseBenefitRow(cell string, normalize map[string]string) (traveller.Benefi
 // 4, which is why nothing here is ever read from extracted text.
 //
 // Three dashes look alike on screen, and each is decided here. The em dash is
-// what the page prints, and means nothing. An en dash standing alone in a
-// cell is refused by name, and one opening a number is refused as no sign
-// (#288). A hyphen standing alone is refused by name too: it is what the
+// what the page prints, and means nothing. An en dash is refused by name,
+// with traveller.ErrEnDash, whether it stands alone in a cell or opens a
+// number (#288, #366). A hyphen standing alone is refused by name too: it is what the
 // transcription held before it was restored to the page's text (#339), and a
 // cell typed with one is a cell not read off the page. A hyphen that opens a
 // number is a minus, and is read as one (traveller.Sign).
 const emDash = "—"
 
 // refuseDashMistyped refuses a cell that is a lone hyphen or en dash where the
-// page prints an em dash.
+// page prints an em dash. Sign is what recognises the en dash.
 func refuseDashMistyped(cell string) error {
-	switch cell {
-	case "-":
+	if cell == "-" {
 		return fmt.Errorf("%w: %q is a hyphen; the page prints an em dash where a cell means nothing", errMalformed, cell)
-	case string(traveller.EnDash):
-		return fmt.Errorf("%w: %q: %w", errMalformed, cell, traveller.ErrEnDash)
+	}
+
+	glyph, size := utf8.DecodeRuneInString(cell)
+	if size != len(cell) {
+		return nil
+	}
+
+	_, err := traveller.Sign(glyph)
+	if err != nil {
+		return fmt.Errorf("%w: %q: %w", errMalformed, cell, err)
 	}
 
 	return nil

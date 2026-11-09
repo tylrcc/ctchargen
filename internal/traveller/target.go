@@ -3,7 +3,6 @@ package traveller
 import (
 	"errors"
 	"fmt"
-	"slices"
 	"strconv"
 	"strings"
 )
@@ -63,27 +62,31 @@ func NewTarget(number int, modality Modality) Target {
 // Sign reads one glyph as the sign of a number: +1 for a plus, and -1 for
 // either of the two characters a minus may arrive as: the ASCII hyphen a
 // keyboard types for one, and U+2212, the minus sign, which is the minus the
-// page prints. Anything else is no sign, EnDash included.
+// page prints. Anything else is no sign, 0, except EnDash, which is
+// ErrEnDash.
 //
-// It is the one place that says which glyphs are signs, so a target and a
-// table cell agree on it.
-func Sign(glyph rune) (int, bool) {
+// It is the one place that says which glyphs are signs, and the one place
+// that recognises an EnDash, so a target and every table cell agree on both.
+func Sign(glyph rune) (int, error) {
 	switch glyph {
 	case '+':
-		return 1, true
+		return 1, nil
 	case '-', '\u2212':
-		return -1, true
+		return -1, nil
+	case EnDash:
+		return 0, ErrEnDash
 	default:
-		return 0, false
+		return 0, nil
 	}
 }
 
 // EnDash is not a minus. It looks like one on screen, so one typed where a
 // sign belongs is a slip, and it is refused by name, with ErrEnDash, rather
-// than read as a minus.
+// than read as a minus or as no sign.
 const EnDash = '\u2013'
 
-// ErrEnDash is wrapped by every refusal of an EnDash.
+// ErrEnDash is what Sign returns for an EnDash, so every refusal of one read
+// where a sign belongs wraps it.
 var ErrEnDash = errors.New("an en dash is not a minus")
 
 // ParseTarget reads a target in the book's own notation: "8+", "3-", "12".
@@ -100,13 +103,14 @@ func ParseTarget(s string) (Target, error) {
 		return Target{}, fmt.Errorf("%w: it is empty", errTarget)
 	}
 
-	if slices.Contains(runes, EnDash) {
-		return Target{}, fmt.Errorf("%w %q: %w", errTarget, s, ErrEnDash)
-	}
-
 	modality := Exactly
 
-	if sign, ok := Sign(runes[len(runes)-1]); ok {
+	sign, err := Sign(runes[len(runes)-1])
+	if err != nil {
+		return Target{}, fmt.Errorf("%w %q: %w", errTarget, s, err)
+	}
+
+	if sign != 0 {
 		if len(runes) == 1 {
 			return Target{}, fmt.Errorf("%w %q: a sign with no number", errTarget, s)
 		}
@@ -123,7 +127,12 @@ func ParseTarget(s string) (Target, error) {
 	// modifier before it: "throws are always followed by a sign unless the
 	// number must be thrown exactly, and DMs are always preceded by a
 	// sign." A leading sign here means a DM was passed off as a target.
-	if _, ok := Sign(runes[0]); ok {
+	leading, err := Sign(runes[0])
+	if err != nil {
+		return Target{}, fmt.Errorf("%w %q: %w", errTarget, s, err)
+	}
+
+	if leading != 0 {
 		return Target{}, fmt.Errorf("%w %q: a leading sign marks a modifier, not a throw", errTarget, s)
 	}
 

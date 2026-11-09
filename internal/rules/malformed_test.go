@@ -263,7 +263,7 @@ func TestMalformedSkills(t *testing.T) {
 			func(s *skillsTranscription) { s.tables[traveller.ServiceSkills][0][0] = "+x Social Standing" },
 			"begins with a sign",
 		},
-		// An en dash looks like a minus on screen and is no sign, so the
+		// An en dash looks like a minus on screen and is not one, so the
 		// cell is refused by name rather than lifted as a skill.
 		"an alteration typed with an en dash": {
 			func(s *skillsTranscription) { s.tables[traveller.ServiceSkills][0][0] = "–1 Social Standing" },
@@ -285,18 +285,62 @@ func TestMalformedSkills(t *testing.T) {
 	}
 }
 
-// An en-dash cell's refusal is the same error a target's is, so a caller
-// can tell it from any other malformed cell.
-func TestAnEnDashCellWrapsErrEnDash(t *testing.T) {
+// Every path that reads a sign refuses an en dash in its place with the same
+// error a target's refusal wraps, so a caller can tell it from any other
+// malformed cell. The DM heading, the benefit alteration and the box grant
+// once refused it only as no sign, no benefit or no level (#366).
+func TestEveryPathRefusesAnEnDashByName(t *testing.T) {
 	t.Parallel()
 
-	broken := transcribedSkills
+	none := map[string]string{}
 
-	broken.tables[traveller.ServiceSkills][0][0] = "–1 Social Standing"
+	for name, parse := range map[string]func() error{
+		"a lifted skills table": func() error {
+			broken := transcribedSkills
 
-	err := (&Rules{normalize: map[string]string{}}).liftSkills(broken)
-	if !errors.Is(err, traveller.ErrEnDash) {
-		t.Errorf("lifting an en-dash cell: %v; want it to wrap traveller.ErrEnDash", err)
+			broken.tables[traveller.ServiceSkills][0][0] = "–1 Social Standing"
+
+			return (&Rules{normalize: none}).liftSkills(broken)
+		},
+		"a table result with no amount": func() error {
+			_, err := parseTableResult("–x Social Standing", none)
+
+			return err
+		},
+		"a benefit alteration": func() error {
+			_, err := parseBenefitRow("–1 Education", none)
+
+			return err
+		},
+		"a lone benefit cell": func() error {
+			_, err := parseBenefitRow("–", none)
+
+			return err
+		},
+		"a DM heading": func() error {
+			_, err := parseDMHeading("DM of –1 if")
+
+			return err
+		},
+		"an aging cell": func() error {
+			_, err := parseAgingCell("–1 (8+)", traveller.Strength)
+
+			return err
+		},
+		"a rank and service grant": func() error {
+			_, err := withoutBoxLevel("–1 Social Standing")
+
+			return err
+		},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			err := parse()
+			if !errors.Is(err, traveller.ErrEnDash) {
+				t.Errorf("%v; want it to wrap traveller.ErrEnDash", err)
+			}
+		})
 	}
 }
 

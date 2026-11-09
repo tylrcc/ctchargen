@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- An en dash where a sign belongs is refused by name, with `ErrEnDash`,
+  everywhere a sign is read. `traveller.Sign` is the one place that recognises
+  it, where four parse paths each checked for it before; the Prior Service
+  Table's DM headings, Table 1's alterations and the Rank and Service Skills
+  box's grants missed it, and refused one only as no sign, no benefit or no
+  level (#366).
 - The changelog, the coding standards, the glossary and the release snapshots
   `THEORY.md` and `WALKTHROUGH.md` are in `docs/`. The root keeps only what a
   tool outside the repo looks for there: the README, the licence and

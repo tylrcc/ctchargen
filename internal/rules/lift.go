@@ -371,10 +371,15 @@ const boxLevel = "-1"
 func withoutBoxLevel(grant string) (string, error) {
 	skill, hasLevel := strings.CutSuffix(grant, boxLevel)
 
+	signed, err := startsWithSign(grant)
+	if err != nil {
+		return "", err
+	}
+
 	switch {
-	case startsWithSign(grant) && hasLevel:
+	case signed && hasLevel:
 		return "", fmt.Errorf("%w: %q is an alteration, which the box prints with no level", errMalformed, grant)
-	case startsWithSign(grant):
+	case signed:
 		return grant, nil
 	case !hasLevel:
 		return "", fmt.Errorf("%w: %q carries no %q, the level the box prints after every skill", errMalformed,
@@ -795,12 +800,14 @@ func parseAgingCell(text string, characteristic traveller.Characteristic) (*Agin
 		return nil, fmt.Errorf("%w: %q is not a reduction and saving throw, nor a phrase p. 9 prints", errMalformed, text)
 	}
 
-	sign, _ := utf8.DecodeRuneInString(match[1])
-	if sign == traveller.EnDash {
-		return nil, fmt.Errorf("%w: %q: %w", errMalformed, text, traveller.ErrEnDash)
+	glyph, _ := utf8.DecodeRuneInString(match[1])
+
+	direction, err := traveller.Sign(glyph)
+	if err != nil {
+		return nil, fmt.Errorf("%w: %q: %w", errMalformed, text, err)
 	}
 
-	if direction, ok := traveller.Sign(sign); !ok || direction > 0 {
+	if direction >= 0 {
 		return nil, fmt.Errorf("%w: %q is not a reduction", errMalformed, text)
 	}
 

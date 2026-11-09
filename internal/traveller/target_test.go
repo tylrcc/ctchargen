@@ -60,19 +60,19 @@ func TestSign(t *testing.T) {
 	t.Parallel()
 
 	for _, tc := range []struct {
-		glyph rune
-		sign  int
-		ok    bool
+		glyph  rune
+		sign   int
+		enDash bool
 	}{
-		{'+', 1, true},
-		{'-', -1, true},
-		{'−', -1, true},
-		{'–', 0, false},
+		{'+', 1, false},
+		{'-', -1, false},
+		{'−', -1, false},
+		{'–', 0, true},
 		{'x', 0, false},
 	} {
-		sign, ok := traveller.Sign(tc.glyph)
-		if sign != tc.sign || ok != tc.ok {
-			t.Errorf("Sign(%q) = %d, %v; want %d, %v", tc.glyph, sign, ok, tc.sign, tc.ok)
+		sign, err := traveller.Sign(tc.glyph)
+		if sign != tc.sign || errors.Is(err, traveller.ErrEnDash) != tc.enDash || err != nil && !tc.enDash {
+			t.Errorf("Sign(%q) = %d, %v; want %d, en dash %v", tc.glyph, sign, err, tc.sign, tc.enDash)
 		}
 	}
 }

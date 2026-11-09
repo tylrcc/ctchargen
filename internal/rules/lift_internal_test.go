@@ -177,7 +177,7 @@ func TestThePagesCharacteristicAbbreviationsRead(t *testing.T) {
 // An em dash is what the page prints where a cell means nothing, and it
 // means nothing wherever it stands. A hyphen or an en dash in its place is
 // refused by name: the hyphen is what was typed before the page's text was
-// restored (#339), and the en dash is the glyph #288 refuses everywhere.
+// restored (#339), and the en dash is refused wherever a sign is read (#366).
 func TestAnEmDashBenefitIsNothing(t *testing.T) {
 	t.Parallel()
 
