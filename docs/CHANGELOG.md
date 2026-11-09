@@ -34,6 +34,14 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   name (#416). A batch that stops partway says its folder holds what was
   written.
 
+- **Breaking: a batch writes only the living (#421).** It passes over the
+  dead and generates another until it has the number asked for, as
+  `--survivors` did; `--survivors` is removed. The closing line ends with how
+  many were passed over, where any were, and no longer with "N died" or
+  "none died". Every batch now gives up, with an error, if it generates a
+  hundred characters per one asked for without finding them living (#410's
+  died count went with it).
+
 ## 1.0.0-rc.3
 
 The third release candidate for `v1.0.0`, and the first with every `v1`

@@ -370,7 +370,6 @@ func TestABatchNamesEachNoteForItsCharacter(t *testing.T) {
 		"an officer":            {navyOfficer, oneterm, "1 Navy Lieutenant A85379.md"},
 		"a civilian":            {navyDeclined, oneterm, "1 Civilian 87665B.md"},
 		"a service of no ranks": {otherByPolicy, []string{flagService, other}, "1 Other 644776.md"},
-		"a death":               {scoutKilled, []string{flagService, scouts}, "1 Scouts 4387B9.md"},
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -493,9 +492,9 @@ func closingOn(t *testing.T, dir string, member int, w walk) source {
 	}
 }
 
-// A batch that stops partway says how many it wrote and how many of them
-// died (#118), and that its folder holds them now: the folder is not empty
-// any more, so running again needs it removed or another folder (#426).
+// A batch that stops partway says how many it wrote (#118), and that its
+// folder holds them now: the folder is not empty any more, so running again
+// needs it removed or another folder (#426).
 func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 	t.Parallel()
 
@@ -511,7 +510,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 
 	said := asking.String()
 
-	if !strings.HasPrefix(said, "2 written before the run stopped, ") {
+	if !strings.HasPrefix(said, "2 written before the run stopped\n") {
 		t.Errorf("a batch that stopped after two notes said %q", said)
 	}
 

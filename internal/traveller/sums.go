@@ -52,7 +52,7 @@ func (DeclinedTheDraft) sealedEnlistment()            {}
 // Fatal reports a departure that ended the character's life.
 //
 // It lives here because the cases live here. It was stated twice - once in the
-// command, to decide what --survivors passes over, and once in the renderer,
+// command, to decide what a batch passes over, and once in the renderer,
 // to set the record's fatal flag - and both are folds, so adding a case broke
 // both at compile time. Changing which case is a death would have broken
 // neither, and the two would have disagreed with nothing to say so (#100).

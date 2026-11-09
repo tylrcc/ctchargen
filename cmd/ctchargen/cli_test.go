@@ -35,11 +35,13 @@ var cliBaseline = map[string][]string{
 	// while the CLI could still change; after v1.0.0 no entry is taken out.
 	// batch's "force bool false" went the same way (#426): a batch writes only
 	// into a folder of its own and never removes anything, so --force had
-	// nothing left to do.
+	// nothing left to do. So did "survivors bool false" (#421): a batch
+	// writes only the living, always, so there is nothing for the flag to
+	// switch on.
 	cmdBatch: {
 		"career string serve", "count int 0",
 		"muster string cash", "name string ", baseOutput,
-		"service string ", "skills string advanced", "survivors bool false",
+		"service string ", "skills string advanced",
 	},
 	// render, and new's --sheet and --history, were removed on purpose before
 	// v1.0.0 with the JSON record they read and chose between (#398). The

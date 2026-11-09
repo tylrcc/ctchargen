@@ -16,14 +16,13 @@ import (
 
 // batch generates many characters.
 //
-// It emits what it rolled. Death is an outcome and not an error, so a
-// character killed by a survival throw is written like anyone else and no
-// flag rerolls him. --survivors does not reroll either: it passes over a dead
-// character and generates another, so every character written is one the
-// dice made. What changes is who fills a slot (#33).
+// It writes only the living (#421). Death is an outcome and not an error, and
+// nothing rerolls a character: a dead one is passed over and another
+// generated, so every member written is one the dice made. What changes is
+// who fills a slot, not what any member means (#33).
 //
-// It always says what it did. A run that wrote seventy-four corpses and
-// printed nothing was the trap the report named.
+// It always says what it did. A run that wrote seventy-four corpses, in the
+// days a batch wrote the dead, and printed nothing was the trap #33 named.
 //
 // A batch is always an auto run: it has nobody to ask, so it declares no
 // --auto, and a command line passing one is refused by the flag package as a
@@ -72,7 +71,7 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 
 	run := batchRun{
 		base: base, policy: policy, count: *flags.count,
-		survivors: *flags.survivors, attempts: survivorAttempts, dice: dice,
+		attempts: attemptsPerMember, dice: dice,
 	}
 
 	return write(out, asking, run, *flags.output)
@@ -82,12 +81,11 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 // are wanted: the settings that hold for the whole run, whatever it is
 // written to. Where it is written is each writer's own argument.
 type batchRun struct {
-	base      chargen.Inputs
-	policy    chargen.Policy
-	count     int
-	survivors bool
+	base   chargen.Inputs
+	policy chargen.Policy
+	count  int
 
-	// attempts bounds a --survivors search at count*attempts characters.
+	// attempts bounds the search for the living at count*attempts characters.
 	attempts int
 	dice     source
 }
@@ -97,9 +95,8 @@ type batchRun struct {
 type batchFlagSet struct {
 	characterFlags
 
-	count     *int
-	survivors *bool
-	output    *string
+	count  *int
+	output *string
 }
 
 func declareBatchFlags() batchFlagSet {
@@ -117,8 +114,6 @@ func declareBatchFlags() batchFlagSet {
 		count: set.Int("count", 0, "how many characters to generate"),
 		output: set.String("o", "",
 			"a folder of the batch's own to write one note per character into; absent, the notes to standard output"),
-		survivors: set.Bool("survivors", false,
-			"pass over characters who died, and go on until --count of them are living"),
 	}
 }
 
@@ -141,7 +136,7 @@ func write(out, asking io.Writer, run batchRun, path string) error {
 	}
 
 	// A run that stopped partway has left notes on disk, and the tally is
-	// the only place it says how many and how many of them are corpses (#118).
+	// the only place it says how many it wrote and passed over (#118).
 	// The tally is skipped where it would say nothing - no note written -
 	// and for a failed search, whose error already carries the counts; a
 	// failed search into a folder still says the folder holds what it wrote.
@@ -168,8 +163,8 @@ func write(out, asking io.Writer, run batchRun, path string) error {
 
 // member generates one member of the batch, from dice of its own.
 //
-// A failure names the attempt, which under --survivors counts the dead the
-// run passed over as well as the living it wrote.
+// A failure names the attempt, which counts the dead the run passed over as
+// well as the living it wrote.
 func (b batchRun) member(i int) (*chargen.Character, error) {
 	character, err := chargen.Auto(b.base, b.policy, b.dice.options()...)
 	if err != nil {
@@ -181,10 +176,10 @@ func (b batchRun) member(i int) (*chargen.Character, error) {
 
 // tally is what a batch did, for the line it prints when it is done.
 //
-// Implements: A batch says how many it wrote and how many died [CLI sketch].
+// Implements: A batch says how many it wrote and how many it passed over [CLI
+// sketch].
 type tally struct {
 	written int
-	died    int
 	passed  int
 }
 
@@ -228,14 +223,11 @@ func heldIn(asking io.Writer, dir string) error {
 	return nil
 }
 
+// reportAs ends a closing line with how many were passed over for dying,
+// where any were; a batch that passed over nobody says only what it wrote.
 func (t tally) reportAs(asking io.Writer, line string) error {
-	switch {
-	case t.passed > 0:
+	if t.passed > 0 {
 		line += fmt.Sprintf(", %d passed over for dying", t.passed)
-	case t.died > 0:
-		line += fmt.Sprintf(", %d died", t.died)
-	default:
-		line += ", none died"
 	}
 
 	_, err := fmt.Fprintln(asking, line)
@@ -246,7 +238,7 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 	return nil
 }
 
-// survivorAttempts bounds how many characters --survivors generates per one
+// attemptsPerMember bounds how many characters a batch generates per one
 // asked for. It reaches the search as batchRun's attempts, which each reads
 // rather than this constant, so that a test can reach the bound without
 // needing a hundred deaths per character to do it.
@@ -257,30 +249,29 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 // hundred is a margin of twenty-five over the worst case anyone has seen, and
 // reaching it means something is wrong rather than unlucky.
 //
-// Implements: `--survivors` gives up rather than drawing forever [CLI sketch].
-const survivorAttempts = 100
+// Implements: A batch gives up rather than drawing forever [CLI sketch].
+const attemptsPerMember = 100
 
-// each walks the batch, handing each member that is to be written to
-// take with its one-based position among them, and reports what it did.
+// each walks the batch, handing each living member to take with its
+// one-based position among them, and reports what it did.
 //
-// Without --survivors every member is written, dead or alive. With it a dead
-// character is passed over and another generated, so a written member is
-// still exactly what the dice made. What changes is who fills a slot, not
-// what any member means (#33).
+// A dead character is passed over and another generated (#421), so a
+// written member is still exactly what the dice made. What changes is who
+// fills a slot, not what any member means (#33).
 //
-// Implements: `--survivors` writes only the living, and generates another [CLI
+// Implements: A batch writes only the living, and generates another [CLI
 // sketch].
 func (b batchRun) each(take func(index int, character *chargen.Character) error) (tally, error) {
 	var done tally
 
 	for i := 0; done.written < b.count; i++ {
-		if b.survivors && i >= b.count*b.attempts {
+		if i >= b.count*b.attempts {
 			// Not a usage error: the flags were well formed, and what
 			// failed was the search. The bound's own comment says
 			// reaching it means something is wrong rather than unlucky,
 			// and that is a run-time condition and not a misuse.
 			return done, fmt.Errorf(
-				"%w: --survivors generated %d characters for %d living and found %d",
+				"%w: the batch generated %d characters for %d living and found %d",
 				errSearch, i, b.count, done.written,
 			)
 		}
@@ -291,13 +282,9 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 		}
 
 		if traveller.Fatal(character.Departure) {
-			if b.survivors {
-				done.passed++
+			done.passed++
 
-				continue
-			}
-
-			done.died++
+			continue
 		}
 
 		err = take(done.written+1, character)

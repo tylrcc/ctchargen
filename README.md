@@ -106,26 +106,22 @@ rather than after.
 **A batch is always decided by the policy**, because it has nobody to ask, so
 it takes no `--auto`.
 
-**A batch says what it did**, on standard error so it never lands among the
-notes:
+**A batch writes only the living.** The rules kill a good many characters —
+the default `serve` strategy re-enlists until the service throws him out, so
+the survival throw gets most Scouts in the end — and a batch passes over the
+dead and generates another until it has the number asked for. It doesn't
+reroll anybody: a dead character is written nowhere and another is generated
+in his place, so every note in the batch is one the dice made. A batch says
+what it did on standard error, so it never lands among the notes:
 
 ```sh
-$ ctchargen batch --count 100 --service scouts > scouts.md
-100 written, 76 died
-```
-
-That is the rules working — the default `serve` strategy re-enlists until the
-service throws him out, so the survival throw eventually gets most of them.
-When what you want is twenty scouts for the starport rather than a hundred
-outcomes, **`--survivors`** passes over the dead and generates another:
-
-```sh
-$ ctchargen batch --count 20 --service scouts --survivors -o scouts/
+$ ctchargen batch --count 20 --service scouts -o scouts/
 20 written, 68 passed over for dying
 ```
 
-It does not reroll anybody: a dead character is written nowhere and another is
-generated in his place, so every note in the batch is one the dice made.
+A dead character still comes from `new`, which writes whatever the dice make.
+A batch that generates a hundred characters per one asked for without
+finding enough living gives up with an error rather than drawing forever.
 
 **A session that stops before the end is lost.** A half-built character has
 no note, so nothing is written; the tool says what was answered and that it
@@ -166,8 +162,9 @@ only into a folder of its own.
 carrying a line break is refused rather than allowed to start sections the
 character does not have.
 
-Death is an outcome and not an error: a character killed by a survival throw
-(Book 1 p. 5) gets a complete note like anyone else, and no flag rerolls him.
+Death is an outcome and not an error: a character `new` makes who is killed by
+a survival throw (Book 1 p. 5) gets a complete note like anyone else, and
+nothing rerolls him; a batch passes him over.
 
 **The exit status is 0 or 1.** 0 when the command did what it was asked —
 the dead character above included — and 1 when it did not, with the reason on
