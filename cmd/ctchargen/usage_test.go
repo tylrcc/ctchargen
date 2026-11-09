@@ -365,7 +365,7 @@ func TestAStrategyWithoutAutoIsRefused(t *testing.T) {
 	t.Parallel()
 
 	for flag, value := range map[string]string{
-		flagCareer: "serve",
+		flagCareer: serve,
 		flagSkills: "advanced",
 		flagMuster: "cash",
 	} {

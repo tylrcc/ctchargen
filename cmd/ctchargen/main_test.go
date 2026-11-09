@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"io"
 	"strings"
 	"testing"
@@ -33,6 +34,7 @@ const (
 	other          = "other"
 	navy           = "navy"
 	merchants      = "merchants"
+	serve          = "serve"
 )
 
 func TestRunRejectsBadCommandLines(t *testing.T) {
@@ -124,6 +126,36 @@ func TestRunWritesEachRendering(t *testing.T) {
 		if !strings.Contains(out.String(), tc.mentions) {
 			t.Errorf("%s: output does not mention %q", name, tc.mentions)
 		}
+	}
+}
+
+// An auto run that names no strategy applies chargen.DefaultPolicy, and its
+// record says so. The three names are typed out, not read from DefaultPolicy,
+// so a default changed there is caught here, on the command a referee runs
+// (#367).
+func TestAnAutoRunNamingNoStrategyAppliesTheDefault(t *testing.T) {
+	t.Parallel()
+
+	record, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other}, nil)
+
+	type strategies struct {
+		Career string `json:"career"`
+		Skills string `json:"skills"`
+		Muster string `json:"muster"`
+	}
+
+	var written struct {
+		Policy strategies `json:"policy"`
+	}
+
+	err := json.Unmarshal([]byte(record), &written)
+	if err != nil {
+		t.Fatalf("reading the record: %v", err)
+	}
+
+	want := strategies{Career: serve, Skills: "advanced", Muster: "cash"}
+	if written.Policy != want {
+		t.Errorf("an auto run naming no strategy applied %+v; want %+v", written.Policy, want)
 	}
 }
 

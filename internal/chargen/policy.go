@@ -71,8 +71,7 @@ const PolicyVersion = 3
 // It is a type and not a string because it names a closed set: a value
 // outside the three is a parse error at the boundary rather than something a
 // runtime check has to notice, and a runtime check for an impossible value is
-// a sign the type is wrong (#41). The zero value is the default, so
-// Policy{} is DefaultPolicy().
+// a sign the type is wrong (#41).
 type Career int
 
 // Skills is the --auto skills strategy: which table to take a skill from.
@@ -83,22 +82,21 @@ type Skills int
 // with a repeated weapon. A closed set, for the reason Career is.
 type Muster int
 
-// The career strategies, in their listed order; the first is the default.
+// The career strategies, in their listed order.
 const (
 	CareerServe Career = iota
 	CareerRetire
 	CareerOneTerm
 )
 
-// The skills strategies, in their listed order; the first is the default.
+// The skills strategies, in their listed order.
 const (
 	SkillsAdvanced Skills = iota
 	SkillsService
 	SkillsPersonal
 )
 
-// The mustering out strategies, in their listed order; the first is the
-// default.
+// The mustering out strategies, in their listed order.
 const (
 	MusterCash Muster = iota
 	MusterGoods
@@ -198,9 +196,11 @@ func SkillsChoices() string { return choices(skillsStrategies) }
 // MusterChoices is the values --muster takes, as a reader is shown them.
 func MusterChoices() string { return choices(musterStrategies) }
 
-// DefaultPolicy is what an auto run applies when it names no strategy. A record names its
-// strategies either way, so no record is silent about the policy that made
-// it.
+// DefaultPolicy is what an auto run applies when it names no strategy. The
+// command's flag defaults read it rather than naming strategies of their own
+// (#367). A
+// record names its strategies either way, so no record is silent about the
+// policy that made it.
 func DefaultPolicy() Policy {
 	return Policy{Career: CareerServe, Skills: SkillsAdvanced, Muster: MusterCash}
 }

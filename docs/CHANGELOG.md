@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The `--career`, `--skills` and `--muster` defaults are read from
+  `chargen.DefaultPolicy`, where they were typed out beside it, and the fixtures generate under `DefaultPolicy`, so a
+  default changed in one place alone would have kept every golden passing
+  under a policy the tool no longer applied. No default changes (#367).
 - An en dash where a sign belongs is refused by name, with `ErrEnDash`,
   everywhere a sign is read. `traveller.Sign` is the one place that recognises
   it, where four parse paths each checked for it before; the Prior Service

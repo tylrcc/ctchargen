@@ -17,7 +17,9 @@ import (
 //
 // Each command gives them its own descriptions, which legitimately differ;
 // the names, types and defaults are declared once, in declareCharacterFlags,
-// so the two cannot come to disagree about them. They are carried as one
+// so the two cannot come to disagree about them. The strategies' defaults are
+// read there from chargen.DefaultPolicy, so the help cannot disagree with what
+// an auto run applies (#367). They are carried as one
 // value from there on, because five adjacent strings in a signature are five
 // strings that can be transposed, and a transposed strategy is one the record
 // then reports as the one the operator asked for (#132).
@@ -32,13 +34,15 @@ type characterHelp struct {
 }
 
 func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags {
+	defaults := chargen.DefaultPolicy()
+
 	return characterFlags{
 		set:     set,
 		service: set.String("service", "", help.service+serviceChoices()),
 		name:    set.String("name", "", help.name),
-		career:  set.String(careerFlag, chargen.CareerServe.String(), help.career+chargen.CareerChoices()),
-		skills:  set.String(skillsFlag, chargen.SkillsAdvanced.String(), help.skills+chargen.SkillsChoices()),
-		muster:  set.String(musterFlag, chargen.MusterCash.String(), help.muster+chargen.MusterChoices()),
+		career:  set.String(careerFlag, defaults.Career.String(), help.career+chargen.CareerChoices()),
+		skills:  set.String(skillsFlag, defaults.Skills.String(), help.skills+chargen.SkillsChoices()),
+		muster:  set.String(musterFlag, defaults.Muster.String(), help.muster+chargen.MusterChoices()),
 	}
 }
 

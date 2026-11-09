@@ -396,7 +396,7 @@ func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 			continue
 		}
 
-		if record.Policy != nil && (record.Policy.Version != chargen.PolicyVersion || record.Policy.Career != "serve") {
+		if record.Policy != nil && (record.Policy.Version != chargen.PolicyVersion || record.Policy.Career != serve) {
 			t.Errorf("%s: names policy %+v, want version %d under the default career",
 				name, *record.Policy, chargen.PolicyVersion)
 		}
