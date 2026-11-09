@@ -73,14 +73,8 @@ func describe(t *testing.T, result traveller.TableResult) string {
 	return d.text
 }
 
-// describeBenefit renders a Mustering Out Table 1 cell, the same way.
+// benefitDescriber renders a Mustering Out Table 1 cell, the same way.
 type benefitDescriber struct{ text string }
-
-func (b *benefitDescriber) Cash(c traveller.Credits) error {
-	b.text = c.String()
-
-	return nil
-}
 
 func (b *benefitDescriber) Passage(p traveller.PassageClass) error {
 	b.text = p.String()

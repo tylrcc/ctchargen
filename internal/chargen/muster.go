@@ -218,19 +218,12 @@ func (r *run) assessTitle() error {
 }
 
 // applyBenefit is the fold that takes one row of Mustering Out Table 1.
-// Adding an eighth kind to the sum stops this compiling until it is handled.
+// Adding a seventh kind to the sum stops this compiling until it is handled.
 //
-// Implements: The seven kinds of Table 1 row [1:9, 21–23].
+// Implements: The six kinds of Table 1 row [1:9, 21–23].
 type applyBenefit struct {
 	run     *run
 	because int
-}
-
-func (a *applyBenefit) Cash(amount traveller.Credits) error {
-	a.run.char.Benefits.Cash += amount
-	a.run.log.outcomef(a.because, nil, "%v", amount)
-
-	return nil
 }
 
 func (a *applyBenefit) Passage(class traveller.PassageClass) error {

@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Table 1's benefit sum has the six kinds of row p. 9 prints: passage,
+  characteristic, weapon, Travellers' Aid, ship and the dash. It also had a
+  cash kind no Table 1 row produces, so the engine's case for it could never
+  run; Table 2's cash is a number read beside the row, unchanged (#364).
 - Rendering a sheet or a transcript decodes the record's events once, and
   only that reading can fail: the helpers that read the decoded events
   return no error, and a malformed record is refused with the same error.

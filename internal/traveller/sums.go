@@ -134,18 +134,17 @@ func (AlterationResult) sealedTableResult()              {}
 func (SkillResult) sealedTableResult()                   {}
 func (WeaponPickResult) sealedTableResult()              {}
 
-// BenefitRow is one row of the two Mustering Out Tables (p. 9). Cash is
-// Table 2's whole content; Table 1 prints no money row, and does print rows
-// that are a bare dash.
+// BenefitRow is one row of Mustering Out Table 1 (p. 9). Table 1 prints no
+// money row, and does print rows that are a bare dash; Table 2's cash is a
+// number, read beside the row and never a BenefitRow (#364).
 type BenefitRow interface {
 	Fold(cases BenefitRowCases) error
 	sealedBenefitRow()
 }
 
-// BenefitRowCases handles each of the seven things a mustering out row can
-// be (p. 9, with the definitions at pp. 21-23).
+// BenefitRowCases handles each of the six things a Table 1 row can be (p. 9,
+// with the definitions at pp. 21-23).
 type BenefitRowCases interface {
-	Cash(amount Credits) error
 	Passage(class PassageClass) error
 	Alteration(characteristic Characteristic, delta int) error
 	WeaponPick(category WeaponCategory) error
@@ -153,9 +152,6 @@ type BenefitRowCases interface {
 	Ship(kind ShipKind) error
 	Nothing() error
 }
-
-// CashBenefit is a Table 2 row (p. 9).
-type CashBenefit struct{ Amount Credits }
 
 // PassageBenefit is a High, Middle or Low Passage row (p. 9; pp. 21-22).
 type PassageBenefit struct{ Class PassageClass }
@@ -185,7 +181,6 @@ type ShipBenefit struct{ Kind ShipKind }
 // a Scout a seventh benefit he does not have.
 type NoBenefit struct{}
 
-func (b CashBenefit) Fold(c BenefitRowCases) error    { return c.Cash(b.Amount) }
 func (b PassageBenefit) Fold(c BenefitRowCases) error { return c.Passage(b.Class) }
 func (b AlterationBenefit) Fold(c BenefitRowCases) error {
 	return c.Alteration(b.Characteristic, b.Delta)
@@ -194,7 +189,6 @@ func (b WeaponCategoryBenefit) Fold(c BenefitRowCases) error { return c.WeaponPi
 func (TravellersAidBenefit) Fold(c BenefitRowCases) error    { return c.TravellersAid() }
 func (b ShipBenefit) Fold(c BenefitRowCases) error           { return c.Ship(b.Kind) }
 func (NoBenefit) Fold(c BenefitRowCases) error               { return c.Nothing() }
-func (CashBenefit) sealedBenefitRow()                        {}
 func (PassageBenefit) sealedBenefitRow()                     {}
 func (AlterationBenefit) sealedBenefitRow()                  {}
 func (WeaponCategoryBenefit) sealedBenefitRow()              {}

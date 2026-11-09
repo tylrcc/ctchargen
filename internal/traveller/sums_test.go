@@ -107,7 +107,6 @@ func TestTableResultFolds(t *testing.T) {
 
 type benefitRecorder struct{ recorder }
 
-func (r *benefitRecorder) Cash(c traveller.Credits) error { return r.note("cash %v", c) }
 func (r *benefitRecorder) Passage(p traveller.PassageClass) error {
 	return r.note("passage %v", p)
 }
@@ -123,7 +122,7 @@ func (r *benefitRecorder) TravellersAid() error { return r.note("travellers aid"
 func (r *benefitRecorder) Ship(k traveller.ShipKind) error { return r.note("ship %v", k) }
 func (r *benefitRecorder) Nothing() error                  { return r.note("nothing") }
 
-// Holds: The seven kinds of Table 1 row.
+// Holds: The six kinds of Table 1 row.
 // Holds: Travellers' Aid only once; duplicates wasted.
 func TestBenefitRowFolds(t *testing.T) {
 	t.Parallel()
@@ -131,7 +130,6 @@ func TestBenefitRowFolds(t *testing.T) {
 	var r benefitRecorder
 
 	for _, row := range []traveller.BenefitRow{
-		traveller.CashBenefit{Amount: 20000},
 		traveller.PassageBenefit{Class: traveller.LowPassage},
 		traveller.AlterationBenefit{Characteristic: traveller.Intelligence, Delta: 2},
 		traveller.WeaponCategoryBenefit{Category: traveller.Gun},
@@ -146,7 +144,7 @@ func TestBenefitRowFolds(t *testing.T) {
 	}
 
 	r.check(t, "BenefitRow", []string{
-		"cash CR 20000", "passage Low Passage", "alteration Intelligence +2",
+		"passage Low Passage", "alteration Intelligence +2",
 		"weapon Gun Combat", "travellers aid", "ship Scout ship, Type S", "nothing",
 	})
 }
