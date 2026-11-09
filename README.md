@@ -150,12 +150,11 @@ standard error after `ctchargen:`.
 
 ## The documents
 
-| File                                                           | What it holds                                                               |
-| -------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| [internal/rules/data/ERRATA.md](internal/rules/data/ERRATA.md) | Every recorded reading, with its page cite and its stamping condition.      |
-| [docs/COVERAGE.md](docs/COVERAGE.md)                           | Every implemented rule mapped to its cite, its implementation and its test. |
-| [docs/character.schema.json](docs/character.schema.json)       | What the tool writes, with a minimal and a complete example beside it.      |
-| [CLAUDE.md](CLAUDE.md)                                         | Authority, source precedence, and the working rules for agents.             |
+| File                                                     | What it holds                                                               |
+| -------------------------------------------------------- | --------------------------------------------------------------------------- |
+| [docs/COVERAGE.md](docs/COVERAGE.md)                     | Every implemented rule mapped to its cite, its implementation and its test. |
+| [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it.      |
+| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.             |
 
 ## The gate
 

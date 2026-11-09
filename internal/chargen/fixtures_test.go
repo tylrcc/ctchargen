@@ -443,7 +443,7 @@ var fixtures = []fixture{
 	// Other's personal development table can take one away - and those two
 	// are the only records the reading governs that did not end in death
 	// (#92). Until they were added the roster reached neither, and E011 was
-	// stamped on nine records the document says it must not be.
+	// stamped on nine records its reading says it must not be.
 	//
 	// Holds: E011 is stamped only where the reading changed the answer.
 	{

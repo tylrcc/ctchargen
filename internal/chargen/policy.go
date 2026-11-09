@@ -528,8 +528,8 @@ func (p Policy) MusterTable1DM() (bool, error) { return p.Muster != MusterSparta
 func (p Policy) MusterTable2DM() (bool, error) { return p.Muster != MusterSpartan, nil }
 
 // MusterWeapon is asked when a Table 1 roll is a weapon benefit (p. 9's Blade
-// and Gun rows). from is the category's printed list, read column-major (the
-// readings document's Checked and found determinate). received is the weapons
+// and Gun rows). from is the category's printed list, read column-major (settled by the
+// page; see rules.Rules.Weapons). received is the weapons
 // of this category the character has already taken as benefits - narrower
 // twice over than the weapons he holds: p. 22 says "Expertise may only be
 // taken in a weapon received as a benefit", which excludes weapons from

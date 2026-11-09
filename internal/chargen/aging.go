@@ -19,6 +19,12 @@ const crisisFloor = 0
 // next characteristic is thrown for - p. 7 says the recovery "is made
 // immediately".
 //
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. Aging runs at the end
+// of every term from the fourth, not only at 34. P. 7 ("and in 4 year
+// increments thereafter"), p. 9's table (terms 4 through 14) and p. 25's
+// example (rounds owed for terms 4 and 5) agree.
+//
 // Implements: A round at the end of term 4 and every term after [1:7, 9 (E006)]
 // in Aging.
 // Implements: Saving throws in the table's row order [1:9 (E007)] in Aging.

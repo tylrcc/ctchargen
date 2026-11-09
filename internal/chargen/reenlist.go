@@ -9,6 +9,12 @@ import (
 // The two term counts p. 7 prints: "A character may serve up to 7 terms
 // voluntarily, and retire any time after the end of the 5th term."
 const (
+	// Settled by the page and not a reading: checked as a possible silence at
+	// milestone 0, and kept so it is not re-litigated as one. A character may
+	// voluntarily begin a seventh term but not an eighth. P. 7: "A character
+	// may serve up to 7 terms voluntarily", and "Service beyond the seventh
+	// term is normally impossible" — only a 12 carries him further (see E003).
+	//
 	// Implements: Seven terms of voluntary service [1:7] in Terms of service.
 	lastVoluntaryTerm = 7
 	firstRetiringTerm = 5
@@ -42,7 +48,7 @@ func (r *run) reenlist(term traveller.Term) (traveller.Intent, bool, error) {
 			// nothing about a second 12; E003 reads the rule as recurring.
 			// A 12 at the end of term 7 is the case p. 7 prints in its own
 			// words, so the reading is stamped only from term 8 on, which is
-			// what ERRATA.md says it is stamped on. The roster's goldens
+			// what E003's reading says it is stamped on. The roster's goldens
 			// never reached term 7's 12 until #205, and this bound was one term low.
 			errata = append(errata, traveller.E003)
 		}
@@ -142,6 +148,15 @@ func (r *run) depart(
 
 // pension records the annual retirement pay, for a departure at the end of
 // the fifth term or later from a service that pays one (p. 21).
+//
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. Retirement pay is
+// earned by the term count, not by the manner of leaving. P. 21: "A character
+// who leaves the service at the end of the 5th or later term of service is
+// considered to have retired, and receives retirement pay" — so a character
+// forced out by a failed reenlistment throw at the end of term 5 or later draws
+// it too. P. 21 also excludes the Scouts and Other services from retirement pay
+// entirely, whatever the term count.
 //
 // Implements: Retirement pay from term 5, not for Scouts or Other [1:7, 21] in
 // Mustering out.

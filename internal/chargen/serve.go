@@ -187,6 +187,15 @@ func (r *run) trainOnce() error {
 // offeredTables is the three tables always available, and the fourth while
 // the character's Education stands at 8 or greater (p. 11).
 //
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. The Education 8+ gate
+// is tested against the current value. P. 11: "Characters may distribute their
+// rolls over the three tables (the four tables if the character is of education
+// 8 or greater), but must specify the table being consulted prior to the die
+// throw" — present tense, at the moment the table is designated, so an
+// Education raised to 8 mid-career opens the fourth table from the next
+// designation on.
+//
 // Implements: The fourth table needs Education 8+ [1:11] in Skills and
 // training.
 func (r *run) offeredTables() []traveller.SkillTable {

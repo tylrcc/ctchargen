@@ -57,7 +57,7 @@ type reading struct {
 	id    traveller.Erratum
 	holds func(record) bool
 
-	// parked names the issue where this reading's document and its code
+	// parked names the issue where this reading's prose and its code
 	// disagree and neither has yet been ruled wrong. A parked reading is
 	// measured but not judged: shipping it as a failure would make the gate
 	// red for something undecided, and dropping it would hide the
@@ -458,7 +458,7 @@ func rankAndTitle(tables *rules.Rules) []reading {
 	return []reading{
 		{
 			// Parked while #92 was open, and compared since it was settled:
-			// the document was right and assessTitle over-stamped, naming
+			// the reading was right and assessTitle over-stamped, naming
 			// the reading on nine records it did nothing to.
 			id: traveller.E011,
 			holds: func(r record) bool {

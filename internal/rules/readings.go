@@ -60,7 +60,27 @@ func ReadingOf(e traveller.Erratum) Reading { return readings[e-1] }
 // place.
 func Readings() [len(traveller.Errata)]Reading { return readings }
 
-// readings is every reading, the one at index i named by erratum i+1.
+// readings is every reading, the one at index i named by erratum i+1: every
+// place the held text is silent, ambiguous or self-contradictory, and the
+// reading this tool applies there. A reading applied without one of these is
+// the one defect no gate catches (PRD, Testing and the gate); a reading applied silently on a record it
+// governed is the same defect wearing a citation.
+//
+// All of them were decided against a visual read of the held PDFs on
+// 2026-09-02, at Book 1 PDF pages 8–31 (printed 2–25) and Book 3 PDF page 27
+// (printed 22). Printed page N is PDF page N+6 in Book 1, N+5 in Books 2 and
+// 3. Nothing here is inherited from the implementation removed at 41a213a. A
+// gap found later may consult that tree's errata as a last resort — the page
+// ranks first, these readings second, the old errata third (CLAUDE.md,
+// Precedence) — but only as a pointer to a page, and what it yields is
+// decided here and gets its own erratum like any other reading.
+//
+// A rationale that cites "PRD" cites the delivered v1 contract, removed from
+// the tree after ec7289f; it is docs/PRD.md at that commit.
+//
+// An erratum names one decision for good (ADR 0004): it is never reused or
+// renumbered, and a reading whose decision no longer holds is withdrawn
+// rather than deleted.
 var readings = [...]Reading{
 	{
 		ID:    traveller.E001,

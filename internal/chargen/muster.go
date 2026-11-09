@@ -297,6 +297,17 @@ func (a *applyBenefit) Nothing() error {
 // receivedIn is the weapons of one category already taken as benefits. P. 22
 // bounds the expertise option twice: only "in a weapon received as a
 // benefit", and only in lieu of one "of exactly the same type".
+//
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. Mustering-out
+// expertise stays inside the benefit's own category. P. 22: a repeat weapon
+// benefit may be taken as "+1 expertise in lieu of receiving a second or
+// subsequent weapon of exactly the same type", and "Expertise may only be taken
+// in a weapon received as a benefit." The expertise substitutes for the weapon
+// that benefit would have delivered, so it is taken in a weapon of that
+// benefit's category — the page's worked example never leaves one (blade →
+// cutlass → cutlass-1). A gun benefit cannot be converted into expertise in a
+// blade.
 func (r *run) receivedIn(category traveller.WeaponCategory) []traveller.WeaponName {
 	list := r.tables.Weapons(category)
 

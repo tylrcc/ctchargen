@@ -164,6 +164,14 @@ type run struct {
 	trained map[traveller.SkillTable]int
 }
 
+// generate walks one character through the procedure, from the six rolls to
+// the title, and musters out only a character who lived.
+//
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. Whether a dead
+// character musters out. P. 5 ends generation at a failed survival throw ("a
+// new character must be generated"), so the departure p. 7's mustering out is
+// written for never occurs.
 func (r *run) generate() error {
 	r.rollProfile()
 

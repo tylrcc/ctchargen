@@ -9,9 +9,8 @@
 // might reach.
 //
 // The readings are Go values here, one per erratum, so a reading missing or
-// one with no erratum does not compile. The readings document,
-// data/ERRATA.md, is still embedded and lifted, and its tests hold it to
-// those values field by field until it goes.
+// one with no erratum does not compile. They are not lifted: no markdown is
+// embedded, and nothing parses prose.
 //
 // Every table is transcribed twice: once into data/, and once into this
 // package's tests, from the same visual reading of the page. The two must
@@ -36,7 +35,7 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-//go:embed data/*.json data/ERRATA.md
+//go:embed data/*.json
 var files embed.FS
 
 // Sizes the printed tables fix.
@@ -232,7 +231,8 @@ func (r *Rules) Draft(n int) (traveller.ServiceName, error) {
 	return 0, fmt.Errorf("%w: draft roll %d: no service prints that draft number", errNoSuchRow, n)
 }
 
-// Weapons is the printed list for a category (pp. 12-13), column-major.
+// Weapons is the printed list for a category (pp. 12-13), column-major: the
+// page settles the order, as liftWeapons records.
 //
 // A copy: Load hands every caller in a process the same Rules, so returning
 // the ruleset's own slice would let any caller's write change what every

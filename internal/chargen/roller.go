@@ -51,6 +51,12 @@ func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
 
 // roll makes a 2D throw against a target and reports whether it was met.
 //
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. Which throws are two
+// dice. P. 10: "All rolls except draft are two-die throws." The draft is one
+// die (p. 5); so are the skills-table roll (p. 11), each mustering-out roll
+// (p. 9) and the medical-crisis recovery months (p. 7).
+//
 // Implements: Two-die throws except the draft [1:10] in Characteristics and the
 // record.
 func roll(r Roller, target traveller.Target, modifier int) throw {

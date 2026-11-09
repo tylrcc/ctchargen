@@ -79,9 +79,9 @@ counted here, because a count is one more thing to get wrong.
    an `Implements:` marker beside the implementation, and the test that holds
    it carries a `Holds:` marker. `COVERAGE.md` is generated from the two.
 
-5. **Where the text is silent or ambiguous, the reading goes in
-   `internal/rules/data/ERRATA.md`** with its page cite and its stamping condition, and is
-   named on every record it governed. Never applied silently.
+5. **Where the text is silent or ambiguous, a new reading is a new erratum
+   and a `Reading` value in `rules`** with its page cite and stamping
+   condition, named on every record it governs. Never applied silently.
 
 6. **A number that indexes a printed table is data; a bare procedural bound is
    a constant with its cite** (#65). The aging table's last printed term
@@ -115,18 +115,18 @@ overrides a higher one:
 1. **The held page.** Book 1, and Books 2–3 where Book 1 points at them. If
    the page settles it, nothing else is consulted — not memory, not an
    erratum, not the past.
-2. **`internal/rules/data/ERRATA.md`, the readings decided here.** Each was decided against
-   the page and carries its cite, so it governs wherever the page is silent
+2. **`rules`' readings, decided here.** Each was decided against the page
+   and carries its cite, so it governs wherever the page is silent
    or self-contradictory.
 3. **The errata of the implementation removed at `41a213a`.** Last resort,
    and only where 1 and 2 are both silent — that is, a gap this pass has not
    yet found.
 
 A third-rank answer is never applied as it stands. Take it as a **pointer to
-a page**, go read that page, and decide the reading here: it earns an id in
-`internal/rules/data/ERRATA.md`, its own rationale, and its own stamping condition, at which
-point it is a rank-2 reading like any other and its origin is history. A
-reading inherited unread has an authority it never earned — that is the whole
+a page**, go read that page, and decide the reading here: it earns an
+erratum and a `Reading` value in `rules`, its own rationale, and its own
+stamping condition, at which point it is a rank-2 reading like any other
+and its origin is history. A reading inherited unread has an authority it never earned — that is the whole
 reason the ordering puts it third rather than first.
 
 ## Clean room, this repo's own past included
@@ -148,21 +148,18 @@ readings are the fallback.
 
 ## Documents and what each governs
 
-| File                            | Governs                                                                                                                                                                                                                                     |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `internal/rules/data/ERRATA.md` | Every recorded reading, with its page cite and stamping condition, as prose. The readings themselves are values in `rules`; this copy is held to them by a test until #323 removes it.                                                      |
-| `docs/COVERAGE.md`              | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
-| `docs/character.schema.json`    | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
-| `THEORY.md`, `WALKTHROUGH.md`   | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                                                                      |
-| `CODING_STANDARDS.md`           | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                                                        |
-| `CLAUDE.md`                     | This file.                                                                                                                                                                                                                                  |
+| File                          | Governs                                                                                                                                                                                                                                     |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/COVERAGE.md`            | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
+| `docs/character.schema.json`  | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
+| `THEORY.md`, `WALKTHROUGH.md` | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                                                                      |
+| `CODING_STANDARDS.md`         | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                                                        |
+| `CLAUDE.md`                   | This file.                                                                                                                                                                                                                                  |
 
 Each fact lives in one place, so there is no second copy to hold to the
-first, with one exception until #323: the readings are values in `rules`,
-one per `Erratum` constant, so a reading missing or one too many does not
-compile, and the readings document is held to them field by field until it
-goes. The `--auto` policy is its own doc comments. `COVERAGE.md`'s tables are
-generated from markers beside the code, and a rule an implementation names
+first. The readings are values in `rules`, one per `Erratum` constant, so a
+reading missing or one too many does not compile. The `--auto` policy is
+its own doc comments. `COVERAGE.md`'s tables are generated from markers beside the code, and a rule an implementation names
 and no test holds, or the reverse, fails the generator. What still describes
 the code from outside it — the schema's strategy enums — is
 held to the code by a test beside what it describes. Each gate

@@ -11,8 +11,8 @@ release turns out to be.
   coverage map becomes a check (#321–#325). The glossary defines a withdrawn
   reading and says an erratum's decision never changes.
 - The readings are Go values in `rules`, one per erratum, so a reading
-  missing or one too many does not compile. A test holds them to ERRATA.md
-  byte for byte, and the stamping and coverage checks read them rather than
+  missing or one too many does not compile. A test held them to the readings
+  document byte for byte, and the stamping and coverage checks read them rather than
   the document (#321). E007's rationale gains the comma "printed in, in the
   UPP" needed, and nothing else in any reading changes.
 - A reading can be withdrawn. It keeps its erratum, says why, and names the
@@ -20,6 +20,12 @@ release turns out to be.
   that stamps a withdrawn reading or that its condition fits, and a
   replacement that is no erratum, or the reading itself, is refused. No reading
   is withdrawn (#322).
+- The readings document is gone: its file, its embed, its parser and the
+  test that held it to the values. The readings are the `Reading` values in
+  `rules`, which carry their provenance in their doc comment, and the eight
+  questions it recorded as settled by the page are doc comments on the
+  declarations that implement them. The erratum constants no longer repeat
+  their readings' titles (#323).
 
 ## 1.0.0-beta.7
 

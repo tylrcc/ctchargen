@@ -209,7 +209,6 @@ func load() (*Rules, error) {
 		func() error { return rules.liftWeapons(weapons) },
 		func() error { return rules.liftNobility(nobility) },
 		func() error { return rules.liftShips(ships) },
-		rules.liftReadings,
 	} {
 		err := lift()
 		if err != nil {
@@ -757,6 +756,21 @@ func (r *Rules) liftAging(wire wireAging) error {
 	return nil
 }
 
+// liftWeapons lifts the printed weapon list of each category, in the order
+// the page prints it.
+//
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. The weapon lists are
+// read column-major. The Blades and Polearms box (p. 12) and the Guns box
+// (p. 13) are each set in two columns, and the page never states a reading order —
+// but only one order makes either box coherent. Column-major gives blades
+// Dagger, Blade, Foil, Cutlass, Sword, Broadsword and then polearms Spear,
+// Halberd, Pike, Cudgel, Bayonet, which is the box's own title read in order;
+// and it gives guns Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle
+// before Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun,
+// conventional arms before advanced. Row-major interleaves both groups into
+// nonsense. The order matters because it fixes what "first in the printed list"
+// names in the auto policy's answers.
 func (r *Rules) liftWeapons(wire wireWeapons) error {
 	for _, category := range traveller.WeaponCategories {
 		printed, ok := wire.Lists[category.String()]
