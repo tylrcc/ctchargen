@@ -146,7 +146,7 @@ linters:
     tagliatelle:
       case:
         rules:
-          # The data files are camelCase throughout.
+          # The record's keys are camelCase throughout (docs/character.schema.json).
           json: camel
 
     varnamelen:

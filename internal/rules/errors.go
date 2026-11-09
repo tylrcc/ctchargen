@@ -4,7 +4,7 @@ import "errors"
 
 // The two things that can go wrong here.
 var (
-	// errMalformed reports that an embedded table will not lift. It is a
+	// errMalformed reports that a transcribed table will not lift. It is a
 	// build defect rather than a runtime condition: the tables ship inside
 	// the binary, so a table that does not lift never lifted for anyone.
 	// Every lift error wraps this and then says which cell.

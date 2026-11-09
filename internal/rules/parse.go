@@ -12,11 +12,11 @@ import (
 
 // The lift's parsers. Every one of them checks a printed string against the
 // domain's own closed alphabet rather than against a second list kept here:
-// a name that does not name a value of the type is a defect in the data
-// file, and the lift is where it must be caught.
+// a name that does not name a value of the type is a defect in the
+// transcription, and the lift is where it must be caught.
 
 // named indexes an alphabet by the name its values give themselves, so that
-// a data file's spelling is checked against the type and nothing else.
+// the transcription's spelling is checked against the type and nothing else.
 func named[T fmt.Stringer](values []T) map[string]T {
 	index := make(map[string]T, len(values))
 	for _, v := range values {
@@ -28,8 +28,6 @@ func named[T fmt.Stringer](values []T) map[string]T {
 
 var (
 	characteristics  = named(traveller.Characteristics[:])
-	serviceNames     = named(traveller.ServiceNames[:])
-	skillTables      = named(traveller.SkillTables[:])
 	weaponCategories = named(traveller.WeaponCategories[:])
 	passageClasses   = named(traveller.PassageClasses[:])
 	shipKinds        = named(traveller.ShipKinds[:])
@@ -49,14 +47,6 @@ func lookup[T any](index map[string]T, name, kind string) (T, error) {
 
 func parseCharacteristic(name string) (traveller.Characteristic, error) {
 	return lookup(characteristics, name, "characteristic")
-}
-
-func parseService(name string) (traveller.ServiceName, error) {
-	return lookup(serviceNames, name, "service")
-}
-
-func parseSkillTable(name string) (traveller.SkillTable, error) {
-	return lookup(skillTables, name, "skills table")
 }
 
 func parseTitle(name string) (traveller.Title, error) {
@@ -104,8 +94,8 @@ func parseAlteration(cell string) (traveller.Characteristic, int, bool, error) {
 }
 
 // parseDM reads one die modifier as the Prior Service Table prints it: an
-// amount, and the characteristic and threshold that earn it. The data file
-// spells the condition the way p. 10 does, "Intelligence 8+".
+// amount, and the characteristic and threshold that earn it. The
+// transcription spells the condition the way p. 10 does, "Intelligence 8+".
 func parseDM(amount int, condition string) (DM, error) {
 	name, threshold, ok := strings.CutLast(condition, " ")
 	if !ok {
@@ -114,7 +104,7 @@ func parseDM(amount int, condition string) (DM, error) {
 
 	characteristic, err := parseCharacteristic(name)
 	if err != nil {
-		return DM{}, fmt.Errorf("%w: die modifier %q: %w", errMalformed, condition, err)
+		return DM{}, fmt.Errorf("die modifier %q: %w", condition, err)
 	}
 
 	target, err := traveller.ParseTarget(threshold)
@@ -135,6 +125,17 @@ func startsWithSign(cell string) bool {
 	return ok
 }
 
+// refuseEmpty refuses a cell with nothing in it. A Go array short of a cell is
+// padded with "" in silence, and the page prints a dash where a cell means
+// nothing, so an empty cell is a transcription defect and never a value.
+func refuseEmpty(cell string) error {
+	if strings.TrimSpace(cell) == "" {
+		return fmt.Errorf("%w: an empty cell; the page prints a dash where it means nothing", errMalformed)
+	}
+
+	return nil
+}
+
 // parseTableResult reads one cell of the Acquired Skills Table (p. 11).
 // P. 12 names exactly three kinds a cell can be. Only the third is open —
 // SkillName does not close at compile time — so the guard that matters here
@@ -145,10 +146,9 @@ func startsWithSign(cell string) bool {
 // that guard and with an error naming the en dash, since "–1 Social
 // Standing" is indistinguishable on screen from the real cell.
 func parseTableResult(cell string, normalize map[string]string) (traveller.TableResult, error) {
-	// A Go array short of a cell is padded with "" in silence, and the page
-	// prints a dash where a cell means nothing, so an empty cell is refused.
-	if strings.TrimSpace(cell) == "" {
-		return nil, fmt.Errorf("%w: an empty cell; the page prints a dash where it means nothing", errMalformed)
+	err := refuseEmpty(cell)
+	if err != nil {
+		return nil, err
 	}
 
 	characteristic, size, isAlteration, err := parseAlteration(cell)
@@ -178,6 +178,11 @@ func parseTableResult(cell string, normalize map[string]string) (traveller.Table
 
 // parseBenefitRow reads one cell of Mustering Out Table 1 (p. 9).
 func parseBenefitRow(cell string, normalize map[string]string) (traveller.BenefitRow, error) {
+	err := refuseEmpty(cell)
+	if err != nil {
+		return nil, err
+	}
+
 	if cell == emDash {
 		return traveller.NoBenefit{}, nil
 	}
@@ -215,7 +220,7 @@ func parseBenefitRow(cell string, normalize map[string]string) (traveller.Benefi
 }
 
 // emDash is what Table 1 prints where a service has no benefit at that row.
-// It is a hyphen in the data file and an em dash on the page; text
+// It is a hyphen in the transcription and an em dash on the page (#339); text
 // extraction turns it into the digit 4, which is why nothing here is ever
 // read from extracted text.
 const emDash = "-"

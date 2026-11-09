@@ -1,7 +1,6 @@
 package rules
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -21,22 +20,12 @@ func TestNamesAreCheckedAgainstTheType(t *testing.T) {
 		t.Error("Charisma was accepted as a characteristic")
 	}
 
-	_, err = parseService("Marine")
-	if err == nil {
-		t.Error("Marine was accepted as a service; p. 5 lists Marines")
-	}
-
-	_, err = parseSkillTable("Advanced Education")
-	if err == nil {
-		t.Error("a table name the type does not print was accepted")
-	}
-
 	_, err = parseTitle("emperor/empress")
 	if err == nil {
 		t.Error("emperor/empress was accepted; Book 3 p. 22 stops at duke/duchess")
 	}
 
-	// The names the type gives itself are the ones a data file must use.
+	// The names the type gives itself are the ones a transcription must use.
 	for _, c := range traveller.Characteristics {
 		got, err := parseCharacteristic(c.String())
 
@@ -54,7 +43,7 @@ func TestParseAlteration(t *testing.T) {
 		t.Errorf("-1 Social Standing lifted to %v %d (%v, %v)", characteristic, size, ok, err)
 	}
 
-	// A data file is typed with an ASCII hyphen, and the minus the page
+	// A transcription is typed with an ASCII hyphen, and the minus the page
 	// prints may be typed as U+2212, the minus sign. Someone transcribing
 	// p. 11 types what he sees, and the two are indistinguishable on screen,
 	// so both must lift the same way.
@@ -119,72 +108,22 @@ func TestParseBenefitRowRefusesWhatNoRowPrints(t *testing.T) {
 func TestLiftThrow(t *testing.T) {
 	t.Parallel()
 
-	_, err := liftThrow(nil, "commission")
-	if err == nil {
-		t.Error("a missing throw lifted")
-	}
-
-	_, err = liftThrow(&wireThrow{Target: "eight"}, "survival")
+	_, err := liftThrow(printedThrow{target: "eight"}, "survival")
 	if err == nil {
 		t.Error("a target that is not a number lifted")
 	}
 
 	// The reprint's font turns a printed minus into a digit, so an N- target
 	// extracts as N3. Whatever else that is, it is not the printed throw.
-	got, err := liftThrow(&wireThrow{Target: "83"}, "survival")
+	got, err := liftThrow(printedThrow{target: "83"}, "survival")
 
 	if err != nil || got.Target.Number() != 83 {
 		t.Errorf("83 lifted to %v (%v); the guard against this is that nothing is read from extracted text", got.Target, err)
 	}
 
-	_, err = liftThrow(&wireThrow{Target: "8+", DMs: []wireDM{{DM: 1, If: "Wisdom 8+"}}}, "x")
+	_, err = liftThrow(printedThrow{target: "8+", dms: []printedDM{{dm: 1, condition: "Wisdom 8+"}}}, "x")
 	if err == nil {
 		t.Error("a modifier on a characteristic that does not exist lifted")
-	}
-}
-
-func TestEachServiceChecksTheColumns(t *testing.T) {
-	t.Parallel()
-
-	full := []string{"Navy", "Marines", "Army", "Scouts", "Merchants", "Other"}
-	row := []string{"a", "b", "c", "d", "e", "f"}
-	nothing := func(traveller.ServiceName, string) error { return nil }
-
-	err := eachService(full, row, "x", nothing)
-	if err != nil {
-		t.Fatalf("a well-formed row was refused: %v", err)
-	}
-
-	shuffled := []string{"Marines", "Navy", "Army", "Scouts", "Merchants", "Other"}
-
-	err = eachService(shuffled, row, "x", nothing)
-	if err == nil {
-		t.Error("columns out of the order p. 10 prints them were accepted")
-	}
-
-	err = eachService(full[:5], row[:5], "x", nothing)
-	if err == nil {
-		t.Error("a table with five services was accepted")
-	}
-
-	err = eachService(full, row[:5], "x", nothing)
-	if err == nil {
-		t.Error("a row with a missing cell was accepted")
-	}
-}
-
-func TestReadRefusesAMissingFile(t *testing.T) {
-	t.Parallel()
-
-	_, err := read[wireAging]("nowhere.json")
-	if err == nil {
-		t.Error("a data file that is not embedded was read")
-	}
-
-	_, err = read[wireAging]("weapons.json")
-
-	if err != nil && !strings.Contains(err.Error(), "weapons.json") {
-		t.Errorf("an unmarshalling failure does not name its file: %v", err)
 	}
 }
 

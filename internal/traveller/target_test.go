@@ -20,7 +20,7 @@ func TestParseTarget(t *testing.T) {
 		{"8+", 8, traveller.AtLeast},
 		{"3+", 3, traveller.AtLeast},
 		{"10+", 10, traveller.AtLeast},
-		// A data file is typed with an ASCII hyphen, and the minus the book
+		// A transcription is typed with an ASCII hyphen, and the minus the book
 		// prints may be typed as U+2212. Both must read as the same target.
 		{"3-", 3, traveller.AtMost},
 		{"3−", 3, traveller.AtMost},
@@ -54,7 +54,7 @@ func TestParseTargetRefusesNonsense(t *testing.T) {
 	}
 }
 
-// A sign is a plus or either minus a data file may carry. An en dash looks
+// A sign is a plus or either minus a transcription may carry. An en dash looks
 // like a minus and is not one.
 func TestSign(t *testing.T) {
 	t.Parallel()

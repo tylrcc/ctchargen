@@ -11,21 +11,21 @@ import (
 // The second transcription.
 //
 // Every numeric table of Book 1 pp. 4-25 is written down twice: once in
-// internal/rules/data, and once here. The reprint's embedded font substitutes glyphs
+// transcription.go, and once here. The reprint's embedded font substitutes glyphs
 // that look like data - on p. 9 the dash cells of Mustering Out Table 1
 // extract as the digit 4, and "Travellers' Aid" extracts as Travellers9 -
 // so a table can only be trusted if two readings of the page agree.
 //
 // The two copies are deliberately traversed in different directions. The
-// data files are row-major, as the pages print them: one row of the table,
+// first transcription is row-major, as the pages print them: one row of the table,
 // six services across. Everything below is column-major: one service, down
 // its whole column. A slip made walking a row is unlikely to be repeated
 // walking a column, which is the only independence a single reading pass can
 // honestly offer.
 //
 // Names here are the ones E012 normalizes to, because that is what the lift
-// produces. Applying a documented reading by hand is not copying the data
-// file; a mis-transcribed cell still shows up as a mismatch.
+// produces. Applying a documented reading by hand is not copying the first
+// transcription; a mis-transcribed cell still shows up as a mismatch.
 
 func load(t *testing.T) *rules.Rules {
 	t.Helper()

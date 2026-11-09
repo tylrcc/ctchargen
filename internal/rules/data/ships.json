@@ -1,9 +1,0 @@
-{
-  "_cite": "Book 2 p. 18 (Scout/Courier, Type S); Book 2 p. 19 (Free Trader, Type A). Consulted only because Book 1 p. 22 points there.",
-  "_note": "Only what a character record carries. Book 1 pp. 22-23 already give the payment terms, the ten-years-per-repeat rule and the constructive possession a scout ship is held under; what these pages add is which ship each benefit names, and how large it is.",
-
-  "ships": [
-    { "kind": "Scout ship, Type S", "hullTons": 100 },
-    { "kind": "Free Trader, Type A", "hullTons": 200 }
-  ]
-}

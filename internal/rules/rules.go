@@ -1,7 +1,6 @@
 // Package rules holds every table of Book 1 pp. 4-25 as a transcription of
-// the page, and lifts it into the domain values of the traveller package. The
-// Acquired Skills tables are a Go literal in transcription.go; the rest are
-// still embedded JSON in data/, until they move too (ADR 0005, #338).
+// the page, a Go literal in transcription.go, and lifts it into the domain
+// values of the traveller package (ADR 0005).
 //
 // The lift validates the shape of every cell and the alphabet of every name.
 // A cell that names no service, no characteristic, no benefit any row prints,
@@ -11,8 +10,8 @@
 // might reach.
 //
 // The readings are Go values here, one per erratum, so a reading missing or
-// one with no erratum does not compile. They are not lifted: no markdown is
-// embedded, and nothing parses prose.
+// one with no erratum does not compile. They are not lifted: nothing parses
+// prose.
 //
 // Every table is transcribed twice: once as the page prints it, and once into
 // this package's tests, from the same visual reading of the page. The two must
@@ -22,23 +21,19 @@
 // run that trusted the extraction would give a Scout a seventh benefit he
 // does not have.
 //
-// So a value is the second transcription's to check, not the lift's. A key
-// misspelled in a JSON file under data/ leaves its field at zero, and the lift accepts that
-// zero wherever no check of its own refuses it; the tests' copy is what
-// notices that the page prints something else.
+// So a value is the second transcription's to check, not the lift's. The
+// compiler holds the transcription's shape and the lift its text, but a cell
+// typed in the wrong column, or a number misread, lifts like any other; the
+// tests' copy is what notices that the page prints something else.
 package rules
 
 import (
-	"embed"
 	"fmt"
 	"slices"
 	"sync"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
-
-//go:embed data/*.json
-var files embed.FS
 
 // Sizes the printed tables fix.
 const (
@@ -342,7 +337,7 @@ type Retirement struct {
 	PerAdditionalTerm traveller.Credits
 
 	// lastTabled is the largest term the table prints a row for, taken from
-	// the data rather than written here. P. 21's table ends at 8 terms, and
+	// the transcription rather than written here. P. 21's table ends at 8 terms, and
 	// pay beyond it is counted from that last row, so the 8 indexes a printed
 	// table (CLAUDE.md's Authority point 6).
 	lastTabled int
@@ -393,8 +388,8 @@ type Muster struct {
 // The benefit roll counts and the rank thresholds that earn them (p. 9).
 //
 // Each is a bare procedural bound - it indexes no printed table - so it is a
-// constant beside the code that applies it rather than a row of
-// mustering.json (#43, and CLAUDE.md's Authority point 6). Being printed is
+// constant beside the code that applies it rather than a row of the
+// transcription (#43, and CLAUDE.md's Authority point 6). Being printed is
 // not the test; indexing a printed table is.
 const (
 	rollsPerTerm            = 1
@@ -481,7 +476,7 @@ func (a Aging) At(term traveller.Term) []AgingEffect {
 //
 // Past it a term is read off the last band's column anyway (E014).
 //
-// The number lives in the data because it indexes the printed table's header
+// The number lives in the transcription because it indexes the printed table's header
 // row, and because it is E014's stamping condition (#43). Held as a Go
 // constant beside the code, changing the bands would move the table without
 // moving the term at which a record declares the reading governed it, and

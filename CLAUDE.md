@@ -84,9 +84,10 @@ counted here, because a count is one more thing to get wrong.
    and a `Reading` value in `rules`** with its page cite and stamping
    condition, named on every record it governs. Never applied silently.
 
-6. **A number that indexes a printed table is data; a bare procedural bound is
-   a constant with its cite** (#65). The aging table's last printed term
-   indexes a column, so it belongs in `aging.json` and not in Go; the three-roll
+6. **A number that indexes a printed table belongs in the transcription; a
+   bare procedural bound is a constant beside the code that applies it, with
+   its cite** (#65). The aging table's last printed term indexes a column, so
+   it belongs in the transcription and not beside the procedure; the three-roll
    cash cap and the rank thresholds bound a procedure and index nothing, so they
    belong beside the code that applies them. The rule is stated once here rather
    than argued per number, and it moves numbers both ways — a number on the

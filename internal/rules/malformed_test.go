@@ -2,6 +2,8 @@ package rules //nolint:testpackage // the lift's guards are unexported
 
 import (
 	"errors"
+	"maps"
+	"slices"
 	"strings"
 	"testing"
 
@@ -10,20 +12,73 @@ import (
 
 // A malformed table must fail loudly, and must say which cell.
 //
-// Every case below starts from the real data file and breaks exactly one
-// thing, so what is under test is the guard rather than a hand-built fixture
-// that resembles the data. The breakages are the ones the reprint's font can
-// actually produce, plus the ones a careless edit can.
+// Every case below starts from a copy of the real transcription and breaks
+// exactly one thing, so what is under test is the guard rather than a
+// hand-built fixture that resembles the table. The breakages are the ones the
+// reprint's font can actually produce, plus the ones a careless edit can. A
+// table, a service or a column the type does not have no longer compiles,
+// and needs no case here.
 
-func mustRead[T any](t *testing.T, name string) T {
-	t.Helper()
+// The copies deep enough to break: a transcription holds slices, maps and
+// pointers, and a case that wrote through one would break the real table
+// under every other test running beside it.
 
-	wire, err := read[T](name)
-	if err != nil {
-		t.Fatalf("reading %s: %v", name, err)
+func servicesCopy() servicesTranscription {
+	s := transcribedServices
+
+	for i := range s.ranks {
+		s.ranks[i] = slices.Clone(s.ranks[i])
 	}
 
-	return wire
+	for i := range s.enlistment {
+		s.enlistment[i].dms = slices.Clone(s.enlistment[i].dms)
+		s.survival[i].dms = slices.Clone(s.survival[i].dms)
+	}
+
+	for _, column := range []*[len(traveller.ServiceNames)]*printedThrow{&s.commission, &s.promotion} {
+		for i, printed := range column {
+			if printed != nil {
+				copied := *printed
+
+				copied.dms = slices.Clone(printed.dms)
+				column[i] = &copied
+			}
+		}
+	}
+
+	s.grants = slices.Clone(s.grants)
+	s.pensions = slices.Clone(s.pensions)
+	s.pensionPaidBy = slices.Clone(s.pensionPaidBy)
+
+	return s
+}
+
+func musteringCopy() musteringTranscription {
+	m := transcribedMustering
+
+	m.names = maps.Clone(m.names)
+
+	return m
+}
+
+func agingCopy() agingTranscription {
+	a := transcribedAging
+
+	a.bands = slices.Clone(a.bands)
+	for i := range a.bands {
+		a.bands[i].effects = slices.Clone(a.bands[i].effects)
+	}
+
+	return a
+}
+
+func weaponsCopy() [len(traveller.WeaponCategories)][]string {
+	w := transcribedWeapons
+	for i := range w {
+		w[i] = slices.Clone(w[i])
+	}
+
+	return w
 }
 
 // refuses asserts that lifting fails and that the message names what broke.
@@ -44,135 +99,111 @@ func TestMalformedServices(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]struct {
-		breaks   func(*wireServices)
+		breaks   func(*servicesTranscription)
 		mentions string
 	}{
-		"a missing column": {
-			func(w *wireServices) { w.Services = w.Services[:5] },
-			"columns",
-		},
-		// The count has to be checked before the order is, because the
-		// order comparison indexes the domain's own array by column.
-		"an extra column": {
-			func(w *wireServices) { w.Services = append(w.Services, "Navy") },
-			"columns",
-		},
-		"columns out of book order": {
-			func(w *wireServices) { w.Services[0], w.Services[1] = w.Services[1], w.Services[0] },
-			"want Navy",
-		},
-		"a row with a missing cell": {
-			func(w *wireServices) { w.Survival = w.Survival[:5] },
+		// A short array is padded with an empty throw in silence.
+		"a throw left empty": {
+			func(s *servicesTranscription) { s.survival[5] = printedThrow{} },
 			"survival",
 		},
 		"a target that will not parse": {
-			func(w *wireServices) { w.Enlistment[0].Target = "eight" },
+			func(s *servicesTranscription) { s.enlistment[0].target = "eight" },
 			"enlistment",
 		},
 		"a reenlist target that will not parse": {
-			func(w *wireServices) { w.Reenlist[0] = "" },
+			func(s *servicesTranscription) { s.reenlist[0] = "" },
 			"reenlist",
 		},
 		"a commission printed for a service with no ranks": {
-			func(w *wireServices) { w.Commission[3] = w.Commission[0] },
+			func(s *servicesTranscription) { s.commission[3] = s.commission[0] },
 			"p. 10 makes ranks",
 		},
 		"a commission missing from a service with ranks": {
-			func(w *wireServices) { w.Commission[0] = nil },
+			func(s *servicesTranscription) { s.commission[0] = nil },
 			"p. 10 makes ranks",
 		},
 		// Draft scans for the service printing the die, so a face printed
 		// twice leaves another face naming nobody (#134).
 		"a draft face printed twice": {
-			func(w *wireServices) { w.Draft[5] = w.Draft[4] },
+			func(s *servicesTranscription) { s.draft[5] = s.draft[4] },
 			"printed twice",
 		},
 		"a draft number that is not a die face": {
-			func(w *wireServices) { w.Draft[0] = 7 },
+			func(s *servicesTranscription) { s.draft[0] = 7 },
 			"not a die face",
 		},
 	} {
-		wire := mustRead[wireServices](t, "services.json")
-		tc.breaks(&wire)
-		refuses(t, name, (&Rules{}).liftPriorService(wire), tc.mentions)
+		broken := servicesCopy()
+
+		tc.breaks(&broken)
+		refuses(t, name, (&Rules{}).liftPriorService(broken), tc.mentions)
 	}
 }
 
-// retirementFixture lifts the real prior service table and hands back the
-// wire beside it, so a case can break exactly one row of one table.
-func retirementFixture(t *testing.T) (*Rules, wireServices) {
+// retirementFixture lifts the real prior service table and hands back a copy
+// of the transcription beside it, so a case can break exactly one row of one
+// table.
+func retirementFixture(t *testing.T) (*Rules, servicesTranscription) {
 	t.Helper()
-
-	wire := mustRead[wireServices](t, "services.json")
 
 	r := &Rules{normalize: map[string]string{}}
 
-	err := r.liftPriorService(wire)
+	err := r.liftPriorService(transcribedServices)
 	if err != nil {
 		t.Fatalf("lifting the prior service table: %v", err)
 	}
 
+	broken := servicesCopy()
+
 	// The cases below break one row of each of these, so a fixture that
 	// quietly lost them would make them vacuous rather than failing.
-	if len(wire.RankAndServiceSkills) == 0 || len(wire.RetirementPay.ByTerms) < 2 ||
-		len(wire.RetirementPay.PaidBy) == 0 {
+	if len(broken.grants) == 0 || len(broken.pensions) < 2 || len(broken.pensionPaidBy) == 0 {
 		t.Fatalf("the fixture is too thin to break: %d grants, %d pension rows, %d payers",
-			len(wire.RankAndServiceSkills), len(wire.RetirementPay.ByTerms),
-			len(wire.RetirementPay.PaidBy))
+			len(broken.grants), len(broken.pensions), len(broken.pensionPaidBy))
 	}
 
-	return r, wire
+	return r, broken
 }
 
 // The Rank and Service Skills box keys each grant to a service and a rank.
 func TestMalformedGrants(t *testing.T) {
 	t.Parallel()
 
-	r, wire := retirementFixture(t)
+	r, broken := retirementFixture(t)
 
-	wire.RankAndServiceSkills[0].Service = "Marine"
-	refuses(t, "a grant to a service that does not exist", r.liftGrants(wire), "Marine")
+	broken.grants[0].rank = 9
+	refuses(t, "a grant at a rank past the table", r.liftGrants(broken), "past the service's table of ranks")
 
-	r, wire = retirementFixture(t)
-	wire.RankAndServiceSkills[0].Rank = 9
-	refuses(t, "a grant at a rank past the table", r.liftGrants(wire), "past the service's table of ranks")
-
-	r, wire = retirementFixture(t)
-	wire.RankAndServiceSkills[0].Grant = "+1 Charisma"
-	refuses(t, "a grant of something that is not a result", r.liftGrants(wire), "Charisma")
+	r, broken = retirementFixture(t)
+	broken.grants[0].grant = "+1 Charisma"
+	refuses(t, "a grant of something that is not a result", r.liftGrants(broken), "Charisma")
 }
 
-// The retirement pay table validates its own shape, so break it six ways.
+// The retirement pay table validates its own shape, so break it five ways.
 func TestMalformedRetirement(t *testing.T) {
 	t.Parallel()
 
-	r, wire := retirementFixture(t)
+	r, broken := retirementFixture(t)
 
-	wire.RetirementPay.PaidBy[0] = "Merchant"
-	refuses(t, "a pension paid by a service that does not exist", r.liftRetirement(wire), "Merchant")
+	broken.pensions[1].pay = 0
+	refuses(t, "a pension row that pays nothing", r.liftRetirement(broken), "is not a pension")
 
-	r, wire = retirementFixture(t)
-	wire.RetirementPay.ByTerms[1].Pay = 0
-	refuses(t, "a pension row that pays nothing", r.liftRetirement(wire), "is not a pension")
+	r, broken = retirementFixture(t)
+	broken.pensions[0], broken.pensions[1] = broken.pensions[1], broken.pensions[0]
+	refuses(t, "pension rows out of order", r.liftRetirement(broken), "the table's rows ascend")
 
-	r, wire = retirementFixture(t)
-	wire.RetirementPay.ByTerms[0], wire.RetirementPay.ByTerms[1] =
-		wire.RetirementPay.ByTerms[1], wire.RetirementPay.ByTerms[0]
-	refuses(t, "pension rows out of order", r.liftRetirement(wire), "the table's rows ascend")
+	r, broken = retirementFixture(t)
+	broken.perAdditionalTerm = 0
+	refuses(t, "nothing paid past the table", r.liftRetirement(broken), "per additional term")
 
-	r, wire = retirementFixture(t)
-	wire.RetirementPay.PerAdditionalTerm = 0
-	refuses(t, "nothing paid past the table", r.liftRetirement(wire), "per additional term")
+	r, broken = retirementFixture(t)
+	broken.pensionPaidBy = nil
+	refuses(t, "a pension no service pays", r.liftRetirement(broken), "no service pays it")
 
-	// The two cases that empty a slice come last: nothing may index these
-	// fixtures afterwards.
-	r, wire = retirementFixture(t)
-	wire.RetirementPay.PaidBy = nil
-	refuses(t, "a pension no service pays", r.liftRetirement(wire), "no service pays it")
-
-	r, wire = retirementFixture(t)
-	wire.RetirementPay.ByTerms = nil
-	refuses(t, "a pension table with no rows", r.liftRetirement(wire), "prints no rows")
+	r, broken = retirementFixture(t)
+	broken.pensions = nil
+	refuses(t, "a pension table with no rows", r.liftRetirement(broken), "prints no rows")
 }
 
 func TestMalformedSkills(t *testing.T) {
@@ -243,130 +274,107 @@ func TestMalformedMustering(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]struct {
-		breaks   func(*wireMustering)
+		breaks   func(*musteringTranscription)
 		mentions string
 	}{
-		"a missing row": {
-			func(w *wireMustering) { w.Table1 = w.Table1[:6] },
-			"rows",
+		// A short array is padded with "" in silence.
+		"a benefit cell left empty": {
+			func(m *musteringTranscription) { m.table1[6][5] = "" },
+			"an empty cell",
 		},
 		// The font trap, lifted: p. 9's dash cells extract as the digit 4.
 		"a dash cell that extracted as a 4": {
-			func(w *wireMustering) { w.Table1[6][3] = "4" },
+			func(m *musteringTranscription) { m.table1[6][3] = "4" },
 			"not a benefit",
 		},
 		"a benefit no row prints": {
-			func(w *wireMustering) { w.Table1[0][0] = "Yacht" },
+			func(m *musteringTranscription) { m.table1[0][0] = "Yacht" },
 			"Yacht",
 		},
-		"a cash row with a missing cell": {
-			func(w *wireMustering) { w.Table2[0] = w.Table2[0][:5] },
-			"table 2",
-		},
 		"a cash allowance of nothing": {
-			func(w *wireMustering) { w.Table2[0][0] = 0 },
+			func(m *musteringTranscription) { m.table2[0][0] = 0 },
 			"not a cash allowance",
 		},
 		"no skill earning the table 2 modifier": {
-			func(w *wireMustering) { w.Rolls.Table2ModifierFrom = "" },
+			func(m *musteringTranscription) { m.table2ModifierFrom = "" },
 			"earns the table 2 modifier",
 		},
 		"a passage with no price": {
-			func(w *wireMustering) { delete(w.Passages.Prices, "Low Passage") },
+			func(m *musteringTranscription) { m.prices[traveller.LowPassage] = 0 },
 			"no price for Low Passage",
 		},
-		// There is no case here for a price that is not a number. It used to
-		// be one: the prices shared an object with resalePercent, so the
-		// field was map[string]any and the lift asserted its way back to a
-		// float. Prices are map[string]int64 now, so "cheap" is refused by
-		// json.Unmarshal before the lift is called, and what the compiler
-		// proves is not also tested (#49).
 		"no resale percentage": {
-			func(w *wireMustering) { w.Passages.ResalePercent = 0 },
+			func(m *musteringTranscription) { m.resalePercent = 0 },
 			"resale",
 		},
 	} {
-		wire := mustRead[wireMustering](t, "mustering.json")
-		tc.breaks(&wire)
-		refuses(t, name, (&Rules{normalize: map[string]string{}}).liftMustering(wire), tc.mentions)
+		broken := musteringCopy()
+
+		tc.breaks(&broken)
+		refuses(t, name, (&Rules{normalize: map[string]string{}}).liftMustering(broken), tc.mentions)
 	}
 }
 
 func TestMalformedAging(t *testing.T) {
 	t.Parallel()
 
-	valid := func(t *testing.T) wireAging {
-		t.Helper()
+	broken := agingCopy()
 
-		return mustRead[wireAging](t, "aging.json")
-	}
+	broken.bands[0].effects[0].characteristic = "Wisdom"
+	refuses(t, "a band reducing a characteristic that does not exist", (&Rules{}).liftAging(broken), "Wisdom")
 
-	wire := valid(t)
+	broken = agingCopy()
+	broken.bands[0].effects[0].saving = "eight"
+	refuses(t, "a saving throw that will not parse", (&Rules{}).liftAging(broken), "aging band")
 
-	wire.Bands[0].Effects[0].Characteristic = "Wisdom"
-	refuses(t, "a band reducing a characteristic that does not exist", (&Rules{}).liftAging(wire), "Wisdom")
+	broken = agingCopy()
+	broken.bands[0], broken.bands[2] = broken.bands[2], broken.bands[0]
+	refuses(t, "bands out of order", (&Rules{}).liftAging(broken), "out of order")
 
-	wire = valid(t)
-	wire.Bands[0].Effects[0].Saving = "eight"
-	refuses(t, "a saving throw that will not parse", (&Rules{}).liftAging(wire), "aging band")
+	broken = agingCopy()
+	broken.bands = nil
+	refuses(t, "no bands at all", (&Rules{}).liftAging(broken), "no bands")
 
-	wire = valid(t)
-	wire.Bands[0], wire.Bands[2] = wire.Bands[2], wire.Bands[0]
-	refuses(t, "bands out of order", (&Rules{}).liftAging(wire), "out of order")
+	broken = agingCopy()
+	broken.lastPrintedTerm = 0
+	refuses(t, "a last printed term before the last band", (&Rules{}).liftAging(broken), "last printed term")
 
-	wire = valid(t)
-	wire.Bands = nil
-	refuses(t, "no bands at all", (&Rules{}).liftAging(wire), "no bands")
-
-	wire = valid(t)
-	wire.LastPrintedTerm = 0
-	refuses(t, "a last printed term before the last band", (&Rules{}).liftAging(wire), "last printed term")
-
-	wire = valid(t)
-	wire.Crisis.Saving = "eight"
-	refuses(t, "a crisis saving throw that will not parse", (&Rules{}).liftAging(wire), "medical crisis")
+	broken = agingCopy()
+	broken.crisisSaving = "eight"
+	refuses(t, "a crisis saving throw that will not parse", (&Rules{}).liftAging(broken), "medical crisis")
 }
 
 func TestMalformedWeaponsAndNobility(t *testing.T) {
 	t.Parallel()
 
-	wire := mustRead[wireWeapons](t, "weapons.json")
-	delete(wire.Lists, "Gun Combat")
-	refuses(t, "a category with no list", (&Rules{}).liftWeapons(wire), "no list for Gun Combat")
+	weapons := weaponsCopy()
 
-	wire = mustRead[wireWeapons](t, "weapons.json")
-	wire.Lists["Blade Combat"] = append(wire.Lists["Blade Combat"], "Dagger")
-	refuses(t, "a weapon listed twice", (&Rules{}).liftWeapons(wire), "listed twice")
+	weapons[traveller.Gun] = nil
+	refuses(t, "a category with no list", (&Rules{}).liftWeapons(weapons), "no list for Gun Combat")
 
-	nobility := mustRead[wireNobility](t, "nobility.json")
+	weapons = weaponsCopy()
+	weapons[traveller.Blade] = append(weapons[traveller.Blade], "Dagger")
+	refuses(t, "a weapon listed twice", (&Rules{}).liftWeapons(weapons), "listed twice")
 
-	nobility.Titles[0].Title = "archduke"
+	nobility := slices.Clone(transcribedNobility)
+	if len(nobility) != len(traveller.Titles) {
+		t.Fatalf("the nobility transcription has %d rows to break, want %d", len(nobility), len(traveller.Titles))
+	}
+
+	nobility[0].title = "archduke"
 	refuses(t, "a title Book 3 does not print", (&Rules{}).liftNobility(nobility), "archduke")
 
-	nobility = mustRead[wireNobility](t, "nobility.json")
-	nobility.Titles = nobility.Titles[:4]
+	nobility = slices.Clone(transcribedNobility[:len(traveller.Titles)-1])
 	refuses(t, "a nobility table with a missing rank", (&Rules{}).liftNobility(nobility), "4 rows")
 }
 
 func TestMalformedShips(t *testing.T) {
 	t.Parallel()
 
-	wire := mustRead[wireShips](t, "ships.json")
+	hulls := transcribedShips
 
-	wire.Ships[0].Kind = "Yacht"
-	refuses(t, "a ship Book 1 p. 22 does not name", (&Rules{}).liftShips(wire), "Yacht")
-
-	wire = mustRead[wireShips](t, "ships.json")
-	wire.Ships[0].HullTons = 0
-	refuses(t, "a hull of no size", (&Rules{}).liftShips(wire), "not a hull size")
-
-	wire = mustRead[wireShips](t, "ships.json")
-	wire.Ships[1].Kind = wire.Ships[0].Kind
-	refuses(t, "one ship listed twice", (&Rules{}).liftShips(wire), "listed twice")
-
-	wire = mustRead[wireShips](t, "ships.json")
-	wire.Ships = wire.Ships[:1]
-	refuses(t, "a ship with no hull at all", (&Rules{}).liftShips(wire), "no hull for")
+	hulls[traveller.ScoutShip] = 0
+	refuses(t, "a hull of no size", (&Rules{}).liftShips(hulls), "not a hull size")
 }
 
 // A table broken two ways names the same one every time.
@@ -385,16 +393,14 @@ func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 	t.Parallel()
 
 	first := sameErrorEveryRun(t, func() error {
-		wire := mustRead[wireServices](t, "services.json")
+		broken := servicesCopy()
 
 		// Scouts print no ranks, so a commission and a promotion in that
 		// column are both wrong at once.
-		const scouts = 3
+		broken.commission[traveller.Scouts] = broken.commission[traveller.Navy]
+		broken.promotion[traveller.Scouts] = broken.promotion[traveller.Navy]
 
-		wire.Commission[scouts] = wire.Commission[0]
-		wire.Promotion[scouts] = wire.Promotion[0]
-
-		return (&Rules{}).liftPriorService(wire)
+		return (&Rules{}).liftPriorService(broken)
 	})
 
 	if !strings.Contains(first, "commission") {
@@ -402,9 +408,10 @@ func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 	}
 }
 
-// sameErrorEveryRun lifts a freshly broken file fifty times and fails unless
+// sameErrorEveryRun lifts a freshly broken transcription fifty times and fails unless
 // every run refuses it with the same error, which it returns. Once proves
-// nothing: Go's map order is deliberately unstable.
+// nothing: a lift that ranged over a map would agree with an ordered one
+// about half the time, since Go's map order is deliberately unstable.
 func sameErrorEveryRun(t *testing.T, lift func() error) string {
 	t.Helper()
 
@@ -415,7 +422,7 @@ func sameErrorEveryRun(t *testing.T, lift func() error) string {
 	for range runs {
 		err := lift()
 		if err == nil {
-			t.Fatal("a file broken two ways was lifted")
+			t.Fatal("a table broken two ways was lifted")
 		}
 
 		if first == "" {
@@ -425,27 +432,27 @@ func sameErrorEveryRun(t *testing.T, lift func() error) string {
 		}
 
 		if err.Error() != first {
-			t.Fatalf("the same broken file reported two different problems:\n  %s\n  %s", first, err.Error())
+			t.Fatalf("the same broken table reported two different problems:\n  %s\n  %s", first, err.Error())
 		}
 	}
 
 	return first
 }
 
-// Two rows short at once is two faults, and the lift reports the one p. 10
-// prints first on every run.
+// Two throws left empty in one column is two faults, and the lift reports the
+// one p. 10 prints first on every run.
 //
 // Holds: A table broken two ways reports the same one every run.
 func TestABrokenServiceNamesTheSameRowEveryRun(t *testing.T) {
 	t.Parallel()
 
 	got := sameErrorEveryRun(t, func() error {
-		wire := mustRead[wireServices](t, "services.json")
+		broken := servicesCopy()
 
-		wire.Enlistment = wire.Enlistment[:5]
-		wire.Survival = wire.Survival[:5]
+		broken.enlistment[traveller.Other] = printedThrow{}
+		broken.survival[traveller.Other] = printedThrow{}
 
-		return (&Rules{}).liftPriorService(wire)
+		return (&Rules{}).liftPriorService(broken)
 	})
 
 	if !strings.Contains(got, "enlistment") {

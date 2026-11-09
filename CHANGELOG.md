@@ -14,6 +14,12 @@ release turns out to be.
   `internal/rules/transcription.go`, no longer `skills.json`; what they lift to
   is proven equal, and every golden is unchanged. A cell left empty is refused,
   since the page prints a dash where a cell means nothing (#337).
+- The other six tables (services, mustering out, aging, weapons, ships and
+  nobility) are Go literals in the transcription too, each proven equal to
+  what its JSON lifted before the JSON went. `internal/rules/data/`, the last
+  `//go:embed`, the JSON wire layer and the tests that existed only for it are
+  gone; a table, a service or a column the type does not have no longer
+  compiles. Every golden is unchanged (#338).
 
 ## 1.0.0-rc.1
 
