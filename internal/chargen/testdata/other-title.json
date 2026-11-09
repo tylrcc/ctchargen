@@ -32,6 +32,27 @@
   "benefits": {
     "cash": 10000
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Forgery",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "forced out"
   },

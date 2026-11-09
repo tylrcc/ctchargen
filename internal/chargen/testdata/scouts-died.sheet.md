@@ -9,7 +9,8 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 
 ## Service record
 
-- Scouts, enlisted
+- Scouts, enlisted; Pilot-1
+- Term 1: Air/Raft-1, Air/Raft-2
 - killed by the survival throw in term 2
 
 ---

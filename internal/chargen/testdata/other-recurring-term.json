@@ -44,6 +44,134 @@
       "Low Passage"
     ]
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Streetwise",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Forgery",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 12,
+              "to": 13
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Streetwise",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Forgery",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 13,
+              "to": 14
+            }
+          }
+        ]
+      },
+      {
+        "term": 8,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 3
+            }
+          }
+        ]
+      },
+      {
+        "term": 9,
+        "gained": [
+          {
+            "skill": {
+              "name": "Streetwise",
+              "level": 3
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 14,
+            "to": 13
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 12,
+            "to": 11
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 12,
+            "to": 11
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

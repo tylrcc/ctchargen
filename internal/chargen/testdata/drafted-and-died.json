@@ -23,6 +23,13 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1
+      }
+    ]
+  },
   "departure": {
     "how": "killed by the survival throw",
     "fatal": true

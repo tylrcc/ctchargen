@@ -10,6 +10,12 @@ The JSON the tool writes for one character, carrying every die thrown and
 every choice made. The only way back to a character.
 _Avoid_: Output, result, JSON file
 
+**Service history**:
+The service a term at a time: what entering it granted, and what each term
+conferred, gave and took. The record's `serviceHistory`, and what the sheet's
+service record tells.
+_Avoid_: Career (the policy's career strategy), log (the events)
+
 **Auto run**:
 A generation the policy answers, every choice point of it: `new --auto`, and
 every batch, which has nobody else to ask. Its

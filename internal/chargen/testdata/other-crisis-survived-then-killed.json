@@ -41,6 +41,101 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Automatic Rifle",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 2,
+            "to": 1
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 10,
+            "to": 9
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 1,
+            "to": 0
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 9,
+            "to": 8
+          }
+        ],
+        "recovered": [
+          "Strength"
+        ]
+      },
+      {
+        "term": 6
+      }
+    ]
+  },
   "departure": {
     "how": "killed by the survival throw",
     "fatal": true

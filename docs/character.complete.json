@@ -74,6 +74,196 @@
     ]
   },
   "annualRetirementPay": 8000,
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "4th Officer"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Engineer",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 8,
+              "to": 9
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "3rd Officer"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "2nd Officer"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Laser Carbine",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Bribery",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 9,
+            "to": 8
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 4,
+            "to": 3
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 3
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 8,
+            "to": 7
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "1st Officer",
+            "grants": [
+              {
+                "skill": {
+                  "name": "Pilot",
+                  "level": 1
+                }
+              }
+            ]
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "Sword",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 3,
+            "to": 2
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Captain"
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 7,
+              "to": 8
+            }
+          },
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 4
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Endurance",
+            "from": 6,
+            "to": 5
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

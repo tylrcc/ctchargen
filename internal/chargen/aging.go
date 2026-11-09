@@ -93,6 +93,8 @@ func (r *run) age(
 
 	r.log.outcomef(seq, errata, "%v -%d, %d to %d", characteristic, reduction, before, after)
 
+	r.serving().aged(Change{Characteristic: characteristic, From: before, To: after})
+
 	if after > crisisFloor {
 		return nil
 	}
@@ -133,6 +135,8 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 	}
 
 	r.char.Profile = r.char.Profile.Alter(characteristic, crisis.RecoversTo-r.char.Profile[characteristic])
+
+	r.serving().recovered(characteristic)
 
 	// Every die is kept, not their sum: the record logs what was thrown, and
 	// a sum written into a one-die event would read as a face no die has.

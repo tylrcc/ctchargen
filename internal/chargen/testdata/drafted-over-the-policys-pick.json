@@ -54,6 +54,131 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Cutlass",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Administration",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "ATV",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Pike",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "Lieutenant",
+            "grants": [
+              {
+                "skill": {
+                  "name": "Revolver",
+                  "level": 1
+                }
+              }
+            ]
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Administration",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "ATV",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 7,
+            "to": 6
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 9,
+            "to": 8
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 3,
+            "to": 2
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Sword",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 8,
+            "to": 7
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 2,
+            "to": 1
+          }
+        ]
+      },
+      {
+        "term": 6
+      }
+    ]
+  },
   "departure": {
     "how": "killed by the survival throw",
     "fatal": true

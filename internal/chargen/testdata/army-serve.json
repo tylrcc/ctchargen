@@ -69,6 +69,211 @@
     ]
   },
   "annualRetirementPay": 8000,
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Rifle",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "Lieutenant",
+            "grants": [
+              {
+                "skill": {
+                  "name": "Submachine Gun",
+                  "level": 1
+                }
+              }
+            ]
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Tactics",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Halberd",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Submachine Gun",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Captain"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Administration",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Major"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "ATV",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Lt Colonel"
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Education",
+              "from": 10,
+              "to": 11
+            }
+          },
+          {
+            "skill": {
+              "name": "Tactics",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Endurance",
+            "from": 8,
+            "to": 7
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Colonel"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "ATV",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Endurance",
+            "from": 7,
+            "to": 6
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "General"
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Education",
+              "from": 11,
+              "to": 12
+            }
+          },
+          {
+            "skill": {
+              "name": "Tactics",
+              "level": 3
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 10,
+            "to": 9
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Endurance",
+            "from": 6,
+            "to": 5
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

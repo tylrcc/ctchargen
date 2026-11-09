@@ -25,7 +25,14 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 ## Service record
 
-- Army, enlisted
+- Army, enlisted; Rifle-1
+- Term 1: commissioned Lieutenant (Submachine Gun-1); Tactics-1, Halberd-1, Submachine Gun-2
+- Term 2: promoted Captain; Gambling-1, Administration-1
+- Term 3: promoted Major; Electronic-1, ATV-1
+- Term 4: promoted Lt Colonel; Education +1, Tactics-2; aging Endurance -1
+- Term 5: promoted Colonel; Electronic-2, ATV-2; aging Endurance -1
+- Term 6: promoted General; Education +1, Tactics-3; aging Strength -1
+- Term 7: Mechanical-1; aging Endurance -1
 - retired after term 7
 
 ---

@@ -54,6 +54,147 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "4th Officer"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Halberd",
+              "level": 1
+            }
+          },
+          {
+            "change": {
+              "characteristic": "Endurance",
+              "from": 9,
+              "to": 10
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "3rd Officer"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 1
+            }
+          },
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 10,
+              "to": 11
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "2nd Officer"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 11,
+            "to": 10
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "1st Officer",
+            "grants": [
+              {
+                "skill": {
+                  "name": "Pilot",
+                  "level": 1
+                }
+              }
+            ]
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 10,
+              "to": 11
+            }
+          },
+          {
+            "skill": {
+              "name": "Gunnery",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 11,
+            "to": 10
+          }
+        ]
+      },
+      {
+        "term": 6
+      }
+    ]
+  },
   "departure": {
     "how": "killed by the survival throw",
     "fatal": true

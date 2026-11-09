@@ -12,10 +12,10 @@ import (
 // every throw made, every choice answered, every consequence.
 //
 // It is what makes a character auditable against Book 1 - walk the log with
-// the page open - and it is the narrative service record besides. With
-// readings, it ends with the full text of each reading the record names, so
-// the ids beside the outcomes can be read without the tool to hand. It takes
-// the record's bytes, for the reason Sheet does.
+// the page open; the sheet tells the service in brief, and this is every step
+// of it. With readings, it ends with the full text of each reading the record
+// names, so the ids beside the outcomes can be read without the tool to hand.
+// It takes the record's bytes, for the reason Sheet does.
 func Transcript(text []byte, readings bool) (string, error) {
 	projected, events, err := decode(text)
 	if err != nil {

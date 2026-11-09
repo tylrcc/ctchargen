@@ -91,6 +91,56 @@ func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 	}
 }
 
+// The service record narrates the career a term at a time, as the Jamison
+// example does (pp. 24-25): the rank each term conferred and what it granted,
+// what the term's skill rolls gave in the order rolled, what aging took, and a
+// crisis survived. The grants on entering the service sit on the enlistment
+// line, where E005 puts them. A rank's grants are in parentheses and two ranks
+// in one term are joined by "and", so "; " only separates a term's parts. A
+// term with nothing to tell - the one a survival throw ended - has no line,
+// since the departure line says how it ended (#401).
+//
+// Holds: The service record narrates the career a term at a time.
+func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
+	t.Parallel()
+
+	sheet, err := render.Sheet(minimalRecord(`
+		"terms":3,"service":"Army",
+		"enlistment":{"how":"enlisted","service":"Army"},
+		"departure":{"how":"killed by the survival throw","fatal":true},
+		"serviceHistory":{
+			"onEntering":[{"skill":{"name":"Rifle","level":1}}],
+			"terms":[
+				{"term":1,
+				 "raised":[{"how":"commissioned","rank":"Lieutenant",
+				            "grants":[{"skill":{"name":"Submachine Gun","level":1}}]},
+				           {"how":"promoted","rank":"Captain"}],
+				 "gained":[{"skill":{"name":"Tactics","level":1}},{"skill":{"name":"Halberd","level":1}}]},
+				{"term":2,
+				 "raised":[{"how":"promoted","rank":"Major",
+				            "grants":[{"change":{"characteristic":"Social Standing","from":9,"to":10}}]}],
+				 "gained":[{"change":{"characteristic":"Education","from":10,"to":11}},
+				           {"skill":{"name":"Tactics","level":2}}],
+				 "aged":[{"characteristic":"Strength","from":1,"to":0},
+				         {"characteristic":"Endurance","from":8,"to":7}],
+				 "recovered":["Strength"]},
+				{"term":3}
+			]}`))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := "## Service record\n\n" +
+		"- Army, enlisted; Rifle-1\n" +
+		"- Term 1: commissioned Lieutenant (Submachine Gun-1) and promoted Captain; Tactics-1, Halberd-1\n" +
+		"- Term 2: promoted Major (Social Standing +1); Education +1, Tactics-2; " +
+		"aging Strength -1, Endurance -1; Strength recovered from a medical crisis\n" +
+		"- killed by the survival throw in term 3\n"
+	if !strings.Contains(sheet, want) {
+		t.Errorf("the service record does not read:\n%s\nin:\n%s", want, sheet)
+	}
+}
+
 // A choice is named on the transcript in the words of the page that poses
 // it, with that page, and never by the Decider method's name, which is the
 // record's word for it and nobody else's (#402). The labels are typed out

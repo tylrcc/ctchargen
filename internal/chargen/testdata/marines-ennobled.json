@@ -71,6 +71,199 @@
     "travellersAid": true
   },
   "annualRetirementPay": 8000,
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Cutlass",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Computer",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Tactics",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "Lieutenant",
+            "grants": [
+              {
+                "skill": {
+                  "name": "Revolver",
+                  "level": 1
+                }
+              }
+            ]
+          },
+          {
+            "how": "promoted",
+            "rank": "Captain"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Cudgel",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Leader",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Force Cmdr"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Lt Colonel"
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Dexterity",
+              "from": 4,
+              "to": 5
+            }
+          },
+          {
+            "skill": {
+              "name": "Computer",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 8,
+            "to": 7
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 12,
+            "to": 11
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Colonel"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Revolver",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 3
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 5,
+            "to": 4
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 11,
+            "to": 10
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 4,
+            "to": 3
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

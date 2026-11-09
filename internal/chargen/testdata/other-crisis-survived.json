@@ -45,6 +45,145 @@
   "benefits": {
     "cash": 16000
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Automatic Rifle",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 3,
+            "to": 2
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 10,
+            "to": 9
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 2,
+            "to": 1
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 9,
+            "to": 8
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Forgery",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 10,
+            "to": 9
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 8,
+            "to": 7
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Social Standing",
+              "from": 10,
+              "to": 9
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 1,
+            "to": 0
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 7,
+            "to": 6
+          }
+        ],
+        "recovered": [
+          "Strength"
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

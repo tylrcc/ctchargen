@@ -235,7 +235,7 @@ func (a *applyBenefit) Passage(class traveller.PassageClass) error {
 
 func (a *applyBenefit) Alteration(characteristic traveller.Characteristic, delta int) error {
 	return a.run.apply(traveller.AlterationResult{Characteristic: characteristic, Delta: delta},
-		a.because, nil)
+		a.because, nil, nil)
 }
 
 func (a *applyBenefit) WeaponPick(category traveller.WeaponCategory) error {

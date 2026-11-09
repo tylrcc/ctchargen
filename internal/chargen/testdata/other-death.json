@@ -44,6 +44,70 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Computer",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Forgery",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Cutlass",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 9,
+            "to": 8
+          }
+        ]
+      },
+      {
+        "term": 5
+      }
+    ]
+  },
   "departure": {
     "how": "killed by the survival throw",
     "fatal": true

@@ -31,6 +31,28 @@
       "Low Passage"
     ]
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Social Standing",
+              "from": 12,
+              "to": 11
+            }
+          },
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 1
+            }
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "discharged"
   },

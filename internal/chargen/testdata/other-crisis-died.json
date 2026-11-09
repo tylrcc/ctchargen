@@ -36,6 +36,123 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Streetwise",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 2,
+              "to": 3
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 3,
+            "to": 2
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Streetwise",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 3,
+            "to": 2
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 2,
+            "to": 1
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Endurance",
+              "from": 4,
+              "to": 5
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 1,
+            "to": 0
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "killed by a medical crisis",
     "fatal": true,

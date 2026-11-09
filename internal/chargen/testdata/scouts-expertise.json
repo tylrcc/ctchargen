@@ -67,6 +67,139 @@
       }
     ]
   },
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Pilot",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Dexterity",
+              "from": 6,
+              "to": 7
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Jack of all Trades",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 10,
+            "to": 9
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 8,
+            "to": 7
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Endurance",
+            "from": 7,
+            "to": 6
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Education",
+              "from": 10,
+              "to": 11
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 9,
+            "to": 8
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 7,
+            "to": 6
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 6,
+            "to": 5
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

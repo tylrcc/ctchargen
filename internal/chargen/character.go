@@ -26,6 +26,10 @@ type Character struct {
 	Skills   []traveller.Skill
 	Benefits Benefits
 
+	// History is the service a term at a time. It is empty for a civilian,
+	// who served none.
+	History ServiceHistory
+
 	// DuplicateShips counts the scout ships a duplicate roll lost. P. 23:
 	// "Only one scout ship may be acquired by a character, and throws
 	// resulting in additional ships are lost."

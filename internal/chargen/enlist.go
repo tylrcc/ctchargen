@@ -132,7 +132,7 @@ func (r *run) grantsOnEntering() error {
 	r.log.step("rank and service skills", "p. 23")
 
 	for _, result := range granted {
-		err := r.apply(result, 0, []traveller.Erratum{traveller.E005})
+		err := r.apply(result, 0, []traveller.Erratum{traveller.E005}, &r.char.History.OnEntering)
 		if err != nil {
 			return err
 		}
@@ -142,9 +142,13 @@ func (r *run) grantsOnEntering() error {
 }
 
 // apply applies one Acquired Skills table result, or one grant, which take
-// the same three shapes (p. 12).
-func (r *run) apply(result traveller.TableResult, because int, errata []traveller.Erratum) error {
-	applied := &applyResult{run: r, because: because, errata: errata}
+// the same three shapes (p. 12), and records what it gives on the service
+// history at into. A mustering out benefit passes nil: mustering out is not a
+// term, and the sheet already lists what it delivered.
+func (r *run) apply(
+	result traveller.TableResult, because int, errata []traveller.Erratum, into *[]Gain,
+) error {
+	applied := &applyResult{run: r, because: because, errata: errata, into: into}
 
 	err := result.Fold(applied)
 	if err != nil {
@@ -162,6 +166,7 @@ type applyResult struct {
 	run     *run
 	because int
 	errata  []traveller.Erratum
+	into    *[]Gain
 }
 
 func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta int) error {
@@ -173,12 +178,15 @@ func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta 
 
 	a.run.log.outcomef(a.because, a.errata, "%v %+d, %d to %d", characteristic, delta, before, after)
 
+	a.gained(Change{Characteristic: characteristic, From: before, To: after})
+
 	return nil
 }
 
 func (a *applyResult) Skill(name traveller.SkillName) error {
 	level := a.run.char.addSkill(name)
 	a.run.log.outcomef(a.because, a.errata, "%s-%d", name, level)
+	a.gained(SkillGain{Skill: traveller.Skill{Name: name, Level: level}})
 
 	return nil
 }
@@ -196,6 +204,18 @@ func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 
 	level := a.run.char.addSkill(traveller.SkillName(chosen))
 	a.run.log.outcomef(a.because, a.errata, "%v: %s-%d", category, chosen, level)
+	a.gained(SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(chosen), Level: level}})
 
 	return nil
+}
+
+// gained records a gain on the history, where the caller named a place for
+// it.
+//
+// Implements: The service history records each term's rank, gains and aging
+// [Character record].
+func (a *applyResult) gained(gain Gain) {
+	if a.into != nil {
+		*a.into = append(*a.into, gain)
+	}
 }

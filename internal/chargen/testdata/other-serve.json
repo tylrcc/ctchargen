@@ -36,6 +36,97 @@
   "benefits": {
     "cash": 30000
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Gambling",
+              "level": 2
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Endurance",
+              "from": 4,
+              "to": 5
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Streetwise",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Automatic Pistol",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 6,
+            "to": 5
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 5,
+            "to": 4
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Social Standing",
+              "from": 7,
+              "to": 6
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 7,
+            "to": 6
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 5,
+            "to": 4
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

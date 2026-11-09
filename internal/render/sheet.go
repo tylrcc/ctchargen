@@ -248,12 +248,35 @@ func shipLine(ship shipRecord) string {
 		ship.Kind, ship.Tons, ship.Years, ship.PaymentYears)
 }
 
+// serviceLines is how the character entered, each term that has something to
+// tell, and how the service ended.
+//
+// Implements: The service record narrates the career a term at a time
+// [Character record].
 func serviceLines(r record) []string {
 	if r.Service == "" {
 		return []string{r.Enlistment.How}
 	}
 
-	lines := []string{fmt.Sprintf("%s, %s", r.Enlistment.Service, r.Enlistment.How)}
+	entered := fmt.Sprintf("%s, %s", r.Enlistment.Service, r.Enlistment.How)
+
+	var terms []termRecord
+
+	if r.History != nil {
+		entered = joinNonEmpty("; ", entered, gainsText(r.History.OnEntering))
+		terms = r.History.Terms
+	}
+
+	lines := []string{entered}
+
+	for _, term := range terms {
+		told := termText(term)
+		if told == "" {
+			continue
+		}
+
+		lines = append(lines, fmt.Sprintf("Term %d: %s", term.Term, told))
+	}
 
 	if r.Departure == nil {
 		return lines
@@ -285,4 +308,83 @@ func choiceAt(events []eventJSON, point string) (eventJSON, bool) {
 	}
 
 	return eventJSON{}, false
+}
+
+// termText is one term's rank, gains and aging, each part left out where the
+// term has none of it, so a term with nothing to tell is empty. A rank's
+// grants are in parentheses, so "; " only ever separates the parts.
+func termText(term termRecord) string {
+	raised := make([]string, 0, len(term.Raised))
+	for _, raise := range term.Raised {
+		raised = append(raised, raise.How+" "+raise.Rank+labelled(" (", gainsText(raise.Grants), ")"))
+	}
+
+	recovered := make([]string, 0, len(term.Recovered))
+	for _, characteristic := range term.Recovered {
+		recovered = append(recovered, characteristic+" recovered from a medical crisis")
+	}
+
+	return joinNonEmpty("; ",
+		strings.Join(raised, " and "),
+		gainsText(term.Gained),
+		labelled("aging ", changesText(term.Aged), ""),
+		strings.Join(recovered, ", "))
+}
+
+// labelled is text between its label and its close, or nothing where there
+// is no text.
+func labelled(label, text, closing string) string {
+	if text == "" {
+		return ""
+	}
+
+	return label + text + closing
+}
+
+// gainsText is each gain in the order received: a skill at the level it
+// reached, a characteristic change as the delta the page's results are
+// written in.
+func gainsText(gains []gainRecord) string {
+	parts := make([]string, 0, len(gains))
+
+	for _, gain := range gains {
+		switch {
+		case gain.Skill != nil:
+			parts = append(parts, fmt.Sprintf("%s-%d", gain.Skill.Name, gain.Skill.Level))
+		case gain.Change != nil:
+			parts = append(parts, changeText(*gain.Change))
+		default:
+			// A gain of a kind this build does not write, from another
+			// build's record: said to be unknown rather than dropped.
+			parts = append(parts, "(unknown gain)")
+		}
+	}
+
+	return strings.Join(parts, ", ")
+}
+
+func changesText(changes []changeRecord) string {
+	parts := make([]string, 0, len(changes))
+	for _, change := range changes {
+		parts = append(parts, changeText(change))
+	}
+
+	return strings.Join(parts, ", ")
+}
+
+func changeText(change changeRecord) string {
+	return fmt.Sprintf("%s %+d", change.Characteristic, change.To-change.From)
+}
+
+// joinNonEmpty joins the parts that say something.
+func joinNonEmpty(separator string, parts ...string) string {
+	kept := make([]string, 0, len(parts))
+
+	for _, part := range parts {
+		if part != "" {
+			kept = append(kept, part)
+		}
+	}
+
+	return strings.Join(kept, separator)
 }

@@ -59,6 +59,203 @@
     "travellersAid": true
   },
   "annualRetirementPay": 8000,
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "Ensign"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Ship's Boat",
+              "level": 1
+            }
+          },
+          {
+            "change": {
+              "characteristic": "Endurance",
+              "from": 8,
+              "to": 9
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Lieutenant"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "Jack of all Trades",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Lt Cmdr"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Forward Observer",
+              "level": 1
+            }
+          },
+          {
+            "change": {
+              "characteristic": "Social Standing",
+              "from": 12,
+              "to": 13
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 10,
+            "to": 9
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 9,
+            "to": 8
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Commander"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Pilot",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 9,
+            "to": 8
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Ship's Boat",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Endurance",
+            "from": 8,
+            "to": 7
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Captain",
+            "grants": [
+              {
+                "change": {
+                  "characteristic": "Social Standing",
+                  "from": 13,
+                  "to": 14
+                }
+              }
+            ]
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Education",
+              "from": 10,
+              "to": 11
+            }
+          },
+          {
+            "skill": {
+              "name": "Engineer",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 8,
+            "to": 7
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 7,
+            "to": 6
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

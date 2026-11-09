@@ -153,6 +153,57 @@
       "$ref": "#/$defs/credits",
       "description": "P. 21. Earned by leaving at the end of the fifth term or later, whatever caused it, and not available to the Scouts or Other."
     },
+    "serviceHistory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["terms"],
+      "description": "The service a term at a time, as the Jamison example tells it (pp. 24-25): what entering the service granted, and what each term conferred, gave and took. Absent for a civilian, who served none. Mustering out is not a term, and what it delivered is under benefits.",
+      "properties": {
+        "onEntering": {
+          "$ref": "#/$defs/gains",
+          "description": "What the Rank and Service Skills box grants on entering the service, before the first term's survival throw (p. 23, E005)."
+        },
+        "terms": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["term"],
+            "description": "One term of service. The term a survival throw ended carries its number and nothing else.",
+            "properties": {
+              "term": { "type": "integer", "minimum": 1 },
+              "raised": {
+                "type": "array",
+                "maxItems": 2,
+                "description": "The term's commission and promotion, in that order; p. 6 allows both in one term.",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": ["how", "rank"],
+                  "properties": {
+                    "how": { "enum": ["commissioned", "promoted"] },
+                    "rank": { "type": "string", "minLength": 1, "description": "What the Table of Ranks calls the rank conferred (p. 10)." },
+                    "grants": { "$ref": "#/$defs/gains", "description": "What the Rank and Service Skills box grants at that rank (p. 23)." }
+                  }
+                }
+              },
+              "gained": { "$ref": "#/$defs/gains", "description": "What the term's skill eligibilities gave, in the order rolled (pp. 6, 11)." },
+              "aged": {
+                "type": "array",
+                "description": "What the aging round at the end of the term took (pp. 7-9).",
+                "items": { "$ref": "#/$defs/change" }
+              },
+              "recovered": {
+                "type": "array",
+                "description": "Each characteristic that aging reduced to zero and that came back from the medical crisis (pp. 7-8).",
+                "items": { "$ref": "#/$defs/characteristicName" }
+              }
+            }
+          }
+        }
+      }
+    },
     "departure": {
       "type": "object",
       "additionalProperties": false,
@@ -252,6 +303,39 @@
       "description": "The six of the Prior Service Table (p. 10), spelled as p. 5 lists them (E012)."
     },
     "credits": { "type": "integer", "minimum": 0 },
+    "gains": {
+      "type": "array",
+      "description": "What one source gave, in the order received. Each gain is exactly one of a skill, at the level it reached, or a characteristic change.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "maxProperties": 1,
+        "properties": {
+          "skill": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "level"],
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "level": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "change": { "$ref": "#/$defs/change" }
+        }
+      }
+    },
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["characteristic", "from", "to"],
+      "description": "A characteristic from what it was to what it became. Both ends rather than a delta, because a floor or a ceiling can make the change differ from the result the table prints.",
+      "properties": {
+        "characteristic": { "$ref": "#/$defs/characteristicName" },
+        "from": { "$ref": "#/$defs/characteristic" },
+        "to": { "$ref": "#/$defs/characteristic" }
+      }
+    },
     "sequence": { "type": "integer", "minimum": 1 },
     "dice": {
       "type": "array",

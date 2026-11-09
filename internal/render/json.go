@@ -103,6 +103,7 @@ type record struct {
 	Skills          []skillRecord     `json:"skills"`
 	Benefits        benefitsRecord    `json:"benefits"`
 	Pension         int64             `json:"annualRetirementPay,omitempty"`
+	History         *historyRecord    `json:"serviceHistory,omitempty"`
 	Departure       *departureRecord  `json:"departure,omitempty"`
 	Nobility        *nobilityRecord   `json:"nobility,omitempty"`
 	Inputs          inputsRecord      `json:"inputs"`
@@ -235,6 +236,7 @@ func project(character *chargen.Character) (record, error) {
 
 	if service, served := character.ServedIn(); served {
 		out.Service = service.String()
+		out.History = projectHistory(character.History)
 	}
 
 	for _, skill := range character.Skills {

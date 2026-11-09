@@ -14,6 +14,7 @@ UPP A68AAC, age 22, Other, 1 term, baron/baroness, forced out
 ## Service record
 
 - Other, enlisted
+- Term 1: Forgery-1, Electronic-1
 - forced out after term 1
 
 ---

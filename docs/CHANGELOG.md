@@ -9,6 +9,11 @@ release turns out to be.
   with that page — `attempt a commission (p. 6)` where it printed
   `AttemptCommission` — and says a choice point it does not know is unknown.
   The record's `point` values are unchanged (#402).
+- The sheet's service record tells the career a term at a time — `Term 7:
+promoted Captain (Social Standing +1); Education +1, Engineer-1; aging
+Strength -1, Endurance -1` — with the grants on entering the service on the
+  enlistment line and any medical crisis survived. The record carries it as a
+  new top-level `serviceHistory` section, described in the schema (#401).
 
 ## 1.0.0-rc.3
 

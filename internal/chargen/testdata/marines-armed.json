@@ -75,6 +75,173 @@
     ]
   },
   "annualRetirementPay": 8000,
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Cutlass",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "Lieutenant",
+            "grants": [
+              {
+                "skill": {
+                  "name": "Revolver",
+                  "level": 1
+                }
+              }
+            ]
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Sword",
+              "level": 1
+            }
+          },
+          {
+            "change": {
+              "characteristic": "Endurance",
+              "from": 8,
+              "to": 9
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Dagger",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Captain"
+          }
+        ],
+        "gained": [
+          {
+            "skill": {
+              "name": "Shotgun",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Brawling",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 2
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 5,
+            "to": 4
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Bayonet",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 4,
+            "to": 3
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "raised": [
+          {
+            "how": "promoted",
+            "rank": "Force Cmdr"
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Dexterity",
+              "from": 11,
+              "to": 12
+            }
+          },
+          {
+            "skill": {
+              "name": "Tactics",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 12,
+            "to": 11
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 9,
+            "to": 8
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

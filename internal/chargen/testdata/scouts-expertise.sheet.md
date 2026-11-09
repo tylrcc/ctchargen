@@ -21,7 +21,14 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 
 ## Service record
 
-- Scouts, enlisted
+- Scouts, enlisted; Pilot-1
+- Term 1: Navigation-1, Electronic-1
+- Term 2: Mechanical-1
+- Term 3: Dexterity +1
+- Term 4: Jack of all Trades-1; aging Strength -1, Endurance -1
+- Term 5: Medical-1
+- Term 6: Electronic-2; aging Endurance -1
+- Term 7: Education +1; aging Strength -1, Dexterity -1, Endurance -1
 - retired after term 7
 
 ---

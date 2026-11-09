@@ -50,6 +50,95 @@
       "Low Passage"
     ]
   },
+  "serviceHistory": {
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Jack of all Trades",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "raised": [
+          {
+            "how": "commissioned",
+            "rank": "4th Officer"
+          },
+          {
+            "how": "promoted",
+            "rank": "3rd Officer"
+          }
+        ],
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 7,
+              "to": 8
+            }
+          },
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 2
+            }
+          },
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Cudgel",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 8,
+            "to": 7
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 6,
+            "to": 5
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "forced out"
   },

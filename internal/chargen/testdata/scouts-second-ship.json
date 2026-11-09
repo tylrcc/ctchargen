@@ -76,6 +76,143 @@
       }
     ]
   },
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Pilot",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1,
+        "gained": [
+          {
+            "skill": {
+              "name": "Medical",
+              "level": 1
+            }
+          },
+          {
+            "skill": {
+              "name": "Mechanical",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 2,
+        "gained": [
+          {
+            "skill": {
+              "name": "Jack of all Trades",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 3,
+        "gained": [
+          {
+            "skill": {
+              "name": "Laser Carbine",
+              "level": 1
+            }
+          }
+        ]
+      },
+      {
+        "term": 4,
+        "gained": [
+          {
+            "skill": {
+              "name": "Navigation",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 8,
+            "to": 7
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 9,
+            "to": 8
+          }
+        ]
+      },
+      {
+        "term": 5,
+        "gained": [
+          {
+            "skill": {
+              "name": "Electronic",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Strength",
+            "from": 7,
+            "to": 6
+          },
+          {
+            "characteristic": "Dexterity",
+            "from": 10,
+            "to": 9
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 8,
+            "to": 7
+          }
+        ]
+      },
+      {
+        "term": 6,
+        "gained": [
+          {
+            "skill": {
+              "name": "Vacc Suit",
+              "level": 1
+            }
+          }
+        ],
+        "aged": [
+          {
+            "characteristic": "Dexterity",
+            "from": 9,
+            "to": 8
+          },
+          {
+            "characteristic": "Endurance",
+            "from": 7,
+            "to": 6
+          }
+        ]
+      },
+      {
+        "term": 7,
+        "gained": [
+          {
+            "change": {
+              "characteristic": "Strength",
+              "from": 6,
+              "to": 7
+            }
+          }
+        ]
+      }
+    ]
+  },
   "departure": {
     "how": "retired"
   },

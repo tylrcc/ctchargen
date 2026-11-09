@@ -16,6 +16,10 @@ UPP 556ACA, age 34, Other, 4 terms, forced out
 ## Service record
 
 - Other, enlisted
+- Term 1: Electronic-1, Streetwise-1
+- Term 2: Forgery-1
+- Term 3: Social Standing -1
+- Term 4: Jack of all Trades-1; aging Strength -1
 - forced out after term 4
 
 ---

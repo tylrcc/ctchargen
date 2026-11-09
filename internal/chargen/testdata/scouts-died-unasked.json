@@ -28,6 +28,21 @@
   "benefits": {
     "cash": 0
   },
+  "serviceHistory": {
+    "onEntering": [
+      {
+        "skill": {
+          "name": "Pilot",
+          "level": 1
+        }
+      }
+    ],
+    "terms": [
+      {
+        "term": 1
+      }
+    ]
+  },
   "departure": {
     "how": "killed by the survival throw",
     "fatal": true
