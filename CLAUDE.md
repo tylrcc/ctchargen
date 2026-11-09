@@ -2,8 +2,7 @@
 
 Guidance for Claude Code in this repository. The v1 contract was
 `docs/PRD.md`, delivered and then removed from the tree after `ec7289f`, where
-the history keeps it; this file carries the authority model live, and adds
-what an agent needs and a human reader does not.
+the history keeps it; this file carries the authority model live.
 
 ## What this repo is
 
@@ -16,8 +15,6 @@ and the prerelease code audit (#27) are closed.**
 **What governs the work now is what Classic Traveller referees report about
 using the tool** (#26 was the first such report); the page and the clean room
 govern how a report gets answered. `v1.0.0-rc.2` is the current release.
-`v1.0.0-alpha.1` and `v1.0.0-alpha.2` predate the rebuild at `41a213a` and
-install a different tool; their notes say so.
 
 **What `v1.0.0` means, decided in #74.** Two things, and both must hold: a
 referee can trust what the tool prints at the table, **and** the record is
@@ -30,13 +27,8 @@ stale every time one closes.
 the schema's open root and closed objects (#113, #129), and what `record`
 counts (#96).
 
-**The paragraphs above the `v1.0.0` ones** are the thing here that goes
-stale on its own — what is delivered, and which release is current. Bring
-them current in the release pass, with the rest of the release-set documents,
-rather than as the work moves: a mid-stream fix leaves the other documents
-disagreeing with this one. The rules below them do not go stale: each states a bar,
-a promise or a scope, and holds until a decision changes it. They are not
-counted here, because a count is one more thing to get wrong.
+**The paragraphs above the `v1.0.0` ones go stale**; bring them current in
+the release pass, not as the work moves.
 
 ## Authority — read this before implementing any rule
 
@@ -150,12 +142,10 @@ readings are the fallback.
 
 ## Documents and what each governs
 
-| File                          | Governs                                                                                                                                                                                              |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/character.schema.json`  | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
-| `THEORY.md`, `WALKTHROUGH.md` | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                               |
-| `CODING_STANDARDS.md`         | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
-| `CLAUDE.md`                   | This file.                                                                                                                                                                                           |
+| File                         | Governs                                                                                                                                                                                              |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
+| `CODING_STANDARDS.md`        | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
 
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings are values in `rules`, one per entry of
@@ -242,8 +232,6 @@ go run ./cmd/ctchargen new --auto --sheet
 - **Coverage is not measured (#198).** The gate writes no coverage profile
   and holds no count. What keeps a test honest is the mutation rule below,
   and a test that holds nothing is not kept.
-- **The toolchain is deliberately unpinned.** A red gate on untouched code is
-  the signal working. Answer the finding; do not pin a tool to silence it.
 - **Dice-stream consumption order is load-bearing for the fixtures.** A 2D
   throw is two dice in sequence, and a throw the procedure does not make
   consumes nothing. Changing the order changes which path every fixture
@@ -283,19 +271,10 @@ go run ./cmd/ctchargen new --auto --sheet
   tells the old story, not only the lines that name it — and adds its bullet
   to the changelog's Unreleased section. Everything else in them waits for
   the release pass.
-- Markdown written here is reflowed by `bun fmt` immediately after the write
-  (a user-level `PostToolUse` hook, not repo config). The reflow is expected;
-  leave it alone rather than reverting it.
 - **`docs/character.schema.json` is hand-formatted.** Never run `bun fmt` over
   it; the reflow hook is a markdown one and this file is outside it.
-- Commits and PRs only when asked. Branch off `main` first; the history is
-  squash-merged PRs with sentence-case subjects that say what changed
-  ("Correct two typed ranges, name the font trap, and add milestone 0").
-- **Cutting a release bumps two things nothing checks**: the README's
-  `go install` line and the current-state paragraph above. No binaries are
-  built or attached; a release is a tag, installed with `go install`. A
-  published document that went stale while nobody noticed is what issue #31
-  was, and neither of these is held by the gate.
+- The history is squash-merged PRs with sentence-case subjects that say what
+  changed ("Correct two typed ranges, name the font trap, and add milestone 0").
 - **Release snapshots.** `THEORY.md` and `WALKTHROUGH.md` describe the
   release they were written for, not `main`, and each opens with a stamp
   naming that tag. The release prep PR regenerates them with `/code-theory`
