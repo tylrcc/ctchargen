@@ -5,6 +5,8 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 	"unicode/utf8"
 
@@ -171,6 +173,11 @@ type newRendering struct {
 func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRendering,
 	in io.Reader, out, asking io.Writer, dice source,
 ) error {
+	err := refusedBefore(how.output, how.force)
+	if err != nil {
+		return err
+	}
+
 	character, err := generate(inputs, policy, how.auto, in, asking, dice)
 	if err != nil {
 		return err
@@ -259,6 +266,35 @@ func checkName(name string) error {
 
 	if !utf8.ValidString(name) {
 		return fmt.Errorf("%w: --name %q is not UTF-8 text", errUsage, name)
+	}
+
+	return nil
+}
+
+// refusedBefore refuses an -o the note could never be written to, before
+// anyone is generated (#424): a path whose folder is missing or is not a
+// folder, a path already there without --force, and a directory, which
+// --force cannot replace either. Refused only at the end, a guided session
+// lost every answer the player had given. Without --force, the exclusive open
+// that writes the note still refuses a file that appears during the session.
+//
+// Implements: A guided session onto an existing -o is refused before it asks
+// [Command line].
+func refusedBefore(path string, force bool) error {
+	if path == "" {
+		return nil
+	}
+
+	folder := filepath.Dir(path)
+	if !isDirectory(folder) {
+		return fmt.Errorf("%w: %s is not a folder that exists, so -o %s cannot be written",
+			errUsage, folder, path)
+	}
+
+	_, err := os.Lstat(path)
+	if err == nil && (!force || isDirectory(path)) {
+		// inTheWay names a directory as one, with no --force advice (#254).
+		return inTheWay(path)
 	}
 
 	return nil

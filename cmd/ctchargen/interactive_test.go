@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"io"
+	"os"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"strconv"
@@ -581,6 +583,124 @@ func TestTheLiveViewMarksNothing(t *testing.T) {
 	for _, mark := range []string{"###", "**"} {
 		if strings.Contains(shown, mark) {
 			t.Errorf("the live view printed %q:\n%s", mark, shown)
+		}
+	}
+}
+
+// unread is an input the test fails on reading: a session refused before its
+// first question reads no answer.
+type unread struct{ t *testing.T }
+
+func (u unread) Read([]byte) (int, error) {
+	u.t.Error("a refused session read an answer")
+
+	return 0, io.EOF
+}
+
+// A guided `new -o` onto a path that is already there is refused before the
+// first question (#424), rather than after the whole session, when the
+// player's answers were lost with it. A file and a directory are both
+// refused, and the file is left as it was.
+//
+// Holds: A guided session onto an existing -o is refused before it asks.
+func TestAGuidedSessionOntoAnExistingPathIsRefusedFirst(t *testing.T) {
+	t.Parallel()
+
+	for name, plant := range map[string]func(path string) error{
+		"a file":      func(path string) error { return os.WriteFile(path, []byte("keep\n"), 0o600) },
+		"a directory": func(path string) error { return os.Mkdir(path, 0o700) },
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			path := filepath.Join(t.TempDir(), "kira.md")
+
+			err := plant(path)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			var asked strings.Builder
+
+			err = run([]string{cmdNew, flagService, other, flagOutput, path}, unread{t}, io.Discard, &asked)
+			if err == nil || !strings.Contains(err.Error(), path) {
+				t.Errorf("a session onto %s said %v, want it refused naming the path", name, err)
+			}
+
+			if asked.Len() != 0 {
+				t.Errorf("a refused session asked:\n%s", asked.String())
+			}
+
+			if name == "a file" {
+				kept, readErr := os.ReadFile(path)
+				if readErr != nil || string(kept) != "keep\n" {
+					t.Errorf("the file was left as %q (%v)", kept, readErr)
+				}
+			}
+		})
+	}
+}
+
+// With --force a session onto a file runs and replaces it, as before; onto a
+// directory it is still refused before it asks, since --force cannot replace
+// a directory either (#424).
+func TestForceRunsTheSessionUnlessADirectoryIsInTheWay(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	file, folder := filepath.Join(dir, "kira.md"), filepath.Join(dir, "folder.md")
+
+	err := os.WriteFile(file, []byte("keep\n"), 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = os.Mkdir(folder, 0o700)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = run([]string{cmdNew, flagService, other, flagOutput, folder, flagForce}, unread{t}, io.Discard, io.Discard)
+	if err == nil || !strings.Contains(err.Error(), "is a directory") {
+		t.Errorf("--force onto a directory said %v, want it refused as one before asking", err)
+	}
+
+	err = run([]string{cmdNew, flagService, other, flagOutput, file, flagForce},
+		answers("1", 200), io.Discard, io.Discard, withDice(otherWalked.roller(t)))
+	if err != nil {
+		t.Fatalf("--force onto a file: %v", err)
+	}
+
+	replaced, err := os.ReadFile(file)
+	if err != nil || !strings.HasPrefix(string(replaced), "---\nname:") {
+		t.Errorf("--force left the file as %q (%v), want the new note", replaced, err)
+	}
+}
+
+// A path whose folder is missing, or is a file, can't be written either, and
+// is refused before the session asks, naming the folder - not after it, as an
+// open that fails (#424).
+func TestAGuidedSessionWithNowhereToWriteIsRefusedFirst(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	file := filepath.Join(dir, "notes.txt")
+
+	err := os.WriteFile(file, []byte("mine\n"), 0o600)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for name, path := range map[string]string{
+		"a missing folder":      filepath.Join(dir, "missing", "kira.md"),
+		"a file for its folder": filepath.Join(file, "kira.md"),
+	} {
+		var asked strings.Builder
+
+		err := run([]string{cmdNew, flagService, other, flagOutput, path}, unread{t}, io.Discard, &asked)
+		if err == nil || !strings.Contains(err.Error(), filepath.Dir(path)) || asked.Len() != 0 {
+			t.Errorf("%s: said %v after asking %d bytes, want it refused at once naming %s",
+				name, err, asked.Len(), filepath.Dir(path))
 		}
 	}
 }

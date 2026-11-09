@@ -63,6 +63,10 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   `name` and `aliases` properties. An unnamed note — a batch member, or `new`
   without `--name` — is headed by its title, `# Army Captain 938788`, where
   it was `# (unnamed)`.
+- `new -o` onto a file already there, without `--force`, onto a directory, or
+  into a folder that doesn't exist is refused before the first question, where
+  a guided session used to run to
+  its end and lose every answer to the refusal (#424).
 - A character with no enlistment, which only a generation defect could
   produce, now fails loudly in the renderer rather than reading as one who
   never served, as #377 decided for the engine (#393).
