@@ -185,18 +185,29 @@ func retirementFixture(t *testing.T) (*Rules, servicesTranscription) {
 	return r, broken
 }
 
-// The Rank and Service Skills box keys each grant to a service and a rank.
+// The Rank and Service Skills box keys each grant to a label as p. 23 prints
+// it, which names a service in the box's own spelling and, after it, a rank
+// title from that service's column of the Table of Ranks; and each skill grant
+// carries the level suffix the box prints. Each part is refused by name.
 func TestMalformedGrants(t *testing.T) {
 	t.Parallel()
 
-	r, broken := retirementFixture(t)
+	for name, tc := range map[string]struct {
+		label, grant, mentions string
+	}{
+		"a service the box does not name":        {"Marines Lieutenant", "Revolver-1", "Marines"},
+		"a rank title the service does not have": {"Navy Commodore", "+1 Social", "Commodore"},
+		"a rank title another service has":       {"Scout Captain", "Pilot-1", "Captain"},
+		"a level other than one":                 {"Marine", "Cutlass-2", "Cutlass-2"},
+		"a skill with no level":                  {"Marine", "Cutlass", "Cutlass"},
+		"an alteration with a level":             {"Navy Captain", "+1 Social-1", "which the box prints with no level"},
+		"something that is not a result":         {"Navy Captain", "+1 Charisma", "Charisma"},
+	} {
+		r, broken := retirementFixture(t)
 
-	broken.grants[0].rank = 9
-	refuses(t, "a grant at a rank past the table", r.liftGrants(broken), "past the service's table of ranks")
-
-	r, broken = retirementFixture(t)
-	broken.grants[0].grant = "+1 Charisma"
-	refuses(t, "a grant of something that is not a result", r.liftGrants(broken), "Charisma")
+		broken.grants[0] = printedGrant{label: tc.label, grant: tc.grant}
+		refuses(t, name, r.liftGrants(broken), tc.mentions)
+	}
 }
 
 // The retirement pay table validates its own shape, so break it five ways.

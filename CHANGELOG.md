@@ -55,6 +55,13 @@ release turns out to be.
   the headers align, that only the last age carries a plus, and that each
   row's cells cover the columns once, and takes the bands from where the
   cells begin. Every lifted value is unchanged (#345).
+- The Rank and Service Skills box is transcribed as p. 23 prints it: each
+  entry's label (`Navy Captain`, `Marine`) and grant (`Cutlass-1`). The lift
+  reads the label's service in the box's own spelling, which E012 decides,
+  and its rank title in that service's Table of Ranks; a label with no title
+  is service-wide, which E005 reads as granted once, at entry. A skill grant
+  must carry the box's `-1`. Every lifted grant is unchanged, and every cell
+  of the transcription is now the page's text (#346).
 
 ## 1.0.0-rc.1
 

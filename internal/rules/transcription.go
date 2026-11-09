@@ -2,13 +2,15 @@ package rules
 
 import "github.com/philoserf/ctchargen/internal/traveller"
 
-// Where the transcription still departs from the print, and why: the page's
-// cells are typed as printed, but one of its layouts is not. The Rank and
-// Service Skills box (p. 23) labels each grant by its rank's title ("Navy
-// Captain") and suffixes a level ("Cutlass-1"), where printedGrant holds a
-// rank number and the skill alone (#346). The education gate is not a
-// cell: p. 11 says it in prose, "education 8 or greater", and printedGate
-// names the characteristic as p. 4 does.
+// Every cell is typed as the page prints it: its glyphs, its abbreviations,
+// its notation and its dashes. The layouts are the page's where its text
+// carries them, as the Aging Table's spans and the DM rows' headings do; where
+// only position does, which table a grid is, which service a column belongs
+// to and which ship a hull is are keyed by traveller's own types (ADR 0005),
+// so the Table of Ranks is held a column per service, as the Prior Service
+// Table beside it is. The education gate is not a cell: p. 11 says it in
+// prose, "education 8 or greater", and printedGate names the characteristic
+// as p. 4 does.
 
 // skillsTranscription is the Acquired Skills Table as p. 11 prints it, with
 // the eligibility and the education gate that govern it.
@@ -120,11 +122,11 @@ type printedDMRow struct {
 	conditions perService
 }
 
-// printedGrant is one row of the Rank and Service Skills box (p. 23).
+// printedGrant is one entry of the Rank and Service Skills box as p. 23
+// prints it: its label ("Navy Captain", "Marine") and its grant ("+1 Social",
+// "Cutlass-1").
 type printedGrant struct {
-	service traveller.ServiceName
-	rank    int
-	grant   string
+	label, grant string
 }
 
 // printedPension is one row of the Annual Retirement Pay table (p. 21).
@@ -256,14 +258,14 @@ var transcribedServices = servicesTranscription{
 		{"—", "—", "—", "—", "—", "—"},
 	},
 	grants: []printedGrant{
-		{service: traveller.Navy, rank: 5, grant: "+1 Social"},
-		{service: traveller.Navy, rank: 6, grant: "+1 Social"},
-		{service: traveller.Marines, rank: 0, grant: "Cutlass"},
-		{service: traveller.Marines, rank: 1, grant: "Revolver"},
-		{service: traveller.Army, rank: 0, grant: "Rifl3"},
-		{service: traveller.Army, rank: 1, grant: "SMG"},
-		{service: traveller.Merchants, rank: 4, grant: "Pilot"},
-		{service: traveller.Scouts, rank: 0, grant: "Pilot"},
+		{label: "Navy Captain", grant: "+1 Social"},
+		{label: "Navy Admiral", grant: "+1 Social"},
+		{label: "Marine", grant: "Cutlass-1"},
+		{label: "Marine Lieutenant", grant: "Revolver-1"},
+		{label: "Army", grant: "Rifl3-1"},
+		{label: "Army Lieutenant", grant: "SMG-1"},
+		{label: "Merchant 1st Officer", grant: "Pilot-1"},
+		{label: "Scout", grant: "Pilot-1"},
 	},
 
 	// Book 1 p. 21
@@ -275,6 +277,19 @@ var transcribedServices = servicesTranscription{
 	},
 	perAdditionalTerm: 2000,
 	pensionPaidBy:     []traveller.ServiceName{traveller.Navy, traveller.Marines, traveller.Army, traveller.Merchants},
+}
+
+// boxServices is how p. 23's Rank and Service Skills box spells the services
+// its labels open with. E012 decides it: the box is "the one place the
+// Marines are named in the singular, and the reason the box's entries cannot
+// be matched to a service by printed string alone". Other has no entry, and
+// the box prints none for it.
+var boxServices = map[string]traveller.ServiceName{
+	"Navy":     traveller.Navy,
+	"Marine":   traveller.Marines,
+	"Army":     traveller.Army,
+	"Scout":    traveller.Scouts,
+	"Merchant": traveller.Merchants,
 }
 
 // transcribedMustering is Book 1 p. 9 (Mustering Out Tables); pp. 21-22 (what

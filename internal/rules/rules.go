@@ -259,7 +259,7 @@ func (r *Rules) Normalize(printed string) traveller.SkillName {
 	return traveller.SkillName(expand(printed, r.normalize))
 }
 
-// Grant is one row of the Rank and Service Skills box (p. 23): a result that
+// Grant is one entry of the Rank and Service Skills box (p. 23): a result that
 // accrues automatically, without a throw and without using up eligibility.
 //
 // Rank 0 means the grant is by virtue of the service itself, which E005

@@ -299,24 +299,77 @@ func liftThrow(printed printedThrow, what string) (Throw, error) {
 	return throw, nil
 }
 
+// liftGrants lifts the Rank and Service Skills box (p. 23). Each label names
+// a service in the box's own spelling and, after it, a rank title from that
+// service's column of the Table of Ranks (p. 10); a label with no title is
+// service-wide, held as rank 0, which E005 reads as granted once, at entry. The prior service table is
+// lifted first, so the titles are there to be read.
 func (r *Rules) liftGrants(t servicesTranscription) error {
 	for _, g := range t.grants {
-		service := g.service
-
-		result, err := parseTableResult(g.grant, r.normalize)
+		service, rank, err := r.parseBoxLabel(g.label)
 		if err != nil {
-			return fmt.Errorf("rank and service skills, %v: %w", service, err)
+			return fmt.Errorf("rank and service skills: %w", err)
 		}
 
-		if g.rank < 0 || traveller.Rank(g.rank) > r.services[service].MaxRank() {
-			return fmt.Errorf("%w: rank and service skills, %v: rank %d is past the service's table of ranks", errMalformed,
-				service, g.rank)
+		printed, err := withoutBoxLevel(g.grant)
+		if err != nil {
+			return fmt.Errorf("rank and service skills, %s: %w", g.label, err)
 		}
 
-		r.grants = append(r.grants, Grant{Service: service, Rank: traveller.Rank(g.rank), Result: result})
+		result, err := parseTableResult(printed, r.normalize)
+		if err != nil {
+			return fmt.Errorf("rank and service skills, %s: %w", g.label, err)
+		}
+
+		r.grants = append(r.grants, Grant{Service: service, Rank: rank, Result: result})
 	}
 
 	return nil
+}
+
+// parseBoxLabel reads a box label as the service it names and the rank its
+// title holds in that service's Table of Ranks column, 0 for none.
+func (r *Rules) parseBoxLabel(label string) (traveller.ServiceName, traveller.Rank, error) {
+	word, title, _ := strings.Cut(label, " ")
+
+	service, ok := boxServices[word]
+	if !ok {
+		return 0, 0, fmt.Errorf("%w: %q opens with %q, which the box does not spell a service as", errMalformed, label, word)
+	}
+
+	if title == "" {
+		return service, 0, nil
+	}
+
+	for i, name := range r.services[service].Ranks {
+		if name == title {
+			return service, traveller.Rank(i + 1), nil
+		}
+	}
+
+	return 0, 0, fmt.Errorf("%w: %q: %v's Table of Ranks prints no %q", errMalformed, label, service, title)
+}
+
+// boxLevel is the suffix the box prints after each skill it grants: one
+// level, added "in the normal manner" (p. 23), which is what a grant adds.
+const boxLevel = "-1"
+
+// withoutBoxLevel is a grant without its level: a skill must carry exactly the
+// box's "-1", and a characteristic alteration carries none, as printed.
+func withoutBoxLevel(grant string) (string, error) {
+	skill, hasLevel := strings.CutSuffix(grant, boxLevel)
+
+	switch {
+	case startsWithSign(grant) && hasLevel:
+		return "", fmt.Errorf("%w: %q is an alteration, which the box prints with no level", errMalformed, grant)
+	case startsWithSign(grant):
+		return grant, nil
+	case !hasLevel:
+		return "", fmt.Errorf("%w: %q carries no %q, the level the box prints after every skill", errMalformed,
+			grant, boxLevel)
+	}
+
+	return skill, nil
 }
 
 func (r *Rules) liftRetirement(t servicesTranscription) error {
