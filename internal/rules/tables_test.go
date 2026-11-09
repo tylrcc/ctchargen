@@ -396,7 +396,7 @@ func TestMusterRollsAndPassages(t *testing.T) {
 
 	// The skill that earns the second of those, transcribed a second time
 	// (#47). It is data because it names which skill, and it has to be
-	// spelled as skills.json spells it after E012's normalization - a
+	// spelled as the skills transcription lifts it after E012's normalization - a
 	// mismatch would not fail, it would silently stop the modifier applying.
 	if r.Muster().Table2ModifierFrom != "Gambling" {
 		t.Errorf("the table 2 modifier is earned by %q, want Gambling", r.Muster().Table2ModifierFrom)

@@ -70,8 +70,8 @@ counted here, because a count is one more thing to get wrong.
    headings and the weapon lists, and treat one that resolves to nothing as a
    broken glyph rather than a new name.
 
-3. **Transcribe every table twice.** Once into the embedded data, once into
-   the `rules` tests, both from the same visual reading pass. The second
+3. **Transcribe every table twice.** Once as the page prints it, the
+   transcription in `rules`, once into the `rules` tests, both from the same visual reading pass. The second
    transcription is the check the font trap needs. Retyping the second copy
    from the first checks nothing.
 
@@ -180,7 +180,7 @@ promise (#199).
 
 - `traveller`: the domain. Alphabets, values, and the sums that say "exactly
   one of".
-- `rules`: every table of pp. 4–25, embedded and lifted once, and the
+- `rules`: every table of pp. 4–25, transcribed and lifted once, and the
   readings, declared as values. The lift validates the tables' cells and
   names; their values are the second transcription's.
 - `dice`: an unseeded stream. The record is the only way back (ADR 0001).

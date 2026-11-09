@@ -1,5 +1,7 @@
-// Package rules holds every table of Book 1 pp. 4-25 as embedded data, and
-// lifts it into the domain values of the traveller package.
+// Package rules holds every table of Book 1 pp. 4-25 as a transcription of
+// the page, and lifts it into the domain values of the traveller package. The
+// Acquired Skills tables are a Go literal in transcription.go; the rest are
+// still embedded JSON in data/, until they move too (ADR 0005, #338).
 //
 // The lift validates the shape of every cell and the alphabet of every name.
 // A cell that names no service, no characteristic, no benefit any row prints,
@@ -12,8 +14,8 @@
 // one with no erratum does not compile. They are not lifted: no markdown is
 // embedded, and nothing parses prose.
 //
-// Every table is transcribed twice: once into data/, and once into this
-// package's tests, from the same visual reading of the page. The two must
+// Every table is transcribed twice: once as the page prints it, and once into
+// this package's tests, from the same visual reading of the page. The two must
 // agree. That is what the reprint's font requires — its glyph substitutions
 // look like data, so on Book 1 p. 9 the dash cells of Mustering Out Table 1
 // extract as the digit 4 and "Travellers' Aid" extracts as Travellers9. A
@@ -21,7 +23,7 @@
 // does not have.
 //
 // So a value is the second transcription's to check, not the lift's. A key
-// misspelled in data/ leaves its field at zero, and the lift accepts that
+// misspelled in a JSON file under data/ leaves its field at zero, and the lift accepts that
 // zero wherever no check of its own refuses it; the tests' copy is what
 // notices that the page prints something else.
 package rules
@@ -377,8 +379,8 @@ type Muster struct {
 	// Table2ModifierFrom is the skill that earns the Table 2 DM (p. 9).
 	//
 	// The name lives beside the modifier it earns rather than as a literal
-	// in the engine (#47). It has to match what skills.json produces after
-	// E012's normalization, and the engine comparing against a Go string
+	// in the engine (#47). It has to match what the skills transcription lifts
+	// to after E012's normalization, and the engine comparing against a Go string
 	// meant that adding a normalization for it would silently stop the
 	// modifier applying, with only an accident of roster composition to
 	// notice. The lift applies that normalization to this name too, so the

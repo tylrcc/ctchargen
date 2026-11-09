@@ -145,6 +145,12 @@ func startsWithSign(cell string) bool {
 // that guard and with an error naming the en dash, since "–1 Social
 // Standing" is indistinguishable on screen from the real cell.
 func parseTableResult(cell string, normalize map[string]string) (traveller.TableResult, error) {
+	// A Go array short of a cell is padded with "" in silence, and the page
+	// prints a dash where a cell means nothing, so an empty cell is refused.
+	if strings.TrimSpace(cell) == "" {
+		return nil, fmt.Errorf("%w: an empty cell; the page prints a dash where it means nothing", errMalformed)
+	}
+
 	characteristic, size, isAlteration, err := parseAlteration(cell)
 	if err != nil {
 		return nil, err

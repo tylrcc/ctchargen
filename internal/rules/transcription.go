@@ -1,0 +1,93 @@
+package rules
+
+import "github.com/philoserf/ctchargen/internal/traveller"
+
+// skillsTranscription is the Acquired Skills Table as p. 11 prints it, with
+// the eligibility and the education gate that govern it.
+//
+// Which table a grid is, and which service a column belongs to, are positions
+// in traveller's own order: the tables in traveller.SkillTables order and the
+// services in traveller.ServiceNames order. A cell is printed text, today's
+// transcription of the page; where it still departs from the print is #339.
+type skillsTranscription struct {
+	tables        [len(traveller.SkillTables)][Faces][len(traveller.ServiceNames)]string
+	eligibility   Eligibility
+	educationGate printedGate
+
+	// normalizations is E012's, from what a table prints to the heading
+	// its description carries.
+	normalizations map[string]string
+}
+
+// printedGate is the education gate: the table it opens, and the
+// characteristic and threshold as the page prints them.
+type printedGate struct {
+	table                     traveller.SkillTable
+	characteristic, threshold string
+}
+
+// transcribedSkills is Book 1 p. 11 (Acquired Skills Table); p. 6 (Basic Skill
+// Eligibility); pp. 12-20 (the skill descriptions, whose headings every name
+// normalizes to).
+//
+// Rows are transcribed as the page lays them out: one row of the table, six
+// services across. E012 governs the names.
+var transcribedSkills = skillsTranscription{
+	tables: [len(traveller.SkillTables)][Faces][len(traveller.ServiceNames)]string{
+		traveller.PersonalDevelopment: { // Personal Development Table
+			{"+1 Strength", "+1 Strength", "+1 Strength", "+1 Strength", "+1 Strength", "+1 Strength"},
+			{"+1 Dexterity", "+1 Dexterity", "+1 Dexterity", "+1 Dexterity", "+1 Dexterity", "+1 Dexterity"},
+			{"+1 Endurance", "+1 Endurance", "+1 Endurance", "+1 Endurance", "+1 Endurance", "+1 Endurance"},
+			{"+1 Social Standing", "Gambling", "Gambling", "Gun Cbt", "+1 Strength", "Blade Cbt"},
+			{"+1 Intelligence", "Brawling", "Brawling", "+1 Intelligence", "Blade Cbt", "Brawling"},
+			{"+1 Education", "Blade Cbt", "+1 Education", "+1 Education", "Bribery", "-1 Social Standing"},
+		},
+		traveller.ServiceSkills: { // Service Skills Table
+			{"Ship's Boat", "ATV", "ATV", "Air/Raft", "Steward", "Forgery"},
+			{"Vacc Suit", "Vacc Suit", "Air/Raft", "Vacc Suit", "Vacc Suit", "Gambling"},
+			{"Fwd Obsv", "Blade Cbt", "Fwd Obsv", "Navigation", "Blade Cbt", "Brawling"},
+			{"Blade Cbt", "Blade Cbt", "Blade Cbt", "Mechanical", "Gun Cbt", "Blade Cbt"},
+			{"Gun Cbt", "Gun Cbt", "Gun Cbt", "Electronic", "Electronic", "Gun Cbt"},
+			{"Gunnery", "Gun Cbt", "Gun Cbt", "Jack-o-T", "Jack-o-T", "Bribery"},
+		},
+		traveller.AdvancedEducation: { // Advanced Education Table
+			{"Vacc Suit", "ATV", "ATV", "Air/Raft", "Streetwise", "Streetwise"},
+			{"Mechanical", "Mechanical", "Mechanical", "Mechanical", "Mechanical", "Mechanical"},
+			{"Electronic", "Electronic", "Electronic", "Electronic", "Electronic", "Electronic"},
+			{"Engnrng", "Tactics", "Tactics", "Jack-o-T", "Navigation", "Gambling"},
+			{"Gunnery", "Blade Cbt", "Blade Cbt", "Gunnery", "Gunnery", "Brawling"},
+			{"Jack-o-T", "Gun Cbt", "Gun Cbt", "Medical", "Medical", "Forgery"},
+		},
+		traveller.AdvancedEducationEight: { // Advanced Education Table (education 8+)
+			{"Medical", "Medical", "Medical", "Medical", "Medical", "Medical"},
+			{"Navigation", "Tactics", "Tactics", "Navigation", "Navigation", "Forgery"},
+			{"Engnrng", "Tactics", "Tactics", "Engnrng", "Engnrng", "Electronics"},
+			{"Computer", "Computer", "Computer", "Computer", "Computer", "Computer"},
+			{"Pilot", "Leader", "Leader", "Pilot", "Pilot", "Streetwise"},
+			{"Admin", "Admin", "Admin", "Jack-o-T", "Admin", "Jack-o-T"},
+		},
+	},
+
+	// Book 1 p. 6, the Basic Skill Eligibility box
+	eligibility: Eligibility{InitialTerm: 2, PerSubsequentTerm: 1, OnCommission: 1, OnPromotion: 1},
+
+	// Book 1 p. 11: 'the four tables if the character is of education 8 or
+	// greater'
+	educationGate: printedGate{table: traveller.AdvancedEducationEight, characteristic: "Education", threshold: "8+"},
+
+	// E012. Left is what a table prints, right is the heading its description
+	// carries on pp. 12-20. Blade Cbt and Gun Cbt resolve to the two weapon
+	// categories rather than to skill names: p. 11 requires the specific weapon
+	// at once, and p. 25's own skill list records the weapon, not the category.
+	normalizations: map[string]string{
+		"Blade Cbt":   "Blade Combat",
+		"Gun Cbt":     "Gun Combat",
+		"Fwd Obsv":    "Forward Observer",
+		"Engnrng":     "Engineer",
+		"Jack-o-T":    "Jack of all Trades",
+		"Admin":       "Administration",
+		"Electronics": "Electronic",
+		"Rifl3":       "Rifle",
+		"SMG":         "Submachine Gun",
+	},
+}

@@ -9,6 +9,11 @@ release turns out to be.
   Go: the rules tables are to move from embedded JSON to Go literals of what
   the page prints, with the lift kept, so that the last `//go:embed` goes
   (#337–#339). The glossary defines a transcription and the lift.
+- The Acquired Skills tables, the skill eligibility, the education gate and
+  E012's normalizations are a Go literal of the page's text in
+  `internal/rules/transcription.go`, no longer `skills.json`; what they lift to
+  is proven equal, and every golden is unchanged. A cell left empty is refused,
+  since the page prints a dash where a cell means nothing (#337).
 
 ## 1.0.0-rc.1
 

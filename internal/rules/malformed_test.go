@@ -179,28 +179,19 @@ func TestMalformedSkills(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]struct {
-		breaks   func(*wireSkills)
+		breaks   func(*skillsTranscription)
 		mentions string
 	}{
-		"a missing table": {
-			func(w *wireSkills) { delete(w.Tables, "Service Skills Table") },
-			"3 tables",
-		},
-		"a table the type does not name": {
-			func(w *wireSkills) {
-				w.Tables["Basic Training"] = w.Tables["Service Skills Table"]
-				delete(w.Tables, "Service Skills Table")
-			},
-			"Basic Training",
-		},
-		"a missing row": {
-			func(w *wireSkills) {
-				w.Tables["Service Skills Table"] = w.Tables["Service Skills Table"][:5]
-			},
-			"5 rows",
+		// A row a cell short compiles, and so does a table left out: Go
+		// pads either with "", and the lift refuses the empty cell. A table
+		// name the type does not have, and a gate on one, do not compile,
+		// and need no case here.
+		"a cell left empty": {
+			func(s *skillsTranscription) { s.tables[traveller.ServiceSkills][5][5] = "" },
+			"Service Skills Table, row 6, Other: malformed rules table: an empty cell",
 		},
 		"a cell that alters a characteristic that does not exist": {
-			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "+1 Charisma" },
+			func(s *skillsTranscription) { s.tables[traveller.ServiceSkills][0][0] = "+1 Charisma" },
 			"Charisma",
 		},
 		// A signed cell that is not an alteration is refused outright.
@@ -208,31 +199,28 @@ func TestMalformedSkills(t *testing.T) {
 		// the whole cell - a wrong value that looks right on screen, which
 		// is the failure this package exists to prevent.
 		"a signed cell that is not an alteration": {
-			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "+x Social Standing" },
+			func(s *skillsTranscription) { s.tables[traveller.ServiceSkills][0][0] = "+x Social Standing" },
 			"begins with a sign",
 		},
 		// An en dash looks like a minus on screen and is no sign, so the
 		// cell is refused by name rather than lifted as a skill.
 		"an alteration typed with an en dash": {
-			func(w *wireSkills) { w.Tables["Service Skills Table"][0][0] = "–1 Social Standing" },
+			func(s *skillsTranscription) { s.tables[traveller.ServiceSkills][0][0] = "–1 Social Standing" },
 			"an en dash is not a minus",
 		},
-		"an education gate on a table that does not exist": {
-			func(w *wireSkills) { w.EducationGate.Table = "Basic Training" },
-			"education gate",
-		},
 		"an education gate threshold that will not parse": {
-			func(w *wireSkills) { w.EducationGate.Threshold = "eight" },
+			func(s *skillsTranscription) { s.educationGate.threshold = "eight" },
 			"education gate",
 		},
 		"an education gate on a characteristic that does not exist": {
-			func(w *wireSkills) { w.EducationGate.Characteristic = "Wisdom" },
+			func(s *skillsTranscription) { s.educationGate.characteristic = "Wisdom" },
 			"education gate",
 		},
 	} {
-		wire := mustRead[wireSkills](t, "skills.json")
-		tc.breaks(&wire)
-		refuses(t, name, (&Rules{normalize: map[string]string{}}).liftSkills(wire), tc.mentions)
+		broken := transcribedSkills
+
+		tc.breaks(&broken)
+		refuses(t, name, (&Rules{normalize: map[string]string{}}).liftSkills(broken), tc.mentions)
 	}
 }
 
@@ -241,16 +229,11 @@ func TestMalformedSkills(t *testing.T) {
 func TestAnEnDashCellWrapsErrEnDash(t *testing.T) {
 	t.Parallel()
 
-	wire := mustRead[wireSkills](t, "skills.json")
+	broken := transcribedSkills
 
-	table := wire.Tables["Service Skills Table"]
-	if len(table) == 0 || len(table[0]) == 0 {
-		t.Fatal("skills.json has no Service Skills Table cell to break")
-	}
+	broken.tables[traveller.ServiceSkills][0][0] = "–1 Social Standing"
 
-	table[0][0] = "–1 Social Standing"
-
-	err := (&Rules{normalize: map[string]string{}}).liftSkills(wire)
+	err := (&Rules{normalize: map[string]string{}}).liftSkills(broken)
 	if !errors.Is(err, traveller.ErrEnDash) {
 		t.Errorf("lifting an en-dash cell: %v; want it to wrap traveller.ErrEnDash", err)
 	}
@@ -386,7 +369,7 @@ func TestMalformedShips(t *testing.T) {
 	refuses(t, "a ship with no hull at all", (&Rules{}).liftShips(wire), "no hull for")
 }
 
-// A data file broken two ways names the same one every time.
+// A table broken two ways names the same one every time.
 //
 // P. 10 makes ranks, commissions and promotions one fact, so a column that
 // prints one without the others is refused. Both columns can be wrong at
@@ -397,7 +380,7 @@ func TestMalformedShips(t *testing.T) {
 // Repeated (sameErrorEveryRun) because once proves nothing: a single pass
 // through an unordered range agrees with an ordered one about half the time.
 //
-// Holds: A data file broken two ways reports the same one every run.
+// Holds: A table broken two ways reports the same one every run.
 func TestABrokenServiceNamesTheSameColumnEveryRun(t *testing.T) {
 	t.Parallel()
 
@@ -452,7 +435,7 @@ func sameErrorEveryRun(t *testing.T, lift func() error) string {
 // Two rows short at once is two faults, and the lift reports the one p. 10
 // prints first on every run.
 //
-// Holds: A data file broken two ways reports the same one every run.
+// Holds: A table broken two ways reports the same one every run.
 func TestABrokenServiceNamesTheSameRowEveryRun(t *testing.T) {
 	t.Parallel()
 
@@ -470,46 +453,23 @@ func TestABrokenServiceNamesTheSameRowEveryRun(t *testing.T) {
 	}
 }
 
-// Two skill tables a row short at once, or two tables the type does not
-// name, is two faults, and the lift reports the same one on every run: the
-// table p. 11 prints first, or the name that sorts first.
+// Two skill tables with a cell left empty at once is two faults, and the lift
+// reports the same one on every run: the table p. 11 prints first.
 //
-// Holds: A data file broken two ways reports the same one every run.
-func TestABrokenSkillsFileNamesTheSameTableEveryRun(t *testing.T) {
+// Holds: A table broken two ways reports the same one every run.
+func TestABrokenSkillsTranscriptionNamesTheSameTableEveryRun(t *testing.T) {
 	t.Parallel()
 
-	short := sameErrorEveryRun(t, func() error {
-		wire := mustRead[wireSkills](t, "skills.json")
+	refused := sameErrorEveryRun(t, func() error {
+		broken := transcribedSkills
 
-		for _, name := range []string{"Personal Development Table", "Service Skills Table"} {
-			table := wire.Tables[name]
-			if len(table) == 0 {
-				t.Fatalf("skills.json has no %s to shorten", name)
-			}
+		broken.tables[traveller.ServiceSkills][5][5] = ""
+		broken.tables[traveller.PersonalDevelopment][5][5] = ""
 
-			wire.Tables[name] = table[:len(table)-1]
-		}
-
-		return (&Rules{normalize: map[string]string{}}).liftSkills(wire)
+		return (&Rules{normalize: map[string]string{}}).liftSkills(broken)
 	})
 
-	if !strings.Contains(short, "Personal Development") {
-		t.Errorf("the refusal names %q; p. 11 prints Personal Development before Service Skills", short)
-	}
-
-	unknown := sameErrorEveryRun(t, func() error {
-		wire := mustRead[wireSkills](t, "skills.json")
-
-		wire.Tables["Basic Training"] = wire.Tables["Personal Development Table"]
-		wire.Tables["Field Training"] = wire.Tables["Service Skills Table"]
-
-		delete(wire.Tables, "Personal Development Table")
-		delete(wire.Tables, "Service Skills Table")
-
-		return (&Rules{normalize: map[string]string{}}).liftSkills(wire)
-	})
-
-	if !strings.Contains(unknown, "Basic Training") {
-		t.Errorf("the refusal names %q; Basic Training sorts before Field Training", unknown)
+	if !strings.Contains(refused, "Personal Development") {
+		t.Errorf("the refusal names %q; p. 11 prints Personal Development before Service Skills", refused)
 	}
 }

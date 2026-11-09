@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"maps"
-	"slices"
 	"strings"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -48,23 +47,6 @@ type wireServices struct {
 		PerAdditionalTerm int64    `json:"perAdditionalTerm"`
 		PaidBy            []string `json:"paidBy"`
 	} `json:"retirementPay"`
-}
-
-type wireSkills struct {
-	Services    []string              `json:"services"`
-	Tables      map[string][][]string `json:"tables"`
-	Eligibility struct {
-		InitialTerm       int `json:"initialTerm"`
-		PerSubsequentTerm int `json:"perSubsequentTerm"`
-		OnCommission      int `json:"onCommission"`
-		OnPromotion       int `json:"onPromotion"`
-	} `json:"eligibility"`
-	EducationGate struct {
-		Table          string `json:"table"`
-		Characteristic string `json:"characteristic"`
-		Threshold      string `json:"threshold"`
-	} `json:"educationGate"`
-	Normalizations map[string]string `json:"normalizations"`
 }
 
 type wireMustering struct {
@@ -162,12 +144,7 @@ func read[T any](name string) (T, error) {
 func load() (*Rules, error) {
 	rules := &Rules{}
 
-	skills, err := read[wireSkills]("skills.json")
-	if err != nil {
-		return nil, err
-	}
-
-	rules.normalize = withoutNotes(skills.Normalizations)
+	rules.normalize = maps.Clone(transcribedSkills.normalizations)
 
 	mustering, err := read[wireMustering]("mustering.json")
 	if err != nil {
@@ -203,7 +180,7 @@ func load() (*Rules, error) {
 		func() error { return rules.liftPriorService(services) },
 		func() error { return rules.liftGrants(services) },
 		func() error { return rules.liftRetirement(services) },
-		func() error { return rules.liftSkills(skills) },
+		func() error { return rules.liftSkills(transcribedSkills) },
 		func() error { return rules.liftMustering(mustering) },
 		func() error { return rules.liftAging(aging) },
 		func() error { return rules.liftWeapons(weapons) },
@@ -268,7 +245,7 @@ func checkColumns(headings []string, what string) error {
 	return nil
 }
 
-// Implements: A data file broken two ways reports the same one every run [JSON
+// Implements: A table broken two ways reports the same one every run [JSON
 // conventions].
 func (r *Rules) liftPriorService(wire wireServices) error {
 	err := checkColumns(wire.Services, "prior service table")
@@ -494,103 +471,42 @@ func (r *Rules) liftRetirement(wire wireServices) error {
 	return nil
 }
 
-// skillTablesByName reads the four tables' names, in sorted order so a file
-// with two unknown names refuses the same one every run.
-func skillTablesByName(wire map[string][][]string) (map[traveller.SkillTable][][]string, error) {
-	tables := withoutNotes(wire)
-	if len(tables) != len(traveller.SkillTables) {
-		return nil, fmt.Errorf("%w: acquired skills: %d tables, want %d", errMalformed,
-			len(tables), len(traveller.SkillTables))
-	}
-
-	byTable := make(map[traveller.SkillTable][][]string, len(tables))
-
-	for _, name := range slices.Sorted(maps.Keys(tables)) {
-		table, err := parseSkillTable(name)
-		if err != nil {
-			return nil, fmt.Errorf("%w: acquired skills: %w", errMalformed, err)
-		}
-
-		byTable[table] = tables[name]
-	}
-
-	return byTable, nil
-}
-
-// liftSkillTables lifts every cell of the four tables, in the order p. 11
-// prints them (traveller.SkillTables) and never a map's, so a file broken two
-// ways names the first fault every run.
-func (r *Rules) liftSkillTables(services []string, byTable map[traveller.SkillTable][][]string) error {
+// liftSkills lifts the Acquired Skills transcription: the four tables, the
+// eligibility and the education gate. The tables are lifted in the order p. 11
+// prints them and each row's cells in traveller's order of services, so a
+// transcription broken two ways names the same fault every run.
+//
+// Implements: A table broken two ways reports the same one every run [JSON
+// conventions].
+func (r *Rules) liftSkills(t skillsTranscription) error {
 	for _, table := range traveller.SkillTables {
-		rows := byTable[table]
+		for die, row := range t.tables[table] {
+			for i, cell := range row {
+				service := traveller.ServiceNames[i]
 
-		if len(rows) != Faces {
-			return fmt.Errorf("%w: acquired skills, %v: %d rows, want %d", errMalformed, table, len(rows), Faces)
-		}
-
-		for die, row := range rows {
-			what := fmt.Sprintf("acquired skills, %v, row %d", table, die+1)
-
-			err := eachService(services, row, what, func(s traveller.ServiceName, cell string) error {
 				result, err := parseTableResult(cell, r.normalize)
 				if err != nil {
-					return err
+					return fmt.Errorf("%w: acquired skills, %v, row %d, %v: %w", errMalformed, table, die+1, service, err)
 				}
 
-				r.services[s].Skills[table][die] = result
-
-				return nil
-			})
-			if err != nil {
-				return err
+				r.services[service].Skills[table][die] = result
 			}
 		}
 	}
 
-	return nil
-}
+	r.eligibility = t.eligibility
 
-// liftSkills lifts skills.json: the four acquired skills tables, the
-// eligibility and the education gate. Names are read in sorted order and the
-// tables in the order p. 11 prints them, so a file broken two ways reports the
-// same fault every run.
-//
-// Implements: A data file broken two ways reports the same one every run [JSON
-// conventions].
-func (r *Rules) liftSkills(wire wireSkills) error {
-	byTable, err := skillTablesByName(wire.Tables)
-	if err != nil {
-		return err
-	}
-
-	err = r.liftSkillTables(wire.Services, byTable)
-	if err != nil {
-		return err
-	}
-
-	r.eligibility = Eligibility{
-		InitialTerm:       wire.Eligibility.InitialTerm,
-		PerSubsequentTerm: wire.Eligibility.PerSubsequentTerm,
-		OnCommission:      wire.Eligibility.OnCommission,
-		OnPromotion:       wire.Eligibility.OnPromotion,
-	}
-
-	table, err := parseSkillTable(wire.EducationGate.Table)
+	characteristic, err := parseCharacteristic(t.educationGate.characteristic)
 	if err != nil {
 		return fmt.Errorf("%w: education gate: %w", errMalformed, err)
 	}
 
-	characteristic, err := parseCharacteristic(wire.EducationGate.Characteristic)
+	threshold, err := traveller.ParseTarget(t.educationGate.threshold)
 	if err != nil {
 		return fmt.Errorf("%w: education gate: %w", errMalformed, err)
 	}
 
-	threshold, err := traveller.ParseTarget(wire.EducationGate.Threshold)
-	if err != nil {
-		return fmt.Errorf("%w: education gate: %w", errMalformed, err)
-	}
-
-	r.education = Gate{Table: table, Characteristic: characteristic, Threshold: threshold}
+	r.education = Gate{Table: t.educationGate.table, Characteristic: characteristic, Threshold: threshold}
 
 	return nil
 }

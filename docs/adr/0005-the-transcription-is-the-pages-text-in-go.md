@@ -26,12 +26,14 @@ are written down.
 
 The transcription's structure comes from the domain and its cells from the
 page. Which table a grid is and which service a column belongs to are
-positions or keys built from `traveller`'s types, so a misspelled table or a
-column out of order does not compile; only the cells are printed text, and the
-page's rows stay rows, in the page's order. A short Go array is padded with
+positions or keys built from `traveller`'s types, so a table the type does not
+name, a table given twice or a cell too many does not compile; only the cells
+are printed text, and the page's rows stay rows, in the page's order. Two cells
+swapped within a row still compile, as any two printed cells would, and the
+second transcription is what catches them. A short Go array is padded with
 empty strings in silence, so the lift refuses an empty cell, since the page
-prints a dash where it means nothing. `rules.Load` keeps
-its error: a literal can still hold text the lift refuses.
+prints a dash where it means nothing. `rules.Load` keeps its error: a literal
+can still hold text the lift refuses.
 
 The second transcription, in the `rules` tests, is unchanged. It is laid out
 apart from the page's grid, the service tables a service at a time, and written

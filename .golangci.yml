@@ -181,13 +181,21 @@ linters:
         path: internal/traveller/
         text: "exported method \\S+\\.(Fold|Sequence) should have comment"
 
-      # The second transcription of every table is a literal, cell by cell,
-      # typed from the page. Collapsing a repeated cell into a constant is
-      # exactly the coupling it exists to prevent: one constant means one
-      # typo reaches every cell that shares it, and the two copies stop
-      # being two readings. Repetition is the mechanism here, not a smell.
+      # Both transcriptions of every table are literals, cell by cell, typed
+      # from the page: the first in transcription.go, the second in the
+      # tests. Collapsing a repeated cell into a constant is exactly the
+      # coupling they exist to prevent: one constant means one typo reaches
+      # every cell that shares it, and a cell stops being what the page
+      # prints there. Repetition is the mechanism here, not a smell.
       - linters: [goconst]
-        path: internal/rules/.*_test\.go
+        path: internal/rules/(.*_test|transcription)\.go
+
+      # A number in the first transcription is the page's text, as a cell
+      # is: the Basic Skill Eligibility box prints 2, and the transcription
+      # holds 2. Naming it would put a second copy of the page beside the
+      # value that is the page's own.
+      - linters: [mnd]
+        path: internal/rules/transcription\.go
 
 # gofumpt rather than gofmt: a strict superset, so enabling it makes gofmt
 # redundant rather than contradictory. It ships inside golangci-lint, so it
