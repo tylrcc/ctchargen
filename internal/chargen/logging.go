@@ -22,7 +22,7 @@ import (
 // a mutation removing it survives; it is there for the site that does not.
 //
 // Implements: An offer is the decider's own, and writing to it changes nothing
-// the engine offers [Choice points].
+// the engine offers [Choices].
 //
 // It must implement every method of Decider to compile, which is the whole
 // point of the shape: a choice point cannot reach the engine without
@@ -239,7 +239,7 @@ const aChoice = 2
 // quietly absorb.
 //
 // Implements: A question with one legal answer is never put to a decider
-// [Choice points].
+// [Choices].
 func asked(point traveller.ChoicePoint, alternatives []string) error {
 	if len(alternatives) < aChoice {
 		return fmt.Errorf("%w: %v offered only %v; the engine asks only when more than one answer is legal",
@@ -300,8 +300,8 @@ func (l logging) yesOrNo(point traveller.ChoicePoint, ask func() (bool, error)) 
 // recorded, and nothing would notice. It holds, and
 // traveller.TestNoTwoValuesOfAnAlphabetShareASpelling holds it (#48).
 //
-// Implements: An answer outside the offered set is refused, not applied [Choice
-// points].
+// Implements: An answer outside the offered set is refused, not applied
+// [Choices].
 func (l logging) record(point traveller.ChoicePoint, from []string, chosen string) error {
 	if !slices.Contains(from, chosen) {
 		return fmt.Errorf("%w: %v offered %v, and was answered %q",

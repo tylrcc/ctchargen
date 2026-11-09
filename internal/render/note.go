@@ -79,7 +79,7 @@ func provenance(r view) string {
 // "Civilian", and his UPP (#400). A given name stays out of it: --name gives
 // every member of a batch the same one, which tells no file from another.
 //
-// Implements: A batch member's note is named for its character [CLI sketch].
+// Implements: A batch member's note is named for its character [Command line].
 func Title(character *chargen.Character) string {
 	r := viewOf(character)
 

@@ -53,6 +53,11 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   — and under its heading a one-paragraph summary a referee can read aloud.
   The property names freeze at `v1.0.0` (#399, #418, #425).
 
+- The coverage map's promise labels name a promise's topic from a closed list,
+  in today's words — Command line, Sheet, Choices, Domain, Transcription,
+  alongside Authority, Documents and Generation record — rather than the
+  section of the removed v1 contract it was first stated under (#391).
+
 ## 1.0.0-rc.3
 
 The third release candidate for `v1.0.0`, and the first with every `v1`

@@ -71,7 +71,7 @@ func headline(r view) string {
 // terms is the count and the word, so a one-term character does not read
 // "1 terms".
 //
-// Implements: A one-term character reads as one term [Character record].
+// Implements: A one-term character reads as one term [Sheet].
 func terms(count int) string {
 	if count == oneTerm {
 		return "1 term"
@@ -210,7 +210,7 @@ func shipLine(ship shipView) string {
 // tell, and how the service ended.
 //
 // Implements: The service record narrates the career a term at a time
-// [Character record].
+// [Sheet].
 func serviceLines(r view) []string {
 	if r.Service == "" {
 		return []string{r.Enlistment.How}

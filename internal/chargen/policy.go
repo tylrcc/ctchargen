@@ -211,7 +211,7 @@ func DefaultPolicy() Policy {
 // told his strategy is wrong is the one who typed `go install` and has never
 // seen this tree.
 //
-// Implements: A word that names no strategy never becomes one [Choice points].
+// Implements: A word that names no strategy never becomes one [Choices].
 func parsed[T fmt.Stringer](word, flag string, all []T) (T, error) {
 	for _, want := range all {
 		if word == want.String() {

@@ -40,8 +40,7 @@ var characteristicKeys = map[traveller.Characteristic]string{
 // writes can change a property's type, and nothing a referee types is
 // trusted; numbers are bare.
 //
-// Implements: A note opens with properties a vault can query [Character
-// record].
+// Implements: A note opens with properties a vault can query [Sheet].
 func writeProperties(out *strings.Builder, r view) {
 	out.WriteString("---\n")
 

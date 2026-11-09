@@ -23,8 +23,7 @@ const standsOut = 2
 // told how and when they died (#418); a civilian, that he declined the
 // draft. It says nothing the sheet below it doesn't.
 //
-// Implements: A note opens with a summary a referee can read aloud [Character
-// record].
+// Implements: A note opens with a summary a referee can read aloud [Sheet].
 func summary(r view) string {
 	if r.Service == "" {
 		return fmt.Sprintf("A civilian who declined the draft at %d.", r.Age.Years)

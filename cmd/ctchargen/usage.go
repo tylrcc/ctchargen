@@ -110,7 +110,8 @@ func writeUsageText(out io.Writer, text string) error {
 // Nobody loses a character to it. It is consistency, and the kind of thing a
 // referee finds by typing.
 //
-// Implements: A word after a help flag is refused, not discarded [CLI sketch].
+// Implements: A word after a help flag is refused, not discarded
+// [Command line].
 func writeHelp(out io.Writer, line string, flags *flag.FlagSet) error {
 	if flags.NArg() > 0 {
 		return fmt.Errorf("%w: %s; %s", errUsage, line, helpTakesNoArguments(flags.Arg(0)))

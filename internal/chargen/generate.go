@@ -65,7 +65,7 @@ func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
 // choice is the player's, whatever decider stands for him.
 //
 // Implements: A guided run's choices are recorded as the player's, not the
-// policy's [Choice points].
+// policy's [Choices].
 func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	return generate(in, decider, nil, options)
 }

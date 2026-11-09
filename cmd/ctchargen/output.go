@@ -122,7 +122,7 @@ func create(path string) (*os.File, error) {
 // remove.
 //
 // Implements: A directory in the way is named as one, with no --force advice
-// [CLI sketch].
+// [Command line].
 func inTheWay(path string) error {
 	if isDirectory(path) {
 		return aDirectory(path)
@@ -177,7 +177,7 @@ func position(index, count int) string {
 // memberPath is where batch writes the member at a position: the position,
 // then the title the character is known by.
 //
-// Implements: A batch member's note is named for its character [CLI sketch].
+// Implements: A batch member's note is named for its character [Command line].
 func memberPath(dir, at, title string) string {
 	return filepath.Join(dir, at+" "+title+".md")
 }

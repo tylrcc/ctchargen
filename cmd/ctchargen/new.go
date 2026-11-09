@@ -118,8 +118,8 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 // nothing and appear nowhere in the record. The check is on what the operator
 // set, not on the values, because every strategy flag has a default.
 //
-// Implements: A strategy given without --auto is refused, not ignored [CLI
-// sketch].
+// Implements: A strategy given without --auto is refused, not ignored
+// [Command line].
 func strategiesWithoutAuto(set *flag.FlagSet, auto bool) error {
 	if auto {
 		return nil

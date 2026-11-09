@@ -47,7 +47,7 @@ type TermServed struct {
 // it, so the grants at its rank can be recorded on it.
 //
 // Implements: The service history records each term's rank, gains and aging
-// [Character record].
+// [Sheet].
 func (t *TermServed) raised(raise Raise) *Raise {
 	t.Raised = append(t.Raised, raise)
 
@@ -57,13 +57,13 @@ func (t *TermServed) raised(raise Raise) *Raise {
 // aged records what the term's aging round took from one characteristic.
 //
 // Implements: The service history records each term's rank, gains and aging
-// [Character record].
+// [Sheet].
 func (t *TermServed) aged(change Change) { t.Aged = append(t.Aged, change) }
 
 // recovered records a characteristic that came back from a medical crisis.
 //
 // Implements: The service history records each term's rank, gains and aging
-// [Character record].
+// [Sheet].
 func (t *TermServed) recovered(characteristic traveller.Characteristic) {
 	t.Recovered = append(t.Recovered, characteristic)
 }

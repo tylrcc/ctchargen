@@ -213,7 +213,7 @@ func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 // it.
 //
 // Implements: The service history records each term's rank, gains and aging
-// [Character record].
+// [Sheet].
 func (a *applyResult) gained(gain Gain) {
 	if a.into != nil {
 		*a.into = append(*a.into, gain)

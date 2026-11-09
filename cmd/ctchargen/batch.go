@@ -28,10 +28,11 @@ import (
 // --auto, and a command line passing one is refused by the flag package as a
 // flag batch does not have, not accepted and ignored (#336).
 //
-// Implements: A batch is always an auto run, and takes no --auto [CLI sketch].
+// Implements: A batch is always an auto run, and takes no --auto
+// [Command line].
 //
-// Implements: A batch's -o names a folder, and a batch takes no --force [CLI
-// sketch].
+// Implements: A batch's -o names a folder, and a batch takes no --force
+// [Command line].
 func batch(args []string, out, asking io.Writer, dice source) error {
 	flags := declareBatchFlags()
 
@@ -122,7 +123,7 @@ func declareBatchFlags() batchFlagSet {
 // the notes one after another.
 //
 // Implements: A failed search prints no stopped-run tally beside its counts
-// [CLI sketch].
+// [Command line].
 func write(out, asking io.Writer, run batchRun, path string) error {
 	var (
 		done tally
@@ -176,8 +177,8 @@ func (b batchRun) member(i int) (*chargen.Character, error) {
 
 // tally is what a batch did, for the line it prints when it is done.
 //
-// Implements: A batch says how many it wrote and how many it passed over [CLI
-// sketch].
+// Implements: A batch says how many it wrote and how many it passed over
+// [Command line].
 type tally struct {
 	written int
 	passed  int
@@ -249,7 +250,7 @@ func (t tally) reportAs(asking io.Writer, line string) error {
 // hundred is a margin of twenty-five over the worst case anyone has seen, and
 // reaching it means something is wrong rather than unlucky.
 //
-// Implements: A batch gives up rather than drawing forever [CLI sketch].
+// Implements: A batch gives up rather than drawing forever [Command line].
 const attemptsPerMember = 100
 
 // each walks the batch, handing each living member to take with its
@@ -259,8 +260,8 @@ const attemptsPerMember = 100
 // written member is still exactly what the dice made. What changes is who
 // fills a slot, not what any member means (#33).
 //
-// Implements: A batch writes only the living, and generates another [CLI
-// sketch].
+// Implements: A batch writes only the living, and generates another
+// [Command line].
 func (b batchRun) each(take func(index int, character *chargen.Character) error) (tally, error) {
 	var done tally
 
@@ -313,14 +314,14 @@ func (b batchRun) streamed(out io.Writer) (tally, error) {
 // writingTo is the take a streamed run uses: write the member's note, a blank
 // line after the one before it, as each member is made.
 //
-// Implements: A batch to standard output arrives a note at a time [CLI
-// sketch].
+// Implements: A batch to standard output arrives a note at a time
+// [Command line].
 //
 // A failure names the member by its position among those written, which is
 // the one name a streamed member has.
 //
 // Implements: A write that fails partway stops the batch, naming the member
-// [CLI sketch].
+// [Command line].
 func writingTo(out io.Writer) func(int, *chargen.Character) error {
 	return func(index int, character *chargen.Character) error {
 		separator := ""
@@ -351,7 +352,7 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 // folder.
 //
 // Implements: A directory batch that cannot write a member leaves what came
-// before [CLI sketch].
+// before [Command line].
 func (b batchRun) intoDirectory(dir string) (tally, error) {
 	err := os.MkdirAll(dir, noteDirMode)
 	if err != nil {
@@ -383,10 +384,10 @@ func (b batchRun) intoDirectory(dir string) (tally, error) {
 // It takes a folder and nothing that could generate, so the check costs a
 // listing and never a character (#99).
 //
-// Implements: A batch writes only into a folder of its own [CLI sketch].
+// Implements: A batch writes only into a folder of its own [Command line].
 //
-// Implements: A batch refuses its folder before generating anybody [CLI
-// sketch].
+// Implements: A batch refuses its folder before generating anybody
+// [Command line].
 func ownFolder(dir string) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {

@@ -17,7 +17,7 @@ import (
 // names no reading is a usage error, and nothing is written.
 //
 // Implements: The readings are listed, and those asked for are written in full
-// [CLI sketch].
+// [Command line].
 func readings(args []string, out io.Writer) error {
 	if asked, err := answerHelp(args, out, readingsUsage); asked {
 		return err

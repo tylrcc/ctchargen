@@ -107,8 +107,8 @@ func checkDraft(draft [len(traveller.ServiceNames)]int) error {
 // liftServiceColumn lifts one column of the Prior Service Table and the
 // Table of Ranks beside it (p. 10).
 //
-// Implements: A table broken two ways reports the same one every run [JSON
-// conventions].
+// Implements: A table broken two ways reports the same one every run
+// [Transcription].
 func liftServiceColumn(
 	t servicesTranscription, throws serviceThrows, i int, name traveller.ServiceName,
 ) (Service, error) {
@@ -452,8 +452,8 @@ func (r *Rules) liftRetirement(t servicesTranscription) error {
 // prints them and each row's cells in traveller's order of services, so a
 // transcription broken two ways names the same fault every run.
 //
-// Implements: A table broken two ways reports the same one every run [JSON
-// conventions].
+// Implements: A table broken two ways reports the same one every run
+// [Transcription].
 func (r *Rules) liftSkills(t skillsTranscription) error {
 	for _, table := range traveller.SkillTables {
 		for die, row := range t.tables[table] {

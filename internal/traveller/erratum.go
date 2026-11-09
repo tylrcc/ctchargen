@@ -42,7 +42,7 @@ const (
 // Errata is every recorded reading, in id order, for iteration and for the
 // gate.
 //
-// Implements: Every erratum constant is in Errata, in order [Domain model].
+// Implements: Every erratum constant is in Errata, in order [Domain].
 var Errata = [...]Erratum{
 	E001, E002, E003, E004, E005, E006, E007,
 	E008, E009, E010, E011, E012, E013, E014, E015,

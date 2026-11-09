@@ -53,7 +53,7 @@ func Reading(r rules.Reading) string {
 // so every one has a reading.
 //
 // Implements: A note asked for with its readings carries each reading its
-// generation record names, in full, before its closing lines [CLI sketch].
+// generation record names, in full, before its closing lines [Command line].
 func writeReadings(out *strings.Builder, errata []traveller.Erratum) {
 	out.WriteString("## Readings\n\n")
 
@@ -75,7 +75,7 @@ var ErrNoReading = errors.New("names no reading")
 // is in force or withdrawn, one row each in erratum order.
 //
 // Implements: The readings are listed, and those asked for are written in full
-// [CLI sketch].
+// [Command line].
 func ReadingsIndex() string {
 	var out strings.Builder
 
@@ -98,7 +98,7 @@ func ReadingsIndex() string {
 // names no reading fails the whole and nothing reaches the caller.
 //
 // Implements: The readings are listed, and those asked for are written in full
-// [CLI sketch].
+// [Command line].
 func ReadingsNamed(ids []string) (string, error) {
 	var out strings.Builder
 

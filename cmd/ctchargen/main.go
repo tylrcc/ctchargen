@@ -83,7 +83,7 @@ func withDice(dice source) option {
 // Interactive mode writes its questions to the second, so that
 // `ctchargen new > kira.md` saves a note and not a conversation.
 //
-// Implements: The questions go to stderr, not into the note [CLI sketch].
+// Implements: The questions go to stderr, not into the note [Command line].
 func run(args []string, in io.Reader, out, asking io.Writer, options ...option) error {
 	var chosen settings
 

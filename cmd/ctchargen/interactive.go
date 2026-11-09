@@ -17,7 +17,7 @@ import (
 // asking. It is an error rather than a default, because a character finished
 // by a decision nobody made is not the character anybody asked for.
 //
-// Implements: The input ending is an error, not a default [Choice points].
+// Implements: The input ending is an error, not a default [Choices].
 var errNoAnswer = errors.New("the input ended while the procedure was still asking")
 
 // player is the Decider a person drives: the third implementation, after the
@@ -29,7 +29,7 @@ var errNoAnswer = errors.New("the input ended while the procedure was still aski
 // cannot read is asked again rather than guessed at.
 //
 // Implements: Every question the player is asked is one the engine asked
-// [Choice points].
+// [Choices].
 type player struct {
 	in  *bufio.Scanner
 	out io.Writer
@@ -156,8 +156,7 @@ type weaponOffer struct {
 // MusterWeapon offers a weapon of the category, or expertise in one already
 // received, each line carrying the benefit it names.
 //
-// Implements: Each weapon-benefit line records the benefit it says [Choice
-// points].
+// Implements: Each weapon-benefit line records the benefit it says [Choices].
 func (p *player) MusterWeapon(
 	category traveller.WeaponCategory, from, received []traveller.WeaponName,
 ) (traveller.WeaponBenefit, error) {
@@ -197,8 +196,7 @@ func (p *player) AssumeTitle(title traveller.Title) (bool, error) {
 
 // sayf writes to the player, remembering the first failure.
 //
-// Implements: A player nobody can be shown anything is not asked [Choice
-// points].
+// Implements: A player nobody can be shown anything is not asked [Choices].
 func (p *player) sayf(format string, args ...any) {
 	if p.wrote != nil {
 		return
@@ -223,10 +221,8 @@ func (p *player) watch(event traveller.Event) {
 // would bury the complaint under six lines of menu and read as though the tool
 // had said nothing at all.
 //
-// Implements: The alternatives offered are exactly the engine's [Choice
-// points].
-// Implements: An unreadable answer is asked again, never guessed at [Choice
-// points].
+// Implements: The alternatives offered are exactly the engine's [Choices].
+// Implements: An unreadable answer is asked again, never guessed at [Choices].
 func (p *player) choose(question string, options []string) (int, error) {
 	p.sayf("\n%s\n", question)
 
@@ -276,7 +272,7 @@ func (p *player) choose(question string, options []string) (int, error) {
 //
 // Implements: A stopped session says what was answered and that nothing was
 // written [ADR 0001].
-// Implements: A read that fails is not the input ending [Choice points].
+// Implements: A read that fails is not the input ending [Choices].
 func (p *player) stopped() error {
 	p.sayf("\n%s\n", p.lostLine())
 

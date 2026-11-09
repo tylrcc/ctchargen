@@ -125,15 +125,28 @@ var (
 	adrFile = regexp.MustCompile(`^(\d{4})-.+\.md$`)
 )
 
-// promises are the labels a promise of the tool's own cites. They are the
-// sections of the v1 contract each promise was first stated under, kept as
-// names when that contract was removed; it is docs/PRD.md as of ec7289f, in
-// the history.
+// promises are the labels a promise of the tool's own cites: the topic it
+// belongs to, from this closed list (#391). They were once the sections of
+// the v1 contract each promise was first stated under (docs/PRD.md as of
+// ec7289f, in the history); promises have been written since, so a label is
+// what a promise is about, not where it was first said. The coverage check
+// refuses a label not on the list.
+//
+//   - Authority: where the rules come from, and which pages govern.
+//   - Choices: the choice points, and who answers them.
+//   - Command line: what the commands take, refuse, write and say.
+//   - Documents: what the documents and generated examples promise.
+//   - Domain: the domain's values and the sums that say "exactly one of".
+//   - Generation record: the record of every die and choice, and the live
+//     view of it.
+//   - Sheet: what a note tells of the character - its properties, its sheet,
+//     its summary and the service history behind them.
+//   - Transcription: the transcribed tables and their lift.
 //
 //nolint:gochecknoglobals // a fixed list, and Go has no const slice.
 var promises = []string{
-	"Authority", "CLI sketch", "Character record", "Choice points",
-	"Documents", "Domain model", "Generation record", "JSON conventions",
+	"Authority", "Choices", "Command line", "Documents",
+	"Domain", "Generation record", "Sheet", "Transcription",
 }
 
 // implementation is one Implements marker and the declaration carrying it.
@@ -245,7 +258,7 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, cite := range []string{"(E011)", "ADR 0001", "ADR 0002", "Domain model", "Choice points"} {
+	for _, cite := range []string{"(E011)", "ADR 0001", "ADR 0002", "Domain", "Choices"} {
 		if !known.cites[cite] {
 			t.Errorf("[%s] names an authority that exists, and is refused", cite)
 		}
@@ -267,7 +280,7 @@ func TestACiteNamesAnAuthority(t *testing.T) {
 	// A page cite is checked too: its shape, every book it names is in
 	// authority, and every reading it names is declared.
 	for _, cite := range []string{
-		"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain", "Determinism",
+		"Nonsense", "ADR 0099", "(E099)", "FR9", "Domain model", "CLI sketch", "Determinism",
 		"1:5 (E099)", "4:5", "1:5; 4:22", "1:5; 3:22 (E099)", "0:5",
 		"1:9 (E006, E099)", "1:9 E099", "1:9 (e099)", "1:9 (e006)",
 		"1:5 garbage", "1:5; Book 4 p. 5", "1:5 (E99)", "1:5 (E0999)", "1:5,6",
@@ -311,7 +324,7 @@ func TestTheTableIsInPageOrder(t *testing.T) {
 	// Declared out of order, as markers are found across the tree.
 	found := markers{
 		implementations: []implementation{
-			{"Promise", "CLI sketch", "cmd.F"},
+			{"Promise", "Command line", "cmd.F"},
 			{"Book 3", "3:5", "pkg.C"},
 			{"Book 1, p. 25", "1:25", "pkg.B"},
 			{book2, "2:18–19", "pkg.D"},
@@ -341,7 +354,7 @@ func TestTheTableIsInPageOrder(t *testing.T) {
 		"| Book 1, p. 25 | 1:25 | `pkg.B` | `pkg.TestB` |",
 		"| Book 2 | 2:18–19 | `pkg.D` | `pkg.TestD`, goldens `g`, `h` |",
 		"| Book 3 | 3:5 | `pkg.C` | golden `g` |",
-		"| Promise | CLI sketch | `cmd.F` | `cmd.TestF` |",
+		"| Promise | Command line | `cmd.F` | `cmd.TestF` |",
 	}
 
 	if got := table(rows); !slices.Equal(got, want) {
