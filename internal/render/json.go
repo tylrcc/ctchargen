@@ -72,9 +72,8 @@ func JSON(character *chargen.Character) ([]byte, error) {
 // build to 1 is ctchargen.TestThisBuildWritesShapeOne.
 //
 // Implements: A record names the shape it is, so the v1 freeze has something to
-// attach to [JSON conventions] in The record.
-// Implements: This build writes record shape 1 [JSON conventions] in The
-// record.
+// attach to [JSON conventions].
+// Implements: This build writes record shape 1 [JSON conventions].
 const recordShape = 1
 
 type record struct {

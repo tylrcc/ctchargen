@@ -25,8 +25,7 @@ const faces = 6
 
 // Stream is a source of dice. The zero value is not usable; call New.
 //
-// Implements: Two-die throws except the draft [1:10] in Characteristics and the
-// record.
+// Implements: Two-die throws except the draft [1:10].
 type Stream struct {
 	r *rand.Rand
 }

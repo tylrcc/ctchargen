@@ -122,7 +122,7 @@ func create(path string) (*os.File, error) {
 // remove.
 //
 // Implements: A directory in the way is named as one, with no --force advice
-// [CLI sketch] in The record.
+// [CLI sketch].
 func inTheWay(path string) error {
 	if isDirectory(path) {
 		return aDirectory(path)

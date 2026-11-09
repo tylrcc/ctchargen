@@ -17,9 +17,8 @@ import (
 // subsequent terms of service if they reenlist."
 //
 // Implements: Draftees are not eligible for commission in the first term only
-// [1:5] in Enlistment and the draft.
-// Implements: Commission: once per term until achieved [1:6, 10] in Terms of
-// service.
+// [1:5].
+// Implements: Commission: once per term until achieved [1:6, 10].
 func (r *run) commission(term traveller.Term) error {
 	throw, ok := r.service.Commission()
 	if !ok || r.char.Rank.Commissioned() || (r.drafted && term == 1) {
@@ -57,10 +56,8 @@ func (r *run) commission(term traveller.Term) error {
 // service", and where the column ends there is no next rank (E013). A throw
 // that is not made consumes nothing.
 //
-// Implements: Promotion: the commissioning term and every term after [1:6, 10]
-// in Terms of service.
-// Implements: No promotion at the top of the ranks table [1:6, 10 (E013)] in
-// Terms of service.
+// Implements: Promotion: the commissioning term and every term after [1:6, 10].
+// Implements: No promotion at the top of the ranks table [1:6, 10 (E013)].
 func (r *run) promote(term traveller.Term) error {
 	throw, ok := r.service.Promotion()
 	if !ok || !r.char.Rank.Commissioned() {
@@ -99,10 +96,8 @@ func (r *run) promote(term traveller.Term) error {
 // raise confers a rank, the skill eligibility that comes with it (p. 6), and
 // whatever the Rank and Service Skills box grants at it (p. 23).
 //
-// Implements: A commission or promotion confers one skill eligibility [1:6] in
-// Terms of service.
-// Implements: Rank-keyed grants, at the moment the rank is conferred [1:23] in
-// Skills and training.
+// Implements: A commission or promotion confers one skill eligibility [1:6].
+// Implements: Rank-keyed grants, at the moment the rank is conferred [1:23].
 func (r *run) raise(seq int, to traveller.Rank, eligibility int, how string) error {
 	r.char.Rank = to
 	r.char.RankName = r.rankName()

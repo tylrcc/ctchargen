@@ -15,7 +15,7 @@ const (
 	// may serve up to 7 terms voluntarily", and "Service beyond the seventh
 	// term is normally impossible" — only a 12 carries him further (see E003).
 	//
-	// Implements: Seven terms of voluntary service [1:7] in Terms of service.
+	// Implements: Seven terms of voluntary service [1:7].
 	lastVoluntaryTerm = 7
 	firstRetiringTerm = 5
 )
@@ -33,10 +33,9 @@ const forcedByTwelve = 12
 // (p. 6). It is made before the intent is asked because a failed throw and a
 // 12 both settle the question, and a choice with one answer is not a choice.
 //
-// Implements: Reenlistment throw every term, no DMs [1:6] in Terms of service.
-// Implements: A 12 exactly forces another term [1:6] in Terms of service.
-// Implements: A 12 recurs past the seventh term [1:6–7, 21 (E003)] in Terms
-// of service.
+// Implements: Reenlistment throw every term, no DMs [1:6].
+// Implements: A 12 exactly forces another term [1:6].
+// Implements: A 12 recurs past the seventh term [1:6–7, 21 (E003)].
 func (r *run) reenlist(term traveller.Term) (traveller.Intent, bool, error) {
 	attempt := roll(r.roll, r.service.Reenlist, 0)
 	seq := r.log.throw("reenlistment", attempt)
@@ -127,10 +126,9 @@ func (r *run) settle(seq int, term traveller.Term, intent traveller.Intent) {
 // choosing by comparing it against a literal would let a change of wording
 // change the domain outcome. The type carries that invariant.
 //
-// Implements: Leaving at the end of term 5 or later is retirement [1:21] in
-// Terms of service.
+// Implements: Leaving at the end of term 5 or later is retirement [1:21].
 // Implements: A departure below term 5 is forced out if the service refused
-// him, discharged if he chose to go [1:6, 21] in Terms of service.
+// him, discharged if he chose to go [1:6, 21].
 func (r *run) depart(
 	seq int, term traveller.Term, earlyDeparture traveller.Departure, why string,
 ) {
@@ -158,9 +156,8 @@ func (r *run) depart(
 // it too. P. 21 also excludes the Scouts and Other services from retirement pay
 // entirely, whatever the term count.
 //
-// Implements: Retirement pay from term 5, not for Scouts or Other [1:7, 21] in
-// Mustering out.
-// Implements: Its ship, cash and pension [1:25] in The book's own character.
+// Implements: Retirement pay from term 5, not for Scouts or Other [1:7, 21].
+// Implements: Its ship, cash and pension [1:25].
 func (r *run) pension() {
 	if !r.service.PaysPension {
 		return

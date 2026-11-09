@@ -67,5 +67,5 @@ type Term int
 // Years is the length of one term of service: "a term of service lasting 4
 // years" (p. 5).
 //
-// Implements: A term is four years [1:5] in Terms of service.
+// Implements: A term is four years [1:5].
 const Years = 4

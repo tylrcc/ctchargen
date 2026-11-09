@@ -12,8 +12,8 @@ import (
 // service was chosen or forced by a flag, and a failed throw still goes to
 // the draft, which can land anywhere.
 //
-// Implements: One enlistment attempt, against the Prior Service Table [1:5, 10]
-// in Enlistment and the draft.
+// Implements: One enlistment attempt, against the Prior Service Table [1:5,
+// 10].
 func (r *run) enlist() error {
 	r.log.step("enlistment", "pp. 5, 10")
 
@@ -43,10 +43,8 @@ func (r *run) enlist() error {
 // draft" - and E001 reads the permissive one, so declining ends generation
 // with an eighteen-year-old civilian.
 //
-// Implements: The draft is offered, not compelled [1:5 (E001)] in Enlistment
-// and the draft.
-// Implements: Declining ends generation with a civilian [1:5 (E001)] in
-// Enlistment and the draft.
+// Implements: The draft is offered, not compelled [1:5 (E001)].
+// Implements: Declining ends generation with a civilian [1:5 (E001)].
 func (r *run) draft() error {
 	submit, err := r.decide.SubmitToDraft()
 	if err != nil {
@@ -120,7 +118,7 @@ func (r *run) join(how traveller.Enlistment) error {
 // eligible" as once, on entering, rather than once per term.
 //
 // Implements: Service-wide rank and service skills, granted once on entering
-// [1:23 (E005)] in Skills and training.
+// [1:23 (E005)].
 func (r *run) grantsOnEntering() error {
 	granted := r.tables.GrantsOnEntering(r.serviceName())
 	if len(granted) == 0 {
@@ -155,7 +153,7 @@ func (r *run) apply(result traveller.TableResult, because int, errata []travelle
 // applyResult is the fold that applies a table result. Adding a fourth kind
 // to the sum stops this compiling until it is handled here.
 //
-// Implements: Three kinds of result [1:12] in Skills and training.
+// Implements: Three kinds of result [1:12].
 type applyResult struct {
 	run     *run
 	because int
@@ -181,8 +179,7 @@ func (a *applyResult) Skill(name traveller.SkillName) error {
 	return nil
 }
 
-// Implements: Blade and gun combat name a weapon at once [1:11–13] in Skills
-// and training.
+// Implements: Blade and gun combat name a weapon at once [1:11–13].
 func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 	list := a.run.tables.Weapons(category)
 

@@ -77,7 +77,8 @@ counted here, because a count is one more thing to get wrong.
 
 4. **Every implemented rule carries its printed-page cite** in the code, as
    an `Implements:` marker beside the implementation, and the test that holds
-   it carries a `Holds:` marker. `COVERAGE.md` is generated from the two.
+   it carries a `Holds:` marker. `internal/coverage` holds the two to each
+   other.
 
 5. **Where the text is silent or ambiguous, a new reading is a new erratum
    and a `Reading` value in `rules`** with its page cite and stamping
@@ -148,19 +149,20 @@ readings are the fallback.
 
 ## Documents and what each governs
 
-| File                          | Governs                                                                                                                                                                                                                                     |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/COVERAGE.md`            | Every implemented rule of pp. 4–25 and every promise the tool makes of its own, mapped to its cite, its implementation and its test. The tables are generated from markers beside the code by `internal/coverage`; never edit them by hand. |
-| `docs/character.schema.json`  | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written.                                        |
-| `THEORY.md`, `WALKTHROUGH.md` | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                                                                      |
-| `CODING_STANDARDS.md`         | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                                                        |
-| `CLAUDE.md`                   | This file.                                                                                                                                                                                                                                  |
+| File                          | Governs                                                                                                                                                                                              |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docs/character.schema.json`  | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
+| `THEORY.md`, `WALKTHROUGH.md` | Nothing binding. Release snapshots: see "Release snapshots" under Working conventions.                                                                                                               |
+| `CODING_STANDARDS.md`         | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
+| `CLAUDE.md`                   | This file.                                                                                                                                                                                           |
 
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings are values in `rules`, one per `Erratum` constant, so a
 reading missing or one too many does not compile. The `--auto` policy is
-its own doc comments. `COVERAGE.md`'s tables are generated from markers beside the code, and a rule an implementation names
-and no test holds, or the reverse, fails the generator. What still describes
+its own doc comments. The coverage map is the markers beside the code, and a
+rule an implementation names and no test holds, or the reverse, fails
+`internal/coverage`; the map is printed on demand and never committed. What
+still describes
 the code from outside it — the schema's strategy enums — is
 held to the code by a test beside what it describes. Each gate
 is verified by breaking it.
@@ -186,8 +188,9 @@ promise (#199).
   which describes itself. Its tests hold the readings, the choice points and
   the schema's strategies to the goldens.
 - `render`: the record's projections, and reading one back.
-- `internal/coverage`: test code only. Generates `docs/COVERAGE.md` from
-  `Implements:` and `Holds:` markers.
+- `internal/coverage`: test code only. Holds the `Implements:` and `Holds:`
+  markers to each other and their cites to what exists, writing nothing;
+  `-print` shows the map.
 - `internal/mutate`: a tool, not part of the CLI. Runs a command against a
   scratch copy of the tree with one exact edit made, and says whether it
   failed.
@@ -205,7 +208,7 @@ narrower than a task, in a loop:
 go test ./internal/chargen                   # one package
 go test ./internal/chargen -run TestGoldens  # one test
 go test ./internal/chargen -regenerate       # rewrite the goldens
-go test ./internal/coverage -regenerate      # rewrite docs/COVERAGE.md from the markers
+(cd internal/coverage && go test -run TestTheCoverageMapHolds -print)  # print the coverage map
 go run ./internal/mutate -file F -old TEXT -new TEXT go test ./pkg -run T  # show a mutation killed
 go run ./cmd/ctchargen new --auto --sheet
 ```

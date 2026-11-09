@@ -57,8 +57,7 @@ func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
 // die (p. 5); so are the skills-table roll (p. 11), each mustering-out roll
 // (p. 9) and the medical-crisis recovery months (p. 7).
 //
-// Implements: Two-die throws except the draft [1:10] in Characteristics and the
-// record.
+// Implements: Two-die throws except the draft [1:10].
 func roll(r Roller, target traveller.Target, modifier int) throw {
 	first, second := r.TwoDice()
 	t := throw{dice: [2]int{first, second}, modifier: modifier, target: target}

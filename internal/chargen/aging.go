@@ -25,11 +25,10 @@ const crisisFloor = 0
 // increments thereafter"), p. 9's table (terms 4 through 14) and p. 25's
 // example (rounds owed for terms 4 and 5) agree.
 //
-// Implements: A round at the end of term 4 and every term after [1:7, 9 (E006)]
-// in Aging.
-// Implements: Saving throws in the table's row order [1:9 (E007)] in Aging.
-// Implements: The example's batched aging is not followed [1:25 (E006)] in The
-// book's own character.
+// Implements: A round at the end of term 4 and every term after [1:7, 9
+// (E006)].
+// Implements: Saving throws in the table's row order [1:9 (E007)].
+// Implements: The example's batched aging is not followed [1:25 (E006)].
 func (r *run) agingRound(term traveller.Term) error {
 	effects := r.tables.Aging().At(term)
 	if len(effects) == 0 {
@@ -110,11 +109,10 @@ func (r *run) age(
 // state and E008 reads from "If the character survives".
 //
 // Implements: A characteristic at zero is a medical crisis, resolved inline
-// [1:7–8 (E007)] in Aging.
-// Implements: Saving throw 8+, with no modifier during generation [1:7 (E009)]
-// in Aging.
-// Implements: Survival recovers to 1 and adds 1D months [1:7–8] in Aging.
-// Implements: A failed crisis throw is death [1:7–8 (E008)] in Aging.
+// [1:7–8 (E007)].
+// Implements: Saving throw 8+, with no modifier during generation [1:7 (E009)].
+// Implements: Survival recovers to 1 and adds 1D months [1:7–8].
+// Implements: A failed crisis throw is death [1:7–8 (E008)].
 func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristic) error {
 	crisis := r.tables.Aging().Crisis
 	errata := []traveller.Erratum{traveller.E008, traveller.E009}

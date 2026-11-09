@@ -128,7 +128,7 @@ type DM struct {
 // have the necessary prerequisites." Only enlistment prints two, so summing
 // every modifier that applies is the same rule everywhere else.
 //
-// Implements: Cumulative characteristic DMs [1:10] in Enlistment and the draft.
+// Implements: Cumulative characteristic DMs [1:10].
 func (t Throw) Modifier(p traveller.Profile) int {
 	total := 0
 
@@ -165,8 +165,7 @@ func (s Service) MaxRank() traveller.Rank { return traveller.Rank(len(s.Ranks)) 
 // and calls Captain a rank (p. 10, and p. 25's "Merchant Captain (of rank 5
 // on the scale of ranks)").
 //
-// Implements: Ranks and their names, per the Table of Ranks [1:10] in Terms of
-// service.
+// Implements: Ranks and their names, per the Table of Ranks [1:10].
 func (s Service) RankName(r traveller.Rank) (string, bool) {
 	if r < 1 || int(r) > len(s.Ranks) {
 		return "", false
@@ -219,8 +218,7 @@ func (t Throw) clone() Throw {
 
 // Draft is the service a draft roll of n enters (p. 5).
 //
-// Implements: One die, entering the service with that draft number [1:5] in
-// Enlistment and the draft.
+// Implements: One die, entering the service with that draft number [1:5].
 func (r *Rules) Draft(n int) (traveller.ServiceName, error) {
 	for _, s := range r.services {
 		if s.Draft == n {
@@ -249,8 +247,7 @@ func (r *Rules) Weapons(c traveller.WeaponCategory) []traveller.WeaponName {
 // Hull is the ship's hull size in tons (Book 2 pp. 18-19): the Type S is
 // built on a type 100 hull, the Type A on a type 200.
 //
-// Implements: The ships the two benefits name: Type S, Type A [2:18–19] in
-// Mustering out.
+// Implements: The ships the two benefits name: Type S, Type A [2:18–19].
 func (r *Rules) Hull(kind traveller.ShipKind) int { return r.hulls[kind] }
 
 // Passage is the purchase price of a passage class (pp. 21-22).
@@ -259,8 +256,7 @@ func (r *Rules) Passage(c traveller.PassageClass) traveller.Credits { return r.p
 // Normalize applies E012: a name as a table prints it becomes the name its
 // own description carries.
 //
-// Implements: Names normalized to their description headings [1:11–23 (E012)]
-// in Skills and training.
+// Implements: Names normalized to their description headings [1:11–23 (E012)].
 func (r *Rules) Normalize(printed string) traveller.SkillName {
 	return traveller.SkillName(expand(printed, r.normalize))
 }
@@ -296,7 +292,7 @@ type Nobility struct {
 // TitleFor is the title a Social Standing confers, and whether it confers
 // one (Book 3 p. 22).
 //
-// Implements: The five ranks of nobility [3:22] in Titles.
+// Implements: The five ranks of nobility [3:22].
 func (r *Rules) TitleFor(social int) (traveller.Title, bool) {
 	for _, n := range r.nobility {
 		if n.SocialStanding == social {
@@ -360,8 +356,7 @@ type Retirement struct {
 // record was a guard in the caller (#52). A precondition belongs to the
 // function that has it.
 //
-// Implements: The pension table says whether it prices a term at all [1:21] in
-// Mustering out.
+// Implements: The pension table says whether it prices a term at all [1:21].
 func (r Retirement) Pay(terms int) (traveller.Credits, bool) {
 	if terms > r.lastTabled {
 		beyond := traveller.Credits(terms - r.lastTabled)
@@ -416,7 +411,7 @@ const (
 // rolls, and may add 1 to his die roll when consulting Table 1" - which is
 // why the test expects seven rolls for Jamison at five terms and rank 5.
 //
-// Implements: One roll per term, plus rank extras [1:7, 9] in Mustering out.
+// Implements: One roll per term, plus rank extras [1:7, 9].
 func (m Muster) Rolls(terms int, rank traveller.Rank) int {
 	rolls := terms * rollsPerTerm
 
@@ -466,9 +461,8 @@ type Crisis struct {
 // header row carrying a plus, so the column it labels is open-ended, and the
 // Term row's 14 is simply the term that first arrives there (E014).
 //
-// Implements: Read off the table's term row, not its age row [1:9 (E006)] in
-// Aging.
-// Implements: The last column is terminal [1:9 (E014)] in Aging.
+// Implements: Read off the table's term row, not its age row [1:9 (E006)].
+// Implements: The last column is terminal [1:9 (E014)].
 func (a Aging) At(term traveller.Term) []AgingEffect {
 	var effects []AgingEffect
 
@@ -492,5 +486,5 @@ func (a Aging) At(term traveller.Term) []AgingEffect {
 // nothing would say so.
 //
 // Implements: The table's last printed term, which decides where E014 governs
-// [1:9 (E014)] in Aging.
+// [1:9 (E014)].
 func (a Aging) LastPrintedTerm() traveller.Term { return a.lastPrintedTerm }

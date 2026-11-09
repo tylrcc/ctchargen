@@ -59,9 +59,8 @@ func (DeclinedTheDraft) sealedEnlistment()            {}
 //
 // A civilian never joined a service and so never left one: nil is not a death.
 //
-// Implements: Which departures are deaths is said in one place [Domain model]
-// in Mustering out.
-// Implements: Only the two deaths count as dying [1:5, 1:7–8] in The record.
+// Implements: Which departures are deaths is said in one place [Domain model].
+// Implements: Only the two deaths count as dying [1:5, 1:7–8].
 func Fatal(departure Departure) bool {
 	if departure == nil {
 		return false

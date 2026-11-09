@@ -210,8 +210,7 @@ func DefaultPolicy() Policy {
 // told his strategy is wrong is the one who typed `go install` and has never
 // seen this tree.
 //
-// Implements: A word that names no strategy never becomes one [Choice points]
-// in The record.
+// Implements: A word that names no strategy never becomes one [Choice points].
 func parsed[T fmt.Stringer](word, flag string, all []T) (T, error) {
 	for _, want := range all {
 		if word == want.String() {
@@ -405,7 +404,7 @@ func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error
 // that reaches that one negative result.
 //
 // Implements: The skills table designated is the one he has trained on least
-// [1:11] in The record.
+// [1:11].
 func (p Policy) SkillTable(
 	from []traveller.SkillTable, taken []int,
 ) (traveller.SkillTable, error) {
@@ -479,7 +478,7 @@ func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
 // purpose is spartan's MusterWeapon.
 //
 // Implements: The weapon for a Blade or Gun result is drawn, not always the
-// first printed [1:11–13] in The record.
+// first printed [1:11–13].
 func (p Policy) Weapon(
 	_ traveller.WeaponCategory, from []traveller.WeaponName, vary Vary,
 ) (traveller.WeaponName, error) {

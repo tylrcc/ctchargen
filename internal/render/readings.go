@@ -55,7 +55,7 @@ func Reading(r rules.Reading) string {
 // record's.
 //
 // Implements: A transcript with its readings ends with each reading its record
-// names, in full [CLI sketch] in The record.
+// names, in full [CLI sketch].
 func writeReadings(out *strings.Builder, errata []string) {
 	out.WriteString("## Readings\n\n")
 
@@ -83,8 +83,8 @@ var ErrNoReading = errors.New("names no reading")
 // ReadingsIndex lists every reading as its erratum, its title and whether it
 // is in force or withdrawn, one row each in erratum order.
 //
-// Implements: The readings are listed, and those asked for are written in
-// full [CLI sketch] in The record.
+// Implements: The readings are listed, and those asked for are written in full
+// [CLI sketch].
 func ReadingsIndex() string {
 	var out strings.Builder
 
@@ -106,8 +106,8 @@ func ReadingsIndex() string {
 // given. The text is composed before it is returned, so the first id that
 // names no reading fails the whole and nothing reaches the caller.
 //
-// Implements: The readings are listed, and those asked for are written in
-// full [CLI sketch] in The record.
+// Implements: The readings are listed, and those asked for are written in full
+// [CLI sketch].
 func ReadingsNamed(ids []string) (string, error) {
 	var out strings.Builder
 

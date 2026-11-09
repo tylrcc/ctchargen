@@ -28,7 +28,7 @@ func Sheet(character *chargen.Character) (string, error) {
 // should be written from, and one renderer cannot disagree with itself.
 //
 // Implements: A record renders to what generating it rendered [Character
-// record] in The record.
+// record].
 func SheetFrom(text []byte) (string, error) {
 	projected, err := decode(text)
 	if err != nil {
@@ -45,7 +45,7 @@ func SheetFrom(text []byte) (string, error) {
 // he has decided he wants this one.
 //
 // Implements: The errata are on the transcript and not the sheet [Generation
-// record] in The record.
+// record].
 func sheetOf(r record) (string, error) {
 	// Every event is read before anything is printed, and one that will not
 	// read refuses the sheet. The sheet shows one choice event at most, but
@@ -148,8 +148,7 @@ func headline(r record) (string, error) {
 // terms is the count and the word, so a one-term character does not read
 // "1 terms".
 //
-// Implements: A one-term character reads as one term [Character record] in The
-// record.
+// Implements: A one-term character reads as one term [Character record].
 func terms(count int) string {
 	if count == oneTerm {
 		return "1 term"
@@ -176,7 +175,7 @@ const oneTerm = 1
 // the case this exists to expose.
 //
 // Implements: The headline names the service attempted, not the one the draft
-// gave [1:5] in The record.
+// gave [1:5].
 func whoseService(r record) (string, error) {
 	attempted, byPolicy, err := serviceAttempted(r)
 	if err != nil {
@@ -272,8 +271,7 @@ func credits(amount int64) string { return fmt.Sprintf("CR %d", amount) }
 // Free Trader is owned whatever is left to pay. Inferring the one from the
 // other's numbers would call a new, unencumbered Free Trader a scout ship.
 //
-// Implements: A ship's terms follow its kind, not its numbers [1:22–23] in
-// The record.
+// Implements: A ship's terms follow its kind, not its numbers [1:22–23].
 func shipLine(ship shipRecord) string {
 	if ship.Kind == traveller.ScoutShip.String() {
 		return fmt.Sprintf("%s, %d tons, held in constructive possession", ship.Kind, ship.Tons)

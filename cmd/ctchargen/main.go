@@ -56,8 +56,8 @@ type source func() chargen.Roller
 // TestRunWritesEachRendering holds a new record and a batch member to
 // carrying it.
 //
-// Implements: The record names its ruleset and the build that wrote it
-// [ADR 0002] in The record.
+// Implements: The record names its ruleset and the build that wrote it [ADR
+// 0002].
 func (s source) options() []chargen.Option {
 	options := []chargen.Option{chargen.WithBuild(build())}
 
@@ -84,9 +84,8 @@ func withDice(dice source) option {
 // so that `ctchargen new | jq` pipes a record and not a conversation.
 //
 // Implements: What the command writes matches the schema, build stamp and all
-// [JSON conventions] in The record.
-// Implements: The questions go to stderr, not into the record [CLI sketch] in
-// The record.
+// [JSON conventions].
+// Implements: The questions go to stderr, not into the record [CLI sketch].
 func run(args []string, in io.Reader, out, asking io.Writer, options ...option) error {
 	var chosen settings
 

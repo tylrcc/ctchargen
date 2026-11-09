@@ -68,7 +68,7 @@ var documented = map[string]string{
 // the schema, by the same path that writes the goldens.
 //
 // Implements: The two documented examples are generated, not written
-// [Documents] in The record.
+// [Documents].
 func documentedExample(t *testing.T, name string, encoded []byte) {
 	t.Helper()
 

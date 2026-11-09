@@ -59,7 +59,7 @@ type ThrowEvent struct {
 // there is nothing for the roll to succeed at.
 //
 // Implements: A roll with nothing to meet is not recorded as a throw that
-// succeeded [Generation record] in The record.
+// succeeded [Generation record].
 type RollEvent struct {
 	Seq  int
 	Step string

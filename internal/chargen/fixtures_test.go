@@ -105,7 +105,7 @@ func (f fixture) roller(t *testing.T) *scripted.Roller {
 // The comments name the path; the lists are the dice that walk it.
 //
 // Implements: Every choice point the engine offers is reached by a record
-// [Documents] in The record.
+// [Documents].
 //
 //nolint:gochecknoglobals // an immutable roster, and Go has no const slice.
 var fixtures = []fixture{

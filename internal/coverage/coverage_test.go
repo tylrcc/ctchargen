@@ -1,15 +1,17 @@
-// Package coverage generates docs/COVERAGE.md from markers beside the code it
-// maps, so the map from each rule to its page, its implementation and its test
-// is one copy of what the markers say rather than a second one typed by hand.
+// Package coverage holds the markers beside the code to each other: every rule
+// an implementation names is held by a test, every rule a test holds is named
+// by an implementation, and every cite names an authority that exists. It
+// writes nothing; the map from each rule to its page, its implementation and
+// its test is what the markers say, and -print shows it.
 //
 // The package has no non-test code.
 //
 // # Markers
 //
-// An implementation carries one line per rule it implements, naming the rule,
-// its printed page and the document section the rule is listed under:
+// An implementation carries one line per rule it implements, naming the rule
+// and its printed page:
 //
-//	// Implements: Six 2D rolls, in order [1:4] in Characteristics and the record.
+//	// Implements: Six 2D rolls, in order [1:4].
 //
 // A test that holds a rule carries one line naming it:
 //
@@ -22,17 +24,17 @@
 // that it declares; "ADR 0001", naming a file in docs/adr; or one of the
 // promise labels below, for a promise of the tool's own. The readings are
 // read from rules' values and the ADRs from their files, and a cite outside
-// the set fails the generator, naming the rule.
+// the set fails the check, naming the rule.
 //
 // A marker runs on to the following comment lines until a blank comment line,
 // the next marker or the end of the comment, so a long one wraps like prose.
-// The rows are joined on the rule's name, which is therefore unique across the
-// document. A rule some implementation names and no test holds, or that a test
-// holds and no implementation names, fails the generator naming the rule; so do
-// two implementations that disagree on the rule's page or section.
+// The markers are joined on the rule's name, which is therefore unique across
+// the tree. A rule some implementation names and no test holds, or that a test
+// holds and no implementation names, fails the check naming the rule; so do
+// two implementations that disagree on the rule's page.
 //
 // A marker is read from four kinds of place, and from nowhere else — one found
-// anywhere else fails the generator rather than being silently dropped:
+// anywhere else fails the check rather than being silently dropped:
 //
 //   - the doc comment of a function, method, type, constant or variable, which
 //     names it as `dir.Name` or `dir.Type.Method`, dir relative to the module;
@@ -47,23 +49,17 @@
 // Only a test holds a rule: a `Holds:` is refused anywhere but a Test function
 // in a test file or a golden, and a golden implements nothing.
 //
-// # The document
+// # The table
 //
-// Only the tables are generated. The preamble, the section headings and the
-// prose under them are the document's own, hand-written and carried through as
-// they stand: a section is a `## ` heading, a marker names one, and the
-// section's table is written where its old one was, or at the section's end
-// if it had none. A marker naming a heading the document lacks fails, naming
-// the section, and so does a section with a table no marker writes, which the
-// rewrite would otherwise drop. Within a section the rows run in page order, Book 1 then 2 then
-// 3, and rows cited to something other than a page follow them.
+// Nothing is committed. Under -print the map is written as one Markdown table:
+// rule, authority, implementation and test, in page order, Book 1 then 2 then
+// 3, and rows cited to something other than a page after them. Run it from
+// this package's directory, where a passing test's output is not held back:
 //
-// The test rewrites the document under -regenerate and otherwise fails when
-// the committed document differs from what the markers generate, the way the
-// goldens and the schema's examples work.
+//	go test -run TestTheCoverageMapHolds -print
 //
-// Implements: Every rule here names an implementation and a test that exist
-// [Documents] in The record.
+// Implements: Every rule a marker names has an implementation and a test that
+// exist [Documents].
 package coverage_test
 
 import (
@@ -89,14 +85,13 @@ import (
 )
 
 //nolint:gochecknoglobals // the flag package has no other shape.
-var regenerate = flag.Bool("regenerate", false, "rewrite docs/COVERAGE.md from the markers")
+var printTable = flag.Bool("print", false, "write the coverage table to standard output")
 
-// The module root, relative to this package, and the files the generator
-// reads and writes beneath it.
+// The module root, relative to this package, and the files the check reads
+// beneath it.
 const (
-	root     = "../.."
-	document = "docs/COVERAGE.md"
-	schema   = "docs/character.schema.json"
+	root   = "../.."
+	schema = "docs/character.schema.json"
 
 	// The documents a cite that is not a page may name.
 	adrDir = "docs/adr"
@@ -106,11 +101,11 @@ const (
 	rosterVar = "fixtures"
 )
 
-// errMarker is every way the markers can fail to make a document.
+// errMarker is every way the markers can fail to hold each other.
 var errMarker = errors.New("coverage markers")
 
 var (
-	implementsMarker = regexp.MustCompile(`^Implements: (.+) \[([^\]]+)\] in (.+)\.$`)
+	implementsMarker = regexp.MustCompile(`^Implements: (.+) \[([^\]]+)\]\.$`)
 	holdsMarker      = regexp.MustCompile(`^Holds: (.+)\.$`)
 
 	// pageCite is a page cite's leading book and page, "1:4" or "3:22".
@@ -147,7 +142,7 @@ var promises = []string{
 
 // implementation is one Implements marker and the declaration carrying it.
 type implementation struct {
-	rule, page, section, site string
+	rule, page, site string
 }
 
 // holding is one Holds marker and the test or golden carrying it.
@@ -162,15 +157,16 @@ type markers struct {
 	holdings        []holding
 }
 
-// row is one generated row of a section's table.
+// row is one rule of the map: its page, what implements it and what holds it.
 type row struct {
-	rule, page, section string
-	implementations     []string
-	tests, goldens      []string
+	rule, page      string
+	implementations []string
+	tests, goldens  []string
 }
 
-// The committed document is what the markers generate.
-func TestTheCoverageMapIsGenerated(t *testing.T) {
+// Every rule is implemented and held, and every cite names an authority that
+// exists. Under -print, the map is written as a table.
+func TestTheCoverageMapHolds(t *testing.T) {
 	t.Parallel()
 
 	found, err := collect(root)
@@ -188,41 +184,23 @@ func TestTheCoverageMapIsGenerated(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	committed := readDocument(t)
-
-	generated, err := generate(committed, found)
+	rows, err := mapped(found)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	if *regenerate {
-		// Written beside the document and renamed over it, so the tests
-		// reading it in parallel see the old one or the new one, never half.
-		path := filepath.Join(root, document)
-
-		err := os.WriteFile(path+".new", []byte(generated), 0o600)
-		if err == nil {
-			err = os.Rename(path+".new", path)
-		}
-
+	if *printTable {
+		_, err := os.Stdout.WriteString(strings.Join(table(rows), "\n") + "\n")
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		return
-	}
-
-	if generated != committed {
-		t.Errorf("%s differs from what the markers generate, first at:\n  committed: %s\n  generated: %s\n"+
-			"Edit the markers, not the table, then regenerate and read the diff:\n"+
-			"  go test ./internal/coverage -regenerate", document, firstDifference(committed, generated),
-			firstDifference(generated, committed))
 	}
 }
 
-// A marker removed from either side fails the generator, naming the rule.
+// A marker removed from either side fails the check, naming the rule.
 //
-// Holds: Every rule here names an implementation and a test that exist.
+// Holds: Every rule a marker names has an implementation and a test that
+// exist.
 func TestAMarkerRemovedFailsNamingTheRule(t *testing.T) {
 	t.Parallel()
 
@@ -230,8 +208,6 @@ func TestAMarkerRemovedFailsNamingTheRule(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
-	committed := readDocument(t)
 
 	victim := found.implementations[0].rule
 
@@ -252,7 +228,7 @@ func TestAMarkerRemovedFailsNamingTheRule(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			_, err := generate(committed, breaks(found))
+			_, err := mapped(breaks(found))
 			refused(t, err, victim)
 		})
 	}
@@ -324,61 +300,68 @@ func withFirstCite(t *testing.T, found markers, cite string) markers {
 	return markers{implementations: implementations, holdings: found.holdings}
 }
 
-// A hand edit to a table does not survive generation, and a hand edit to the
-// prose does: the tables are the markers', the prose is the document's.
-func TestOnlyTheTablesAreGenerated(t *testing.T) {
+// The table is the map in page order, Book 1 then 2 then 3 and by page within
+// a book, with every row cited to something other than a page after them, and
+// a row's tests ahead of its goldens, each list sorted. The markers here are
+// made up, so the table they must make is typed rather than computed.
+func TestTheTableIsInPageOrder(t *testing.T) {
 	t.Parallel()
 
-	found, err := collect(root)
+	const (
+		book2   = "Book 2"
+		book1p4 = "Book 1, p. 4"
+	)
+
+	// Declared out of order, as markers are found across the tree.
+	found := markers{
+		implementations: []implementation{
+			{"Promise", "CLI sketch", "cmd.F"},
+			{"Book 3", "3:5", "pkg.C"},
+			{"Book 1, p. 25", "1:25", "pkg.B"},
+			{book2, "2:18–19", "pkg.D"},
+			{book1p4, "1:4 (E010)", "pkg.E"},
+			{book1p4, "1:4 (E010)", "pkg.A"},
+		},
+		holdings: []holding{
+			{"Promise", "cmd.TestF", false},
+			{"Book 3", "g", true},
+			{"Book 1, p. 25", "pkg.TestB", false},
+			{book2, "h", true},
+			{book2, "pkg.TestD", false},
+			{book2, "g", true},
+			{book1p4, "pkg.TestA", false},
+		},
+	}
+
+	rows, err := mapped(found)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	// From what the markers generate, not from the committed document, so
-	// this holds under -regenerate too, when the committed one is stale and
-	// is being rewritten beside it.
-	base, err := generate(readDocument(t), found)
-	if err != nil {
-		t.Fatal(err)
+	want := []string{
+		"| Rule | Authority | Implementation | Test |",
+		"| --- | --- | --- | --- |",
+		"| Book 1, p. 4 | 1:4 (E010) | `pkg.A`, `pkg.E` | `pkg.TestA` |",
+		"| Book 1, p. 25 | 1:25 | `pkg.B` | `pkg.TestB` |",
+		"| Book 2 | 2:18–19 | `pkg.D` | `pkg.TestD`, goldens `g`, `h` |",
+		"| Book 3 | 3:5 | `pkg.C` | golden `g` |",
+		"| Promise | CLI sketch | `cmd.F` | `cmd.TestF` |",
 	}
 
-	rule := found.implementations[0].rule
-	edited := strings.Replace(base, "| "+rule+" ", "| "+rule+"!", 1)
-
-	if edited == base {
-		t.Fatalf("the generated document has no row %q to edit", rule)
-	}
-
-	generated, err := generate(edited, found)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if generated != base {
-		t.Errorf("a hand edit to a row survived generation")
-	}
-
-	prose := strings.Replace(base, "## What the engine walks\n", "## What the engine walks\n\nA note.\n", 1)
-
-	generated, err = generate(prose, found)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if generated != prose {
-		t.Errorf("a hand edit to the prose did not survive generation")
+	if got := table(rows); !slices.Equal(got, want) {
+		t.Errorf("got\n%s\nwant\n%s", strings.Join(got, "\n"), strings.Join(want, "\n"))
 	}
 }
 
-// Markers that cannot make a document fail, naming what is wrong.
-func TestMarkersThatCannotMakeADocument(t *testing.T) {
+// Markers that disagree fail, naming what is wrong.
+func TestMarkersThatCannotMakeAMap(t *testing.T) {
 	t.Parallel()
 
-	for name, tc := range documentBreakages {
+	for name, tc := range mapBreakages {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			_, err := generate(tc.doc, tc.found)
+			_, err := mapped(tc.found)
 			refused(t, err, tc.mentions)
 		})
 	}
@@ -386,9 +369,7 @@ func TestMarkersThatCannotMakeADocument(t *testing.T) {
 
 // The fixtures the breakage tables share.
 const (
-	aDoc   = "# Title\n\n## Alpha\n\n## Beta\n"
 	aPage  = "1:4"
-	alpha  = "Alpha"
 	aRule  = "A rule"
 	anImpl = "pkg.F"
 	aFile  = "p/p.go"
@@ -399,48 +380,19 @@ const (
 //nolint:gochecknoglobals // a test fixture, and Go has no const slice.
 var aHolding = []holding{{aRule, "pkg.TestF", false}}
 
-// documentBreakages is each set of markers that cannot make a document, and
-// what the failure must name.
+// mapBreakages is each set of markers that cannot make a map, and what the
+// failure must name.
 //
 //nolint:gochecknoglobals // a test table too long for its function.
-var documentBreakages = map[string]struct {
-	doc      string
+var mapBreakages = map[string]struct {
 	found    markers
 	mentions string
 }{
-	"a section the document lacks": {
-		aDoc,
-		markers{
-			implementations: []implementation{{aRule, aPage, "Gamma", anImpl}},
-			holdings:        aHolding,
-		},
-		"Gamma",
-	},
-	"a table no marker writes": {
-		aDoc + "\n| Rule |\n| ---- |\n| Kept |\n",
-		markers{
-			implementations: []implementation{{aRule, aPage, alpha, anImpl}},
-			holdings:        aHolding,
-		},
-		"Beta",
-	},
 	"two pages for one rule": {
-		aDoc,
 		markers{
 			implementations: []implementation{
-				{aRule, aPage, alpha, anImpl},
-				{aRule, "1:5", alpha, "pkg.G"},
-			},
-			holdings: aHolding,
-		},
-		aRule,
-	},
-	"two sections for one rule": {
-		aDoc,
-		markers{
-			implementations: []implementation{
-				{aRule, aPage, alpha, anImpl},
-				{aRule, aPage, "Beta", "pkg.G"},
+				{aRule, aPage, anImpl},
+				{aRule, "1:5", "pkg.G"},
 			},
 			holdings: aHolding,
 		},
@@ -488,8 +440,8 @@ var markerBreakages = map[string]struct {
 }{
 	"a page with no brackets": {
 		aFile,
-		"package p\n\n// F does.\n//\n// Implements: A rule 1:4 in Alpha.\nfunc F() {}\n",
-		"A rule 1:4 in Alpha",
+		"package p\n\n// F does.\n//\n// Implements: A rule 1:4.\nfunc F() {}\n",
+		"A rule 1:4",
 	},
 	"no closing period": {
 		"p/p_test.go",
@@ -503,7 +455,7 @@ var markerBreakages = map[string]struct {
 	},
 	"on a parenthesized declaration rather than its spec": {
 		aFile,
-		"package p\n\n// Implements: A rule [1:4] in Alpha.\nconst (\n\tA = 1\n\tB = 2\n)\n",
+		"package p\n\n// Implements: A rule [1:4].\nconst (\n\tA = 1\n\tB = 2\n)\n",
 		aRule,
 	},
 	"a hold on something that is not a test": {
@@ -518,12 +470,12 @@ var markerBreakages = map[string]struct {
 	},
 	"a golden that implements": {
 		rosterDir + "/f_test.go",
-		"package p\n\nvar fixtures = []fixture{\n\t// Implements: A rule [1:4] in Alpha.\n\t{name: \"g\"},\n}\n",
+		"package p\n\nvar fixtures = []fixture{\n\t// Implements: A rule [1:4].\n\t{name: \"g\"},\n}\n",
 		aRule,
 	},
 	"a schema comment out of shape": {
 		schema,
-		`{"$comment": "Implements: A rule 1:4 in Alpha."}`,
+		`{"$comment": "Implements: A rule 1:4."}`,
 		"A rule 1:4",
 	},
 }
@@ -537,7 +489,7 @@ func TestAMarkerWraps(t *testing.T) {
 		"F does a thing.",
 		"",
 		"Implements: A long rule that",
-		"wraps [1:4, 9 (E006)] in Alpha.",
+		"wraps [1:4, 9 (E006)].",
 		"Holds: Another.",
 		"",
 		"More prose.",
@@ -546,7 +498,7 @@ func TestAMarkerWraps(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	want := []string{"Implements: A long rule that wraps [1:4, 9 (E006)] in Alpha.", "Holds: Another."}
+	want := []string{"Implements: A long rule that wraps [1:4, 9 (E006)].", "Holds: Another."}
 	if !slices.Equal(got, want) {
 		t.Errorf("got %q, want %q", got, want)
 	}
@@ -557,36 +509,12 @@ func refused(t *testing.T, err error, mentions string) {
 
 	switch {
 	case err == nil:
-		t.Errorf("generated without complaint")
+		t.Errorf("accepted without complaint")
 	case !strings.Contains(err.Error(), mentions):
 		t.Errorf("error %q does not name %q", err, mentions)
 	case !errors.Is(err, errMarker):
 		t.Errorf("error %q does not wrap errMarker", err)
 	}
-}
-
-func readDocument(t *testing.T) string {
-	t.Helper()
-
-	text, err := os.ReadFile(filepath.Join(root, document))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return string(text)
-}
-
-// firstDifference is the first line of a that b does not have at the same
-// place.
-func firstDifference(a, b string) string {
-	al, bl := strings.Split(a, "\n"), strings.Split(b, "\n")
-	for i, line := range al {
-		if i >= len(bl) || bl[i] != line {
-			return line
-		}
-	}
-
-	return "(end of document)"
 }
 
 // collect reads every marker under dir: Go source and the schema.
@@ -878,7 +806,7 @@ func parseComment(lines []string) ([]string, error) {
 
 	for _, marker := range found {
 		if !implementsMarker.MatchString(marker) && !holdsMarker.MatchString(marker) {
-			return nil, fmt.Errorf("%w: %q is neither \"Implements: rule [page] in section.\" nor \"Holds: rule.\"",
+			return nil, fmt.Errorf("%w: %q is neither \"Implements: rule [page].\" nor \"Holds: rule.\"",
 				errMarker, marker)
 		}
 	}
@@ -895,7 +823,7 @@ func (m *markers) add(marker string, where site) error {
 		}
 
 		m.implementations = append(m.implementations, implementation{
-			rule: match[1], page: match[2], section: match[3], site: where.label,
+			rule: match[1], page: match[2], site: where.label,
 		})
 
 		return nil
@@ -970,57 +898,13 @@ func schemaComments(value any) []string {
 	return comments
 }
 
-// generate is the document with every section's table rewritten from the
-// markers.
-func generate(doc string, found markers) (string, error) {
-	sections, err := join(found)
-	if err != nil {
-		return "", err
-	}
-
-	headings := make(map[string]bool)
-
-	var (
-		errs    []error
-		section string
-	)
-
-	for line := range strings.SplitSeq(doc, "\n") {
-		if heading, ok := strings.CutPrefix(line, "## "); ok {
-			section = heading
-			headings[heading] = true
-		}
-
-		// A table no marker writes would be dropped by the rewrite, so it
-		// is refused rather than lost: a table here is the markers'.
-		if strings.HasPrefix(line, "| ") && len(sections[section]) == 0 && !headings["!"+section] {
-			headings["!"+section] = true
-
-			errs = append(errs, fmt.Errorf("%w: section %q has a table and no marker writes a row of it",
-				errMarker, section))
-		}
-	}
-
-	for _, section := range slices.Sorted(maps.Keys(sections)) {
-		rows := sections[section]
-		if !headings[section] && len(rows) > 0 {
-			errs = append(errs, fmt.Errorf("%w: %q is listed under %q, which is not a section of %s",
-				errMarker, rows[0].rule, section, document))
-		}
-	}
-
-	if len(errs) > 0 {
-		return "", errors.Join(errs...)
-	}
-
-	return rewrite(doc, sections), nil
-}
-
-// join is the rows of every section, joined on the rule's name. It refuses a
-// rule with only one side, and implementations that disagree about a rule.
-func join(found markers) (map[string][]row, error) {
+// mapped is every rule's row, joined on the rule's name, in page order. It
+// refuses a rule with only one side, and implementations that disagree about
+// a rule's page.
+func mapped(found markers) ([]row, error) {
 	rules, errs := joined(found)
-	sections := make(map[string][]row)
+
+	var rows []row
 
 	for _, rule := range slices.Sorted(maps.Keys(rules)) {
 		existing := rules[rule]
@@ -1035,14 +919,12 @@ func join(found markers) (map[string][]row, error) {
 			slices.Sort(list)
 		}
 
-		sections[existing.section] = append(sections[existing.section], existing)
+		rows = append(rows, existing)
 	}
 
-	for _, rows := range sections {
-		slices.SortStableFunc(rows, byPage)
-	}
+	slices.SortStableFunc(rows, byPage)
 
-	return sections, errors.Join(errs...)
+	return rows, errors.Join(errs...)
 }
 
 // joined is every rule's row, keyed by the rule, with whatever disagreed or
@@ -1055,12 +937,12 @@ func joined(found markers) (map[string]row, []error) {
 	for _, impl := range found.implementations {
 		existing, ok := rules[impl.rule]
 		if !ok {
-			existing = row{rule: impl.rule, page: impl.page, section: impl.section}
+			existing = row{rule: impl.rule, page: impl.page}
 		}
 
-		if existing.page != impl.page || existing.section != impl.section {
-			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s] in %s, another implementation [%s] in %s",
-				errMarker, impl.rule, impl.site, impl.page, impl.section, existing.page, existing.section))
+		if existing.page != impl.page {
+			errs = append(errs, fmt.Errorf("%w: %q: %s cites [%s], another implementation [%s]",
+				errMarker, impl.rule, impl.site, impl.page, existing.page))
 		}
 
 		existing.implementations = append(existing.implementations, impl.site)
@@ -1204,77 +1086,11 @@ func pageKey(page string) int {
 	return book*1000 + number
 }
 
-// rewrite replaces each section's table with the generated one, and adds one
-// at the end of a section that had none.
-func rewrite(doc string, sections map[string][]row) string {
-	var (
-		out     []string
-		section string
-		written = make(map[string]bool)
-	)
-
-	lines := strings.Split(doc, "\n")
-
-	finish := func() {
-		if section == "" || written[section] || len(sections[section]) == 0 {
-			return
-		}
-
-		for len(out) > 0 && out[len(out)-1] == "" {
-			out = out[:len(out)-1]
-		}
-
-		out = append(out, "")
-		out = append(out, table(sections[section])...)
-		out = append(out, "")
-		written[section] = true
-	}
-
-	for i := 0; i < len(lines); i++ {
-		line := lines[i]
-
-		if heading, ok := strings.CutPrefix(line, "## "); ok {
-			finish()
-
-			section = heading
-		}
-
-		if strings.HasPrefix(line, "|") {
-			for i+1 < len(lines) && strings.HasPrefix(lines[i+1], "|") {
-				i++
-			}
-
-			if !written[section] && len(sections[section]) > 0 {
-				out = append(out, table(sections[section])...)
-				written[section] = true
-			}
-
-			continue
-		}
-
-		out = append(out, line)
-	}
-
-	if len(out) > 0 && out[len(out)-1] == "" {
-		out = out[:len(out)-1]
-	}
-
-	finish()
-
-	return strings.Join(out, "\n") + "\n"
-}
-
-// table is a section's rows as a Markdown table, one row to a line and
-// unpadded.
-//
-// Padded to its widest cell, one long name rewrote every row of its table, so
-// a change adding one rule moved forty lines and the pressure fell on naming
-// tests short. Unpadded, a row's diff is that row. The formatter is told to
-// leave the document alone (.prettierignore), or it would pad it back.
+// table is the map as a Markdown table, one row to a line and unpadded.
 func table(rows []row) []string {
 	out := make([]string, 0, 2+len(rows))
 
-	out = append(out, "| Rule | Page | Implementation | Test |", "| --- | --- | --- | --- |")
+	out = append(out, "| Rule | Authority | Implementation | Test |", "| --- | --- | --- | --- |")
 
 	for _, r := range rows {
 		out = append(out, "| "+strings.Join([]string{r.rule, r.page, ticked(r.implementations), tests(r)}, " | ")+" |")

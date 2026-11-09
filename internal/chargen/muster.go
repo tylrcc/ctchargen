@@ -19,7 +19,7 @@ const (
 
 // musterOut spends the benefit rolls the service earned (pp. 7, 9).
 //
-// Implements: Its ship, cash and pension [1:25] in The book's own character.
+// Implements: Its ship, cash and pension [1:25].
 func (r *run) musterOut() error {
 	rolls := r.tables.Muster().Rolls(r.char.Terms, r.char.Rank)
 	if rolls == 0 {
@@ -53,9 +53,8 @@ func (r *run) musterOut() error {
 // three rolls on table 2 are allowed per character; all remaining rolls must
 // be on table 1."
 //
-// Implements: The mustering-out table is designated before the die [1:9] in
-// Mustering out.
-// Implements: At most three rolls on Table 2 [1:9] in Mustering out.
+// Implements: The mustering-out table is designated before the die [1:9].
+// Implements: At most three rolls on Table 2 [1:9].
 func (r *run) chooseMusterTable(onTableTwo int) (traveller.MusterTable, error) {
 	if onTableTwo >= maxRollsOnTableTwo {
 		return traveller.TableOne, nil
@@ -108,9 +107,9 @@ func (r *run) benefit(table traveller.MusterTable) error {
 // musterModifier offers the +1 each table allows, where the character has
 // earned it (p. 9).
 //
-// Implements: The +1 at rank 5 or 6 on Table 1 [1:9] in Mustering out.
-// Implements: The +1 on Table 1 may be declined [1:9] in Mustering out.
-// Implements: The +1 with gambling on Table 2 [1:9] in Mustering out.
+// Implements: The +1 at rank 5 or 6 on Table 1 [1:9].
+// Implements: The +1 on Table 1 may be declined [1:9].
+// Implements: The +1 with gambling on Table 2 [1:9].
 func (r *run) musterModifier(table traveller.MusterTable) (int, error) {
 	if table == traveller.TableOne {
 		// P. 9: "Characters with rank 5 or 6 may add +1 to their rolls on
@@ -153,13 +152,12 @@ func (r *run) musterModifier(table traveller.MusterTable) (int, error) {
 // asked: eligibility is a condition of the value, while assuming a title is
 // an act he does not perform.
 //
-// Implements: Social Standing 11+ may assume the hereditary title [1:5; 3:22]
-// in Titles.
+// Implements: Social Standing 11+ may assume the hereditary title [1:5; 3:22].
 // Implements: Assessed once, at the end, against the final value [1:5; 3:22
-// (E011)] in Titles.
-// Implements: The dead are assessed but not asked [(E011)] in Titles.
+// (E011)].
+// Implements: The dead are assessed but not asked [(E011)].
 // Implements: E011 is stamped only where the reading changed the answer
-// [(E011)] in Titles.
+// [(E011)].
 func (r *run) assessTitle() error {
 	social := r.char.Profile[traveller.SocialStanding]
 
@@ -222,7 +220,7 @@ func (r *run) assessTitle() error {
 // applyBenefit is the fold that takes one row of Mustering Out Table 1.
 // Adding an eighth kind to the sum stops this compiling until it is handled.
 //
-// Implements: The seven kinds of Table 1 row [1:9, 21–23] in Mustering out.
+// Implements: The seven kinds of Table 1 row [1:9, 21–23].
 type applyBenefit struct {
 	run     *run
 	because int
@@ -266,8 +264,7 @@ func (a *applyBenefit) WeaponPick(category traveller.WeaponCategory) error {
 	return nil
 }
 
-// Implements: Travellers' Aid only once; duplicates wasted [1:22] in Mustering
-// out.
+// Implements: Travellers' Aid only once; duplicates wasted [1:22].
 func (a *applyBenefit) TravellersAid() error {
 	// P. 22: membership "may be achieved only once per character. If a die
 	// roll indicates membership after it has already been achieved, the die
@@ -329,7 +326,7 @@ func (r *run) receivedIn(category traveller.WeaponCategory) []traveller.WeaponNa
 // engine sees it, and one definition of that cannot disagree with itself.
 //
 // Implements: A repeat weapon may be taken as expertise, or as a different
-// weapon [1:22] in Mustering out.
+// weapon [1:22].
 type takeWeapon struct {
 	run     *run
 	because int
@@ -383,9 +380,8 @@ func (r *run) receiveShip(because int, kind traveller.ShipKind) error {
 // p. 23: "Only one scout ship may be acquired by a character, and throws
 // resulting in additional ships are lost."
 //
-// Implements: Free Trader: 40 years of payments, 10 off per repeat [1:22–23]
-// in Mustering out.
-// Implements: Scout ship: duplicates lost [1:23] in Mustering out.
+// Implements: Free Trader: 40 years of payments, 10 off per repeat [1:22–23].
+// Implements: Scout ship: duplicates lost [1:23].
 func (r *run) receiveShipAgain(because, at int) error {
 	ship := &r.char.Benefits.Ships[at]
 

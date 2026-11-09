@@ -16,8 +16,8 @@ import (
 // It has no flag set, as version has none: its words are ids. An id that
 // names no reading is a usage error, and nothing is written.
 //
-// Implements: The readings are listed, and those asked for are written in
-// full [CLI sketch] in The record.
+// Implements: The readings are listed, and those asked for are written in full
+// [CLI sketch].
 func readings(args []string, out io.Writer) error {
 	if len(args) > 0 && isHelpFlag(args[0]) {
 		if len(args) > 1 {

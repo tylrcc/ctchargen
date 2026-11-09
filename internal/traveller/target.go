@@ -49,8 +49,7 @@ var errTarget = errors.New("malformed target")
 // meet it. It is parsed once, when a table lifts, and never re-parsed at
 // throw time.
 //
-// Implements: Die roll conventions: `N+`, `N−`, exact [1:2–3] in
-// Characteristics and the record.
+// Implements: Die roll conventions: `N+`, `N−`, exact [1:2–3].
 type Target struct {
 	number   int
 	modality Modality

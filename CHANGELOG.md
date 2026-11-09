@@ -34,6 +34,12 @@ release turns out to be.
   transcript is what it was. The twelve links between readings, anchors into
   the deleted document, are plain ids now, since a link out of an emitted
   reading has nowhere to land (#324).
+- The coverage map is a check that writes nothing. The coverage document is gone,
+  and every `Implements:` marker drops its `in <Section>.` suffix, which only
+  placed its row in that document. Every check stays: each rule implemented
+  and held, and every cite valid. The map prints on demand as one table, in
+  page order, with `go test -run TestTheCoverageMapHolds -print` from
+  `internal/coverage` (#325).
 
 ## 1.0.0-beta.7
 

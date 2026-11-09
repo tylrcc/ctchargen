@@ -42,7 +42,7 @@ and the fixture roster carry theirs, and the step lookup the conditions read
 records with carries its own. It is never a test: a test holds a rule rather
 than carrying it. A promise no single declaration carries is marked on its
 package's doc, whether it is spread across the package, as the alphabets'
-spellings are, or is the whole package, as the coverage generator's is.
+spellings are, or is the whole package, as the coverage check's is.
 
 ## A new invariant is shown killed
 

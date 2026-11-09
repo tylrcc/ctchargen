@@ -156,7 +156,7 @@ type outcomeJSON struct {
 // with only a transcript golden to notice.
 //
 // Implements: The shape a reader gets back is the shape that was written
-// [Generation record] in The record.
+// [Generation record].
 type eventCodec struct {
 	out  json.RawMessage
 	flat eventJSON

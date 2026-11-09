@@ -121,7 +121,7 @@ var errWithdrawal = errors.New("malformed withdrawal")
 // refusedWithdrawal is why a reading's withdrawal is malformed, or nil.
 //
 // Implements: A withdrawal says why, and its replacement is another erratum
-// that exists [Documents] in The record.
+// that exists [Documents].
 func refusedWithdrawal(r rules.Reading) error {
 	w := r.Withdrawal
 

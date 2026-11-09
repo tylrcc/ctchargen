@@ -328,7 +328,7 @@ func stampedOn(id traveller.Erratum) string {
 // record, one per reading.
 //
 // Implements: The errata a record stamps are exactly those whose reading's
-// condition holds [Documents] in The record.
+// condition holds [Documents].
 func conditions(tables *rules.Rules) []reading {
 	all := slices.Concat(
 		enlistmentAndService(),
@@ -354,10 +354,9 @@ func conditions(tables *rules.Rules) []reading {
 // disagreement does not excuse.
 //
 // Implements: The errata a record stamps are exactly those whose reading's
-// condition holds [Documents] in The record.
+// condition holds [Documents].
 //
-// Implements: A withdrawn reading is stamped on no new record [Documents] in
-// The record.
+// Implements: A withdrawn reading is stamped on no new record [Documents].
 func verdict(rec record, r reading) []string {
 	want := r.holds(rec)
 	got := slices.Contains(rec.Errata, r.id.String())

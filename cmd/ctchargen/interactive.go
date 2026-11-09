@@ -17,8 +17,7 @@ import (
 // asking. It is an error rather than a default, because a character finished
 // by a decision nobody made is not the character anybody asked for.
 //
-// Implements: The input ending is an error, not a default [Choice points] in
-// The record.
+// Implements: The input ending is an error, not a default [Choice points].
 var errNoAnswer = errors.New("the input ended while the procedure was still asking")
 
 // player is the Decider a person drives: the third implementation, after the
@@ -30,7 +29,7 @@ var errNoAnswer = errors.New("the input ended while the procedure was still aski
 // cannot read is asked again rather than guessed at.
 //
 // Implements: Every question the player is asked is one the engine asked
-// [Choice points] in The record.
+// [Choice points].
 type player struct {
 	in  *bufio.Scanner
 	out io.Writer
@@ -141,7 +140,7 @@ func (p *player) MusterTable1DM() (bool, error) {
 }
 
 // Implements: The gambling modifier is offered only to one who has the
-// expertise [1:9] in The record.
+// expertise [1:9].
 func (p *player) MusterTable2DM() (bool, error) {
 	return p.confirm("Your gambling expertise allows +1 on this table. Take it? (p. 9)")
 }
@@ -158,7 +157,7 @@ type weaponOffer struct {
 // received, each line carrying the benefit it names.
 //
 // Implements: Each weapon-benefit line records the benefit it says [Choice
-// points] in The record.
+// points].
 func (p *player) MusterWeapon(
 	category traveller.WeaponCategory, from, received []traveller.WeaponName,
 ) (traveller.WeaponBenefit, error) {
@@ -199,7 +198,7 @@ func (p *player) AssumeTitle(title traveller.Title) (bool, error) {
 // sayf writes to the player, remembering the first failure.
 //
 // Implements: A player nobody can be shown anything is not asked [Choice
-// points] in The record.
+// points].
 func (p *player) sayf(format string, args ...any) {
 	if p.wrote != nil {
 		return
@@ -225,9 +224,9 @@ func (p *player) watch(event traveller.Event) {
 // had said nothing at all.
 //
 // Implements: The alternatives offered are exactly the engine's [Choice
-// points] in The record.
+// points].
 // Implements: An unreadable answer is asked again, never guessed at [Choice
-// points] in The record.
+// points].
 func (p *player) choose(question string, options []string) (int, error) {
 	p.sayf("\n%s\n", question)
 
@@ -284,9 +283,8 @@ func (p *player) wroteErr() error {
 // choose, and the one that most needs telling what it cost.
 //
 // Implements: A stopped session says what was answered and that nothing was
-// written [ADR 0001] in The record.
-// Implements: A read that fails is not the input ending [Choice points] in The
-// record.
+// written [ADR 0001].
+// Implements: A read that fails is not the input ending [Choice points].
 func (p *player) stopped() error {
 	p.sayf("\n%s\n", p.lostLine())
 

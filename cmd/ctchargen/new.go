@@ -125,8 +125,8 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 // nothing and appear nowhere in the record. The check is on what the operator
 // set, not on the values, because every strategy flag has a default.
 //
-// Implements: A strategy given without --auto is refused, not ignored
-// [CLI sketch] in The record.
+// Implements: A strategy given without --auto is refused, not ignored [CLI
+// sketch].
 func strategiesWithoutAuto(set *flag.FlagSet, auto bool) error {
 	if auto {
 		return nil
@@ -165,8 +165,7 @@ func isOrAre(n int) string {
 // settles it is that preferring one silently is the same defect as swallowing
 // a word after a help flag, and this command refuses that.
 //
-// Implements: A character is written one way, not two [CLI sketch] in The
-// record.
+// Implements: A character is written one way, not two [CLI sketch].
 func flagsThatContradict(sheet, history bool) error {
 	if sheet && history {
 		return fmt.Errorf(
@@ -188,7 +187,7 @@ const readingsHelp = "end the generation record with the full text of each readi
 // flagsThatContradict exists for.
 //
 // Implements: --readings without --history is refused, not ignored [CLI
-// sketch] in The record.
+// sketch].
 func readingsWithoutHistory(readings, history bool) error {
 	if readings && !history {
 		return fmt.Errorf("%w: --readings ends a transcript, and needs --history", errUsage)

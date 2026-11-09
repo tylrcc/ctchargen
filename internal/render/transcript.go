@@ -96,10 +96,10 @@ func transcriptOf(r record, readings bool) (string, error) {
 // at event 2.
 //
 // Implements: An event kind this build does not know is said to be unknown
-// [Generation record] in The record.
+// [Generation record].
 //
-// Implements: The kept transcript numbers every event, so no number is
-// skipped [Generation record] in The record.
+// Implements: The kept transcript numbers every event, so no number is skipped
+// [Generation record].
 func writeEvent(out *strings.Builder, event eventJSON) {
 	switch event.Kind {
 	case kindStep:

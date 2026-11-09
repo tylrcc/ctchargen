@@ -11,15 +11,14 @@ import (
 // startingAge is where every character begins. P. 4: "All characters begin
 // the game the same way, untrained, inexperienced, about 18 years of age."
 //
-// Implements: All characters begin at 18 [1:4] in Characteristics and the
-// record.
+// Implements: All characters begin at 18 [1:4].
 const startingAge = 18
 
 // Ruleset names the text this tool implements. All page cites in a record's
 // generation log are to these three books and nothing else.
 //
-// Implements: The record names its ruleset and the build that wrote it
-// [ADR 0002] in The record.
+// Implements: The record names its ruleset and the build that wrote it [ADR
+// 0002].
 const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 
 // An Option is an optional input to a generation: dice of the caller's own,
@@ -45,8 +44,7 @@ func WithRoller(roller Roller) Option {
 // record and no other: no later generation, and no offer the engine checks
 // an answer against.
 //
-// Implements: The procedure is shown between the questions [Generation record]
-// in The record.
+// Implements: The procedure is shown between the questions [Generation record].
 func WithObserver(watch func(traveller.Event)) Option {
 	return func(r *run) { r.log.watch = watch }
 }
@@ -62,8 +60,7 @@ func WithBuild(build string) Option {
 // run: policy answers every choice point, and the record names it and the
 // version it answered as. It rolls dice of its own unless a roller is given.
 //
-// Implements: A record names the policy that answered it [JSON conventions] in
-// The record.
+// Implements: A record names the policy that answered it [JSON conventions].
 func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
 	return generate(in, policy, &AutoPolicy{Policy: policy, Version: PolicyVersion}, options)
 }
@@ -73,7 +70,7 @@ func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
 // choice is the player's, whatever decider stands for him.
 //
 // Implements: A guided run's choices are recorded as the player's, not the
-// policy's [Choice points] in The record.
+// policy's [Choice points].
 func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	return generate(in, decider, nil, options)
 }
@@ -88,10 +85,9 @@ func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
 // fixture's script walks, so it is a fixed choice rather than an incidental
 // one.
 //
-// Implements: A fixture generates one golden, and the same one twice
-// [ADR 0001] in The record.
-// Implements: The worked example reproduces [1:23–25] in The book's own
-// character.
+// Implements: A fixture generates one golden, and the same one twice [ADR
+// 0001].
+// Implements: The worked example reproduces [1:23–25].
 func generate(in Inputs, decider Decider, policy *AutoPolicy, options []Option) (*Character, error) {
 	tables, err := rules.Load()
 	if err != nil {
@@ -204,8 +200,7 @@ func (r *run) generate() error {
 
 // rollProfile rolls the six characteristics in the order p. 4 rolls them.
 //
-// Implements: Six 2D rolls, in order: values 2–12 initially [1:4] in
-// Characteristics and the record.
+// Implements: Six 2D rolls, in order: values 2–12 initially [1:4].
 func (r *run) rollProfile() {
 	r.log.step("characteristics", "p. 4")
 

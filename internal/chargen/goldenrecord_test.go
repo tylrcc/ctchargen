@@ -88,7 +88,7 @@ func (r record) rolls(step string) []event {
 // dice is every event of the named step and kind.
 //
 // Implements: Every step the errata conditions read is found, as the kind they
-// read it as [Documents] in The record.
+// read it as [Documents].
 func (r record) dice(step, kind string) []event {
 	var found []event
 
