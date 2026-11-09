@@ -4,10 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"maps"
-	"os"
 	"path/filepath"
-	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -30,7 +27,7 @@ const (
 //
 // What it should say is read off the notes themselves rather than typed in.
 // A literal here would be a golden maintained by hand, which the dice-stream
-// order is free to invalidate at any time; counting the roster instead also
+// order is free to invalidate at any time; counting the batch's notes instead also
 // holds this file's reading of which departures are fatal to the one the
 // note says, so the two transcriptions of that rule are checked against
 // each other rather than only against themselves.
@@ -241,7 +238,7 @@ func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 //
 // --survivors rests entirely on this classification, and until now nothing
 // asserted it directly: the flag was checked by counting fatal records in a
-// roster, which passes just as well if a case is misread in a way the dice
+// batch, which passes just as well if a case is misread in a way the dice
 // happen not to reach. Fold makes a new case a compile error here; this makes
 // a wrong answer for an existing one a test failure.
 //
@@ -263,79 +260,6 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 	} {
 		if got := traveller.Fatal(tc.departure); got != tc.fatal {
 			t.Errorf("%s: fatal is %v, want %v", name, got, tc.fatal)
-		}
-	}
-}
-
-// A --survivors batch is refused over a member it would write, and not over a
-// file beyond the batch.
-//
-// Members are named first by position, so who survives does not change which
-// positions the batch fills: 1 through count, whoever fills them. The check can
-// key on those without generating anyone, and a note one past the count is
-// nobody's to refuse over or to touch.
-//
-// Holds: A refused batch writes none of itself, on the members it will actually
-// write.
-func TestARefusedSurvivorBatchKeysOnThePositionsItFills(t *testing.T) {
-	t.Parallel()
-
-	const (
-		base   = uint64(1000)
-		wanted = 5
-	)
-
-	// The names are typed out rather than asked of position, so a roster
-	// that started counting from zero would be caught here and not only in
-	// the plain batch's test.
-	for name, tc := range map[string]struct {
-		plant   string
-		refuses bool
-		left    int
-	}{
-		"the last member it writes": {"5 Navy Admiral 777777.md", true, 1},
-		"a name past the end":       {"6 Navy Admiral 777777.md", false, wanted + 1},
-	} {
-		dir := t.TempDir()
-		planted := filepath.Join(dir, tc.plant)
-
-		err := os.WriteFile(planted, []byte("{}\n"), 0o600)
-		if err != nil {
-			t.Fatalf("%s: planting the collision: %v", name, err)
-		}
-
-		var out strings.Builder
-
-		err = run([]string{
-			cmdBatch, flagCount, strconv.Itoa(wanted),
-			flagService, scouts,
-			flagSurvivors, flagOutput, dir,
-		}, nil, &out, io.Discard)
-
-		switch {
-		case tc.refuses && err == nil:
-			t.Errorf("%s: the batch replaced a member that was already there", name)
-		case !tc.refuses && err != nil:
-			t.Errorf("%s: the batch was refused over a name it never writes: %v", name, err)
-		}
-
-		found, err := filepath.Glob(filepath.Join(dir, "*.md"))
-		if err != nil {
-			t.Fatalf("%s: looking for the members: %v", name, err)
-		}
-
-		if len(found) != tc.left {
-			t.Errorf("%s: the run left %d files behind, want %d", name, len(found), tc.left)
-		}
-
-		// The planted file is never the run's to replace, either way.
-		kept, err := os.ReadFile(planted)
-		if err != nil {
-			t.Fatalf("%s: reading the planted file: %v", name, err)
-		}
-
-		if string(kept) != "{}\n" {
-			t.Errorf("%s: the planted file was written over", name)
 		}
 	}
 }
@@ -391,111 +315,51 @@ func TestOnlyANoteThePolicyAnsweredNamesOne(t *testing.T) {
 // A directory batch that cannot write a member leaves what came before it.
 //
 // This is the trade #99's fix accepts and does not hide: the guarantee is that
-// a run never silently replaces a file, not that a directory is written
-// atomically. It was true before #98 too.
-//
-// It is deliberately NOT a test that the run writes as it goes. I wrote it as
-// one and it could not have been: an obstruction sits in the write, which a
-// buffered run reaches as well, so both designs leave the same two files.
-// What holds the memory property is occupied's signature - no policy, no
-// roller, so it cannot generate - and the test below holds that.
+// a run never silently replaces a note, not that a directory is written
+// atomically. Here the folder is closed as the third member is generated, so
+// two notes are on disk when the run stops, and they stay.
 //
 // Holds: A directory batch that cannot write a member leaves what came before.
 func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	t.Parallel()
 
-	dir := t.TempDir()
+	dir := filepath.Join(t.TempDir(), "crew")
 
-	// The third member of six, so two are written before the obstruction.
-	const blockedMember = 2
-
-	// Every member walks the same dice, so the third is named before it is
-	// generated, and a directory can sit where it will be written.
-	blocked := filepath.Join(dir, "3 Other 644776.md")
-
-	err := os.Mkdir(blocked, noteDirMode)
-	if err != nil {
-		t.Fatalf("blocking a member's path: %v", err)
-	}
-
-	err = run([]string{
-		cmdBatch, flagCount, "6", flagService, other,
-		flagOutput, dir, flagForce,
-	}, nil, io.Discard, io.Discard, withDice(otherByPolicy.partly(t)))
+	err := run([]string{cmdBatch, flagCount, "6", flagService, other, flagOutput, dir},
+		nil, io.Discard, io.Discard, withDice(closingOn(t, dir, 3, otherByPolicy)))
 	if err == nil {
-		t.Fatal("a batch wrote a member over a directory")
+		t.Fatal("a batch into a closed folder reported success")
 	}
 
-	found, err := filepath.Glob(filepath.Join(dir, "*.md"))
+	written, err := filepath.Glob(filepath.Join(dir, "*.md"))
 	if err != nil {
 		t.Fatalf("looking for what was written: %v", err)
 	}
 
-	// Regular files only: the obstruction is a directory carrying a
-	// member's name, so a glob counts it as one of them.
-	written := make([]string, 0, len(found))
-
-	for _, path := range found {
-		info, err := os.Stat(path)
-		if err != nil {
-			t.Fatalf("looking at %s: %v", path, err)
-		}
-
-		if info.Mode().IsRegular() {
-			written = append(written, path)
-		}
-	}
-
-	if len(written) != blockedMember {
-		t.Errorf("%d members are in the directory after the obstruction, want %d",
-			len(written), blockedMember)
+	if len(written) != 2 {
+		t.Errorf("%d members are in the folder after the run stopped, want 2", len(written))
 	}
 }
 
-// The collision check cannot generate a character, and reads a position from
-// a note's name as a number.
-//
-// The first is its signature, not its body: occupied takes a directory and a
-// count, and no policy and no roller. It is the whole of why checking a batch
-// for collisions costs a directory listing and not a run (#99). The second is
-// what makes a batch of twelve refuse over a note a batch of three wrote:
-// "1 X.md" holds the position "01" names.
-//
-// Holds: A batch checks for collisions without generating anybody.
-func TestTheCollisionCheckNeedsNoCharacters(t *testing.T) {
+// A failed search into a folder prints no tally either, but says the folder
+// holds the member it wrote: the folder is not empty now, so a rerun into it
+// would be refused (#426), and the error alone would not say why.
+func TestAFailedSearchIntoAFolderSaysWhatItHolds(t *testing.T) {
 	t.Parallel()
 
-	dir := t.TempDir()
+	dir := filepath.Join(t.TempDir(), "crew")
 
-	for _, name := range []string{
-		"1 Old Title.md",                      // titled, and narrower than the batch
-		"02.md",                               // bare, as earlier builds wrote them
-		"3 Not a note.txt", "04x.md", "+5.md", // none of them a note at a position
-		"13 Past the end.md",
-	} {
-		err := os.WriteFile(filepath.Join(dir, name), nil, 0o600)
-		if err != nil {
-			t.Fatal(err)
-		}
+	var asking strings.Builder
+
+	err := run([]string{
+		cmdBatch, flagCount, "2", flagService, other, flagSurvivors, flagOutput, dir,
+	}, nil, io.Discard, &asking, withDice(livesThenDies(t)))
+	if !errors.Is(err, errSearch) {
+		t.Fatalf("an exhausted search said %v, want the search's own failure", err)
 	}
 
-	err := os.Mkdir(filepath.Join(dir, "06 A directory.md"), noteDirMode)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	held, err := occupied(dir, 12)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	want := map[int][]heldNote{
-		1: {{path: filepath.Join(dir, "1 Old Title.md")}},
-		2: {{path: filepath.Join(dir, "02.md")}},
-		6: {{path: filepath.Join(dir, "06 A directory.md"), directory: true}},
-	}
-
-	if !maps.EqualFunc(held, want, slices.Equal) {
-		t.Errorf("held %v, want %v", held, want)
+	want := dir + " holds what was written; remove it or choose another folder to run again\n"
+	if asking.String() != want {
+		t.Errorf("a failed search into a folder said %q, want %q", asking.String(), want)
 	}
 }

@@ -89,13 +89,15 @@ character.** Every run rolls fresh dice; nothing brings a character back but
 the generation record in its note, which carries every die thrown and every
 choice made, and which every note ends by telling you to keep whole.
 
-Batch members are named by their position and for the character in each —
-`01 Army Captain 938788.md`, `02 Civilian 87665B.md` — the position padded to
-the width of the batch. A position is held by any note named for it, so a
-second batch into the same directory is refused before anyone is generated,
-and with `--force` it replaces each position's note rather than leaving the
-old one beside it. `--name` names the character, on its heading, and never
-the file: it gives every member the same name.
+**A batch writes into a folder of its own**: `-o` names a folder that is new,
+or empty but for hidden files such as `.DS_Store`. Anything else in it — a
+note, a picture, a subfolder — refuses the batch before anyone is generated,
+so a batch never mixes with your notes and never removes anything. To run a
+batch again, remove its folder or name another. Each member's note is named
+for its position and the character in it — `01 Army Captain 938788.md`,
+`02 Civilian 87665B.md` — the position padded to the width of the batch.
+`--name` names the character, on its heading, and never the file: it gives
+every member the same name.
 
 **`batch` with no `-o` writes the notes to standard output**, one after
 another, and it streams, so the first note arrives before the run finishes
@@ -108,7 +110,7 @@ it takes no `--auto`.
 notes:
 
 ```sh
-$ ctchargen batch --count 100 --service scouts > roster.md
+$ ctchargen batch --count 100 --service scouts > scouts.md
 100 written, 76 died
 ```
 
@@ -123,7 +125,7 @@ $ ctchargen batch --count 20 --service scouts --survivors -o scouts/
 ```
 
 It does not reroll anybody: a dead character is written nowhere and another is
-generated in his place, so every note in the roster is one the dice made.
+generated in his place, so every note in the batch is one the dice made.
 
 **A session that stops before the end is lost.** A half-built character has
 no note, so nothing is written; the tool says what was answered and that it
@@ -156,10 +158,9 @@ note names no policy for them to belong to.
 | `--skills` | `advanced` (default) · `service` · `personal` |
 | `--muster` | `cash` (default) · `goods` · `spartan`        |
 
-**Nothing is overwritten without `--force`.** `-o` onto an existing file is
-refused, and so is a `batch` any of whose members would replace one — the
-whole batch, before a byte is written, so a refusal leaves the directory as it
-was.
+**Nothing is overwritten without `--force`.** `new -o` onto an existing file
+is refused unless `--force` is given. A `batch` has no `--force`: it writes
+only into a folder of its own.
 
 **A name is one line.** `--name` is printed as the note's heading, so a name
 carrying a line break is refused rather than allowed to start sections the

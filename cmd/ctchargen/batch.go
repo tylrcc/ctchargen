@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
@@ -31,6 +30,9 @@ import (
 // flag batch does not have, not accepted and ignored (#336).
 //
 // Implements: A batch is always an auto run, and takes no --auto [CLI sketch].
+//
+// Implements: A batch's -o names a folder, and a batch takes no --force [CLI
+// sketch].
 func batch(args []string, out, asking io.Writer, dice source) error {
 	flags := declareBatchFlags()
 
@@ -54,6 +56,15 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 		return fmt.Errorf("%w: --count must be at least 1", errUsage)
 	}
 
+	// -o names the folder a batch writes into. One ending in .md almost
+	// certainly meant a file, which a batch does not write, so it is refused
+	// before anything is made rather than made into a folder of that name
+	// (#416).
+	if strings.EqualFold(filepath.Ext(filepath.Clean(*flags.output)), ".md") {
+		return fmt.Errorf("%w: -o %s names a file; a batch writes its notes into a folder",
+			errUsage, *flags.output)
+	}
+
 	base, policy, err := flags.inputs()
 	if err != nil {
 		return err
@@ -64,7 +75,7 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 		survivors: *flags.survivors, attempts: survivorAttempts, dice: dice,
 	}
 
-	return write(out, asking, run, *flags.output, *flags.force)
+	return write(out, asking, run, *flags.output)
 }
 
 // batchRun is what every member of a batch is generated from, and how many
@@ -86,9 +97,9 @@ type batchRun struct {
 type batchFlagSet struct {
 	characterFlags
 
-	count            *int
-	force, survivors *bool
-	output           *string
+	count     *int
+	survivors *bool
+	output    *string
 }
 
 func declareBatchFlags() batchFlagSet {
@@ -105,8 +116,7 @@ func declareBatchFlags() batchFlagSet {
 		}),
 		count: set.Int("count", 0, "how many characters to generate"),
 		output: set.String("o", "",
-			"a directory to write one note per character; absent, the notes to standard output"),
-		force: set.Bool("force", false, "replace output files that already exist"),
+			"a folder of the batch's own to write one note per character into; absent, the notes to standard output"),
 		survivors: set.Bool("survivors", false,
 			"pass over characters who died, and go on until --count of them are living"),
 	}
@@ -118,7 +128,7 @@ func declareBatchFlags() batchFlagSet {
 //
 // Implements: A failed search prints no stopped-run tally beside its counts
 // [CLI sketch].
-func write(out, asking io.Writer, run batchRun, path string, force bool) error {
+func write(out, asking io.Writer, run batchRun, path string) error {
 	var (
 		done tally
 		err  error
@@ -127,21 +137,29 @@ func write(out, asking io.Writer, run batchRun, path string, force bool) error {
 	if path == "" {
 		done, err = run.streamed(out)
 	} else {
-		done, err = run.intoDirectory(path, force)
+		done, err = run.intoDirectory(path)
 	}
 
 	// A run that stopped partway has left notes on disk, and the tally is
 	// the only place it says how many and how many of them are corpses (#118).
-	// The tally is skipped where it would say nothing - no record written -
-	// and for a failed search, whose error already carries the counts.
-	if err != nil {
-		if done.written > 0 && !errors.Is(err, errSearch) {
-			reported := done.reportStopped(asking)
-			if reported != nil {
-				return errors.Join(err, reported)
-			}
+	// The tally is skipped where it would say nothing - no note written -
+	// and for a failed search, whose error already carries the counts; a
+	// failed search into a folder still says the folder holds what it wrote.
+	if err != nil && done.written > 0 {
+		var reported error
+
+		if errors.Is(err, errSearch) {
+			reported = heldIn(asking, path)
+		} else {
+			reported = done.reportStopped(asking, path)
 		}
 
+		if reported != nil {
+			return errors.Join(err, reported)
+		}
+	}
+
+	if err != nil {
 		return err
 	}
 
@@ -182,9 +200,32 @@ func (t tally) report(asking io.Writer) error {
 
 // reportStopped writes the closing line of a run that failed partway. It says
 // the run stopped, because the error printed after it does, and a line that
-// read like a finished batch would contradict the line beneath it.
-func (t tally) reportStopped(asking io.Writer) error {
-	return t.reportAs(asking, fmt.Sprintf("%d written before the run stopped", t.written))
+// read like a finished batch would contradict the line beneath it. A batch
+// into a folder then says the folder holds what was written (heldIn).
+func (t tally) reportStopped(asking io.Writer, dir string) error {
+	err := t.reportAs(asking, fmt.Sprintf("%d written before the run stopped", t.written))
+	if err != nil {
+		return err
+	}
+
+	return heldIn(asking, dir)
+}
+
+// heldIn says a stopped batch's folder holds what was written: the folder is
+// not empty now, so the batch would refuse it on a rerun (#426). A batch to
+// standard output has no folder, and says nothing.
+func heldIn(asking io.Writer, dir string) error {
+	if dir == "" {
+		return nil
+	}
+
+	_, err := fmt.Fprintf(asking,
+		"%s holds what was written; remove it or choose another folder to run again\n", dir)
+	if err != nil {
+		return fmt.Errorf("reporting the batch: %w", err)
+	}
+
+	return nil
 }
 
 func (t tally) reportAs(asking io.Writer, line string) error {
@@ -309,133 +350,66 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 	}
 }
 
-// intoDirectory writes one note per character, named by its position and for
-// the character in it: "01 Army Captain 938788.md" (#400).
+// intoDirectory writes one note per member into a folder of the batch's own,
+// named by its position and for the character in it: "01 Army Captain
+// 938788.md" (#400).
 //
-// One character is held at a time (#99). A name is not known until its
-// character is, so the collision check is by position: a note named for a
-// position, alone or followed by a title, holds it, and the positions a batch
-// fills are 1 through count whether or not --survivors passes anyone over.
-// The check reads the directory once, before anyone is generated, and without
-// --force a held position refuses the batch.
+// A batch writes only into a folder that is new, or empty but for hidden
+// entries (#426), so nothing in the folder can be anyone's but this run's
+// and nothing is ever removed. The check reads the folder once, before
+// anyone is generated (#99). One character is held at a time.
 //
-// Under --force a member's new note is written first, through the same
-// staged replace as any other (#191), and only once it is in place are the
-// position's other notes removed, so a write that fails leaves the old note
-// where it was. A directory at a position is never removed: it is not a
-// note.
-//
-// A batch that fails partway leaves what it has written. The guarantee here is
-// that a run never silently replaces a note, not that a directory is written
-// atomically.
+// A batch that fails partway leaves what it has written, and says so: the
+// folder is not empty any more, so running again needs it removed or another
+// folder.
 //
 // Implements: A directory batch that cannot write a member leaves what came
 // before [CLI sketch].
-//
-// Implements: A refused batch writes none of itself, on the members it will
-// actually write [CLI sketch].
-func (b batchRun) intoDirectory(dir string, force bool) (tally, error) {
+func (b batchRun) intoDirectory(dir string) (tally, error) {
 	err := os.MkdirAll(dir, noteDirMode)
 	if err != nil {
 		return tally{}, fmt.Errorf("creating %s: %w", dir, err)
 	}
 
-	held, err := occupied(dir, b.count)
+	err = ownFolder(dir)
 	if err != nil {
 		return tally{}, err
 	}
 
-	if !force {
-		for index := 1; index <= b.count; index++ {
-			if notes := held[index]; len(notes) > 0 {
-				return tally{}, inTheWay(notes[0].path)
-			}
-		}
-	}
-
 	return b.each(
 		func(index int, character *chargen.Character) error {
-			path := memberPath(dir, position(index, b.count), render.Title(character))
-
-			where, err := openDestination(nil, path, force)
+			where, err := openDestination(nil,
+				memberPath(dir, position(index, b.count), render.Title(character)), false)
 			if err != nil {
 				return err
 			}
 
-			err = where.write(render.Note(character, false))
-			if err != nil {
-				return err
-			}
-
-			return clearStale(held[index], path)
+			return where.write(render.Note(character, false))
 		},
 	)
 }
 
-// heldNote is an entry in the directory that holds a position.
-type heldNote struct {
-	path      string
-	directory bool
-}
-
-// occupied is what already holds each position from 1 through count in dir:
-// an entry named for the position alone, as earlier builds named notes, or
-// for the position and a title, after a space. The position is read as a
-// number, so "1 Kira.md" holds the first position of a batch of twelve as
-// "01 Kira.md" does.
+// ownFolder refuses a folder holding anything a person would see in a
+// listing: a note, another file, a subfolder. Hidden entries, such as the
+// .DS_Store Finder leaves, do not count.
 //
-// It takes a directory and a count, and no policy and no roller, so it cannot
-// generate a character even by accident. That signature is the guarantee:
-// checking for collisions costs a directory listing and nothing more (#99),
-// with or without --survivors, because a member's position is his place among
-// the notes written and not who survived to fill it.
+// It takes a folder and nothing that could generate, so the check costs a
+// listing and never a character (#99).
 //
-// Implements: A batch checks for collisions without generating anybody [CLI
+// Implements: A batch writes only into a folder of its own [CLI sketch].
+//
+// Implements: A batch refuses its folder before generating anybody [CLI
 // sketch].
-func occupied(dir string, count int) (map[int][]heldNote, error) {
+func ownFolder(dir string) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
-		return nil, fmt.Errorf("reading %s: %w", dir, err)
+		return fmt.Errorf("reading %s: %w", dir, err)
 	}
-
-	held := map[int][]heldNote{}
 
 	for _, entry := range entries {
-		stem, isNote := strings.CutSuffix(entry.Name(), ".md")
-		at, _, _ := strings.Cut(stem, " ")
-
-		index, err := strconv.Atoi(at)
-		if !isNote || err != nil || !allDigits(at) || index < 1 || index > count {
-			continue
-		}
-
-		held[index] = append(held[index], heldNote{
-			path: filepath.Join(dir, entry.Name()), directory: entry.IsDir(),
-		})
-	}
-
-	return held, nil
-}
-
-// allDigits is whether a word is a position as a batch writes one: digits
-// and nothing else, where strconv.Atoi would also take a sign.
-func allDigits(word string) bool {
-	return word != "" && strings.Trim(word, "0123456789") == ""
-}
-
-// clearStale removes a position's other notes once its new one is written.
-// Only a note is removed: a directory at the position is left, because it is
-// not a note. Without --force nothing is held at a position the batch writes,
-// so there is nothing to remove.
-func clearStale(held []heldNote, written string) error {
-	for _, note := range held {
-		if note.path == written || note.directory {
-			continue
-		}
-
-		err := os.Remove(note.path)
-		if err != nil {
-			return fmt.Errorf("replacing %s: %w", note.path, err)
+		if !strings.HasPrefix(entry.Name(), ".") {
+			return fmt.Errorf("%w: %s is not empty; a batch writes into a folder of its own, a new or empty one",
+				errUsage, dir)
 		}
 	}
 

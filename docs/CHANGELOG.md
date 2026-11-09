@@ -24,11 +24,15 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   note's shape is not frozen at `v1.0.0`; what the release freezes is the
   command line.
 - A batch names each note for its character as well as its position —
-  `01 Army Captain 938788.md` where it wrote `01.md` — so a vault lists the
-  roster by who is in it. A position is held by any note named for it: a
-  second batch into the directory is refused before anyone is generated, and
-  `--force` replaces each position's note rather than leaving the old one
-  beside it. `--name` names the character on its heading, not the file (#400).
+  `01 Army Captain 938788.md` — so a vault lists a batch by who is in it.
+  `--name` names the character on its heading, not the file (#400).
+- **Breaking: a batch writes only into a folder of its own (#426).** `-o`
+  names a folder that is new, or empty but for hidden files; anything else
+  refuses the batch before anyone is generated. `batch --force` is removed:
+  a batch never removes anything, so it can't touch a referee's own notes
+  (#408). An `-o` ending in `.md` is refused, where it made a folder of that
+  name (#416). A batch that stops partway says its folder holds what was
+  written.
 
 ## 1.0.0-rc.3
 

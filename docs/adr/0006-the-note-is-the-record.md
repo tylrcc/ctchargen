@@ -13,7 +13,7 @@ record, its schema and examples, `render`, `--sheet` and `--history` are
 removed.
 
 The cost is that nothing reads a character back: a note cannot be rendered
-again in a later build's layout, the roster no longer pipes through `jq`, and
+again in a later build's layout, a batch no longer pipes through `jq`, and
 records written by earlier builds are no longer read. A `replay` that re-walks
 a record, which ADR 0001 left possible, would need a record a tool can read,
 and is not possible from the note as written.

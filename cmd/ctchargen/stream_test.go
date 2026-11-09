@@ -105,9 +105,16 @@ func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 
 	out := failsAfter{left: 2}
 
+	var asking strings.Builder
+
 	err := run([]string{
 		cmdBatch, flagCount, "5", flagService, other,
-	}, nil, &out, io.Discard)
+	}, nil, &out, &asking)
+
+	// A streamed batch has no folder, so its stopped-run tally names none.
+	if strings.Contains(asking.String(), "holds what was written") {
+		t.Errorf("a streamed batch that stopped spoke of a folder: %q", asking.String())
+	}
 
 	// A streamed member has no file name, so the failure names its position
 	// among those written: the write fails on the third.

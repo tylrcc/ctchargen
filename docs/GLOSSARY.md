@@ -28,6 +28,19 @@ note names the policy, the version of what it answers and its strategies,
 whether or not the policy was asked anything.
 _Avoid_: Automatic mode, batch (a batch is many auto runs)
 
+**Batch**:
+One run of `ctchargen batch`, and the notes it writes, kept together in a
+folder of their own.
+_Avoid_: Roster (the fixture roster)
+
+**Member**:
+One character in a batch.
+_Avoid_: Entry
+
+**Position**:
+A member's place in its batch, the number its note's name opens with.
+_Avoid_: Index, slot
+
 **Guided run**:
 A generation a person answers, every choice point of it. Its note names no
 policy, and says the player made every choice.

@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -51,19 +52,12 @@ func TestBatchIntoADirectory(t *testing.T) {
 		t.Fatalf("wrote %d files, want 3", len(written))
 	}
 
-	// A second run refuses to replace them, and --force replaces them.
+	// A second batch into the same folder is refused: it is not empty.
 	err = run([]string{
 		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir,
 	}, nil, io.Discard, io.Discard)
-	if err == nil {
-		t.Error("a second batch overwrote the first without --force")
-	}
-
-	err = run([]string{
-		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir, flagForce,
-	}, nil, io.Discard, io.Discard)
-	if err != nil {
-		t.Errorf("--force did not replace the members: %v", err)
+	if err == nil || !strings.Contains(err.Error(), "is not empty") {
+		t.Errorf("a second batch into the same folder said %v, want it refused as not empty", err)
 	}
 }
 
@@ -87,42 +81,6 @@ func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 
 	if len(written) != 3 {
 		t.Fatalf("wrote %d files, want 3", len(written))
-	}
-}
-
-// A collision anywhere in the batch is found before any of it is written, so
-// a refused batch leaves the directory as it was.
-//
-// Holds: A refused batch writes none of itself, on the members it will actually
-// write.
-func TestARefusedBatchWritesNothing(t *testing.T) {
-	t.Parallel()
-
-	dir := t.TempDir()
-
-	// A note at the second position, already there.
-	blocked := filepath.Join(dir, "2 Navy Admiral 777777.md")
-
-	err := os.WriteFile(blocked, []byte("{}\n"), 0o600)
-	if err != nil {
-		t.Fatalf("planting the collision: %v", err)
-	}
-
-	err = run([]string{
-		cmdBatch, flagCount, "4", flagService, other, flagOutput, dir,
-	}, nil, io.Discard, io.Discard)
-	if err == nil {
-		t.Fatal("a batch overwrote an existing member without --force")
-	}
-
-	written, err := filepath.Glob(filepath.Join(dir, "*.md"))
-	if err != nil {
-		t.Fatalf("looking for the members: %v", err)
-	}
-
-	if len(written) != 1 {
-		t.Errorf("a refused batch left %d files behind, want only the one that was there",
-			len(written))
 	}
 }
 
@@ -179,65 +137,6 @@ func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
 
 	if !abandoned {
 		t.Error("a failed write left the destination open")
-	}
-}
-
-// A batch that stops partway still says what it left behind, and says it
-// stopped.
-//
-// Here the third member's note is already a directory - every member walks
-// the same dice, so its name is known - and --force skips the
-// up-front check that would have refused the run before writing anything, so
-// two notes are on disk when it fails. It printed the error and no tally,
-// and the tally is the only place the run says how many of what it wrote are
-// corpses (#118).
-func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
-	t.Parallel()
-
-	dir := t.TempDir()
-
-	err := os.Mkdir(filepath.Join(dir, "3 Other 644776.md"), 0o700)
-	if err != nil {
-		t.Fatalf("planting the directory: %v", err)
-	}
-
-	var asking strings.Builder
-
-	err = run([]string{
-		cmdBatch, flagCount, "5", flagService, other,
-		flagForce, flagOutput, dir + string(filepath.Separator),
-	}, nil, io.Discard, &asking, withDice(otherByPolicy.partly(t)))
-	if err == nil {
-		t.Fatal("a batch wrote a note over a directory")
-	}
-
-	if !strings.HasPrefix(asking.String(), "2 written before the run stopped, ") {
-		t.Errorf("a batch that stopped after two notes said %q", asking.String())
-	}
-}
-
-// When the tally of a stopped batch cannot be written either, both failures
-// are reported: the run's own, which is what stopped it, and the tally's.
-func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
-	t.Parallel()
-
-	dir := t.TempDir()
-
-	err := os.Mkdir(filepath.Join(dir, "3 Other 644776.md"), 0o700)
-	if err != nil {
-		t.Fatalf("planting the directory: %v", err)
-	}
-
-	err = run([]string{
-		cmdBatch, flagCount, "5", flagService, other,
-		flagForce, flagOutput, dir + string(filepath.Separator),
-	}, nil, io.Discard, &failsAfter{}, withDice(otherByPolicy.partly(t)))
-	if err == nil {
-		t.Fatal("a batch wrote a note over a directory")
-	}
-
-	if !errors.Is(err, errWriteFailed) || !strings.Contains(err.Error(), "is a directory") {
-		t.Errorf("a stopped batch that could not report said %v, want both failures", err)
 	}
 }
 
@@ -400,42 +299,24 @@ func TestBatchMembersAreNamedByPosition(t *testing.T) {
 func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 	t.Parallel()
 
-	for name, plant := range map[string]func(dir string) (args []string, blocked string){
-		"new": func(dir string) ([]string, string) {
-			blocked := filepath.Join(dir, "sheet.md")
+	blocked := filepath.Join(t.TempDir(), "sheet.md")
 
-			return []string{cmdNew, flagAuto, flagService, other, flagOutput, blocked}, blocked
-		},
-		"a batch member": func(dir string) ([]string, string) {
-			blocked := filepath.Join(dir, "2 Navy Admiral 777777.md")
+	err := os.Mkdir(blocked, 0o700)
+	if err != nil {
+		t.Fatalf("planting the directory: %v", err)
+	}
 
-			return []string{cmdBatch, flagCount, "3", flagService, other, flagOutput, dir}, blocked
-		},
-	} {
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
+	err = run([]string{cmdNew, flagAuto, flagService, other, flagOutput, blocked}, nil, io.Discard, io.Discard)
 
-			dir := t.TempDir()
-			args, blocked := plant(dir)
-
-			err := os.Mkdir(blocked, 0o700)
-			if err != nil {
-				t.Fatalf("planting the directory: %v", err)
-			}
-
-			err = run(args, nil, io.Discard, io.Discard)
-
-			switch {
-			case err == nil:
-				t.Fatal("a note was written over a directory")
-			case !strings.Contains(err.Error(), "is a directory"):
-				t.Errorf("a directory in the way was reported as %q, which does not say so", err)
-			case !strings.Contains(err.Error(), blocked):
-				t.Errorf("a directory in the way was reported as %q, which does not name %s", err, blocked)
-			case strings.Contains(err.Error(), "--force"):
-				t.Errorf("a directory in the way was reported as %q, advising --force, which cannot help", err)
-			}
-		})
+	switch {
+	case err == nil:
+		t.Fatal("a note was written over a directory")
+	case !strings.Contains(err.Error(), "is a directory"):
+		t.Errorf("a directory in the way was reported as %q, which does not say so", err)
+	case !strings.Contains(err.Error(), blocked):
+		t.Errorf("a directory in the way was reported as %q, which does not name %s", err, blocked)
+	case strings.Contains(err.Error(), "--force"):
+		t.Errorf("a directory in the way was reported as %q, advising --force, which cannot help", err)
 	}
 }
 
@@ -515,110 +396,176 @@ func TestABatchNamesEachNoteForItsCharacter(t *testing.T) {
 	}
 }
 
-// plantedNote is the note plantHeld leaves at the first position, for a
-// character the batch will not generate.
-const plantedNote = "1 Navy Admiral 777777.md"
+// A batch writes into a folder of its own: one that is new, or empty but for
+// hidden entries such as the .DS_Store Finder leaves (#426). Anything a
+// person would see in a listing - a note, another file, a subfolder - makes
+// the folder not empty, and the batch is refused before anyone is generated,
+// naming the folder.
+//
+// Holds: A batch writes only into a folder of its own.
+// Holds: A batch refuses its folder before generating anybody.
+func TestABatchWritesOnlyIntoAFolderOfItsOwn(t *testing.T) {
+	t.Parallel()
 
-// plantHeld is a directory whose first position is held by plantedNote.
-func plantHeld(t *testing.T) string {
+	for name, tc := range map[string]struct {
+		plant   func(t *testing.T, dir string)
+		refused bool
+	}{
+		"a note of the referee's": {plant: plantFile("3 Session recap.md"), refused: true},
+		"another file":            {plant: plantFile("map.png"), refused: true},
+		"a subfolder":             {plant: plantDir("handouts"), refused: true},
+		"only hidden entries":     {plant: plantFile(".DS_Store"), refused: false},
+		"nothing":                 {plant: func(*testing.T, string) {}, refused: false},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			dir := t.TempDir()
+			tc.plant(t, dir)
+
+			dice := otherByPolicy.roller(t)
+			if tc.refused {
+				dice = func() chargen.Roller {
+					t.Fatal("a refused batch generated a character")
+
+					return nil
+				}
+			}
+
+			err := run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir},
+				nil, io.Discard, io.Discard, withDice(dice))
+
+			switch {
+			case tc.refused && (err == nil || !strings.Contains(err.Error(), "is not empty") ||
+				!strings.Contains(err.Error(), dir)):
+				t.Errorf("a batch into a folder with %s said %v, want it refused naming the folder", name, err)
+			case !tc.refused && err != nil:
+				t.Errorf("a batch into a folder with %s was refused: %v", name, err)
+			}
+		})
+	}
+}
+
+func plantFile(name string) func(t *testing.T, dir string) {
+	return func(t *testing.T, dir string) {
+		t.Helper()
+
+		err := os.WriteFile(filepath.Join(dir, name), []byte("mine\n"), 0o600)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func plantDir(name string) func(t *testing.T, dir string) {
+	return func(t *testing.T, dir string) {
+		t.Helper()
+
+		err := os.Mkdir(filepath.Join(dir, name), noteDirMode)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+// closingOn plays a walk for every member, and closes dir - to writing and to
+// entering - as member is generated, so that member's note cannot be written and the run
+// stops with the members before it on disk. The folder is reopened when the
+// test ends, so its own cleanup can remove it.
+func closingOn(t *testing.T, dir string, member int, w walk) source {
 	t.Helper()
 
-	dir := t.TempDir()
+	t.Cleanup(func() { _ = os.Chmod(dir, noteDirMode) })
 
-	err := os.WriteFile(filepath.Join(dir, plantedNote), []byte(oldRecord), 0o600)
-	if err != nil {
-		t.Fatalf("planting the old note: %v", err)
-	}
+	played := w.partly(t)
+	generated := 0
 
-	return dir
-}
+	return func() chargen.Roller {
+		generated++
+		if generated == member {
+			err := os.Chmod(dir, 0o400)
+			if err != nil {
+				t.Fatalf("closing the folder: %v", err)
+			}
+		}
 
-// A position is held by any note named for it, whatever character it was
-// for (#400), and without --force the batch is refused before anyone is
-// generated, naming the note in the way.
-//
-// Holds: A refused batch writes none of itself, on the members it will
-// actually write.
-func TestAHeldPositionRefusesTheBatch(t *testing.T) {
-	t.Parallel()
-
-	err := run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, plantHeld(t)},
-		nil, io.Discard, io.Discard, withDice(func() chargen.Roller {
-			t.Fatal("a refused batch generated a character")
-
-			return nil
-		}))
-	if err == nil || !strings.Contains(err.Error(), plantedNote) {
-		t.Errorf("a batch over a held position said %v, want it refused naming %s", err, plantedNote)
+		return played()
 	}
 }
 
-// With --force, the old note at a position is replaced by the new one rather
-// than left beside it.
-func TestForceReplacesAPositionsNote(t *testing.T) {
+// A batch that stops partway says how many it wrote and how many of them
+// died (#118), and that its folder holds them now: the folder is not empty
+// any more, so running again needs it removed or another folder (#426).
+func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 	t.Parallel()
 
-	dir := plantHeld(t)
+	dir := filepath.Join(t.TempDir(), "crew")
 
-	err := run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir, flagForce},
-		nil, io.Discard, io.Discard, withDice(otherByPolicy.roller(t)))
-	if err != nil {
-		t.Fatal(err)
-	}
+	var asking strings.Builder
 
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if len(entries) != 1 || entries[0].Name() != "1 Other 644776.md" {
-		t.Errorf("--force left %v, want the new note alone", entries)
-	}
-}
-
-// A directory at a position is not a note, and --force leaves it.
-func TestForceLeavesADirectoryAtAPosition(t *testing.T) {
-	t.Parallel()
-
-	dir := t.TempDir()
-	beside := filepath.Join(dir, "1 Not a note.md")
-
-	err := os.Mkdir(beside, noteDirMode)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir, flagForce},
-		nil, io.Discard, io.Discard, withDice(otherByPolicy.roller(t)))
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !isDirectory(beside) {
-		t.Error("--force removed a directory at the position, which is not a note")
-	}
-}
-
-// With --force the new note is written before the old one goes, so a write
-// that fails leaves the old note where it was (#191).
-func TestAFailedForceKeepsThePositionsNote(t *testing.T) {
-	t.Parallel()
-
-	dir := plantHeld(t)
-
-	err := os.Mkdir(filepath.Join(dir, "1 Other 644776.md"), noteDirMode)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = run([]string{cmdBatch, flagCount, "1", flagService, other, flagOutput, dir, flagForce},
-		nil, io.Discard, io.Discard, withDice(otherByPolicy.roller(t)))
+	err := run([]string{cmdBatch, flagCount, "5", flagService, other, flagOutput, dir},
+		nil, io.Discard, &asking, withDice(closingOn(t, dir, 3, otherByPolicy)))
 	if err == nil {
-		t.Fatal("a batch wrote a note over a directory")
+		t.Fatal("a batch into a closed folder reported success")
 	}
 
-	kept, err := os.ReadFile(filepath.Join(dir, plantedNote))
-	if err != nil || string(kept) != oldRecord {
-		t.Errorf("a failed --force write left the old note as %q (%v)", kept, err)
+	said := asking.String()
+
+	if !strings.HasPrefix(said, "2 written before the run stopped, ") {
+		t.Errorf("a batch that stopped after two notes said %q", said)
+	}
+
+	want := dir + " holds what was written; remove it or choose another folder to run again"
+	if !strings.Contains(said, want) {
+		t.Errorf("a stopped batch said %q, want it to say %q", said, want)
+	}
+}
+
+// When the tally of a stopped batch cannot be written either, both failures
+// are reported: the run's own, which is what stopped it, and the tally's.
+func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
+	t.Parallel()
+
+	dir := filepath.Join(t.TempDir(), "crew")
+
+	err := run([]string{cmdBatch, flagCount, "5", flagService, other, flagOutput, dir},
+		nil, io.Discard, &failsAfter{}, withDice(closingOn(t, dir, 3, otherByPolicy)))
+
+	if !errors.Is(err, errWriteFailed) || !errors.Is(err, fs.ErrPermission) {
+		t.Errorf("a stopped batch that could not report said %v, want both failures", err)
+	}
+}
+
+// A batch's -o names a folder, so one ending in .md, which almost certainly
+// meant a file, is refused before anything is made (#416). And a batch has no
+// --force (#426): it writes only into a folder of its own and never removes
+// anything, so there is nothing for --force to do, and the flag package
+// refuses it as a flag batch does not have.
+//
+// Holds: A batch's -o names a folder, and a batch takes no --force.
+func TestABatchTakesAFolderAndNoForce(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+
+	// Spelled with a trailing separator, or in capitals, it is still a .md
+	// name, and a case-insensitive filesystem treats crew.MD as crew.md.
+	for _, spelled := range []string{"crew.md", "crew.md" + string(filepath.Separator), "crew.MD"} {
+		target := filepath.Join(dir, spelled)
+
+		err := run([]string{cmdBatch, flagCount, "1", flagOutput, target}, nil, io.Discard, io.Discard)
+		if err == nil || !errors.Is(err, errUsage) || !strings.Contains(err.Error(), "folder") {
+			t.Errorf("batch -o %s said %v, want a usage error saying -o names a folder", spelled, err)
+		}
+
+		_, statErr := os.Stat(target)
+		if statErr == nil {
+			t.Errorf("batch -o %s made %s", spelled, target)
+		}
+	}
+
+	err := run([]string{cmdBatch, flagCount, "1", flagOutput, dir, flagForce}, nil, io.Discard, io.Discard)
+	if err == nil || !errors.Is(err, errUsage) || !strings.Contains(err.Error(), "force") {
+		t.Errorf("batch --force said %v, want the flag refused", err)
 	}
 }
