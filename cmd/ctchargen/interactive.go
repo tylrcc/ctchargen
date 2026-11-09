@@ -268,8 +268,8 @@ func (p *player) choose(question string, options []string) (int, error) {
 // reader beneath, both come back the same way. Blaming the input for ending
 // sends the reader looking in the wrong place.
 //
-// Either way the half-built character is lost: it is not a record, does not
-// match the schema, and there is no way back to the question it stopped on
+// Either way the half-built character is lost: it has no note, nothing
+// carries its dice, and there is no way back to the question it stopped on
 // (ADR 0001). The message says so, and lists what was answered, before the
 // two are told apart: a read that failed is the stop the operator did not
 // choose, and the one that most needs telling what it cost.

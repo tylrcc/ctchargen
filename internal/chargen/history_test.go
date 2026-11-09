@@ -1,9 +1,7 @@
 package chargen_test
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 	"reflect"
 	"strings"
 	"testing"
@@ -17,7 +15,7 @@ import (
 // its rank, what each term's skill rolls gave, what aging took, and any
 // medical crisis survived (#401).
 //
-// The literals are typed from each fixture's transcript, which is what the
+// The literals are typed from each fixture's generation record, which is what the
 // history has to agree with, and not from the code that fills it. Three
 // fixtures between them reach every part: an Army career for the grant on
 // entering and a rank grant that is a skill, a Navy career for one that is a
@@ -43,7 +41,7 @@ func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 	}
 }
 
-// armyServeHistory is army-serve's transcript: Rifle-1 on entering, a
+// armyServeHistory is army-serve's generation record: Rifle-1 on entering, a
 // commission in the first term that grants Submachine Gun-1, a promotion in
 // each term to General, and none thrown for in the seventh (E013).
 func armyServeHistory() chargen.ServiceHistory {
@@ -82,7 +80,7 @@ func armyServeHistory() chargen.ServiceHistory {
 	}
 }
 
-// navySpartanDeclinesHistory is navy-spartan-declines' transcript: nothing on
+// navySpartanDeclinesHistory is navy-spartan-declines' generation record: nothing on
 // entering the Navy, a commission in the second term, and a promotion to
 // Captain in the seventh whose p. 23 grant is Social Standing +1.
 func navySpartanDeclinesHistory() chargen.ServiceHistory {
@@ -123,7 +121,7 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 	}
 }
 
-// otherCrisisSurvivedHistory is other-crisis-survived's transcript: no ranks,
+// otherCrisisSurvivedHistory is other-crisis-survived's generation record: no ranks,
 // as the Other print none, and Strength taken to zero in the seventh term's
 // aging round and recovered from the crisis.
 func otherCrisisSurvivedHistory() chargen.ServiceHistory {
@@ -166,59 +164,8 @@ func promoted(rank string) []chargen.Raise {
 }
 
 // gains is a list of gains in the order given, which is the order the
-// transcript received them in.
+// generation record received them in.
 func gains(given ...chargen.Gain) []chargen.Gain { return given }
-
-// The schema's enum for how a rank was conferred names exactly the
-// advancements the code writes, in both directions. The goldens hold one
-// direction: each writes both kinds, and every golden is validated. Nothing
-// else holds the other, and an enum value the code can no longer write would
-// sit in the schema unnoticed.
-func TestTheSchemaNamesEveryAdvancement(t *testing.T) {
-	t.Parallel()
-
-	text, err := os.ReadFile(schemaPath)
-	if err != nil {
-		t.Fatalf("reading the schema: %v", err)
-	}
-
-	var document struct {
-		Properties struct {
-			History struct {
-				Properties struct {
-					Terms struct {
-						Items struct {
-							Properties struct {
-								Raised struct {
-									Items struct {
-										Properties struct {
-											How struct {
-												Enum []string `json:"enum"`
-											} `json:"how"`
-										} `json:"properties"`
-									} `json:"items"`
-								} `json:"raised"`
-							} `json:"properties"`
-						} `json:"items"`
-					} `json:"terms"`
-				} `json:"properties"`
-			} `json:"serviceHistory"`
-		} `json:"properties"`
-	}
-
-	err = json.Unmarshal(text, &document)
-	if err != nil {
-		t.Fatalf("the schema is not JSON: %v", err)
-	}
-
-	inSchema := document.Properties.History.Properties.Terms.Items.Properties.Raised.Items.Properties.How.Enum
-	if len(inSchema) == 0 {
-		t.Fatal("the schema's serviceHistory raised how has no enum, so this checks nothing")
-	}
-
-	sameNames(t, strings.Split(chargen.AdvancementChoices(), ", "), "an advancement",
-		inSchema, "in the schema's serviceHistory raised how enum")
-}
 
 // historyText is a service history a term to a line, so a failure shows
 // which term differs.

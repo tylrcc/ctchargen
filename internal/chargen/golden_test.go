@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
@@ -45,53 +46,7 @@ func golden(t *testing.T, name string, got []byte) {
 	}
 }
 
-// The two examples that sit beside docs/character.schema.json, written by
-// the same path that writes the goldens so they cannot drift from what the
-// engine emits.
-//
-// minimal is the civilian who declined the draft, which is the smallest
-// complete record there is. complete is the fullest character the tables
-// permit - and it is not complete, because no character can hold both
-// Travellers' Aid and a starship: p. 9 prints the membership only in the
-// Navy and Marines columns and the ships only in the Scout and Merchant
-// columns, and a character serves one service. The schema says so.
-//
-//nolint:gochecknoglobals // an immutable pair, and Go has no const map.
-var documented = map[string]string{
-	"scouts-civilian":   "character.minimal.json",
-	"merchants-captain": "character.complete.json",
-}
-
-// documentedExample writes or checks one of the two examples that sit beside
-// the schema, by the same path that writes the goldens.
-//
-// Implements: The two documented examples are generated, not written
-// [Documents].
-func documentedExample(t *testing.T, name string, encoded []byte) {
-	t.Helper()
-
-	path := filepath.Join("..", "..", "docs", name)
-
-	if *regenerate {
-		err := os.WriteFile(path, encoded, 0o600)
-		if err != nil {
-			t.Fatalf("writing %s: %v", path, err)
-		}
-
-		return
-	}
-
-	want, err := os.ReadFile(path)
-	if err != nil {
-		t.Fatalf("reading %s: %v", path, err)
-	}
-
-	if string(encoded) != string(want) {
-		t.Errorf("%s has drifted from the record it documents; regenerate it", path)
-	}
-}
-
-// Every fixture's JSON, sheet and transcript, pinned.
+// Every fixture's note, pinned.
 //
 // Holds: Six 2D rolls, in order: values 2–12 initially.
 // Holds: All characters begin at 18.
@@ -107,75 +62,30 @@ func documentedExample(t *testing.T, name string, encoded []byte) {
 // Holds: The +1 with gambling on Table 2.
 // Holds: Every step, throw, choice and consequence, in order.
 // Holds: Each choice names what was offered and what was chosen.
-// Holds: A record names the shape it is, so the v1 freeze has something to
-// attach to.
-// Holds: The two documented examples are generated, not written.
 func TestGoldens(t *testing.T) {
-	// withReadings is the fixture whose transcript is also kept with its
+	// withReadings is the fixture whose note is also kept with its
 	// readings. It names E002, whose prose carries the page's own italic, so
-	// the golden shows that emphasis reaching the transcript unchanged.
+	// the golden shows that emphasis reaching the note unchanged.
 	const withReadings = "army-serve"
 
 	t.Parallel()
 
-	written := map[string]bool{}
 	keptWithReadings := false
 
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		encoded, err := render.JSON(character)
-		if err != nil {
-			t.Fatalf("%s: %v", fixture.name, err)
-		}
-
-		golden(t, fixture.name+".json", encoded)
-
-		if name, documents := documented[fixture.name]; documents {
-			documentedExample(t, name, encoded)
-
-			written[fixture.name] = true
-		}
-
-		// The sheet and the transcript are rendered from the record pinned
-		// above, so the record on disk renders to these goldens (#363).
-		sheet, err := render.Sheet(encoded)
-		if err != nil {
-			t.Fatalf("%s: %v", fixture.name, err)
-		}
-
-		transcript, err := render.Transcript(encoded, false)
-		if err != nil {
-			t.Fatalf("%s: %v", fixture.name, err)
-		}
-
-		golden(t, fixture.name+".sheet.md", []byte(sheet))
-		golden(t, fixture.name+".transcript.md", []byte(transcript))
+		golden(t, fixture.name+".md", []byte(render.Note(character, false)))
 
 		if fixture.name == withReadings {
-			full, err := render.Transcript(encoded, true)
-			if err != nil {
-				t.Fatalf("%s: %v", fixture.name, err)
-			}
-
-			golden(t, fixture.name+".readings.transcript.md", []byte(full))
+			golden(t, fixture.name+".readings.md", []byte(render.Note(character, true)))
 
 			keptWithReadings = true
 		}
 	}
 
 	if !keptWithReadings {
-		t.Errorf("%s keeps the transcript with its readings but is not in the fixture roster", withReadings)
-	}
-
-	// Without this, renaming or dropping a fixture that documents an
-	// example leaves the example behind: nothing regenerates it, nothing
-	// compares it, and the schema's published record silently stops being
-	// one the engine emits.
-	for name := range documented {
-		if !written[name] {
-			t.Errorf("%s documents an example but is not in the fixture roster", name)
-		}
+		t.Errorf("%s keeps its note with its readings but is not in the fixture roster", withReadings)
 	}
 }
 
@@ -193,18 +103,9 @@ func TestGoldensRegenerate(t *testing.T) {
 	t.Parallel()
 
 	for _, f := range fixtures {
-		first, err := render.JSON(f.generate(t))
-		if err != nil {
-			t.Fatalf("%s: %v", f.name, err)
-		}
-
-		second, err := render.JSON(f.generate(t))
-		if err != nil {
-			t.Fatalf("%s: %v", f.name, err)
-		}
-
-		if string(first) != string(second) {
-			t.Errorf("%s did not generate the same record twice from its fixture", f.name)
+		first, second := render.Note(f.generate(t), false), render.Note(f.generate(t), false)
+		if first != second {
+			t.Errorf("%s did not generate the same note twice from its fixture", f.name)
 		}
 	}
 }
@@ -288,37 +189,34 @@ func TestTheRosterReachesItsPaths(t *testing.T) {
 	}
 }
 
-// numbered is the sequence number a transcript line opens with: an event line
-// ("  2. Strength: rolled 5+5") or a step heading ("## 17. term 3").
-var numbered = regexp.MustCompile(`(?m)^(?:## | *)(\d+)\. `)
+// numbered is the sequence number a generation record line opens with: an event line
+// ("  2. Strength: rolled 5+5") or a step heading ("### 17. term 3").
+var numbered = regexp.MustCompile(`(?m)^(?:### | *)(\d+)\. `)
 
-// No golden's transcript skips a number (#249).
+// No golden's generation record skips a number (#249).
 //
 // The live view numbered its step headings because a watched session whose
 // headings printed bare appeared to skip - 17, 18, then 20 - and the kept
-// transcript printed them bare still, so army-serve's opened at event 2.
-// Every event is one numbered line, in order, from 1 to the last.
+// record printed them bare still, so army-serve's opened at event 2. Every
+// event is one numbered line, in order, from 1 to the last. The sheet above
+// the record is left out: it numbers nothing.
 //
-// Holds: The kept transcript numbers every event, so no number is skipped.
-func TestNoTranscriptSkipsANumber(t *testing.T) {
+// Holds: The kept generation record numbers every event, so no number is
+// skipped.
+func TestNoGenerationRecordSkipsANumber(t *testing.T) {
 	t.Parallel()
 
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		encoded, err := render.JSON(character)
-		if err != nil {
-			t.Fatalf("%s: %v", fixture.name, err)
-		}
-
-		transcript, err := render.Transcript(encoded, false)
-		if err != nil {
-			t.Fatalf("%s: %v", fixture.name, err)
+		_, record, found := strings.Cut(render.Note(character, false), "## Generation record")
+		if !found {
+			t.Fatalf("%s: the note has no generation record", fixture.name)
 		}
 
 		var seen []int
 
-		for _, match := range numbered.FindAllStringSubmatch(transcript, -1) {
+		for _, match := range numbered.FindAllStringSubmatch(record, -1) {
 			n, err := strconv.Atoi(match[1])
 			if err != nil {
 				t.Fatalf("%s: %v", fixture.name, err)
@@ -329,7 +227,7 @@ func TestNoTranscriptSkipsANumber(t *testing.T) {
 
 		for i, n := range seen {
 			if n != i+1 {
-				t.Errorf("%s: the transcript's line %d is numbered %d, want %d", fixture.name, i+1, n, i+1)
+				t.Errorf("%s: the generation record's line %d is numbered %d, want %d", fixture.name, i+1, n, i+1)
 
 				break
 			}

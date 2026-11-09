@@ -2,7 +2,6 @@ package chargen
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
@@ -89,9 +88,6 @@ const (
 	Promoted
 )
 
-// Advancements is both, for the schema's enum to be held to.
-var Advancements = [...]Advancement{Commissioned, Promoted}
-
 func (a Advancement) String() string {
 	switch a {
 	case Commissioned:
@@ -101,17 +97,6 @@ func (a Advancement) String() string {
 	}
 
 	return fmt.Sprintf("Advancement(%d)", int(a))
-}
-
-// AdvancementChoices is every advancement by name, as the schema's enum
-// lists them.
-func AdvancementChoices() string {
-	names := make([]string, 0, len(Advancements))
-	for _, advancement := range Advancements {
-		names = append(names, advancement.String())
-	}
-
-	return strings.Join(names, ", ")
 }
 
 // Gain is one thing a source gave: a skill at the level it reached, or a

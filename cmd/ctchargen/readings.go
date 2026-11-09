@@ -9,9 +9,9 @@ import (
 )
 
 // readings writes the readings: with no ids, every one as its erratum, title
-// and status; with ids, those in full, in the order asked. A record and its
-// transcript name readings by id, and this is where an id is read out
-// without a transcript to hand.
+// and status; with ids, those in full, in the order asked. A note's
+// generation record names readings by id, and this is where an id is read
+// out without the note to hand.
 //
 // It has no flag set, as version has none: its words are ids. An id that
 // names no reading is a usage error, and nothing is written.

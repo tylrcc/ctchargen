@@ -62,34 +62,3 @@ spellings are, or is the whole package, as the coverage check's is.
 invariant, or a check rewritten, comes with the mutation that killed it and
 what the failure said, in the commit or the PR. `go run ./internal/mutate`
 prints both, so the evidence can be pasted as it ran.
-
-## The record's shape
-
-**The record freezes at `v1.0.0`, and is free to move before it (#62).** Until
-that tag, a record written by one build is not promised to be readable by the
-next; from it, the shape is a public contract and a build that changes it says
-so in the record itself. `record` is the field it says it in: a required
-integer set in `project()` beside every other field, so it is present on every
-record, and counting the shape and nothing else — `build` names the writer and
-`ruleset` names the source text, and neither says what the file looks like.
-
-**`additionalProperties` is open at the root, and closed at every object
-inside it (#113).** A later build may add a top-level section, and a reader
-holding this schema will load the record and render what it understands. A key
-added inside an existing object is still refused: the nested objects are what
-a sheet is rendered from, and pinning them is what keeps the schema
-worth validating against. **An event kind is closed the same way (#129):** the
-log is one of the kinds the procedure writes, because the schema describes
-the rules we have and not an extension nobody has made. `render` printing
-`(unknown event kind %q)` is how a reader survives a record it cannot
-validate, and not a reason to validate it.
-
-**`record` is 1 until `v1.0.0` and counts from there (#96).** Not from every
-change: the record moves freely before the freeze, so a build that changes the
-shape before it leaves the number alone, and two pre-release shapes that both
-say 1 are what that freedom costs. Do not bump it to mark a pre-v1 change —
-that is the reading #96 declined. The **schema** accepts any shape from 1
-upward, which is a different statement: a reader must be able to validate a
-record from a later build rather than refuse it before looking at its contents,
-so `minimum` is what the schema says and `TestThisBuildWritesShapeOne` is what
-holds this build to 1.

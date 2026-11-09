@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"io"
 	"strings"
 	"testing"
@@ -11,26 +10,21 @@ import (
 // rather than a test that quietly stops testing the flag it names.
 const (
 	cmdNew         = "new"
-	cmdRender      = "render"
 	cmdVersion     = "version"
 	cmdReadings    = "readings"
 	wantUsage      = "usage"
 	wantNoStrategy = "no such strategy"
 	wantUnknown    = "unknown command"
 	wantOneLine    = "more than one line"
-	flagSheet      = "--sheet"
 	flagAuto       = "--auto"
 	flagService    = "--service"
 	flagName       = "--name"
 	flagCareer     = "--career"
 	flagSkills     = "--skills"
 	flagMuster     = "--muster"
-	flagHistory    = "--history"
 	flagReadings   = "--readings"
 	flagForce      = "--force"
 	flagOutput     = "-o"
-	wantSheet      = "sheet"
-	wantTranscript = "transcript"
 	other          = "other"
 	navy           = "navy"
 	merchants      = "merchants"
@@ -44,7 +38,7 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		args     []string
 		mentions string
 	}{
-		"no command":      {nil, "new|batch|render|readings|version"},
+		"no command":      {nil, "new|batch|readings|version"},
 		"unknown command": {[]string{"generate"}, wantUnknown},
 		// Interactive mode with nothing to read from asks its first
 		// question and reports that the input ended, rather than answering
@@ -88,31 +82,29 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 	}
 }
 
-// The three renderings, and that each writes something recognisable.
+// The note, and that it carries the sheet, the generation record and what
+// wrote it. The command is what fills the build, so a note it writes says
+// which tool wrote it where a test-generated one says nothing; and so does
+// every member of a batch, which generates on a path of its own: one that
+// skipped the build would ship unnoticed (#282).
 //
-// Holds: The record names its ruleset and the build that wrote it.
-func TestRunWritesEachRendering(t *testing.T) {
+// Holds: The note names its ruleset and the build that wrote it.
+func TestRunWritesTheNote(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]struct {
 		args     []string
 		mentions string
 	}{
-		"json": {[]string{cmdNew, flagAuto, flagService, other}, `"inputs"`},
-		// The command is what fills the build, so a record it writes says
-		// which tool wrote it where a test-generated one says nothing.
-		"json build": {[]string{cmdNew, flagAuto, flagService, other}, `"build"`},
-		// And so does every member of a batch, which generates on a path of
-		// its own: one that skipped the build would ship unnoticed (#282).
-		"batch build": {[]string{cmdBatch, flagCount, "1", flagService, other}, `"build"`},
-		"json ruleset": {
+		"the sheet":             {[]string{cmdNew, flagAuto, flagService, other}, "UPP "},
+		"the generation record": {[]string{cmdNew, flagAuto, flagService, other}, "## Generation record"},
+		"the ruleset": {
 			[]string{cmdNew, flagAuto, flagService, other},
-			`"ruleset": "Classic Traveller, Books 1-3`,
+			"Generated under Classic Traveller, Books 1-3",
 		},
-		"json upp":     {[]string{cmdNew, flagAuto, flagService, other}, `"upp"`},
-		wantSheet:      {[]string{cmdNew, flagAuto, flagService, other, flagSheet}, "UPP "},
-		wantTranscript: {[]string{cmdNew, flagAuto, flagService, other, flagHistory}, "Generation record"},
-		"version":      {[]string{cmdVersion}, "ctchargen"},
+		"the build":       {[]string{cmdNew, flagAuto, flagService, other}, " by ctchargen "},
+		"a batch's build": {[]string{cmdBatch, flagCount, "1", flagService, other}, " by ctchargen "},
+		"version":         {[]string{cmdVersion}, "ctchargen"},
 	} {
 		var out strings.Builder
 
@@ -129,57 +121,34 @@ func TestRunWritesEachRendering(t *testing.T) {
 	}
 }
 
-// The record carries the name it was given. Every fixture is unnamed, so
-// nothing else would notice a record that wrote no name, or another one
-// (#369).
-func TestTheRecordCarriesTheNameGiven(t *testing.T) {
+// The note carries the name it was given, as its heading. Every fixture is
+// unnamed, so nothing else would notice a note that wrote no name, or
+// another one (#369).
+func TestTheNoteCarriesTheNameGiven(t *testing.T) {
 	t.Parallel()
 
 	const given = "Alexander Jamison"
 
-	record, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagName, given}, nil)
+	note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagName, given}, nil)
 
-	var written struct {
-		Name string `json:"name"`
-	}
-
-	err := json.Unmarshal([]byte(record), &written)
-	if err != nil {
-		t.Fatalf("reading the record: %v", err)
-	}
-
-	if written.Name != given {
-		t.Errorf("the record is named %q; want %q", written.Name, given)
+	if !strings.HasPrefix(note, "# "+given+"\n") {
+		t.Errorf("the note does not open with %q:\n%s", "# "+given, note)
 	}
 }
 
 // An auto run that names no strategy applies chargen.DefaultPolicy, and its
-// record says so. The three names are typed out, not read from DefaultPolicy,
+// note says so. The three names are typed out, not read from DefaultPolicy,
 // so a default changed there is caught here, on the command a referee runs
 // (#367).
 func TestAnAutoRunNamingNoStrategyAppliesTheDefault(t *testing.T) {
 	t.Parallel()
 
-	record, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other}, nil)
+	note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other}, nil)
 
-	type strategies struct {
-		Career string `json:"career"`
-		Skills string `json:"skills"`
-		Muster string `json:"muster"`
-	}
+	const want = "answered by the policy, version 3: career serve, skills advanced, muster cash."
 
-	var written struct {
-		Policy strategies `json:"policy"`
-	}
-
-	err := json.Unmarshal([]byte(record), &written)
-	if err != nil {
-		t.Fatalf("reading the record: %v", err)
-	}
-
-	want := strategies{Career: serve, Skills: "advanced", Muster: "cash"}
-	if written.Policy != want {
-		t.Errorf("an auto run naming no strategy applied %+v; want %+v", written.Policy, want)
+	if !strings.Contains(note, want) {
+		t.Errorf("an auto run naming no strategy does not say %q:\n%s", want, note)
 	}
 }
 

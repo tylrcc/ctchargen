@@ -31,13 +31,12 @@ const (
 var (
 	newFlags = []string{
 		flagAuto, flagService, flagName, flagCareer, flagSkills,
-		flagMuster, flagSheet, flagHistory, flagReadings, flagOutput, flagForce,
+		flagMuster, flagReadings, flagOutput, flagForce,
 	}
 	batchFlags = []string{
 		flagCount, flagService, flagName, flagCareer,
 		flagSkills, flagMuster, flagOutput, flagForce, flagSurvivors,
 	}
-	renderFlags = []string{flagHistory, flagReadings, flagOutput, flagForce}
 )
 
 // Help is not an error: it exits 0, and it names every flag the command has.
@@ -51,9 +50,8 @@ func TestHelpNamesEveryFlag(t *testing.T) {
 		command string
 		flags   []string
 	}{
-		cmdNew:    {cmdNew, newFlags},
-		cmdBatch:  {cmdBatch, batchFlags},
-		cmdRender: {cmdRender, renderFlags},
+		cmdNew:   {cmdNew, newFlags},
+		cmdBatch: {cmdBatch, batchFlags},
 	} {
 		for _, asked := range []string{flagHelp, flagShort} {
 			var out strings.Builder
@@ -97,9 +95,8 @@ func TestEveryDeclaredFlagIsListed(t *testing.T) {
 		set   *flag.FlagSet
 		flags []string
 	}{
-		cmdNew:    {declareNewFlags().set, newFlags},
-		cmdBatch:  {declareBatchFlags().set, batchFlags},
-		cmdRender: {declareRenderFlags().set, renderFlags},
+		cmdNew:   {declareNewFlags().set, newFlags},
+		cmdBatch: {declareBatchFlags().set, batchFlags},
 	} {
 		tc.set.VisitAll(func(declared *flag.Flag) {
 			spelled := "--" + declared.Name
@@ -166,7 +163,7 @@ func TestTopLevelHelpNamesEverySubcommand(t *testing.T) {
 			continue
 		}
 
-		for _, command := range []string{cmdNew, cmdBatch, cmdRender, cmdReadings, cmdVersion} {
+		for _, command := range []string{cmdNew, cmdBatch, cmdReadings, cmdVersion} {
 			if !strings.Contains(out.String(), command) {
 				t.Errorf("ctchargen %s: does not name %s", asked, command)
 			}
@@ -308,7 +305,6 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 		cmdReadings:        {cmdReadings, flagHelp, wantTypo},
 		cmdNew:             {cmdNew, flagHelp, wantTypo},
 		cmdBatch:           {cmdBatch, flagHelp, wantTypo},
-		cmdRender:          {cmdRender, flagHelp, wantTypo},
 	} {
 		err := run(args, nil, io.Discard, io.Discard)
 		if err == nil {
@@ -319,29 +315,6 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 
 		if !strings.Contains(err.Error(), refusal) {
 			t.Errorf("%s: error %q does not say %q", name, err, refusal)
-		}
-	}
-}
-
-// One character is written one way.
-//
-// rendered() took the sheet and said nothing, so a referee who asked for the
-// transcript got a sheet and no reason (#58). Preferring one silently is the
-// same defect as swallowing a word, and this command refuses that.
-//
-// Holds: A character is written one way, not two.
-func TestTheTwoRenderingsCannotBothBeAskedFor(t *testing.T) {
-	t.Parallel()
-
-	err := run([]string{cmdNew, flagAuto, flagSheet, flagHistory},
-		nil, io.Discard, io.Discard)
-	if err == nil {
-		t.Fatal("a character was asked for as a sheet and a transcript at once")
-	}
-
-	for _, want := range []string{flagSheet, flagHistory} {
-		if !strings.Contains(err.Error(), want) {
-			t.Errorf("the refusal %q does not name %s", err, want)
 		}
 	}
 }

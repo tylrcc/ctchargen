@@ -20,15 +20,14 @@ import (
 const (
 	baseForce    = "force bool false"
 	baseOutput   = "o string "
-	baseHistory  = "history bool false"
 	baseReadings = "readings bool false"
 )
 
 var cliBaseline = map[string][]string{
 	cmdNew: {
 		"auto bool false", "career string serve", baseForce,
-		baseHistory, "muster string cash", "name string ", baseOutput, baseReadings,
-		"service string ", "sheet bool false", "skills string advanced",
+		"muster string cash", "name string ", baseOutput, baseReadings,
+		"service string ", "skills string advanced",
 	},
 	// batch's "auto bool false" was removed on purpose, before v1.0.0
 	// freezes the CLI: a batch is always decided by the policy, and the flag
@@ -39,16 +38,18 @@ var cliBaseline = map[string][]string{
 		"muster string cash", "name string ", baseOutput,
 		"service string ", "skills string advanced", "survivors bool false",
 	},
-	cmdRender: {baseForce, baseHistory, baseOutput, baseReadings},
+	// render, and new's --sheet and --history, were removed on purpose before
+	// v1.0.0 with the JSON record they read and chose between (#398). The
+	// note is the one thing written, so there is nothing to render back and
+	// no second shape to ask for.
 }
 
 func TestEveryBaselineFlagIsStillDeclared(t *testing.T) {
 	t.Parallel()
 
 	for command, set := range map[string]*flag.FlagSet{
-		cmdNew:    declareNewFlags().set,
-		cmdBatch:  declareBatchFlags().set,
-		cmdRender: declareRenderFlags().set,
+		cmdNew:   declareNewFlags().set,
+		cmdBatch: declareBatchFlags().set,
 	} {
 		declared := map[string]string{}
 
@@ -89,7 +90,7 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 
 	died := run([]string{cmdNew, flagAuto, flagService, "scouts"}, nil, &record, io.Discard,
 		withDice(scoutKilled.roller(t)))
-	if !strings.Contains(record.String(), `"fatal": true`) {
+	if !strings.Contains(record.String(), "killed by the survival throw") {
 		t.Fatal("the scout walk no longer dies, so the death case checks nothing")
 	}
 
@@ -101,7 +102,6 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 		"help":       {run([]string{cmdNew, flagHelp}, nil, io.Discard, io.Discard), 0},
 		"usage":      {run(nil, nil, io.Discard, io.Discard), 1},
 		"search":     {searched, 1},
-		"unreadable": {run([]string{cmdRender, "no-such-record.json"}, nil, io.Discard, io.Discard), 1},
 		"a death":    {died, 0},
 		"readings":   {run([]string{cmdReadings}, nil, io.Discard, io.Discard), 0},
 		"no reading": {run([]string{cmdReadings, "E099"}, nil, io.Discard, io.Discard), 1},

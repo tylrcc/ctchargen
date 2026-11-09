@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/philoserf/ctchargen/internal/rules"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // Reading writes one reading in full, as markdown: its heading, then each
@@ -47,33 +48,23 @@ func Reading(r rules.Reading) string {
 	return out.String()
 }
 
-// writeReadings writes the transcript's last section: each reading the record
-// names, in full, in id order. A record this build wrote lists its errata in
-// that order already; one written elsewhere is sorted here. A record
-// written by another build may name an erratum this one has no reading for,
-// and that is said, not refused: the rest of the transcript is still the
-// record's.
+// writeReadings writes each reading the generation record names, in full,
+// in id order. Every erratum a character carries is one this build declares,
+// so every one has a reading.
 //
-// Implements: A transcript with its readings ends with each reading its record
-// names, in full [CLI sketch].
-func writeReadings(out *strings.Builder, errata []string) {
+// Implements: A note asked for with its readings carries each reading its
+// generation record names, in full, before its closing lines [CLI sketch].
+func writeReadings(out *strings.Builder, errata []traveller.Erratum) {
 	out.WriteString("## Readings\n\n")
 
 	if len(errata) == 0 {
-		out.WriteString("The record names no reading.\n\n")
+		out.WriteString("The generation record names no reading.\n\n")
 
 		return
 	}
 
-	for _, id := range slices.Sorted(slices.Values(errata)) {
-		r, ok := rules.ReadingNamed(id)
-		if !ok {
-			fmt.Fprintf(out, "### %s\n\nThe record names %s, and this build has no reading of that id.\n\n", id, id)
-
-			continue
-		}
-
-		out.WriteString(Reading(r) + "\n")
+	for _, erratum := range slices.Sorted(slices.Values(errata)) {
+		out.WriteString(Reading(rules.Readings()[erratum-1]) + "\n")
 	}
 }
 

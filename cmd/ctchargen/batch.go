@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
@@ -28,7 +27,6 @@ import (
 // --auto, and a command line passing one is refused by the flag package as a
 // flag batch does not have, not accepted and ignored (#336).
 //
-// Implements: Every batch member matches the schema [JSON conventions].
 // Implements: A batch is always an auto run, and takes no --auto [CLI sketch].
 func batch(args []string, out, asking io.Writer, dice source) error {
 	flags := declareBatchFlags()
@@ -104,7 +102,7 @@ func declareBatchFlags() batchFlagSet {
 		}),
 		count: set.Int("count", 0, "how many characters to generate"),
 		output: set.String("o", "",
-			"a .jsonl file, or a directory to write one file per character; absent, JSONL to standard output"),
+			"a directory to write one note per character; absent, the notes to standard output"),
 		force: set.Bool("force", false, "replace output files that already exist"),
 		survivors: set.Bool("survivors", false,
 			"pass over characters who died, and go on until --count of them are living"),
@@ -112,7 +110,8 @@ func declareBatchFlags() batchFlagSet {
 }
 
 // write sends the batch where it was asked for, and says what it did either
-// way. A directory takes one file per character; anything else is JSONL.
+// way: a directory takes one note per character, and standard output takes
+// the notes one after another.
 //
 // Implements: A failed search prints no stopped-run tally beside its counts
 // [CLI sketch].
@@ -122,19 +121,14 @@ func write(out, asking io.Writer, run batchRun, path string, force bool) error {
 		err  error
 	)
 
-	switch {
-	case namesDirectory(path):
-		done, err = run.intoDirectory(path, force)
-	case path == "":
+	if path == "" {
 		done, err = run.streamed(out)
-	default:
-		done, err = run.buffered(path, force)
+	} else {
+		done, err = run.intoDirectory(path, force)
 	}
 
-	// A run that stopped partway has left records on disk, and the tally is
+	// A run that stopped partway has left notes on disk, and the tally is
 	// the only place it says how many and how many of them are corpses (#118).
-	// Written means on disk, for every destination: a buffered batch that
-	// stopped wrote nothing, so it counts zero and prints no tally (#246).
 	// The tally is skipped where it would say nothing - no record written -
 	// and for a failed search, whose error already carries the counts.
 	if err != nil {
@@ -176,8 +170,8 @@ type tally struct {
 // report writes the closing line.
 //
 // It goes to the channel the tool talks to the operator on and never to the
-// data channel: a summary on standard output would be a line of JSONL that is
-// not JSON. After #44 it also arrives after records the reader has already
+// data channel: a summary on standard output would be a line in the last
+// note. After #44 it also arrives after notes the reader has already
 // seen, which is why it counts rather than warns.
 func (t tally) report(asking io.Writer) error {
 	return t.reportAs(asking, fmt.Sprintf("%d written", t.written))
@@ -273,11 +267,11 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 	return done, nil
 }
 
-// streamed writes the batch to standard output as JSONL, one record to the
-// line, each as it is generated.
+// streamed writes the batch to standard output, one note after another,
+// each as it is generated.
 //
-// JSONL exists to be piped, so `batch --count 50000 | jq` sees the
-// first record at once and the run holds one record in memory rather than
+// A stream is read as it arrives, so `batch --count 50000 | less` shows the
+// first note at once and the run holds one character in memory rather than
 // all of them (#44). The atomicity that justifies buffering is about not
 // leaving a file half-written and not clobbering one on a retry, and there is
 // no file to clobber on standard output (#64).
@@ -285,10 +279,10 @@ func (b batchRun) streamed(out io.Writer) (tally, error) {
 	return b.each(writingTo(out))
 }
 
-// writingTo is the take a streamed run uses: encode the member and write it,
-// as each member is made.
+// writingTo is the take a streamed run uses: write the member's note, a blank
+// line after the one before it, as each member is made.
 //
-// Implements: A batch to standard output arrives a record at a time [CLI
+// Implements: A batch to standard output arrives a note at a time [CLI
 // sketch].
 //
 // A failure names the member by its position among those written, which is
@@ -298,12 +292,12 @@ func (b batchRun) streamed(out io.Writer) (tally, error) {
 // [CLI sketch].
 func writingTo(out io.Writer) func(int, *chargen.Character) error {
 	return func(index int, character *chargen.Character) error {
-		encoded, err := render.JSONLine(character)
-		if err != nil {
-			return fmt.Errorf("member %d: %w", index, err)
+		separator := ""
+		if index > 1 {
+			separator = "\n"
 		}
 
-		_, err = out.Write(encoded)
+		_, err := io.WriteString(out, separator+render.Note(character, false))
 		if err != nil {
 			return fmt.Errorf("member %d: %w", index, err)
 		}
@@ -312,56 +306,9 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 	}
 }
 
-// buffered generates the whole batch before opening the file, so a run that
-// fails partway opens nothing at all.
-//
-// It is the same walk: buffering is streaming to somewhere that cannot be
-// half-read. What differs is only where it writes and when the file is
-// opened, which is the whole of the distinction #64 drew.
-//
-// A file that is already there is refused before anyone is generated, as a
-// directory batch refuses its members (#99): the open at the end would refuse
-// it too, but only after the whole batch had been made for nothing.
-//
-// Implements: A batch to a file is written all at once, never a record at a
-// time [CLI sketch].
-//
-// Implements: A buffered batch that stops claims no record written [CLI
-// sketch].
-func (b batchRun) buffered(path string, force bool) (tally, error) {
-	if !force {
-		err := noMemberExists([]string{path})
-		if err != nil {
-			return tally{}, err
-		}
-	}
-
-	var lines strings.Builder
-
-	done, err := b.each(writingTo(&lines))
-	if err != nil {
-		// The members were written to memory, never to the file, so the
-		// tally of a stopped run has nothing on disk to count (#246).
-		return tally{}, err
-	}
-
-	// nil, because path is never empty here: write sends an empty one to
-	// streamed, so openDestination always opens a file.
-	where, err := openDestination(nil, path, force)
-	if err == nil {
-		err = where.write(lines.String())
-	}
-
-	if err != nil {
-		return tally{}, err
-	}
-
-	return done, nil
-}
-
 // intoDirectory writes one file per character, named by its index.
 //
-// One record is held at a time (#99). The collision check needs every path
+// One character is held at a time (#99). The collision check needs every path
 // the batch will write before it writes any, and because members are named by
 // index those are 1 through count whether or not --survivors passes anyone
 // over: plannedPaths takes a count and a directory, no policy and no roller,
@@ -374,7 +321,7 @@ func (b batchRun) buffered(path string, force bool) (tally, error) {
 // Implements: A directory batch that cannot write a member leaves what came
 // before [CLI sketch].
 func (b batchRun) intoDirectory(dir string, force bool) (tally, error) {
-	err := os.MkdirAll(dir, recordDirMode)
+	err := os.MkdirAll(dir, noteDirMode)
 	if err != nil {
 		return tally{}, fmt.Errorf("creating %s: %w", dir, err)
 	}
@@ -388,17 +335,12 @@ func (b batchRun) intoDirectory(dir string, force bool) (tally, error) {
 
 	return b.each(
 		func(index int, character *chargen.Character) error {
-			encoded, err := render.JSON(character)
-			if err != nil {
-				return fmt.Errorf("member %d: %w", index, err)
-			}
-
 			where, err := openDestination(nil, memberPath(dir, index, b.count), force)
 			if err != nil {
 				return err
 			}
 
-			return where.write(string(encoded))
+			return where.write(render.Note(character, false))
 		},
 	)
 }

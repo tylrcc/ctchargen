@@ -12,7 +12,7 @@ import (
 // commandList is the subcommands in the order run's switch takes them. Both
 // messages that name them read it here, so the two cannot come to disagree
 // about the order again.
-const commandList = "new|batch|render|readings|version"
+const commandList = "new|batch|readings|version"
 
 // The usage line of each subcommand: what it takes that is not a flag.
 //
@@ -26,7 +26,6 @@ const commandList = "new|batch|render|readings|version"
 const (
 	newUsage      = "new [flags]"
 	batchUsage    = "batch --count N [flags]"
-	renderUsage   = "render [flags] <character.json>"
 	readingsUsage = "readings [E001 ...]"
 	versionUsage  = "version"
 )
@@ -37,7 +36,6 @@ const topLevelUsage = "usage: ctchargen <command> [flags]\n" +
 	"\n" +
 	"  new       generate one character, asking at every choice unless --auto\n" +
 	"  batch     generate many characters, each decided by the policy\n" +
-	"  render    write a record saved earlier as a sheet or as a transcript\n" +
 	"  readings  list the readings, or write the ones named in full\n" +
 	"  version   write the build\n" +
 	"\n" +
@@ -105,7 +103,7 @@ func writeUsageText(out io.Writer, text string) error {
 //
 // A word after a help flag is refused, not discarded, the same as everywhere
 // else a command meets an unexpected word (#69): `new --help junk`, `batch
-// --help junk`, `render --help junk` and `version --help junk` refuse it as
+// --help junk`, `readings --help junk` and `version --help junk` refuse it as
 // `ctchargen help junk` does (#84). The flag package returns ErrHelp before a
 // command reaches its own NArg check, so the word has to be looked at here.
 //
@@ -134,7 +132,7 @@ type helpLine struct{ named, description string }
 //
 // It exists rather than flag.PrintDefaults because PrintDefaults writes one
 // dash and everything else here writes two: the README, the error messages,
-// and the referee's own transcript. The defaults are printed because a
+// and the referee's own notes. The defaults are printed because a
 // strategy flag left alone still chooses, and the reader who could not see
 // which one it chose is the one who reported this.
 //

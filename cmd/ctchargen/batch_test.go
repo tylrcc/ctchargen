@@ -41,7 +41,7 @@ func TestBatchIntoADirectory(t *testing.T) {
 		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir,
 	}, nil)
 
-	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
+	written, err := filepath.Glob(filepath.Join(dir, "*.md"))
 	if err != nil {
 		t.Fatalf("looking for the members: %v", err)
 	}
@@ -68,8 +68,8 @@ func TestBatchIntoADirectory(t *testing.T) {
 
 // `-o dir/` names a directory that need not already exist. Without the
 // trailing separator being read as "a directory", the README's own line
-// fails, and `-o characters` quietly writes one JSONL file where twenty
-// records were asked for.
+// fails, and `-o characters` quietly writes one file where twenty
+// notes were asked for.
 func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 	t.Parallel()
 
@@ -79,7 +79,7 @@ func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir,
 	}, nil)
 
-	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
+	written, err := filepath.Glob(filepath.Join(dir, "*.md"))
 	if err != nil {
 		t.Fatalf("looking for the members: %v", err)
 	}
@@ -100,7 +100,7 @@ func TestARefusedBatchWritesNothing(t *testing.T) {
 	dir := t.TempDir()
 
 	// The second member's file, already there.
-	blocked := filepath.Join(dir, "2.json")
+	blocked := filepath.Join(dir, "2.md")
 
 	err := os.WriteFile(blocked, []byte("{}\n"), 0o600)
 	if err != nil {
@@ -114,7 +114,7 @@ func TestARefusedBatchWritesNothing(t *testing.T) {
 		t.Fatal("a batch overwrote an existing member without --force")
 	}
 
-	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
+	written, err := filepath.Glob(filepath.Join(dir, "*.md"))
 	if err != nil {
 		t.Fatalf("looking for the members: %v", err)
 	}
@@ -151,7 +151,7 @@ func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 }
 
 // A write that fails is reported as the write, and abandons what it opened
-// rather than leaving the descriptor held or finishing a partial record.
+// rather than leaving the descriptor held or finishing a partial note.
 func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
 	t.Parallel()
 
@@ -186,7 +186,7 @@ func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
 //
 // Here the third member's file is already a directory, and --force skips the
 // up-front check that would have refused the run before writing anything, so
-// two records are on disk when it fails. It printed the error and no tally,
+// two notes are on disk when it fails. It printed the error and no tally,
 // and the tally is the only place the run says how many of what it wrote are
 // corpses (#118).
 func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
@@ -194,7 +194,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 
 	dir := t.TempDir()
 
-	err := os.Mkdir(filepath.Join(dir, "3.json"), 0o700)
+	err := os.Mkdir(filepath.Join(dir, "3.md"), 0o700)
 	if err != nil {
 		t.Fatalf("planting the directory: %v", err)
 	}
@@ -206,11 +206,11 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 		flagForce, flagOutput, dir + string(filepath.Separator),
 	}, nil, io.Discard, &asking)
 	if err == nil {
-		t.Fatal("a batch wrote a record over a directory")
+		t.Fatal("a batch wrote a note over a directory")
 	}
 
 	if !strings.HasPrefix(asking.String(), "2 written before the run stopped, ") {
-		t.Errorf("a batch that stopped after two records said %q", asking.String())
+		t.Errorf("a batch that stopped after two notes said %q", asking.String())
 	}
 }
 
@@ -221,7 +221,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 
 	dir := t.TempDir()
 
-	err := os.Mkdir(filepath.Join(dir, "3.json"), 0o700)
+	err := os.Mkdir(filepath.Join(dir, "3.md"), 0o700)
 	if err != nil {
 		t.Fatalf("planting the directory: %v", err)
 	}
@@ -231,7 +231,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 		flagForce, flagOutput, dir + string(filepath.Separator),
 	}, nil, io.Discard, &failsAfter{})
 	if err == nil {
-		t.Fatal("a batch wrote a record over a directory")
+		t.Fatal("a batch wrote a note over a directory")
 	}
 
 	if !errors.Is(err, errWriteFailed) || !strings.Contains(err.Error(), "is a directory") {
@@ -242,8 +242,8 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 // oldRecord is what a --force test plants before replacing it.
 const oldRecord = "last week's\n"
 
-// --force leaves the record it replaces whole until the new one is (#191).
-// Opening with a truncating flag emptied the old record before the first byte
+// --force leaves the note it replaces whole until the new one is (#191).
+// Opening with a truncating flag emptied the old note before the first byte
 // of the new one, so a write that failed left neither.
 func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
 	t.Parallel()
@@ -251,9 +251,9 @@ func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
 	dir := t.TempDir()
 	path := filepath.Join(dir, "sheet.txt")
 
-	err := os.WriteFile(path, []byte(oldRecord), recordFileMode)
+	err := os.WriteFile(path, []byte(oldRecord), noteFileMode)
 	if err != nil {
-		t.Fatalf("planting the old record: %v", err)
+		t.Fatalf("planting the old note: %v", err)
 	}
 
 	where, err := openDestination(nil, path, true)
@@ -262,7 +262,7 @@ func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
 	}
 
 	if got := mustRead(t, path); got != oldRecord {
-		t.Errorf("opening with --force left the old record as %q", got)
+		t.Errorf("opening with --force left the old note as %q", got)
 	}
 
 	where.out = &failsAfter{}
@@ -273,7 +273,7 @@ func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
 	}
 
 	if got := mustRead(t, path); got != oldRecord {
-		t.Errorf("a failed --force write left the old record as %q", got)
+		t.Errorf("a failed --force write left the old note as %q", got)
 	}
 
 	where, err = openDestination(nil, path, true)
@@ -296,7 +296,7 @@ func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
 	}
 
 	if len(entries) != 1 {
-		t.Errorf("--force left %d files beside the record, want none", len(entries)-1)
+		t.Errorf("--force left %d files beside the note, want none", len(entries)-1)
 	}
 }
 
@@ -311,16 +311,16 @@ func mustRead(t *testing.T, path string) string {
 	return string(data)
 }
 
-// Where the record cannot be staged, --force says so and leaves the old one.
+// Where the note cannot be staged, --force says so and leaves the old one.
 func TestForceThatCannotStageLeavesTheOldRecord(t *testing.T) {
 	t.Parallel()
 
 	dir := t.TempDir()
 	path := filepath.Join(dir, "sheet.txt")
 
-	err := os.WriteFile(path, []byte(oldRecord), recordFileMode)
+	err := os.WriteFile(path, []byte(oldRecord), noteFileMode)
 	if err != nil {
-		t.Fatalf("planting the old record: %v", err)
+		t.Fatalf("planting the old note: %v", err)
 	}
 
 	err = os.Chmod(dir, 0o400)
@@ -333,13 +333,13 @@ func TestForceThatCannotStageLeavesTheOldRecord(t *testing.T) {
 		t.Errorf("--force into a closed directory said %v, want the staging failure", err)
 	}
 
-	err = os.Chmod(dir, recordDirMode)
+	err = os.Chmod(dir, noteDirMode)
 	if err != nil {
 		t.Fatalf("reopening the directory: %v", err)
 	}
 
 	if got := mustRead(t, path); got != oldRecord {
-		t.Errorf("a --force that could not stage left the old record as %q", got)
+		t.Errorf("a --force that could not stage left the old note as %q", got)
 	}
 }
 
@@ -353,10 +353,10 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 		count int
 		wants []string
 	}{
-		"a batch of three": {count: 3, wants: []string{"1.json", "2.json", "3.json"}},
+		"a batch of three": {count: 3, wants: []string{"1.md", "2.md", "3.md"}},
 		"a batch of twelve": {count: 12, wants: []string{
-			"01.json", "02.json", "03.json", "04.json", "05.json", "06.json",
-			"07.json", "08.json", "09.json", "10.json", "11.json", "12.json",
+			"01.md", "02.md", "03.md", "04.md", "05.md", "06.md",
+			"07.md", "08.md", "09.md", "10.md", "11.md", "12.md",
 		}},
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -368,7 +368,7 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 				cmdBatch, flagCount, strconv.Itoa(tc.count), flagService, other, flagOutput, dir,
 			}, nil)
 
-			found, err := filepath.Glob(filepath.Join(dir, "*.json"))
+			found, err := filepath.Glob(filepath.Join(dir, "*.md"))
 			if err != nil {
 				t.Fatalf("looking for the members: %v", err)
 			}
@@ -385,7 +385,7 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 	}
 }
 
-// A directory where a record is to go is reported as a directory, the first
+// A directory where a note is to go is reported as a directory, the first
 // time and without --force advice (#254).
 //
 // The exclusive open read a directory as a file that already exists, and
@@ -399,12 +399,12 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 
 	for name, plant := range map[string]func(dir string) (args []string, blocked string){
 		"new": func(dir string) ([]string, string) {
-			blocked := filepath.Join(dir, "sheet.json")
+			blocked := filepath.Join(dir, "sheet.md")
 
 			return []string{cmdNew, flagAuto, flagService, other, flagOutput, blocked}, blocked
 		},
 		"a batch member": func(dir string) ([]string, string) {
-			blocked := filepath.Join(dir, "2.json")
+			blocked := filepath.Join(dir, "2.md")
 
 			return []string{cmdBatch, flagCount, "3", flagService, other, flagOutput, dir}, blocked
 		},
@@ -424,7 +424,7 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 
 			switch {
 			case err == nil:
-				t.Fatal("a record was written over a directory")
+				t.Fatal("a note was written over a directory")
 			case !strings.Contains(err.Error(), "is a directory"):
 				t.Errorf("a directory in the way was reported as %q, which does not say so", err)
 			case !strings.Contains(err.Error(), blocked):
@@ -437,7 +437,7 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 }
 
 // A batch is always an auto run: it has nobody to ask, so it needs no flag to
-// say so (#336). `batch --count 1` writes a record that names the policy and
+// say so (#336). `batch --count 1` writes a note that names the policy and
 // each strategy given,
 // and --auto, which no longer means anything to a batch, is the flag
 // package's own usage error rather than a word accepted and ignored. A
@@ -451,9 +451,9 @@ func TestABatchIsAlwaysAuto(t *testing.T) {
 		cmdBatch, flagCount, "1", flagCareer, "retire", flagSkills, "service", flagMuster, "goods",
 	}, nil)
 
-	for _, want := range []string{`"policy":`, `"career":"retire"`, `"skills":"service"`, `"muster":"goods"`} {
+	for _, want := range []string{"answered by the policy", "career retire", "skills service", "muster goods"} {
 		if !strings.Contains(out, want) {
-			t.Errorf("batch with all three strategies wrote no %s in its record:\n%s", want, out)
+			t.Errorf("batch with all three strategies wrote no %s in its note:\n%s", want, out)
 		}
 	}
 

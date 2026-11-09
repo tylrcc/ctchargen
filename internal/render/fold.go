@@ -1,38 +1,35 @@
 package render
 
 import (
-	"encoding/json"
-	"fmt"
-
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // The codecs for the sums. Each is a fold, so a case added to a sum stops
-// this package compiling until the projection learns to write it.
+// this package compiling until the view learns to read it.
 
-type enlistmentCodec struct{ out enlistmentRecord }
+type enlistmentCodec struct{ out enlistmentView }
 
 func (e *enlistmentCodec) Enlisted(service traveller.ServiceName) error {
-	e.out = enlistmentRecord{How: "enlisted", Service: service.String()}
+	e.out = enlistmentView{How: "enlisted", Service: service.String()}
 
 	return nil
 }
 
 func (e *enlistmentCodec) Drafted(service traveller.ServiceName) error {
-	e.out = enlistmentRecord{How: "drafted", Service: service.String()}
+	e.out = enlistmentView{How: "drafted", Service: service.String()}
 
 	return nil
 }
 
 func (e *enlistmentCodec) DeclinedTheDraft() error {
-	e.out = enlistmentRecord{How: "declined the draft"}
+	e.out = enlistmentView{How: "declined the draft"}
 
 	return nil
 }
 
-func foldEnlistment(from traveller.Enlistment) enlistmentRecord {
+func foldEnlistment(from traveller.Enlistment) enlistmentView {
 	if from == nil {
-		return enlistmentRecord{}
+		return enlistmentView{}
 	}
 
 	var codec enlistmentCodec
@@ -43,41 +40,41 @@ func foldEnlistment(from traveller.Enlistment) enlistmentRecord {
 	return codec.out
 }
 
-type departureCodec struct{ out departureRecord }
+type departureCodec struct{ out departureView }
 
 func (d *departureCodec) Discharged() error {
-	d.out = departureRecord{How: "discharged"}
+	d.out = departureView{How: "discharged"}
 
 	return nil
 }
 
 func (d *departureCodec) ForcedOut() error {
-	d.out = departureRecord{How: "forced out"}
+	d.out = departureView{How: "forced out"}
 
 	return nil
 }
 
 func (d *departureCodec) Retired() error {
-	d.out = departureRecord{How: "retired"}
+	d.out = departureView{How: "retired"}
 
 	return nil
 }
 
 func (d *departureCodec) KilledBySurvivalThrow() error {
-	d.out = departureRecord{How: "killed by the survival throw"}
+	d.out = departureView{How: "killed by the survival throw"}
 
 	return nil
 }
 
 func (d *departureCodec) KilledByMedicalCrisis(characteristic traveller.Characteristic) error {
-	d.out = departureRecord{
+	d.out = departureView{
 		How: "killed by a medical crisis", Characteristic: characteristic.String(),
 	}
 
 	return nil
 }
 
-func foldDeparture(from traveller.Departure) departureRecord {
+func foldDeparture(from traveller.Departure) departureView {
 	var codec departureCodec
 
 	// A fold over a codec cannot fail: every case only assigns.
@@ -91,178 +88,97 @@ func foldDeparture(from traveller.Departure) departureRecord {
 	return codec.out
 }
 
-// The kinds an event's discriminator can be, on the wire.
+// entryKind is which case of traveller.Event an entry was folded from. A
+// switch over it is exhaustive by lint, so a sixth kind is a failure at every
+// switch until each has written it.
+type entryKind int
+
+// One for each case of traveller.Event.
 const (
-	kindStep    = "step"
-	kindThrow   = "throw"
-	kindRoll    = "roll"
-	kindChoice  = "choice"
-	kindOutcome = "outcome"
+	kindStep entryKind = iota
+	kindThrow
+	kindRoll
+	kindChoice
+	kindOutcome
 )
 
-type stepJSON struct {
-	Seq   int    `json:"seq"`
-	Kind  string `json:"kind"`
-	Step  string `json:"step"`
-	Pages string `json:"pages,omitempty"`
+// entry is every event kind at once, flat, which is what the generation
+// record and the live view both read. It is built from the domain event by
+// one fold, entryOf, so the two cannot come to read an event differently.
+type entry struct {
+	Seq          int
+	Kind         entryKind
+	Step         string
+	Pages        string
+	Dice         []int
+	DM           int
+	Target       string
+	Total        int
+	Succeeded    bool
+	Point        traveller.ChoicePoint
+	Alternatives []string
+	Chosen       string
+	Because      int
+	Description  string
+	Errata       []string
 }
 
-type throwJSON struct {
-	Seq       int    `json:"seq"`
-	Kind      string `json:"kind"`
-	Step      string `json:"step"`
-	Dice      []int  `json:"dice"`
-	DM        int    `json:"dm,omitempty"`
-	Target    string `json:"target,omitempty"`
-	Total     int    `json:"total"`
-	Succeeded bool   `json:"succeeded"`
+// entryOf folds a domain event into its entry.
+func entryOf(event traveller.Event) entry {
+	var codec entryCodec
+
+	// A fold over a codec cannot fail: every case only assigns.
+	_ = event.Fold(&codec)
+
+	return codec.out
 }
 
-// rollJSON is a roll with nothing to meet. It carries no target and no
-// outcome (#50): written as a throw, it would claim to have succeeded against
-// nothing.
-type rollJSON struct {
-	Seq   int    `json:"seq"`
-	Kind  string `json:"kind"`
-	Step  string `json:"step"`
-	Dice  []int  `json:"dice"`
-	DM    int    `json:"dm,omitempty"`
-	Total int    `json:"total"`
+type entryCodec struct{ out entry }
+
+func (e *entryCodec) Step(from traveller.StepEvent) error {
+	e.out = entry{Seq: from.Seq, Kind: kindStep, Step: from.Step, Pages: from.Pages}
+
+	return nil
 }
 
-type choiceJSON struct {
-	Seq          int      `json:"seq"`
-	Kind         string   `json:"kind"`
-	Point        string   `json:"point"`
-	Alternatives []string `json:"alternatives"`
-	Chosen       string   `json:"chosen"`
-}
-
-type outcomeJSON struct {
-	Seq         int      `json:"seq"`
-	Kind        string   `json:"kind"`
-	Because     int      `json:"because,omitempty"`
-	Description string   `json:"description"`
-	Errata      []string `json:"errata,omitempty"`
-}
-
-// eventCodec folds a domain event into the shape it is written in, and into
-// the flat shape a reader gets it back as.
-//
-// It produces both so that there is one mapping from the domain, and flat is
-// derived from what is written rather than built beside it (#46). Two codecs
-// would each map the same domain fields: Fold would catch a fifth kind, since
-// both would stop compiling, but not a field, and one could stop carrying DM
-// with only a transcript golden to notice.
-//
-// Implements: The shape a reader gets back is the shape that was written
-// [Generation record].
-type eventCodec struct {
-	out  json.RawMessage
-	flat eventJSON
-}
-
-func (e *eventCodec) Step(from traveller.StepEvent) error {
-	out := stepJSON{Seq: from.Seq, Kind: kindStep, Step: from.Step, Pages: from.Pages}
-
-	e.flat = eventJSON{Seq: out.Seq, Kind: out.Kind, Step: out.Step, Pages: out.Pages}
-
-	return e.write(out)
-}
-
-func (e *eventCodec) Throw(from traveller.ThrowEvent) error {
-	out := throwJSON{
+func (e *entryCodec) Throw(from traveller.ThrowEvent) error {
+	e.out = entry{
 		Seq: from.Seq, Kind: kindThrow, Step: from.Step, Dice: from.Dice,
-		DM: from.DM, Total: from.Total(), Succeeded: from.Succeeded,
+		DM: from.DM, Target: from.Target.String(), Total: from.Total(), Succeeded: from.Succeeded,
 	}
 
-	// Guarded, though every throw has a target by construction: a zero
-	// Target stringifies to "0", not to nothing, so writing it unguarded
-	// would put "target": "0" on a throw that has none and satisfy the
-	// schema's requirement with it. Omitted, the record fails its own schema,
-	// which is what should happen to a throw with nothing to meet.
-	if from.Target.Number() != 0 {
-		out.Target = from.Target.String()
-	}
-
-	e.flat = eventJSON{
-		Seq: out.Seq, Kind: out.Kind, Step: out.Step, Dice: out.Dice, DM: out.DM,
-		Target: out.Target, Total: out.Total, Succeeded: out.Succeeded,
-	}
-
-	return e.write(out)
+	return nil
 }
 
-func (e *eventCodec) Roll(from traveller.RollEvent) error {
-	out := rollJSON{
+// Roll is a roll with nothing to meet. It carries no target and no outcome
+// (#50): read as a throw, it would claim to have succeeded against nothing.
+//
+// Implements: A roll with nothing to meet is not recorded as a throw that
+// succeeded [Generation record].
+func (e *entryCodec) Roll(from traveller.RollEvent) error {
+	e.out = entry{
 		Seq: from.Seq, Kind: kindRoll, Step: from.Step,
 		Dice: from.Dice, DM: from.DM, Total: from.Total(),
 	}
 
-	e.flat = eventJSON{
-		Seq: out.Seq, Kind: out.Kind, Step: out.Step,
-		Dice: out.Dice, DM: out.DM, Total: out.Total,
-	}
-
-	return e.write(out)
+	return nil
 }
 
-func (e *eventCodec) Choice(from traveller.ChoiceEvent) error {
-	out := choiceJSON{
-		Seq: from.Seq, Kind: kindChoice, Point: from.Point.String(),
+func (e *entryCodec) Choice(from traveller.ChoiceEvent) error {
+	e.out = entry{
+		Seq: from.Seq, Kind: kindChoice, Point: from.Point,
 		Alternatives: from.Alternatives, Chosen: from.Chosen,
 	}
 
-	e.flat = eventJSON{
-		Seq: out.Seq, Kind: out.Kind, Point: out.Point,
-		Alternatives: out.Alternatives, Chosen: out.Chosen,
-	}
-
-	return e.write(out)
+	return nil
 }
 
-func (e *eventCodec) Outcome(from traveller.OutcomeEvent) error {
-	out := outcomeJSON{
-		Seq: from.Seq, Kind: kindOutcome, Because: from.Because, Description: from.Description,
-	}
+func (e *entryCodec) Outcome(from traveller.OutcomeEvent) error {
+	e.out = entry{Seq: from.Seq, Kind: kindOutcome, Because: from.Because, Description: from.Description}
+
 	for _, erratum := range from.Errata {
-		out.Errata = append(out.Errata, erratum.String())
+		e.out.Errata = append(e.out.Errata, erratum.String())
 	}
 
-	e.flat = eventJSON{
-		Seq: out.Seq, Kind: out.Kind, Because: out.Because,
-		Description: out.Description, Errata: out.Errata,
-	}
-
-	return e.write(out)
-}
-
-// projectEvents writes every event, and refuses to write any of them if one
-// will not marshal. The record claims to be the complete account of a
-// generation, so an entry silently missing from it is worse than a failure
-// to write the record at all.
-func projectEvents(events []traveller.Event) ([]json.RawMessage, error) {
-	out := make([]json.RawMessage, 0, len(events))
-
-	for _, event := range events {
-		var codec eventCodec
-
-		err := event.Fold(&codec)
-		if err != nil {
-			return nil, fmt.Errorf("event %d: %w", event.Sequence(), err)
-		}
-
-		out = append(out, codec.out)
-	}
-
-	return out, nil
-}
-
-func (e *eventCodec) write(v any) error {
-	text, err := json.Marshal(v)
-
-	e.out = text
-
-	//nolint:wrapcheck // the caller adds the context; this is one marshal.
-	return err
+	return nil
 }

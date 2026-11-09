@@ -1,69 +1,56 @@
 package render
 
 import (
+	"fmt"
+
 	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// historyRecord is the service history, a term at a time: what entering the
-// service granted, and what each term conferred, gave and took (#401). It is
-// absent for a civilian, who served none.
-type historyRecord struct {
-	OnEntering []gainRecord `json:"onEntering,omitempty"`
-	Terms      []termRecord `json:"terms"`
+// historyView is the service history as the sheet tells it, a term at a
+// time: what entering the service granted, and what each term conferred, gave
+// and took (#401). Each gain is already the words the sheet prints.
+type historyView struct {
+	OnEntering []string
+	Terms      []termView
 }
 
-// termRecord is one term of service. The term a survival throw ended carries
+// termView is one term of service. The term a survival throw ended carries
 // its number and nothing else.
-type termRecord struct {
-	Term      int            `json:"term"`
-	Raised    []raiseRecord  `json:"raised,omitempty"`
-	Gained    []gainRecord   `json:"gained,omitempty"`
-	Aged      []changeRecord `json:"aged,omitempty"`
-	Recovered []string       `json:"recovered,omitempty"`
+type termView struct {
+	Term      int
+	Raised    []raiseView
+	Gained    []string
+	Aged      []string
+	Recovered []string
 }
 
-// raiseRecord is a commission or a promotion, and what the Rank and Service
+// raiseView is a commission or a promotion, and what the Rank and Service
 // Skills box granted at the rank it conferred (p. 23).
-type raiseRecord struct {
-	How    string       `json:"how"`
-	Rank   string       `json:"rank"`
-	Grants []gainRecord `json:"grants,omitempty"`
+type raiseView struct {
+	How    string
+	Rank   string
+	Grants []string
 }
 
-// gainRecord is one gain, written as the one key it is: a skill at the level
-// it reached, or a characteristic changed.
-type gainRecord struct {
-	Skill  *skillRecord  `json:"skill,omitempty"`
-	Change *changeRecord `json:"change,omitempty"`
-}
-
-type changeRecord struct {
-	Characteristic string `json:"characteristic"`
-	From           int    `json:"from"`
-	To             int    `json:"to"`
-}
-
-// projectHistory writes the service history. Its terms are an array even
-// where the first one killed him, so a reader always finds the term he died
-// in.
-func projectHistory(history chargen.ServiceHistory) *historyRecord {
-	out := &historyRecord{
-		OnEntering: projectGains(history.OnEntering),
-		Terms:      make([]termRecord, 0, len(history.Terms)),
+// projectHistory is the service history as the sheet tells it.
+func projectHistory(history chargen.ServiceHistory) *historyView {
+	out := &historyView{
+		OnEntering: gainWords(history.OnEntering),
+		Terms:      make([]termView, 0, len(history.Terms)),
 	}
 
 	for _, term := range history.Terms {
-		served := termRecord{
-			Term:   int(term.Term),
-			Gained: projectGains(term.Gained),
-			Aged:   projectChanges(term.Aged),
-		}
+		served := termView{Term: int(term.Term), Gained: gainWords(term.Gained)}
 
 		for _, raise := range term.Raised {
-			served.Raised = append(served.Raised, raiseRecord{
-				How: raise.How.String(), Rank: raise.Rank, Grants: projectGains(raise.Grants),
+			served.Raised = append(served.Raised, raiseView{
+				How: raise.How.String(), Rank: raise.Rank, Grants: gainWords(raise.Grants),
 			})
+		}
+
+		for _, change := range term.Aged {
+			served.Aged = append(served.Aged, changeWords(change))
 		}
 
 		for _, characteristic := range term.Recovered {
@@ -76,49 +63,40 @@ func projectHistory(history chargen.ServiceHistory) *historyRecord {
 	return out
 }
 
-func projectGains(gains []chargen.Gain) []gainRecord {
-	out := make([]gainRecord, 0, len(gains))
+// gainWords is each gain in the order received: a skill at the level it
+// reached, a characteristic change as the delta the page's results are
+// written in.
+func gainWords(gains []chargen.Gain) []string {
+	out := make([]string, 0, len(gains))
 
 	for _, gain := range gains {
-		var codec gainCodec
+		var words gainWordsCodec
 
 		// A fold over a codec cannot fail: every case only assigns.
-		_ = gain.Fold(&codec)
+		_ = gain.Fold(&words)
 
-		out = append(out, codec.out)
+		out = append(out, words.out)
 	}
 
 	return out
 }
 
-func projectChanges(changes []chargen.Change) []changeRecord {
-	out := make([]changeRecord, 0, len(changes))
-
-	for _, change := range changes {
-		out = append(out, projectChange(change))
-	}
-
-	return out
+func changeWords(change chargen.Change) string {
+	return fmt.Sprintf("%v %+d", change.Characteristic, change.To-change.From)
 }
 
-func projectChange(change chargen.Change) changeRecord {
-	return changeRecord{Characteristic: change.Characteristic.String(), From: change.From, To: change.To}
-}
+// gainWordsCodec folds a gain into its words. Adding a kind of gain stops
+// this compiling until it has some.
+type gainWordsCodec struct{ out string }
 
-// gainCodec folds a gain into the one key it is written as. Adding a kind of
-// gain stops this compiling until it is written.
-type gainCodec struct{ out gainRecord }
-
-func (g *gainCodec) Skill(skill traveller.Skill) error {
-	g.out.Skill = &skillRecord{Name: string(skill.Name), Level: skill.Level}
+func (g *gainWordsCodec) Skill(skill traveller.Skill) error {
+	g.out = fmt.Sprintf("%s-%d", skill.Name, skill.Level)
 
 	return nil
 }
 
-func (g *gainCodec) Change(change chargen.Change) error {
-	projected := projectChange(change)
-
-	g.out.Change = &projected
+func (g *gainWordsCodec) Change(change chargen.Change) error {
+	g.out = changeWords(change)
 
 	return nil
 }

@@ -50,13 +50,13 @@ func exitStatus(err error) int {
 type source func() chargen.Roller
 
 // options is everything the command adds to a generation: the build that
-// writes the record, and a roller of the source's own when one is given.
+// writes the note, and a roller of the source's own when one is given.
 // Every generation the command makes takes these, so the build has one place
 // to come from rather than a call at each generating site (#282).
-// TestRunWritesEachRendering holds a new record and a batch member to
+// TestRunWritesEachRendering holds a new note and a batch member to
 // carrying it.
 //
-// Implements: The record names its ruleset and the build that wrote it [ADR
+// Implements: The note names its ruleset and the build that wrote it [ADR
 // 0002].
 func (s source) options() []chargen.Option {
 	options := []chargen.Option{chargen.WithBuild(build())}
@@ -79,13 +79,11 @@ func withDice(dice source) option {
 }
 
 // run takes the two output channels apart. `out` is the data channel - the
-// record, the sheet, the transcript - and `asking` is where the tool talks to
-// the person driving it. Interactive mode writes its questions to the second,
-// so that `ctchargen new | jq` pipes a record and not a conversation.
+// note - and `asking` is where the tool talks to the person driving it.
+// Interactive mode writes its questions to the second, so that
+// `ctchargen new > kira.md` saves a note and not a conversation.
 //
-// Implements: What the command writes matches the schema, build stamp and all
-// [JSON conventions].
-// Implements: The questions go to stderr, not into the record [CLI sketch].
+// Implements: The questions go to stderr, not into the note [CLI sketch].
 func run(args []string, in io.Reader, out, asking io.Writer, options ...option) error {
 	var chosen settings
 
@@ -116,8 +114,6 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 		return newCharacter(args[1:], in, out, asking, chosen.dice)
 	case "batch":
 		return batch(args[1:], out, asking, chosen.dice)
-	case "render":
-		return renderRecord(args[1:], out)
 	case "readings":
 		return readings(args[1:], out)
 	case "version":

@@ -8,61 +8,24 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// Sheet renders a record the way Book 1 summarises a character: the UPP
-// line, then skills and possessions, as p. 25 does for Jamison.
+// writeSheet writes the sheet the way Book 1 summarises a character: the
+// UPP line, then skills and possessions, as p. 25 does for Jamison, and the
+// service a term at a time.
 //
-// It takes the record's bytes and nothing else, whether the record was just
-// generated or written long ago: a sheet describes the record, so the record
-// is what it is written from, and with one route there is no second one to
-// disagree with it (#363).
-func Sheet(text []byte) (string, error) {
-	projected, events, err := decode(text)
-	if err != nil {
-		return "", err
-	}
+// Implements: The errata are on the generation record and not the sheet
+// [Generation record].
+func writeSheet(out *strings.Builder, r view) {
+	fmt.Fprintf(out, "# %s\n\n", nameOrBlank(r.Name))
+	fmt.Fprintf(out, "%s\n\n", headline(r))
 
-	return sheetOf(projected, events), nil
-}
+	writeSection(out, "Skills", skillLines(r))
+	writeSection(out, "Possessions", possessionLines(r))
+	writeSection(out, "Service record", serviceLines(r))
 
-// sheetOf writes the sheet, and ends it by saying what to keep.
-//
-// The footer is last because it is not the character: a referee reads the
-// headline and the possessions, and thinks about keeping the record only once
-// he has decided he wants this one.
-//
-// Implements: The errata are on the transcript and not the sheet [Generation
-// record].
-func sheetOf(r record, events []eventJSON) string {
-	var out strings.Builder
-
-	fmt.Fprintf(&out, "# %s\n\n", nameOrBlank(r.Name))
-	fmt.Fprintf(&out, "%s\n\n", headline(r, events))
-
-	writeSection(&out, "Skills", skillLines(r))
-	writeSection(&out, "Possessions", possessionLines(r))
-	writeSection(&out, "Service record", serviceLines(r))
-
-	// The errata are deliberately not here. They stay in the record and on
-	// the transcript, where an id beside the outcome it governed is how a
-	// reading is checked against the page. On a sheet handed to a player
-	// they are four codes he cannot expand and does not need.
-
-	endWithKeep(&out)
-
-	return out.String()
-}
-
-// keepTheRecord is the one line every rendering ends with.
-//
-// A sheet is what a referee reads and keeps, and the record is the only way
-// back to the character on it (ADR 0001). Without this line a sheet spun,
-// read and liked would be a character discarded. The transcript ends the same
-// way, so the two printed renderings give the same advice.
-const keepTheRecord = "Keep the JSON record: it is the only way back to this character."
-
-// endWithKeep writes the footer every rendering ends with, after a rule.
-func endWithKeep(out *strings.Builder) {
-	fmt.Fprintf(out, "---\n\n%s\n", keepTheRecord)
+	// The errata are deliberately not here. They are on the generation
+	// record below, where an id beside the outcome it governed is how a
+	// reading is checked against the page. On the sheet a player reads they
+	// are codes he cannot expand and does not need.
 }
 
 func nameOrBlank(name string) string {
@@ -75,7 +38,7 @@ func nameOrBlank(name string) string {
 
 // age reads as whole years, or years and months where a medical crisis
 // recovery added some (pp. 7-8).
-func age(a ageRecord) string {
+func age(a ageView) string {
 	if a.Months == 0 {
 		return strconv.Itoa(a.Years)
 	}
@@ -85,7 +48,7 @@ func age(a ageRecord) string {
 
 // headline is the line the book itself leads with: the UPP, the age, and
 // what the character is.
-func headline(r record, events []eventJSON) string {
+func headline(r view) string {
 	parts := []string{"UPP " + r.UPP, "age " + age(r.Age)}
 
 	if r.Service == "" {
@@ -97,7 +60,7 @@ func headline(r record, events []eventJSON) string {
 		serving += " " + r.RankName
 	}
 
-	parts = append(parts, serving+whoseService(r, events)+", "+terms(r.Terms))
+	parts = append(parts, serving+whoseService(r)+", "+terms(r.Terms))
 
 	if r.Nobility != nil && r.Nobility.Assumed {
 		parts = append(parts, r.Nobility.Title)
@@ -141,8 +104,8 @@ const oneTerm = 1
 //
 // Implements: The headline names the service attempted, not the one the draft
 // gave [1:5].
-func whoseService(r record, events []eventJSON) string {
-	attempted, byPolicy := serviceAttempted(r, events)
+func whoseService(r view) string {
+	attempted, byPolicy := serviceAttempted(r)
 
 	switch {
 	case attempted == "":
@@ -164,12 +127,12 @@ func whoseService(r record, events []eventJSON) string {
 // redundant. A forced run carries it in `inputs` and logs no choice at all -
 // there was nothing to ask. An unforced run logs the choice and leaves
 // `inputs.service` empty, and that answer is the one the draft can override.
-func serviceAttempted(r record, events []eventJSON) (string, bool) {
+func serviceAttempted(r view) (string, bool) {
 	if r.Inputs.Service != "" {
 		return r.Inputs.Service, false
 	}
 
-	choice, asked := choiceAt(events, traveller.ChoiceService.String())
+	choice, asked := choiceAt(r.Events, traveller.ChoiceService)
 	if !asked {
 		return "", false
 	}
@@ -191,7 +154,7 @@ func writeSection(out *strings.Builder, heading string, lines []string) {
 	out.WriteString("\n")
 }
 
-func skillLines(r record) []string {
+func skillLines(r view) []string {
 	lines := make([]string, 0, len(r.Skills))
 	for _, skill := range r.Skills {
 		lines = append(lines, fmt.Sprintf("%s-%d", skill.Name, skill.Level))
@@ -200,7 +163,7 @@ func skillLines(r record) []string {
 	return lines
 }
 
-func possessionLines(r record) []string {
+func possessionLines(r view) []string {
 	var lines []string
 
 	if r.Benefits.Cash > 0 {
@@ -234,7 +197,7 @@ func credits(amount int64) string { return fmt.Sprintf("CR %d", amount) }
 // other's numbers would call a new, unencumbered Free Trader a scout ship.
 //
 // Implements: A ship's terms follow its kind, not its numbers [1:22–23].
-func shipLine(ship shipRecord) string {
+func shipLine(ship shipView) string {
 	if ship.Kind == traveller.ScoutShip.String() {
 		return fmt.Sprintf("%s, %d tons, held in constructive possession", ship.Kind, ship.Tons)
 	}
@@ -253,17 +216,17 @@ func shipLine(ship shipRecord) string {
 //
 // Implements: The service record narrates the career a term at a time
 // [Character record].
-func serviceLines(r record) []string {
+func serviceLines(r view) []string {
 	if r.Service == "" {
 		return []string{r.Enlistment.How}
 	}
 
 	entered := fmt.Sprintf("%s, %s", r.Enlistment.Service, r.Enlistment.How)
 
-	var terms []termRecord
+	var terms []termView
 
 	if r.History != nil {
-		entered = joinNonEmpty("; ", entered, gainsText(r.History.OnEntering))
+		entered = joinNonEmpty("; ", entered, strings.Join(r.History.OnEntering, ", "))
 		terms = r.History.Terms
 	}
 
@@ -300,23 +263,23 @@ func serviceLines(r record) []string {
 // answered, and who answered is the record's to say rather than the event's.
 // Reading only who leads to crediting a decider with an outcome he did not
 // pick.
-func choiceAt(events []eventJSON, point string) (eventJSON, bool) {
+func choiceAt(events []entry, point traveller.ChoicePoint) (entry, bool) {
 	for _, event := range events {
 		if event.Kind == kindChoice && event.Point == point {
 			return event, true
 		}
 	}
 
-	return eventJSON{}, false
+	return entry{}, false
 }
 
 // termText is one term's rank, gains and aging, each part left out where the
 // term has none of it, so a term with nothing to tell is empty. A rank's
 // grants are in parentheses, so "; " only ever separates the parts.
-func termText(term termRecord) string {
+func termText(term termView) string {
 	raised := make([]string, 0, len(term.Raised))
 	for _, raise := range term.Raised {
-		raised = append(raised, raise.How+" "+raise.Rank+labelled(" (", gainsText(raise.Grants), ")"))
+		raised = append(raised, raise.How+" "+raise.Rank+labelled(" (", strings.Join(raise.Grants, ", "), ")"))
 	}
 
 	recovered := make([]string, 0, len(term.Recovered))
@@ -326,8 +289,8 @@ func termText(term termRecord) string {
 
 	return joinNonEmpty("; ",
 		strings.Join(raised, " and "),
-		gainsText(term.Gained),
-		labelled("aging ", changesText(term.Aged), ""),
+		strings.Join(term.Gained, ", "),
+		labelled("aging ", strings.Join(term.Aged, ", "), ""),
 		strings.Join(recovered, ", "))
 }
 
@@ -339,41 +302,6 @@ func labelled(label, text, closing string) string {
 	}
 
 	return label + text + closing
-}
-
-// gainsText is each gain in the order received: a skill at the level it
-// reached, a characteristic change as the delta the page's results are
-// written in.
-func gainsText(gains []gainRecord) string {
-	parts := make([]string, 0, len(gains))
-
-	for _, gain := range gains {
-		switch {
-		case gain.Skill != nil:
-			parts = append(parts, fmt.Sprintf("%s-%d", gain.Skill.Name, gain.Skill.Level))
-		case gain.Change != nil:
-			parts = append(parts, changeText(*gain.Change))
-		default:
-			// A gain of a kind this build does not write, from another
-			// build's record: said to be unknown rather than dropped.
-			parts = append(parts, "(unknown gain)")
-		}
-	}
-
-	return strings.Join(parts, ", ")
-}
-
-func changesText(changes []changeRecord) string {
-	parts := make([]string, 0, len(changes))
-	for _, change := range changes {
-		parts = append(parts, changeText(change))
-	}
-
-	return strings.Join(parts, ", ")
-}
-
-func changeText(change changeRecord) string {
-	return fmt.Sprintf("%s %+d", change.Characteristic, change.To-change.From)
 }
 
 // joinNonEmpty joins the parts that say something.

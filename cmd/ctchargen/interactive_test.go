@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"io"
 	"regexp"
@@ -35,28 +34,29 @@ func unusableFirst() io.Reader {
 func TestInteractiveWalksACharacter(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("1", 200),
+	note, shown := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 200),
 		withDice(otherWalked.roller(t)))
-
-	shown := out
 
 	for _, want := range []string{
 		// The procedure, shown as it runs. The headings carry their
 		// sequence number, which is what stops the numbers appearing to
 		// skip past them.
-		"## 1. characteristics (p. 4)",
+		"### 1. characteristics (p. 4)",
 		"Strength: rolled",
-		"## 18. term 1 (pp. 5-7)",
+		"### 18. term 1 (pp. 5-7)",
 		"survival: rolled",
 		// A question, with the alternatives the engine offered.
 		"Which skills table? It is designated before the die (p. 11)",
 		"1) Personal Development Table",
-		// And the sheet at the end.
-		"UPP ",
 	} {
 		if !strings.Contains(shown, want) {
 			t.Errorf("the run never showed %q", want)
 		}
+	}
+
+	// And the note at the end, on the channel the player did not watch.
+	if !strings.HasPrefix(note, "# ") || !strings.Contains(note, "UPP ") {
+		t.Errorf("the run did not end with the note:\n%s", note)
 	}
 
 	// A choice is echoed back, and in one line.
@@ -64,7 +64,7 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 	// It used to be shown as nothing at all, on the reasoning that the
 	// player answered it a line earlier and repeating it pushes the useful
 	// lines off the screen. That reasoning still holds against the
-	// transcript's own form - "SubmitToDraft: player chose yes from yes, no"
+	// generation record's own form - "submit to the draft (p. 5): player chose yes from yes, no"
 	// - which names the point, the decider and every alternative he can
 	// still see above him. What it does not survive is the cost: a choice
 	// holds a sequence number, and showing nothing left the numbers with
@@ -72,7 +72,7 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 	//
 	// So the echo is the number and the answer, and nothing else.
 	if strings.Contains(shown, "player chose") {
-		t.Error("the live view used the transcript's form, which repeats what he can see")
+		t.Error("the live view used the generation record's form, which repeats what he can see")
 	}
 
 	// Named against the answer, not against the words around it. An echo
@@ -92,7 +92,7 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 func TestInteractiveReAsksWhatItCannotRead(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, unusableFirst(),
+	out := mustRunTogether(t, []string{cmdNew, flagService, other}, unusableFirst(),
 		withDice(otherWalked.roller(t)))
 
 	shown := out
@@ -128,7 +128,7 @@ func TestInteractiveReAsksWhatItCannotRead(t *testing.T) {
 func TestABadAnswerDoesNotReprintTheMenu(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagSheet}, unusableFirst())
+	out := mustRunTogether(t, []string{cmdNew}, unusableFirst())
 
 	shown := out
 
@@ -147,15 +147,15 @@ func TestABadAnswerDoesNotReprintTheMenu(t *testing.T) {
 //
 // They appeared to - 17, 18, then 20 - because the headings and the questions
 // hold sequence numbers and rendered unnumbered. Nothing was ever missing, but
-// a gap in a transcript whose whole purpose is auditability costs a reader
+// a gap in a record whose whole purpose is auditability costs a reader
 // trust he should not have to spend.
 func TestTheNumbersAPlayerWatchesDoNotSkip(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("1", 200),
+	_, out := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 200),
 		withDice(otherWalked.roller(t)))
 
-	numbered := regexp.MustCompile(`(?m)^\s*(?:## )?(\d+)\. `)
+	numbered := regexp.MustCompile(`(?m)^\s*(?:### )?(\d+)\. `)
 
 	lines := numbered.FindAllStringSubmatch(out, -1)
 	seen := make([]int, 0, len(lines))
@@ -190,7 +190,7 @@ func TestTheTwoAdvancedEducationTablesReadDifferently(t *testing.T) {
 
 	// The Navy walk reaches a term offering all four tables, which needs
 	// the education 8+ gate open.
-	out := mustRunTogether(t, []string{cmdNew, flagService, navy, flagSheet}, answers("1", 200),
+	out := mustRunTogether(t, []string{cmdNew, flagService, navy}, answers("1", 200),
 		withDice(navyWalked.roller(t)))
 
 	shown := out
@@ -237,10 +237,10 @@ func TestInteractiveRefusesToInventAnAnswer(t *testing.T) {
 func TestInteractiveShowsWhatAutoDoesNot(t *testing.T) {
 	t.Parallel()
 
-	asked := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("1", 200),
+	_, asked := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 200),
 		withDice(otherWalked.roller(t)))
 
-	automatic := mustRunTogether(t, []string{cmdNew, flagAuto, flagService, other, flagSheet}, nil,
+	_, automatic := mustRun(t, []string{cmdNew, flagAuto, flagService, other}, nil,
 		withDice(otherByPolicy.roller(t)))
 
 	if strings.Contains(automatic, "survival: rolled") {
@@ -264,7 +264,7 @@ func TestInteractiveShowsWhatAutoDoesNot(t *testing.T) {
 func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagService, navy, flagSheet}, answers("1", 300),
+	out := mustRunTogether(t, []string{cmdNew, flagService, navy}, answers("1", 300),
 		withDice(draftedWalked.roller(t)))
 
 	shown := out
@@ -293,7 +293,7 @@ func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 func TestInteractiveOffersTheGamblingModifier(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagService, other, flagSheet}, answers("2", 300),
+	out := mustRunTogether(t, []string{cmdNew, flagService, other}, answers("2", 300),
 		withDice(gamblerWalked.roller(t)))
 
 	if !strings.Contains(out, "Your gambling expertise allows +1 on this table") {
@@ -310,7 +310,7 @@ func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 	t.Parallel()
 
 	// Partly: the run stops at the first question nobody can be shown.
-	err := run([]string{cmdNew, flagService, other, flagSheet},
+	err := run([]string{cmdNew, flagService, other},
 		answers("1", 300), io.Discard, &failsAfter{}, withDice(otherWalked.partly(t)))
 
 	switch {
@@ -321,59 +321,44 @@ func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 	}
 }
 
-// The questions do not go where the record goes.
+// The questions do not go where the note goes.
 //
-// A guided run still writes JSON to stdout, so `ctchargen new | jq`
-// has to receive a record and not a conversation. The two channels are
-// separate arguments for that reason, and this is what holds them apart.
+// A guided run writes its note to stdout, so `ctchargen new > kira.md` has to
+// save a note and not a conversation. The two channels are separate
+// arguments for that reason, and this is what holds them apart.
 //
-// Holds: The questions go to stderr, not into the record.
+// Holds: The questions go to stderr, not into the note.
 // Holds: A guided run's choices are recorded as the player's, not the policy's.
-func TestTheQuestionsStayOutOfTheRecord(t *testing.T) {
+func TestTheQuestionsStayOutOfTheNote(t *testing.T) {
 	t.Parallel()
 
-	record, asked := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 300),
+	note, asked := mustRun(t, []string{cmdNew, flagService, other}, answers("1", 300),
 		withDice(otherWalked.roller(t)))
-
-	var written map[string]any
-
-	invalid := json.Unmarshal([]byte(record), &written)
-	if invalid != nil {
-		t.Fatalf("the data channel does not hold a record on its own: %v", invalid)
-	}
 
 	if !strings.Contains(asked, "Which skills table?") {
 		t.Error("the questions did not go to the channel meant for them")
 	}
 
-	// And the record names who answered. A guided run's choices were the
-	// player's, which a record says by naming no policy: one that named one
-	// would call them the policy's and misdescribe how the character was
-	// made - the one thing the log exists to say.
-	events, _ := written["events"].([]any)
-
-	choices := 0
-
-	for _, event := range events {
-		fields, _ := event.(map[string]any)
-		if fields["kind"] == "choice" {
-			choices++
-		}
+	if strings.Contains(note, "Which skills table?") || !strings.HasPrefix(note, "# ") {
+		t.Errorf("the data channel does not hold a note on its own:\n%s", note)
 	}
 
-	if choices == 0 {
-		t.Fatal("the record holds no choice events, so it asserts nothing about who answered")
+	// And the note names who answered. A guided run's choices were the
+	// player's: a note that called them the policy's would misdescribe how
+	// the character was made - the one thing the log exists to say.
+	if !strings.Contains(note, ": player chose ") {
+		t.Fatal("the note holds no choice the player made, so it asserts nothing about who answered")
 	}
 
-	if policy, named := written["policy"]; named {
-		t.Errorf("a guided record names policy %v, which answered none of its %d choices", policy, choices)
+	if strings.Contains(note, "policy chose") || !strings.Contains(note, "every choice answered by the player.") {
+		t.Errorf("a guided note credits the policy with a choice:\n%s", note)
 	}
 }
 
 // A session cut short says what was answered and that nothing was written.
 //
-// The half-built character is lost: it is not a record and does not match the
-// schema, and there is no way back to the question it stopped on (ADR 0001).
+// The half-built character is lost: it has no note, nothing carries its
+// dice, and there is no way back to the question it stopped on (ADR 0001).
 // The message is honest about the loss rather than silent, and it offers
 // nothing the tool cannot honour.
 //
@@ -522,7 +507,7 @@ func TestEachWeaponLineRecordsWhatItSays(t *testing.T) {
 // dagger is the weapon navyRearmed takes at its first Blade Combat benefit.
 const dagger = "Dagger"
 
-// armed is what a record says of the weapon benefits it took: the weapons,
+// armed is what a note says of the weapon benefits it took: the weapons,
 // whether Dagger-1 is among the skills, and the last weapon-benefit choice
 // in the record's own wording.
 type armed struct {
@@ -531,41 +516,53 @@ type armed struct {
 	chosen      string
 }
 
-func armedBy(t *testing.T, record string) armed {
+// armedBy reads the note: the weapons among its possessions, whether
+// Dagger-1 is among its skills, and the last weapon-benefit choice on its
+// generation record, in the record's own wording.
+func armedBy(t *testing.T, note string) armed {
 	t.Helper()
 
-	var got struct {
-		Skills []struct {
-			Name  string `json:"name"`
-			Level int    `json:"level"`
-		} `json:"skills"`
-		Benefits struct {
-			Weapons []string `json:"weapons"`
-		} `json:"benefits"`
-		Events []struct {
-			Point  string `json:"point"`
-			Chosen string `json:"chosen"`
-		} `json:"events"`
-	}
+	const weaponBenefit = "weapon benefit, or +1 expertise in lieu (p. 22): player chose "
 
-	err := json.Unmarshal([]byte(record), &got)
-	if err != nil {
-		t.Fatalf("reading the record: %v", err)
-	}
+	var found armed
 
-	found := armed{weapons: got.Benefits.Weapons}
+	section := ""
 
-	for _, skill := range got.Skills {
-		if skill.Name == dagger && skill.Level == 1 {
-			found.daggerSkill = true
+	for line := range strings.Lines(note) {
+		line = strings.TrimRight(line, "\n")
+
+		if heading, ok := strings.CutPrefix(line, "## "); ok {
+			section = heading
+
+			continue
 		}
-	}
 
-	for _, event := range got.Events {
-		if event.Point == "MusterWeapon" {
-			found.chosen = event.Chosen
+		item, isItem := strings.CutPrefix(line, "- ")
+
+		switch {
+		case section == "Skills" && item == dagger+"-1":
+			found.daggerSkill = true
+		case section == "Possessions" && isItem && isWeapon(item):
+			found.weapons = append(found.weapons, item)
+		case strings.Contains(line, weaponBenefit):
+			_, chosen, _ := strings.Cut(line, weaponBenefit)
+
+			found.chosen, _, _ = strings.Cut(chosen, " from ")
 		}
 	}
 
 	return found
+}
+
+// isWeapon is whether a possession is a weapon received as a benefit: the
+// sheet lists those by name alone, where every other possession is money, a
+// passage, a membership, a pension or a ship.
+func isWeapon(possession string) bool {
+	for _, other := range []string{"CR ", "Passage", "Travellers' Aid", "retirement pay", " tons"} {
+		if strings.Contains(possession, other) {
+			return false
+		}
+	}
+
+	return true
 }

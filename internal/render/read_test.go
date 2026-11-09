@@ -1,34 +1,38 @@
 package render_test
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// A file that is not a record is refused, rather than rendered as a blank
-// character.
-func TestSomethingElseIsNotARecord(t *testing.T) {
-	t.Parallel()
-
-	for name, text := range map[string]string{
-		"not JSON":      "# a character sheet\n",
-		"another shape": `{"hello":"world"}`,
-		"empty object":  `{}`,
-	} {
-		_, err := render.Sheet([]byte(text))
-		if err == nil {
-			t.Errorf("%s was accepted as a record", name)
-		}
+// noteOf is the note of the least character the sheet reads, with change
+// applied, so a test can pin one detail without carrying a whole character.
+func noteOf(change func(c *chargen.Character)) string {
+	character := &chargen.Character{
+		Age:        traveller.NewAge(18),
+		Enlistment: traveller.Enlisted{Service: traveller.Navy},
 	}
+
+	change(character)
+
+	return render.Note(character, false)
 }
 
-// minimalRecord is the least decode accepts, so a test can pin one detail
-// without carrying a whole character.
-func minimalRecord(body string) []byte {
-	return []byte(`{"upp":"777777","ruleset":"test",` + body + `}`)
+// headlineOf is the line the sheet leads with, the one every headline case
+// is about. Searching the whole note is too loose: "(" would find the
+// "(unnamed)" title.
+func headlineOf(note string) string {
+	for line := range strings.Lines(note) {
+		if strings.HasPrefix(line, "UPP ") {
+			return line
+		}
+	}
+
+	return ""
 }
 
 // A ship's terms are read off its kind, not inferred from its numbers. A
@@ -40,54 +44,24 @@ func minimalRecord(body string) []byte {
 func TestAShipsTermsFollowItsKind(t *testing.T) {
 	t.Parallel()
 
-	for name, tc := range map[string]struct{ kind, want, avoid string }{
-		"a new Free Trader": {
-			kind:  "Free Trader, Type A",
-			want:  "owned free and clear",
-			avoid: "constructive possession",
-		},
-		"a scout ship": {
-			kind:  "Scout ship, Type S",
-			want:  "held in constructive possession",
-			avoid: "owned free and clear",
-		},
+	for name, tc := range map[string]struct {
+		kind        traveller.ShipKind
+		want, avoid string
+	}{
+		"a new Free Trader": {traveller.FreeTrader, "owned free and clear", "constructive possession"},
+		"a scout ship":      {traveller.ScoutShip, "held in constructive possession", "owned free and clear"},
 	} {
-		sheet, err := render.Sheet(minimalRecord(
-			`"benefits":{"cash":0,"ships":[{"kind":"` + tc.kind +
-				`","tons":200,"years":0,"paymentYears":0}]}`,
-		))
-		if err != nil {
-			t.Fatalf("%s: %v", name, err)
+		note := noteOf(func(c *chargen.Character) {
+			c.Benefits.Ships = []chargen.Ship{{Kind: tc.kind, Tons: 200}}
+		})
+
+		if !strings.Contains(note, tc.want) {
+			t.Errorf("%s does not read %q:\n%s", name, tc.want, note)
 		}
 
-		if !strings.Contains(sheet, tc.want) {
-			t.Errorf("%s does not read %q:\n%s", name, tc.want, sheet)
+		if strings.Contains(note, tc.avoid) {
+			t.Errorf("%s reads %q, which is the other ship's terms:\n%s", name, tc.avoid, note)
 		}
-
-		if strings.Contains(sheet, tc.avoid) {
-			t.Errorf("%s reads %q, which is the other ship's terms:\n%s", name, tc.avoid, sheet)
-		}
-	}
-}
-
-// An event kind this build does not know is said to be unknown, rather than
-// rendered as an outcome - which would print a blank numbered line and claim
-// the transcript was complete. Reading another build's record is the whole
-// reason the render subcommand exists.
-//
-// Holds: An event kind this build does not know is said to be unknown.
-func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
-	t.Parallel()
-
-	transcript, err := render.Transcript(minimalRecord(
-		`"events":[{"seq":9,"kind":"portent"}]`,
-	), false)
-	if err != nil {
-		t.Fatalf("reading a record with an unknown event kind: %v", err)
-	}
-
-	if !strings.Contains(transcript, `unknown event kind "portent"`) {
-		t.Errorf("an unknown event kind rendered as %q", transcript)
 	}
 }
 
@@ -104,31 +78,44 @@ func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 	t.Parallel()
 
-	sheet, err := render.Sheet(minimalRecord(`
-		"terms":3,"service":"Army",
-		"enlistment":{"how":"enlisted","service":"Army"},
-		"departure":{"how":"killed by the survival throw","fatal":true},
-		"serviceHistory":{
-			"onEntering":[{"skill":{"name":"Rifle","level":1}}],
-			"terms":[
-				{"term":1,
-				 "raised":[{"how":"commissioned","rank":"Lieutenant",
-				            "grants":[{"skill":{"name":"Submachine Gun","level":1}}]},
-				           {"how":"promoted","rank":"Captain"}],
-				 "gained":[{"skill":{"name":"Tactics","level":1}},{"skill":{"name":"Halberd","level":1}}]},
-				{"term":2,
-				 "raised":[{"how":"promoted","rank":"Major",
-				            "grants":[{"change":{"characteristic":"Social Standing","from":9,"to":10}}]}],
-				 "gained":[{"change":{"characteristic":"Education","from":10,"to":11}},
-				           {"skill":{"name":"Tactics","level":2}}],
-				 "aged":[{"characteristic":"Strength","from":1,"to":0},
-				         {"characteristic":"Endurance","from":8,"to":7}],
-				 "recovered":["Strength"]},
-				{"term":3}
-			]}`))
-	if err != nil {
-		t.Fatal(err)
+	skill := func(name string, level int) chargen.Gain {
+		return chargen.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
 	}
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Terms = 3
+		c.Enlistment = traveller.Enlisted{Service: traveller.Army}
+		c.Departure = traveller.KilledBySurvivalThrow{}
+		c.History = chargen.ServiceHistory{
+			OnEntering: []chargen.Gain{skill("Rifle", 1)},
+			Terms: []chargen.TermServed{
+				{
+					Term: 1,
+					Raised: []chargen.Raise{
+						{How: chargen.Commissioned, Rank: "Lieutenant", Grants: []chargen.Gain{skill("Submachine Gun", 1)}},
+						{How: chargen.Promoted, Rank: "Captain"},
+					},
+					Gained: []chargen.Gain{skill("Tactics", 1), skill("Halberd", 1)},
+				},
+				{
+					Term: 2,
+					Raised: []chargen.Raise{{
+						How: chargen.Promoted, Rank: "Major",
+						Grants: []chargen.Gain{chargen.Change{Characteristic: traveller.SocialStanding, From: 9, To: 10}},
+					}},
+					Gained: []chargen.Gain{
+						chargen.Change{Characteristic: traveller.Education, From: 10, To: 11}, skill("Tactics", 2),
+					},
+					Aged: []chargen.Change{
+						{Characteristic: traveller.Strength, From: 1, To: 0},
+						{Characteristic: traveller.Endurance, From: 8, To: 7},
+					},
+					Recovered: []traveller.Characteristic{traveller.Strength},
+				},
+				{Term: 3},
+			},
+		}
+	})
 
 	want := "## Service record\n\n" +
 		"- Army, enlisted; Rifle-1\n" +
@@ -136,161 +123,58 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 		"- Term 2: promoted Major (Social Standing +1); Education +1, Tactics-2; " +
 		"aging Strength -1, Endurance -1; Strength recovered from a medical crisis\n" +
 		"- killed by the survival throw in term 3\n"
-	if !strings.Contains(sheet, want) {
-		t.Errorf("the service record does not read:\n%s\nin:\n%s", want, sheet)
+	if !strings.Contains(note, want) {
+		t.Errorf("the service record does not read:\n%s\nin:\n%s", want, note)
 	}
 }
 
-// A choice is named on the transcript in the words of the page that poses
-// it, with that page, and never by the Decider method's name, which is the
-// record's word for it and nobody else's (#402). The labels are typed out
-// here from the pages, not read from the code that writes them.
+// A choice is named on the generation record in the words of the page that
+// poses it, with that page, and never by the Decider method's name (#402).
+// The labels are typed out here from the pages, not read from the code that
+// writes them.
 //
 // Holds: A choice is named in the words of the page that poses it.
 func TestAChoiceIsNamedInThePagesWords(t *testing.T) {
 	t.Parallel()
 
-	for point, want := range map[string]string{
-		"Service":           "service to enlist in (pp. 5, 10)",
-		"SubmitToDraft":     "submit to the draft (p. 5)",
-		"AttemptCommission": "attempt a commission (p. 6)",
-		"AttemptPromotion":  "attempt promotion (p. 6)",
-		"ReenlistIntent":    "leave the service or remain for another term (pp. 6-7, 21)",
-		"AssumeTitle":       "assume the hereditary title (p. 5)",
-		"SkillTable":        "acquired skills table to consult (pp. 6, 11)",
-		"Weapon":            "weapon of expertise, specified immediately (p. 11)",
-		"MusterTable":       "mustering out table to consult (pp. 7, 9)",
-		"MusterTable1DM":    "add +1 on Table 1 for rank 5 or 6 (pp. 7, 9)",
-		"MusterTable2DM":    "DM +1 on Table 2 for gambling expertise (pp. 7, 9)",
-		"MusterWeapon":      "weapon benefit, or +1 expertise in lieu (p. 22)",
+	for point, want := range map[traveller.ChoicePoint]string{
+		traveller.ChoiceService:           "service to enlist in (pp. 5, 10)",
+		traveller.ChoiceSubmitToDraft:     "submit to the draft (p. 5)",
+		traveller.ChoiceAttemptCommission: "attempt a commission (p. 6)",
+		traveller.ChoiceAttemptPromotion:  "attempt promotion (p. 6)",
+		traveller.ChoiceReenlistIntent:    "leave the service or remain for another term (pp. 6-7, 21)",
+		traveller.ChoiceAssumeTitle:       "assume the hereditary title (p. 5)",
+		traveller.ChoiceSkillTable:        "acquired skills table to consult (pp. 6, 11)",
+		traveller.ChoiceWeapon:            "weapon of expertise, specified immediately (p. 11)",
+		traveller.ChoiceMusterTable:       "mustering out table to consult (pp. 7, 9)",
+		traveller.ChoiceMusterTable1DM:    "add +1 on Table 1 for rank 5 or 6 (pp. 7, 9)",
+		traveller.ChoiceMusterTable2DM:    "DM +1 on Table 2 for gambling expertise (pp. 7, 9)",
+		traveller.ChoiceMusterWeapon:      "weapon benefit, or +1 expertise in lieu (p. 22)",
 	} {
-		transcript, err := render.Transcript(minimalRecord(
-			`"policy":{"version":3,"career":"serve","skills":"advanced","muster":"cash"},`+
-				`"events":[{"seq":4,"kind":"choice","point":"`+point+
-				`","alternatives":["a","b"],"chosen":"a"}]`,
-		), false)
-		if err != nil {
-			t.Fatalf("%s: %v", point, err)
-		}
+		policy := chargen.DefaultPolicy()
+
+		note := noteOf(func(c *chargen.Character) {
+			c.Policy = &policy
+			c.Events = []traveller.Event{traveller.ChoiceEvent{
+				Seq: 4, Point: point, Alternatives: []string{"a", "b"}, Chosen: "a",
+			}}
+		})
 
 		line := "  4. " + want + ": policy chose a from a, b"
-		if !strings.Contains(transcript, line) {
-			t.Errorf("%s is not named %q:\n%s", point, line, transcript)
+		if !strings.Contains(note, line) {
+			t.Errorf("%v is not named %q:\n%s", point, line, note)
 		}
 
-		if strings.Contains(transcript, point+":") {
-			t.Errorf("%s is named by its method:\n%s", point, transcript)
+		if strings.Contains(note, point.String()+":") {
+			t.Errorf("%v is named by its method:\n%s", point, note)
 		}
 	}
 }
-
-// A choice point this build does not know is said to be unknown, as an
-// unknown event kind is, rather than printed as though it were a page's words.
-//
-// Holds: A choice point this build does not know is said to be unknown.
-func TestAnUnknownChoicePointIsSaidToBeUnknown(t *testing.T) {
-	t.Parallel()
-
-	transcript, err := render.Transcript(minimalRecord(
-		`"events":[{"seq":4,"kind":"choice","point":"Portent","alternatives":["a"],"chosen":"a"}]`,
-	), false)
-	if err != nil {
-		t.Fatalf("reading a record with an unknown choice point: %v", err)
-	}
-
-	if !strings.Contains(transcript, `unknown choice point "Portent"`) {
-		t.Errorf("an unknown choice point rendered as %q", transcript)
-	}
-}
-
-// Each of decode's two refusals names what is missing.
-func TestARecordMustCarryAUPPAndARuleset(t *testing.T) {
-	t.Parallel()
-
-	_, err := render.Sheet([]byte(`{"ruleset":"test"}`))
-	if err == nil || !strings.Contains(err.Error(), "no UPP") {
-		t.Errorf("a record with no UPP was refused as %v", err)
-	}
-
-	_, err = render.Sheet([]byte(`{"upp":"777777"}`))
-	if err == nil || !strings.Contains(err.Error(), "no ruleset") {
-		t.Errorf("a record with no ruleset was refused as %v", err)
-	}
-}
-
-// A record that names its policy as a bare version, as builds before #276
-// wrote it, is refused rather than read. Read, it would carry no policy, and
-// a record with none says a person answered it: an auto character read back
-// as one the player made is the misattribution #276 removed.
-func TestAPolicyNamedByVersionAloneIsRefused(t *testing.T) {
-	t.Parallel()
-
-	old := minimalRecord(`"policy":3`)
-
-	_, err := render.Sheet(old)
-	if err == nil || !strings.Contains(err.Error(), "not a character record") {
-		t.Errorf("the sheet read a policy named by its version alone: %v", err)
-	}
-
-	_, err = render.Transcript(old, false)
-	if err == nil || !strings.Contains(err.Error(), "not a character record") {
-		t.Errorf("the transcript read a policy named by its version alone: %v", err)
-	}
-}
-
-// A record carrying an event that will not read is refused by both
-// renderings, rather than rendered without it.
-//
-// The sheet shows one choice event at most, so it has to read the events on
-// purpose. A sheet that swallowed the failure would end by telling the referee
-// that the record is the only way back to this character - about a record it
-// could not finish reading.
-func TestAnEventThatWillNotReadIsRefused(t *testing.T) {
-	t.Parallel()
-
-	unreadable := minimalRecord(`"events":[3]`)
-
-	_, err := render.Sheet(unreadable)
-	if err == nil || !strings.Contains(err.Error(), "an event will not read") {
-		t.Errorf("the sheet rendered a record it could not read: %v", err)
-	}
-
-	_, err = render.Transcript(unreadable, false)
-	if err == nil || !strings.Contains(err.Error(), "an event will not read") {
-		t.Errorf("the transcript rendered a record it could not read: %v", err)
-	}
-}
-
-// headlineCase is one record and what its headline must and must not read.
-type headlineCase struct{ body, wants, does string }
-
-// served is a record of a character in a service, with whatever further
-// JSON fields the case under test wants to say about how he got there.
-func served(service, how, fields string) string {
-	return fmt.Sprintf(`"service":%q,"terms":2,"enlistment":{"how":%q},%s`,
-		service, how, fields)
-}
-
-// chose is a Service choice event answered by whoever the case names: the
-// policy on an auto record, which names it, and the player on a guided one,
-// which names none.
-func chose(by string) string {
-	policy := ""
-	if by == "policy" {
-		policy = `"policy":{"version":1,"career":"serve","skills":"advanced","muster":"cash"},`
-	}
-
-	return policy + `"inputs":{},"events":[{"seq":1,"kind":"choice",` +
-		`"point":"Service","alternatives":["Navy","Other"],"chosen":"Navy"}]`
-}
-
-// unchanged is the headline of a character with nothing to explain.
-const unchanged = "Navy, 2 terms"
 
 // The headline says whose service it is, where that is not obvious.
 //
-// The service record four sections down has always been honest. The headline
-// is the line a referee reads, and a character who was typed as a Marine and
+// The service record further down has always been honest. The headline is
+// the line a referee reads, and a character who was typed as a Marine and
 // came back a Navy man had nothing there to explain it.
 //
 // Everything turns on the service ATTEMPTED, not on who named it. The draft
@@ -301,83 +185,80 @@ const unchanged = "Navy, 2 terms"
 func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 	t.Parallel()
 
-	for name, tc := range map[string]headlineCase{
+	for name, tc := range headlineCases() {
+		note := noteOf(func(character *chargen.Character) {
+			character.Enlistment = tc.served
+
+			if tc.forced {
+				character.Inputs.Forced = chargen.ForceService(tc.chose)
+			} else {
+				character.Events = []traveller.Event{traveller.ChoiceEvent{
+					Seq: 15, Point: traveller.ChoiceService, Alternatives: []string{tc.chose.String()},
+					Chosen: tc.chose.String(),
+				}}
+			}
+
+			if tc.byPolicy {
+				policy := chargen.DefaultPolicy()
+
+				character.Policy = &policy
+			}
+		})
+
+		lead := headlineOf(note)
+		if !strings.Contains(lead, tc.wants) {
+			t.Errorf("%s: the headline does not read %q: %q", name, tc.wants, lead)
+		}
+
+		if tc.does != "" && strings.Contains(lead, tc.does) {
+			t.Errorf("%s: the headline reads %q and should not: %q", name, tc.does, lead)
+		}
+	}
+}
+
+// headlineCase is a service attempted, how it was named, and the service
+// served: what the headline should read, and what it should not.
+type headlineCase struct {
+	served      traveller.Enlistment
+	forced      bool
+	chose       traveller.ServiceName
+	byPolicy    bool
+	wants, does string
+}
+
+func headlineCases() map[string]headlineCase {
+	const unchanged = "Navy, "
+
+	return map[string]headlineCase{
 		"asked for one service and got another": {
-			body:  served("Navy", "drafted", `"inputs":{"service":"Marines"}`),
+			served: traveller.Drafted{Service: traveller.Navy}, forced: true, chose: traveller.Marines,
 			wants: "Navy (drafted after the Marines refused him)",
 		},
 		"asked for a service and got it": {
-			body:  served("Navy", "enlisted", `"inputs":{"service":"Navy"}`),
+			served: traveller.Enlisted{Service: traveller.Navy}, forced: true, chose: traveller.Navy,
 			wants: unchanged, does: "refused",
 		},
 		"asked for nothing and the policy picked": {
-			body:  served("Navy", "enlisted", chose("policy")),
+			served: traveller.Enlisted{Service: traveller.Navy}, chose: traveller.Navy, byPolicy: true,
 			wants: "Navy (service chosen by the policy)",
 		},
 		// A player who named it himself is told nothing he does not know.
 		"asked for nothing and the player picked": {
-			body:  served("Navy", "enlisted", chose("player")),
+			served: traveller.Enlisted{Service: traveller.Navy}, chose: traveller.Navy,
 			wants: unchanged, does: "chosen by",
 		},
 		// The draft overrides the attempt. Saying "chosen by the policy"
 		// over a draft's outcome credits the policy with a choice it never
 		// made, in the case this exists to expose.
 		"the policy picked one and the draft gave another": {
-			body:  served("Marines", "drafted", chose("policy")),
+			served: traveller.Drafted{Service: traveller.Marines}, chose: traveller.Navy, byPolicy: true,
 			wants: "Marines (drafted after the Navy refused him)", does: "chosen by the policy",
 		},
 		// And after a draft the player does not know either: he chose Navy.
 		"the player picked one and the draft gave another": {
-			body:  served("Marines", "drafted", chose("player")),
+			served: traveller.Drafted{Service: traveller.Marines}, chose: traveller.Navy,
 			wants: "Marines (drafted after the Navy refused him)",
 		},
-		// A record saying nothing about how he got there. The tool writes
-		// none, but the renderer is handed records rather than generating
-		// them, and inventing a decider is worse than saying nothing.
-		"nothing recorded about the service at all": {
-			body:  served("Navy", "enlisted", `"inputs":{}`),
-			wants: unchanged, does: "(",
-		},
-	} {
-		checkHeadline(t, name, tc)
-	}
-}
-
-// checkHeadline reads the headline out of the sheet and asserts on that
-// alone. Searching the whole sheet is too loose - "(" would find the
-// "(unnamed)" title - and the headline is what every case here is about.
-func checkHeadline(t *testing.T, name string, tc headlineCase) {
-	t.Helper()
-
-	sheet, err := render.Sheet(minimalRecord(tc.body))
-	if err != nil {
-		t.Errorf("%s: %v", name, err)
-
-		return
-	}
-
-	lead := ""
-
-	for line := range strings.Lines(sheet) {
-		if strings.HasPrefix(line, "UPP ") {
-			lead = line
-
-			break
-		}
-	}
-
-	if lead == "" {
-		t.Errorf("%s: no headline in\n%s", name, sheet)
-
-		return
-	}
-
-	if !strings.Contains(lead, tc.wants) {
-		t.Errorf("%s: the headline does not read %q: %q", name, tc.wants, lead)
-	}
-
-	if tc.does != "" && strings.Contains(lead, tc.does) {
-		t.Errorf("%s: the headline reads %q and should not: %q", name, tc.does, lead)
 	}
 }
 
@@ -398,90 +279,114 @@ func TestOneTermIsSingular(t *testing.T) {
 		"two":  {2, "2 terms", ""},
 		"none": {0, "0 terms", ""},
 	} {
-		sheet, err := render.Sheet(minimalRecord(fmt.Sprintf(
-			`"service":"Navy","terms":%d,"enlistment":{"how":"enlisted"},"inputs":{"service":"Navy"}`,
-			tc.terms,
-		)))
-		if err != nil {
-			t.Errorf("%s: %v", name, err)
+		lead := headlineOf(noteOf(func(c *chargen.Character) { c.Terms = tc.terms }))
 
-			continue
+		if !strings.Contains(lead, tc.wants) {
+			t.Errorf("%s: the headline does not read %q: %q", name, tc.wants, lead)
 		}
 
-		if !strings.Contains(sheet, tc.wants) {
-			t.Errorf("%s: the headline does not read %q:\n%s", name, tc.wants, sheet)
-		}
-
-		if tc.does != "" && strings.Contains(sheet, tc.does) {
-			t.Errorf("%s: the headline reads %q:\n%s", name, tc.does, sheet)
+		if tc.does != "" && strings.Contains(lead, tc.does) {
+			t.Errorf("%s: the headline reads %q: %q", name, tc.does, lead)
 		}
 	}
 }
 
-// The errata are on the transcript and not on the sheet.
+// The errata are on the generation record and not on the sheet.
 //
-// On a sheet handed to a player they are codes he cannot expand; beside the
+// On the sheet a player reads they are codes he cannot expand; beside the
 // outcome they governed they are how a reading is checked against the page,
-// which is what the transcript is for.
+// which is what the generation record is for.
 //
-// Holds: The errata are on the transcript and not the sheet.
-func TestTheErrataAreOnTheTranscriptAndNotTheSheet(t *testing.T) {
+// Holds: The errata are on the generation record and not the sheet.
+func TestTheErrataAreOnTheGenerationRecordAndNotTheSheet(t *testing.T) {
 	t.Parallel()
 
-	record := minimalRecord(`"errata":["E001"],` +
-		`"events":[{"seq":1,"kind":"outcome","description":"drafted","errata":["E001"]}]`)
+	note := noteOf(func(c *chargen.Character) {
+		c.Errata = []traveller.Erratum{traveller.E001}
+		c.Events = []traveller.Event{traveller.OutcomeEvent{
+			Seq: 1, Description: "drafted", Errata: []traveller.Erratum{traveller.E001},
+		}}
+	})
 
-	sheet, err := render.Sheet(record)
-	if err != nil {
-		t.Fatalf("the sheet: %v", err)
+	sheet, record, found := strings.Cut(note, "## Generation record")
+	if !found {
+		t.Fatalf("the note has no generation record:\n%s", note)
 	}
 
-	if strings.Contains(sheet, "E001") || strings.Contains(sheet, "Readings applied") {
+	if strings.Contains(sheet, "E001") {
 		t.Errorf("the sheet carries an erratum id:\n%s", sheet)
 	}
 
-	transcript, err := render.Transcript(record, false)
-	if err != nil {
-		t.Fatalf("the transcript: %v", err)
-	}
-
-	if !strings.Contains(transcript, "E001") {
-		t.Errorf("the transcript lost the erratum that governed an outcome:\n%s", transcript)
+	if !strings.Contains(record, "E001") {
+		t.Errorf("the generation record lost the erratum that governed an outcome:\n%s", record)
 	}
 }
 
-// Both renderings end with the one line that tells a referee what to keep.
+// A note ends by saying what generated it and what to keep: the ruleset its
+// page cites are to, the build that wrote it where there is one, and who
+// answered its choices - the policy with its strategies, or the player - and
+// then that the generation record is the only way back (ADR 0001, ADR 0002).
 //
-// The record is the only way back to a character (ADR 0001), and a sheet is
-// what a referee reads and keeps, so the sheet says so once, last, and the
-// transcript says the same. Neither offers a command, a seed or a build: there
-// is nothing to re-run.
-func TestBothRenderingsEndBySayingToKeepTheRecord(t *testing.T) {
+// Holds: A note names the ruleset, the build and who answered it.
+// Holds: A note names the policy that answered it.
+func TestANoteEndsWithWhatWroteItAndWhatToKeep(t *testing.T) {
 	t.Parallel()
 
-	const keep = "---\n\nKeep the JSON record: it is the only way back to this character.\n"
+	const (
+		ruleset = "Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
+		keep    = "\n\nKeep this note whole: its generation record is the only way back to this character.\n"
+	)
 
-	body := minimalRecord(`"inputs":{"career":"serve","skills":"advanced","muster":"cash"}`)
+	policy := chargen.DefaultPolicy()
 
-	sheet, err := render.Sheet(body)
-	if err != nil {
-		t.Fatalf("sheet: %v", err)
-	}
-
-	transcript, err := render.Transcript(body, false)
-	if err != nil {
-		t.Fatalf("transcript: %v", err)
-	}
-
-	for name, rendering := range map[string]string{"sheet": sheet, "transcript": transcript} {
-		if !strings.HasSuffix(rendering, keep) {
-			t.Errorf("the %s does not end by saying to keep the record:\n%s", name, rendering)
+	for name, tc := range map[string]struct {
+		change func(c *chargen.Character)
+		ends   string
+	}{
+		"a guided run": {
+			func(*chargen.Character) {},
+			ruleset + "; every choice answered by the player." + keep,
+		},
+		"an auto run, built": {
+			func(c *chargen.Character) { c.Policy, c.Build = &policy, "v1.2.3" },
+			ruleset + " by ctchargen v1.2.3; every choice answered by the policy, version 3: " +
+				"career serve, skills advanced, muster cash." + keep,
+		},
+	} {
+		note := noteOf(tc.change)
+		if !strings.HasSuffix(note, "---\n\n"+tc.ends) {
+			t.Errorf("%s: the note does not end with\n%s\nin:\n%s", name, tc.ends, note)
 		}
+	}
+}
 
-		for _, gone := range []string{"Regenerate with", "Seed ", "--seed", "different build"} {
-			if strings.Contains(rendering, gone) {
-				t.Errorf("the %s still carries %q:\n%s", name, gone, rendering)
-			}
+// A roll has nothing to meet, so its line reads the dice and the row they
+// land on and claims no success: no target, no "made" (#50). A throw beside it
+// reads its target and its outcome.
+//
+// Holds: A roll with nothing to meet is not recorded as a throw that
+// succeeded.
+func TestARollClaimsNothingMet(t *testing.T) {
+	t.Parallel()
+
+	fivePlus, err := traveller.ParseTarget("5+")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = []traveller.Event{
+			traveller.RollEvent{Seq: 1, Step: "Table 2, Cash Allowances", Dice: []int{4}, DM: 1},
+			traveller.ThrowEvent{Seq: 2, Step: "survival", Dice: []int{3, 4}, Target: fivePlus, Succeeded: true},
+		}
+	})
+
+	for _, want := range []string{
+		"  1. Table 2, Cash Allowances: rolled 4 +1 = 5\n",
+		"  2. survival: rolled 3+4 = 7 against 5+, made\n",
+	} {
+		if !strings.Contains(note, want) {
+			t.Errorf("the note does not read %q:\n%s", want, note)
 		}
 	}
 }

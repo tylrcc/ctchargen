@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -26,13 +25,13 @@ const (
 //
 // The run the report opened with wrote its corpses and printed nothing at all
 // (#33). The count goes to the operator's channel and never to standard
-// output, where it would be a line of JSONL that is not JSON.
+// output, where it would be a line in the last note.
 //
-// What it should say is read off the records themselves rather than typed in.
+// What it should say is read off the notes themselves rather than typed in.
 // A literal here would be a golden maintained by hand, which the dice-stream
 // order is free to invalidate at any time; counting the roster instead also
 // holds this file's reading of which departures are fatal to the one the
-// record carries, so the two transcriptions of that rule are checked against
+// note says, so the two transcriptions of that rule are checked against
 // each other rather than only against themselves.
 //
 // Holds: A batch says how many it wrote and how many died.
@@ -57,7 +56,7 @@ func TestABatchSaysHowManyDied(t *testing.T) {
 	}
 
 	if strings.Contains(out, "written") {
-		t.Error("the summary reached standard output, where it is not JSON")
+		t.Error("the summary reached standard output, among the notes")
 	}
 }
 
@@ -174,8 +173,8 @@ func TestAFailedSearchCountsOnce(t *testing.T) {
 		t.Errorf("the search reported %q, want it to say it %s", err, want)
 	}
 
-	if lines := strings.Count(out.String(), "\n"); lines != 1 {
-		t.Errorf("%d records streamed, want the one survivor", lines)
+	if notes := strings.Count(out.String(), "Keep this note whole"); notes != 1 {
+		t.Errorf("%d notes streamed, want the one survivor", notes)
 	}
 
 	if asking.Len() != 0 {
@@ -186,28 +185,28 @@ func TestAFailedSearchCountsOnce(t *testing.T) {
 
 type census struct{ members, dead int }
 
-func livingCount(t *testing.T, jsonl string) census {
+// livingCount reads a stream of notes: how many members it holds, and how
+// many of them died, which a note's headline says as the departure that
+// killed him.
+func livingCount(t *testing.T, notes string) census {
 	t.Helper()
 
 	var found census
 
-	for line := range strings.SplitSeq(strings.TrimSpace(jsonl), "\n") {
-		var member struct {
-			Departure *struct {
-				Fatal bool `json:"fatal"`
-			} `json:"departure"`
-		}
-
-		err := json.Unmarshal([]byte(line), &member)
-		if err != nil {
-			t.Fatalf("reading a member: %v", err)
+	for line := range strings.Lines(notes) {
+		if !strings.HasPrefix(line, "UPP ") {
+			continue
 		}
 
 		found.members++
 
-		if member.Departure != nil && member.Departure.Fatal {
+		if strings.Contains(line, "killed by") {
 			found.dead++
 		}
+	}
+
+	if found.members != strings.Count(notes, "Keep this note whole") {
+		t.Fatalf("%d headlines for %d notes", found.members, strings.Count(notes, "Keep this note whole"))
 	}
 
 	return found
@@ -293,8 +292,8 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 		refuses bool
 		left    int
 	}{
-		"the last member it writes": {"5.json", true, 1},
-		"a name past the end":       {"6.json", false, wanted + 1},
+		"the last member it writes": {"5.md", true, 1},
+		"a name past the end":       {"6.md", false, wanted + 1},
 	} {
 		dir := t.TempDir()
 		planted := filepath.Join(dir, tc.plant)
@@ -319,7 +318,7 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 			t.Errorf("%s: the batch was refused over a name it never writes: %v", name, err)
 		}
 
-		found, err := filepath.Glob(filepath.Join(dir, "*.json"))
+		found, err := filepath.Glob(filepath.Join(dir, "*.md"))
 		if err != nil {
 			t.Fatalf("%s: looking for the members: %v", name, err)
 		}
@@ -340,17 +339,18 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 	}
 }
 
-// A record names the policy that answered it, and only then.
+// A note names the policy that answered it, and only then.
 //
-// The field exists so a referee reading a record can tell which version of
-// the policy's answers made it, under which strategies. On a record he walked
+// The line exists so a referee reading a note can tell which version of the
+// policy's answers made it, under which strategies. On a character he walked
 // by hand the policy answered nothing, and naming a policy that decided none
-// of it is a claim the record cannot support - the same reason a civilian
-// carries no service and no departure.
+// of it is a claim the note cannot support.
 //
-// Holds: A record names the policy that answered it.
-func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
+// Holds: A note names the policy that answered it.
+func TestOnlyANoteThePolicyAnsweredNamesOne(t *testing.T) {
 	t.Parallel()
+
+	policyLine := fmt.Sprintf("answered by the policy, version %d: career %s,", chargen.PolicyVersion, serve)
 
 	// Each walks a scripted path that lives to be asked: random dice can kill
 	// a character in his first survival throw, before any choice is put.
@@ -376,29 +376,13 @@ func TestOnlyARecordThePolicyAnsweredNamesOne(t *testing.T) {
 			continue
 		}
 
-		var record struct {
-			Policy *struct {
-				Version int    `json:"version"`
-				Career  string `json:"career"`
-			} `json:"policy"`
-		}
-
-		err = json.Unmarshal([]byte(out.String()), &record)
-		if err != nil {
-			t.Errorf("%s: %v", name, err)
-
-			continue
-		}
-
-		if named := record.Policy != nil; named != tc.wants {
+		if named := strings.Contains(out.String(), "answered by the policy"); named != tc.wants {
 			t.Errorf("%s: names a policy = %v, want %v", name, named, tc.wants)
-
-			continue
 		}
 
-		if record.Policy != nil && (record.Policy.Version != chargen.PolicyVersion || record.Policy.Career != serve) {
-			t.Errorf("%s: names policy %+v, want version %d under the default career",
-				name, *record.Policy, chargen.PolicyVersion)
+		if tc.wants && !strings.Contains(out.String(), policyLine) {
+			t.Errorf("%s: does not name version %d under the default career:\n%s",
+				name, chargen.PolicyVersion, out.String())
 		}
 	}
 }
@@ -424,9 +408,9 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	// The third member of six, so two are written before the obstruction.
 	const blockedMember = 2
 
-	blocked := filepath.Join(dir, "3.json")
+	blocked := filepath.Join(dir, "3.md")
 
-	err := os.Mkdir(blocked, recordDirMode)
+	err := os.Mkdir(blocked, noteDirMode)
 	if err != nil {
 		t.Fatalf("blocking a member's path: %v", err)
 	}
@@ -439,7 +423,7 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 		t.Fatal("a batch wrote a member over a directory")
 	}
 
-	found, err := filepath.Glob(filepath.Join(dir, "*.json"))
+	found, err := filepath.Glob(filepath.Join(dir, "*.md"))
 	if err != nil {
 		t.Fatalf("looking for what was written: %v", err)
 	}
@@ -480,7 +464,7 @@ func TestTheCollisionCheckNeedsNoCharacters(t *testing.T) {
 	paths := plannedPaths(3, dir)
 
 	want := []string{
-		filepath.Join(dir, "1.json"), filepath.Join(dir, "2.json"), filepath.Join(dir, "3.json"),
+		filepath.Join(dir, "1.md"), filepath.Join(dir, "2.md"), filepath.Join(dir, "3.md"),
 	}
 
 	if !slices.Equal(paths, want) {

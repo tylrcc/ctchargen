@@ -42,9 +42,7 @@
 //     docs/CODING_STANDARDS.md puts a promise no single declaration carries;
 //   - the comment above an entry of chargen's fixture roster, which names the
 //     golden `name` that fixture generates — a golden is a test, and the roster
-//     is where it is declared;
-//   - a `$comment` in docs/character.schema.json, which names the schema, for
-//     the rules the schema itself implements. JSON has no other comment.
+//     is where it is declared.
 //
 // Only a test holds a rule: a `Holds:` is refused anywhere but a Test function
 // in a test file or a golden, and a golden implements nothing.
@@ -64,7 +62,6 @@ package coverage_test
 
 import (
 	"cmp"
-	"encoding/json"
 	"errors"
 	"flag"
 	"fmt"
@@ -90,8 +87,7 @@ var printTable = flag.Bool("print", false, "write the coverage table to standard
 // The module root, relative to this package, and the files the check reads
 // beneath it.
 const (
-	root   = "../.."
-	schema = "docs/character.schema.json"
+	root = "../.."
 
 	// The documents a cite that is not a page may name.
 	adrDir = "docs/adr"
@@ -473,11 +469,6 @@ var markerBreakages = map[string]struct {
 		"package p\n\nvar fixtures = []fixture{\n\t// Implements: A rule [1:4].\n\t{name: \"g\"},\n}\n",
 		aRule,
 	},
-	"a schema comment out of shape": {
-		schema,
-		`{"$comment": "Implements: A rule 1:4."}`,
-		"A rule 1:4",
-	},
 }
 
 // A marker wraps onto the lines after it, and stops at a blank line or the
@@ -517,7 +508,7 @@ func refused(t *testing.T, err error, mentions string) {
 	}
 }
 
-// collect reads every marker under dir: Go source and the schema.
+// collect reads every marker under dir, in its Go source.
 func collect(dir string) (markers, error) {
 	var (
 		found markers
@@ -544,11 +535,8 @@ func collect(dir string) (markers, error) {
 			return fmt.Errorf("%w: %w", errMarker, err)
 		}
 
-		switch {
-		case strings.HasSuffix(path, ".go"):
+		if strings.HasSuffix(path, ".go") {
 			errs = append(errs, collectGo(fset, path, filepath.ToSlash(filepath.Dir(rel)), &found))
-		case filepath.ToSlash(rel) == schema:
-			errs = append(errs, collectSchema(path, &found))
 		}
 
 		return nil
@@ -842,60 +830,6 @@ func (m *markers) add(marker string, where site) error {
 	m.holdings = append(m.holdings, holding{rule: match[1], site: where.label, golden: where.golden})
 
 	return nil
-}
-
-// collectSchema reads the markers in the schema's $comment keywords.
-func collectSchema(path string, found *markers) error {
-	text, err := os.ReadFile(path)
-	if err != nil {
-		return fmt.Errorf("%w: %w", errMarker, err)
-	}
-
-	var document any
-
-	err = json.Unmarshal(text, &document)
-	if err != nil {
-		return fmt.Errorf("%w: %s: %w", errMarker, schema, err)
-	}
-
-	var errs []error
-
-	for _, comment := range schemaComments(document) {
-		parsed, err := parseComment([]string{comment})
-		if err != nil {
-			errs = append(errs, fmt.Errorf("%s: %w", schema, err))
-
-			continue
-		}
-
-		for _, marker := range parsed {
-			errs = append(errs, found.add(marker, site{label: schema}))
-		}
-	}
-
-	return errors.Join(errs...)
-}
-
-// schemaComments is every $comment in a decoded JSON document.
-func schemaComments(value any) []string {
-	var comments []string
-
-	switch value := value.(type) {
-	case map[string]any:
-		if comment, ok := value["$comment"].(string); ok {
-			comments = append(comments, comment)
-		}
-
-		for _, child := range value {
-			comments = append(comments, schemaComments(child)...)
-		}
-	case []any:
-		for _, child := range value {
-			comments = append(comments, schemaComments(child)...)
-		}
-	}
-
-	return comments
 }
 
 // mapped is every rule's row, joined on the rule's name, in page order. It

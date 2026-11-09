@@ -1,51 +1,175 @@
 package chargen_test
 
 import (
-	"encoding/json"
 	"strconv"
 	"strings"
 	"testing"
 
-	"github.com/philoserf/ctchargen/internal/render"
+	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // twelve is the reenlistment throw p. 6 singles out, and E003 turns on.
 const twelve = 12
 
-// record is as much of the written record as the conditions need.
-//
-// It is decoded from the written record rather than read off the Character,
-// because the readings state every condition over a record - "records where
-// the enlistment throw failed" - and a record is what this reads. The record
-// is the one each fixture writes now; TestGoldens holds it to its golden.
+// record is as much of a finished character as the conditions need, in the
+// words the readings state their conditions in - "records where the
+// enlistment throw failed" - rather than the engine's types, so a predicate
+// reads words and not code. It is read once off the finished Character by
+// recordOf, and never off the run that made it.
 type record struct {
 	name string
 
-	Terms           int            `json:"terms"`
-	Rank            int            `json:"rank"`
-	Service         string         `json:"service"`
-	Characteristics map[string]int `json:"characteristics"`
-	Errata          []string       `json:"errata"`
+	Terms           int
+	Rank            int
+	Service         string
+	Characteristics map[string]int
+	Errata          []string
 
 	Departure *struct {
-		How   string `json:"how"`
-		Fatal bool   `json:"fatal"`
-	} `json:"departure"`
+		How   string
+		Fatal bool
+	}
 
-	Events []event `json:"events"`
+	Events []event
 }
 
-// event is one line of the generation record. term is not on the wire: it is
-// filled in below from the step events, so a throw can be asked which term it
-// fell in - which E003 and E013 both need and neither can get otherwise.
+// stepKind is the kind of event that opens a step, the one kind the
+// conditions find by its kind.
+const stepKind = "step"
+
+// event is one line of the generation record. term is filled in below from
+// the step events, so a throw can be asked which term it fell in - which E003
+// and E013 both need and neither can get otherwise.
 type event struct {
-	Kind      string `json:"kind"`
-	Step      string `json:"step"`
-	Point     string `json:"point"`
-	Total     int    `json:"total"`
-	Succeeded bool   `json:"succeeded"`
+	Kind      string
+	Step      string
+	Point     string
+	Total     int
+	Succeeded bool
 
 	term int
+}
+
+// recordOf reads a finished character into the words the conditions use.
+func recordOf(name string, character *chargen.Character) record {
+	rec := record{
+		name:            name,
+		Terms:           character.Terms,
+		Rank:            int(character.Rank),
+		Characteristics: map[string]int{},
+	}
+
+	if service, served := character.ServedIn(); served {
+		rec.Service = service.String()
+	}
+
+	for _, c := range traveller.Characteristics {
+		rec.Characteristics[c.String()] = character.Profile[c]
+	}
+
+	for _, erratum := range character.Errata {
+		rec.Errata = append(rec.Errata, erratum.String())
+	}
+
+	if character.Departure != nil {
+		rec.Departure = &struct {
+			How   string
+			Fatal bool
+		}{How: departureWords(character.Departure), Fatal: traveller.Fatal(character.Departure)}
+	}
+
+	for _, e := range character.Events {
+		rec.Events = append(rec.Events, eventOf(e))
+	}
+
+	return rec
+}
+
+// eventOf is one event in the words the conditions use. It is a fold, so a
+// kind of event added to traveller stops this compiling until it is read.
+func eventOf(e traveller.Event) event {
+	var words eventWords
+
+	// A fold over a codec cannot fail: every case only assigns.
+	_ = e.Fold(&words)
+
+	return words.out
+}
+
+type eventWords struct{ out event }
+
+func (w *eventWords) Step(e traveller.StepEvent) error {
+	w.out = event{Kind: stepKind, Step: e.Step}
+
+	return nil
+}
+
+func (w *eventWords) Throw(e traveller.ThrowEvent) error {
+	w.out = event{Kind: "throw", Step: e.Step, Total: e.Total(), Succeeded: e.Succeeded}
+
+	return nil
+}
+
+func (w *eventWords) Roll(e traveller.RollEvent) error {
+	w.out = event{Kind: "roll", Step: e.Step, Total: e.Total()}
+
+	return nil
+}
+
+func (w *eventWords) Choice(e traveller.ChoiceEvent) error {
+	w.out = event{Kind: "choice", Point: e.Point.String()}
+
+	return nil
+}
+
+func (w *eventWords) Outcome(traveller.OutcomeEvent) error {
+	w.out = event{Kind: "outcome"}
+
+	return nil
+}
+
+// departureWords is how a departure is named where a condition reads it. It
+// is a fold, for the reason eventOf is.
+func departureWords(d traveller.Departure) string {
+	var words departureNames
+
+	// A fold over a codec cannot fail: every case only assigns.
+	_ = d.Fold(&words)
+
+	return words.out
+}
+
+type departureNames struct{ out string }
+
+func (n *departureNames) Discharged() error {
+	n.out = "discharged"
+
+	return nil
+}
+
+func (n *departureNames) ForcedOut() error {
+	n.out = "forced out"
+
+	return nil
+}
+
+func (n *departureNames) Retired() error {
+	n.out = "retired"
+
+	return nil
+}
+
+func (n *departureNames) KilledBySurvivalThrow() error {
+	n.out = "killed by the survival throw"
+
+	return nil
+}
+
+func (n *departureNames) KilledByMedicalCrisis(traveller.Characteristic) error {
+	n.out = "killed by a medical crisis"
+
+	return nil
 }
 
 // How a throw's outcome is read, where a condition cares.
@@ -131,9 +255,9 @@ func (r record) departedBy(how string) bool {
 
 func (r record) died() bool { return r.Departure != nil && r.Departure.Fatal }
 
-// readRecords decodes the record every fixture writes, as the engine writes
-// it now, and refuses to run on none: a check over an empty roster passes by
-// saying nothing.
+// readRecords reads the character every fixture generates, as the engine
+// generates it now, and refuses to run on none: a check over an empty roster
+// passes by saying nothing.
 //
 // It reads what the engine generates rather than the goldens on disk, which
 // TestGoldens holds equal, so an engine change is judged here by what it did
@@ -149,19 +273,7 @@ func readRecords(t *testing.T) []record {
 	records := make([]record, 0, len(fixtures))
 
 	for _, fixture := range fixtures {
-		text, err := render.JSON(fixture.generate(t))
-		if err != nil {
-			t.Fatalf("%s: %v", fixture.name, err)
-		}
-
-		var rec record
-
-		err = json.Unmarshal(text, &rec)
-		if err != nil {
-			t.Fatalf("reading %s: %v", fixture.name, err)
-		}
-
-		rec.name = fixture.name + ".json"
+		rec := recordOf(fixture.name+".md", fixture.generate(t))
 		withTerms(&rec)
 
 		records = append(records, rec)
@@ -180,7 +292,7 @@ func withTerms(rec *record) {
 	current := 0
 
 	for i, e := range rec.Events {
-		if e.Kind == "step" && strings.HasPrefix(e.Step, termStep) {
+		if e.Kind == stepKind && strings.HasPrefix(e.Step, termStep) {
 			// Only "term N" opens a term. Any other step beginning with the
 			// word is left alone rather than guessed at.
 			n, err := strconv.Atoi(strings.TrimPrefix(e.Step, termStep))

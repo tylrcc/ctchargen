@@ -13,3 +13,6 @@ recover the character. A `replay` that re-walks a record stays possible and
 is deliberately not built until a referee asks.
 
 Withdraws from `docs/PRD.md`: Determinism.
+
+Amended by ADR 0006: the record that is the only way back is the note's
+generation record, and a `replay` would need a record a tool can read.

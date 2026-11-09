@@ -5,28 +5,33 @@ A Classic Traveller character generator holding to the © 1977 text of Books
 
 ## Language
 
+**Note**:
+The markdown the tool writes for one character: the sheet, then the
+generation record, then what wrote it and what to keep (ADR 0006).
+_Avoid_: Output, result, file
+
 **Record**:
-The JSON the tool writes for one character, carrying every die thrown and
-every choice made. The only way back to a character.
-_Avoid_: Output, result, JSON file
+The note's generation record: every die thrown and every choice made, step
+by step with its page cite. What makes the note the only way back to a
+character.
+_Avoid_: Transcript, history, log (for the whole), JSON
 
 **Service history**:
 The service a term at a time: what entering it granted, and what each term
-conferred, gave and took. The record's `serviceHistory`, and what the sheet's
-service record tells.
+conferred, gave and took. What the sheet's service record tells.
 _Avoid_: Career (the policy's career strategy), log (the events)
 
 **Auto run**:
 A generation the policy answers, every choice point of it: `new --auto`, and
 every batch, which has nobody else to ask. Its
-record names the policy, the version of what it answers and its strategies,
+note names the policy, the version of what it answers and its strategies,
 whether or not the policy was asked anything.
 _Avoid_: Automatic mode, batch (a batch is many auto runs)
 
 **Guided run**:
-A generation a person answers, every choice point of it. Its record names no
-policy, and that absence is what says the player made every choice.
-_Avoid_: Interactive mode (for the record's fact), manual run
+A generation a person answers, every choice point of it. Its note names no
+policy, and says the player made every choice.
+_Avoid_: Interactive mode (for the note's fact), manual run
 
 **Replay**:
 Handing the tool the same inputs and getting the same character back. Not
@@ -79,7 +84,7 @@ _Avoid_: Seed, sequence (for the whole)
 
 **Fixture**:
 A scripted sequence of dice and draws that walks the procedure down one chosen
-path, named for the path it reaches, whose record is checked in as a golden.
+path, named for the path it reaches, whose note is checked in as a golden.
 _Avoid_: Seed, magic number, case
 
 **Walk**:
@@ -88,5 +93,5 @@ tool wrote, with no golden. The test that drives it is its proof.
 _Avoid_: Fixture (a fixture has a golden), replay
 
 **Golden**:
-The record a fixture generates, checked in and regenerated never hand-edited.
+The note a fixture generates, checked in and regenerated never hand-edited.
 _Avoid_: Snapshot, expected output, baseline

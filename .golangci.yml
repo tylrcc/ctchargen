@@ -143,12 +143,6 @@ linters:
         - name: exported
           disabled: false
 
-    tagliatelle:
-      case:
-        rules:
-          # The record's keys are camelCase throughout (docs/character.schema.json).
-          json: camel
-
     varnamelen:
       # Short names in short scopes are idiomatic. The default distance of
       # five lines calls a loop index over a seven-line body too terse,

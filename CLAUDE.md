@@ -15,16 +15,13 @@ using the tool** (#26 was the first such report); the page and the clean room
 govern how a report gets answered. The current release is the README's
 `go install` line, which the release gate reads; this file does not repeat it.
 
-**What `v1.0.0` means, decided in #74.** Two things, and both must hold: a
-referee can trust what the tool prints at the table, **and** the record is
-frozen and supported. The `v1` label carries which issues that covers today —
-this paragraph states the bar and never the list, because a list here goes
-stale every time one closes.
-
-**Before changing the record's shape, its `record` field or the schema**, read
-`docs/CODING_STANDARDS.md`'s "The record's shape": the freeze at `v1.0.0` (#62),
-the schema's open root and closed objects (#113, #129), and what `record`
-counts (#96).
+**What `v1.0.0` means, decided in #74 and narrowed in #398.** A referee can
+trust what the tool prints at the table, and the command line he types is
+held: its flags, types, defaults and exit status (#126). The note's own shape
+is not frozen; it may keep moving after `v1.0.0`, as the playtests ask (ADR
+0006). The `v1` label carries which issues that covers today — this paragraph
+states the bar and never the list, because a list here goes stale every time
+one closes.
 
 ## Authority — read this before implementing any rule
 
@@ -138,10 +135,9 @@ readings are the fallback.
 
 ## Documents and what each governs
 
-| File                         | Governs                                                                                                                                                                                              |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
-| `docs/CODING_STANDARDS.md`   | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
+| File                       | Governs                                                              |
+| -------------------------- | -------------------------------------------------------------------- |
+| `docs/CODING_STANDARDS.md` | The rules a reviewer holds a diff to: the judgements no check makes. |
 
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings are values in `rules`, one per entry of
@@ -149,18 +145,15 @@ first. The readings are values in `rules`, one per entry of
 and a test holds `Errata` to the `Erratum` constants. The auto run's policy
 is its own doc comments. The coverage map is the markers beside the code, and a
 rule an implementation names and no test holds, or the reverse, fails
-`internal/coverage`; the map is printed on demand and never committed. What
-still describes
-the code from outside it — the schema's strategy enums — is
-held to the code by a test beside what it describes. Each gate
-is verified by breaking it.
+`internal/coverage`; the map is printed on demand and never committed. Each
+gate is verified by breaking it.
 
 ## The shape of the tree
 
 The arrows point one way: `traveller` imports none of the others; `rules` and
-`chargen` import `traveller`; `render` imports `chargen` for the record and
+`chargen` import `traveller`; `render` imports `chargen` for the character and
 `traveller` for its values, and `rules` for the readings it writes. A domain type that
-needs to know about dice or JSON is in the wrong package. Each package's doc
+needs to know about dice or markdown is in the wrong package. Each package's doc
 comment is its contract; read it before changing the package.
 
 Every package but the command is under `internal/`: there is no Go library,
@@ -172,12 +165,12 @@ promise (#199).
 - `rules`: every table of pp. 4–25, transcribed and lifted once, and the
   readings, declared as values. The lift validates the tables' cells and
   names; their values are the second transcription's.
-- `dice`: an unseeded stream. The record is the only way back (ADR 0001).
+- `dice`: an unseeded stream. The note is the only way back (ADR 0001, ADR 0006).
 - `chargen`: the procedure, the `Decider` it asks, and the auto run's `Policy`,
-  which describes itself. Its tests hold the readings, the choice points and
-  the schema's strategies to the goldens.
-- `render`: the record's projections, reading one back, and the readings
-  written out, in full or as an index.
+  which describes itself. Its tests hold the readings and the choice points to
+  the goldens.
+- `render`: the note — the sheet and the generation record, from one view of
+  the character — and the readings written out, in full or as an index.
 - `internal/coverage`: test code only. Holds the `Implements:` and `Holds:`
   markers to each other and their cites to what exists, writing nothing;
   `-print` shows the map.
@@ -186,8 +179,8 @@ promise (#199).
   whether the edit was killed.
 - `internal/scripted`: test support, imported only by test files. The strict
   roller that fixtures and walks both drive their runs through.
-- `cmd/ctchargen`: the subcommands. The record goes to stdout and the
-  conversation to stderr, so `ctchargen new | jq` pipes a record.
+- `cmd/ctchargen`: the subcommands. The note goes to stdout and the
+  conversation to stderr, so `ctchargen new > kira.md` saves a note.
 
 ## Commands
 
@@ -200,7 +193,7 @@ go test ./internal/chargen -run TestGoldens  # one test
 go test ./internal/chargen -regenerate       # rewrite the goldens
 (cd internal/coverage && go test -run TestTheCoverageMapHolds -print)  # print the coverage map
 go run ./internal/mutate -file F -old TEXT -new TEXT go test ./pkg -run T  # show a mutation killed
-go run ./cmd/ctchargen new --auto --sheet
+go run ./cmd/ctchargen new --auto
 ```
 
 - **A package that passes on its own can still move the gate.** `-race`, the
@@ -211,11 +204,6 @@ go run ./cmd/ctchargen new --auto --sheet
   incorrectly: `godot` appended a period after a closing quotation mark in
   doc comments, and `dupword` deleted a word from a verbatim quotation
   of Book 1 p. 3. Both are configured off that behaviour now. Read the diff.
-- **`go test ./internal/chargen -regenerate` rewrites more than `internal/chargen/testdata/`.**
-  The same fixtures write `docs/character.minimal.json` and
-  `docs/character.complete.json`, so the schema's published examples cannot
-  drift from what the engine emits. `docs/character.schema.json` itself is not
-  regenerated — it is written by hand and validated against.
 
 ## The gate and what it holds
 
@@ -268,8 +256,6 @@ go run ./cmd/ctchargen new --auto --sheet
   tells the old story, not only the lines that name it — and adds its bullet
   to the changelog's Unreleased section. Everything else in them waits for
   the release pass.
-- **`docs/character.schema.json` is hand-formatted.** Never run `bun fmt` over
-  it; the reflow hook is a markdown one and this file is outside it.
 - The history is squash-merged PRs with sentence-case subjects that say what
   changed ("Correct two typed ranges, name the font trap, and add milestone 0").
 - **Release snapshots.** `docs/THEORY.md` and `docs/WALKTHROUGH.md` describe the

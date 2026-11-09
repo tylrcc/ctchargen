@@ -11,3 +11,6 @@ for a person, not stamps a tool verifies. Only the command fills `build`; a
 record generated in-process by a test carries none, so a golden does not
 differ by machine. Recorded 2026-11-07, for a decision the tree already
 carried (#232).
+
+Amended by ADR 0006: the ruleset and the build are named on the note's last
+lines rather than as record fields.

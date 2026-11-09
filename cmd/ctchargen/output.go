@@ -14,13 +14,13 @@ import (
 // errWouldOverwrite reports an output path that already holds something.
 var errWouldOverwrite = errors.New("already exists")
 
-// recordFileMode is the mode a written record carries. A character sheet is
+// noteFileMode is the mode a written note carries. A character's note is
 // the operator's own, and nothing else needs to read it.
-const recordFileMode = 0o600
+const noteFileMode = 0o600
 
-// recordDirMode is the mode a directory of records carries, for the same
+// noteDirMode is the mode a directory of notes carries, for the same
 // reason: it is the operator's own.
-const recordDirMode = 0o700
+const noteDirMode = 0o700
 
 // destination is where a subcommand writes: the stream it was handed when no
 // path was given, or a file it opens.
@@ -31,7 +31,7 @@ const recordDirMode = 0o700
 // did it said nothing.
 //
 // close finishes a write that went through; abandon gives up one that did
-// not. They differ only under --force, where finishing puts the new record in
+// not. They differ only under --force, where finishing puts the new note in
 // place and abandoning leaves the old one.
 type destination struct {
 	out     io.Writer
@@ -56,13 +56,13 @@ func openDestination(out io.Writer, path string, force bool) (destination, error
 	return destination{out: file, close: file.Close, abandon: func() { _ = file.Close() }}, nil
 }
 
-// replacing stages a record beside path and renames it over path only once
+// replacing stages a note beside path and renames it over path only once
 // the whole of it is written (#191).
 //
-// A truncating open emptied the old record before the first byte of the new
+// A truncating open emptied the old note before the first byte of the new
 // one landed, so a full disk or an I/O error partway through left neither.
 // The rename is atomic on one filesystem. os.CreateTemp creates at 0600,
-// which is recordFileMode, so the record is not widened on its way through.
+// which is noteFileMode, so the note is not widened on its way through.
 //
 // A path that is a directory is refused as one: a rename would report it as
 // "file exists", which reads as the --force refusal.
@@ -101,7 +101,7 @@ func replacing(path string) (destination, error) {
 
 // create opens a file for writing, refusing to replace one.
 func create(path string) (*os.File, error) {
-	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, recordFileMode)
+	file, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_EXCL, noteFileMode)
 	if err != nil {
 		if errors.Is(err, os.ErrExist) {
 			return nil, inTheWay(path)
@@ -137,24 +137,6 @@ func aDirectory(path string) error {
 		&fs.PathError{Op: "open", Path: path, Err: syscall.EISDIR})
 }
 
-// namesDirectory reports whether `-o` asked for a directory rather than a
-// .jsonl file. A directory that already exists is one; so is a path written
-// with a trailing separator, which is how a referee names a directory that
-// is not there yet. Without the second reading, `-o characters/` is a file
-// the open fails on and `-o characters` is one opaque file where twenty
-// records were asked for.
-func namesDirectory(path string) bool {
-	if path == "" {
-		return false
-	}
-
-	if os.IsPathSeparator(path[len(path)-1]) {
-		return true
-	}
-
-	return isDirectory(path)
-}
-
 // isDirectory reports whether a path names a directory that already exists.
 func isDirectory(path string) bool {
 	info, err := os.Stat(path)
@@ -170,7 +152,7 @@ func (d destination) write(text string) error {
 	_, err := io.WriteString(d.out, text)
 	if err != nil {
 		// Give it up - a failed write still holds the descriptor, and under
-		// --force finishing would put the partial record in place - but
+		// --force finishing would put the partial note in place - but
 		// report the write, which is what went wrong.
 		d.abandon()
 
@@ -189,5 +171,5 @@ func (d destination) write(text string) error {
 // directory: the one-based index, zero-padded to the width of the count, so a
 // directory sorts in generation order and its names say nothing about seeds.
 func memberPath(dir string, index, count int) string {
-	return filepath.Join(dir, fmt.Sprintf("%0*d.json", len(strconv.Itoa(count)), index))
+	return filepath.Join(dir, fmt.Sprintf("%0*d.md", len(strconv.Itoa(count)), index))
 }

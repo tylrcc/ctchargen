@@ -11,7 +11,7 @@ import (
 // Ruleset names the text this tool implements. All page cites in a record's
 // generation log are to these three books and nothing else.
 //
-// Implements: The record names its ruleset and the build that wrote it [ADR
+// Implements: The note names its ruleset and the build that wrote it [ADR
 // 0002].
 const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
 
@@ -54,7 +54,7 @@ func WithBuild(build string) Option {
 // run: policy answers every choice point, and the record names it and the
 // version it answered as. It rolls dice of its own unless a roller is given.
 //
-// Implements: A record names the policy that answered it [JSON conventions].
+// Implements: A note names the policy that answered it [Generation record].
 func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
 	// The pointer is what marks an auto run: Guided passes nil.
 	return generate(in, policy, &policy, options)

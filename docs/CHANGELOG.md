@@ -5,15 +5,25 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- The transcript names each choice in the words of the page that poses it,
-  with that page — `attempt a commission (p. 6)` where it printed
-  `AttemptCommission` — and says a choice point it does not know is unknown.
-  The record's `point` values are unchanged (#402).
+- The generation record names each choice in the words of the page that poses
+  it, with that page — `attempt a commission (p. 6)` where it printed
+  `AttemptCommission` (#402).
 - The sheet's service record tells the career a term at a time — `Term 7:
 promoted Captain (Social Standing +1); Education +1, Engineer-1; aging
 Strength -1, Endurance -1` — with the grants on entering the service on the
-  enlistment line and any medical crisis survived. The record carries it as a
-  new top-level `serviceHistory` section, described in the schema (#401).
+  enlistment line and any medical crisis survived (#401).
+- **Breaking: the JSON record is gone (#398, ADR 0006).** `new` and `batch`
+  write one markdown note per character: the sheet, then the generation
+  record, then the ruleset, the build where the command wrote it, and who
+  answered. The note is the only way back to a character. `render`,
+  `new --sheet` and `new --history`, the schema and its examples, and
+  `batch`'s NDJSON stream are removed. `batch` writes one note per member into
+  a directory, named by position and padded to the batch's width (`1.md`, or
+  `01.md` in a batch of ten or more), or the
+  notes one after another to standard output. Records written by rc.3 and
+  earlier can no longer be rendered; `ctchargen readings <id>` still explains
+  any reading id one names. The note's shape is not frozen at `v1.0.0`; what
+  the release freezes is the command line.
 
 ## 1.0.0-rc.3
 

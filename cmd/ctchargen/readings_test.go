@@ -53,37 +53,17 @@ func TestReadingsWritesTheIndexOrThoseAskedFor(t *testing.T) {
 	}
 }
 
-// --readings ends a transcript and does nothing else, so where no transcript
-// is written it is refused rather than accepted and ignored; with --history,
-// on both commands that write one, the transcript ends with its readings,
-// and without --readings it ends without them.
-//
-// Holds: --readings without --history is refused, not ignored.
-func TestReadingsNeedsTheTranscript(t *testing.T) {
+// --readings ends the note with the readings its generation record names,
+// and without it the note ends without them.
+func TestReadingsEndTheNote(t *testing.T) {
 	t.Parallel()
-
-	path := writeRecord(t)
-
-	for name, args := range map[string][]string{
-		"generating":         {cmdNew, flagAuto, flagReadings},
-		"generating a sheet": {cmdNew, flagAuto, flagSheet, flagReadings},
-		"reading back":       {cmdRender, flagReadings, path},
-		// Refused before the file is read, as every other pairing is.
-		"reading back nothing": {cmdRender, flagReadings, "no-such-record.json"},
-	} {
-		err := run(args, nil, io.Discard, io.Discard)
-		if err == nil || !errors.Is(err, errUsage) || !strings.Contains(err.Error(), "--history") {
-			t.Errorf("%s: %v, want a usage error naming --history", name, err)
-		}
-	}
 
 	for name, tc := range map[string]struct {
 		args    []string
 		section bool
 	}{
-		"generating":                {[]string{cmdNew, flagAuto, flagHistory, flagReadings}, true},
-		"reading back":              {[]string{cmdRender, flagHistory, flagReadings, path}, true},
-		"reading back, no readings": {[]string{cmdRender, flagHistory, path}, false},
+		"with --readings": {[]string{cmdNew, flagAuto, flagReadings}, true},
+		"without":         {[]string{cmdNew, flagAuto}, false},
 	} {
 		out, _ := mustRun(t, tc.args, nil)
 		if got := strings.Contains(out, "\n## Readings\n"); got != tc.section {

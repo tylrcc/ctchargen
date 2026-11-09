@@ -5,6 +5,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
 	"github.com/philoserf/ctchargen/internal/rules"
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -60,62 +61,53 @@ func TestAReadingIsWrittenInFull(t *testing.T) {
 	}
 }
 
-// With its readings, a transcript keeps every inline id and ends, before the
-// line that says to keep the record, with each reading the record names, in
-// full and in id order. A record from another build may name an erratum this
-// one has no reading for, and the section says so rather than failing. A
-// record that names none says that too.
+// With its readings, a note keeps every inline id and ends, before the lines
+// that say what wrote it and what to keep, with each reading its generation
+// record names, in full and in id order. One that names none says so.
 //
-// Holds: A transcript with its readings ends with each reading its record
-// names, in full.
-func TestATranscriptWithItsReadingsEndsWithThem(t *testing.T) {
+// Holds: A note asked for with its readings carries each reading its
+// generation record names, in full, before its closing lines.
+func TestANoteWithItsReadingsEndsWithThem(t *testing.T) {
 	t.Parallel()
-
-	const keep = "---\n\nKeep the JSON record: it is the only way back to this character.\n"
 
 	e001, _ := rules.ReadingNamed("E001")
 	e011, _ := rules.ReadingNamed("E011")
 
 	for name, tc := range map[string]struct {
-		errata, want string
+		errata []traveller.Erratum
+		want   string
 	}{
 		"two readings": {
-			`["E001","E011"]`,
+			[]traveller.Erratum{traveller.E001, traveller.E011},
 			"## Readings\n\n" + render.Reading(e001) + "\n" + render.Reading(e011) + "\n",
 		},
-		"one this build does not know": {
-			`["E001","E099"]`,
-			"## Readings\n\n" + render.Reading(e001) + "\n" +
-				"### E099\n\nThe record names E099, and this build has no reading of that id.\n\n",
-		},
-		"none": {`[]`, "## Readings\n\nThe record names no reading.\n\n"},
+		"none": {nil, "## Readings\n\nThe generation record names no reading.\n\n"},
 		"out of order": {
-			`["E011","E001"]`,
+			[]traveller.Erratum{traveller.E011, traveller.E001},
 			"## Readings\n\n" + render.Reading(e001) + "\n" + render.Reading(e011) + "\n",
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
-			record := minimalRecord(`"errata":` + tc.errata + `,` +
-				`"events":[{"seq":1,"kind":"outcome","description":"drafted","errata":["E001"]}]`)
-
-			plain, err := render.Transcript(record, false)
-			if err != nil {
-				t.Fatal(err)
+			character := &chargen.Character{
+				Age:        traveller.NewAge(18),
+				Enlistment: traveller.DeclinedTheDraft{},
+				Errata:     tc.errata,
+				Events: []traveller.Event{traveller.OutcomeEvent{
+					Seq: 1, Description: "drafted", Errata: []traveller.Erratum{traveller.E001},
+				}},
 			}
 
-			got, err := render.Transcript(record, true)
-			if err != nil {
-				t.Fatal(err)
+			plain := render.Note(character, false)
+			got := render.Note(character, true)
+
+			body, footer, found := strings.Cut(plain, "---\n\n")
+			if !found {
+				t.Fatalf("the plain note has no footer:\n%s", plain)
 			}
 
-			body, ok := strings.CutSuffix(plain, keep)
-			if !ok {
-				t.Fatalf("the plain transcript does not end with the keep line:\n%s", plain)
-			}
-
-			if want := body + tc.want + keep; got != want {
+			if want := body + tc.want + "---\n\n" + footer; got != want {
 				t.Errorf("got\n%s\nwant\n%s", got, want)
 			}
 

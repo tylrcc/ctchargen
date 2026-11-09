@@ -22,7 +22,7 @@ import (
 const nobility = 11
 
 // The step names the engine logs its dice under, throws and rolls alike. They
-// are the transcript's own words, so these checks are coupled to them - a
+// are the generation record's own words, so these checks are coupled to them - a
 // rewording breaks it loudly and names the reading, which is the half of that
 // worth having.
 const (
@@ -198,7 +198,7 @@ func TestEveryStepTheConditionsReadIsFound(t *testing.T) {
 
 	for _, rec := range records {
 		for _, e := range rec.Events {
-			if e.Kind == "step" && e.term > 0 {
+			if e.Kind == stepKind && e.term > 0 {
 				opened = true
 			}
 		}
