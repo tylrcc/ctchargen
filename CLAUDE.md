@@ -23,7 +23,7 @@ this paragraph states the bar and never the list, because a list here goes
 stale every time one closes.
 
 **Before changing the record's shape, its `record` field or the schema**, read
-`CODING_STANDARDS.md`'s "The record's shape": the freeze at `v1.0.0` (#62),
+`docs/CODING_STANDARDS.md`'s "The record's shape": the freeze at `v1.0.0` (#62),
 the schema's open root and closed objects (#113, #129), and what `record`
 counts (#96).
 
@@ -145,7 +145,7 @@ readings are the fallback.
 | File                         | Governs                                                                                                                                                                                              |
 | ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `docs/character.schema.json` | What this build writes, in draft 2020-12, with a generated minimal and complete example beside it. A description of the output kept honest by the gate — never a promise to records already written. |
-| `CODING_STANDARDS.md`        | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
+| `docs/CODING_STANDARDS.md`   | The rules a reviewer holds a diff to: the judgements no check makes.                                                                                                                                 |
 
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings are values in `rules`, one per entry of
@@ -261,13 +261,13 @@ go run ./cmd/ctchargen new --auto --sheet
 
 ## Working conventions
 
-- **The review rules are `CODING_STANDARDS.md`**: sweeping a removal by its
+- **The review rules are `docs/CODING_STANDARDS.md`**: sweeping a removal by its
   vocabulary, verbatim quotation, predicates written from the prose, marker
   placement, mutations shown. Read it before
   calling a change done; the reviewer holds the diff to it.
 - **What a change does to the narrative documents.** The global release-docs
   rule brings `README.md` and `CLAUDE.md`
-  current at release; here a change also sweeps them as `CODING_STANDARDS.md`'s
+  current at release; here a change also sweeps them as `docs/CODING_STANDARDS.md`'s
   "A removal is swept by its vocabulary" says — every sentence that still
   tells the old story, not only the lines that name it — and adds its bullet
   to the changelog's Unreleased section. Everything else in them waits for
@@ -276,7 +276,7 @@ go run ./cmd/ctchargen new --auto --sheet
   it; the reflow hook is a markdown one and this file is outside it.
 - The history is squash-merged PRs with sentence-case subjects that say what
   changed ("Correct two typed ranges, name the font trap, and add milestone 0").
-- **Release snapshots.** `THEORY.md` and `WALKTHROUGH.md` describe the
+- **Release snapshots.** `docs/THEORY.md` and `docs/WALKTHROUGH.md` describe the
   release they were written for, not `main`, and each opens with a stamp
   naming that tag. The release prep PR regenerates them with `/code-theory`
   and `/code-walkthrough`, overwriting the last release's copies. Between
@@ -298,5 +298,6 @@ The five canonical labels, unchanged: `needs-triage`, `needs-info`,
 
 ### Domain docs
 
-Single-context: `GLOSSARY.md` and `docs/adr/` at the repo root, created
-lazily. See `docs/agents/domain.md`.
+Single-context: `docs/GLOSSARY.md` and `docs/adr/`, created lazily. See
+`docs/agents/domain.md`. The glossary is in `docs/` whatever a skill assumes
+about the root: never create a `GLOSSARY.md` at the repo root.

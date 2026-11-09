@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The changelog, the coding standards, the glossary and the release snapshots
+  `THEORY.md` and `WALKTHROUGH.md` are in `docs/`. The root keeps only what a
+  tool outside the repo looks for there: the README, the licence and
+  `CLAUDE.md`.
 - `internal/mutate` builds the mutated copy and its test binaries before it
   runs the command, the way `go test` builds them, vet checks included, and
   reports a mutation that does not build as `NOT BUILT`, exiting 1. It said

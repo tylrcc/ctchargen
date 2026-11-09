@@ -176,8 +176,8 @@ standard error after `ctchargen:`.
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
 | [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it.                                             |
 | [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values. `ctchargen readings` prints them. |
-| [CHANGELOG.md](CHANGELOG.md)                             | What each release changed.                                                                                         |
-| [GLOSSARY.md](GLOSSARY.md)                               | The words a referee and the code share: record, reading, erratum, golden.                                          |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md)                   | What each release changed.                                                                                         |
+| [docs/GLOSSARY.md](docs/GLOSSARY.md)                     | The words a referee and the code share: record, reading, erratum, golden.                                          |
 | [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                                                        |
 | [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                                                    |
 
