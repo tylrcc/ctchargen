@@ -27,6 +27,12 @@ release turns out to be.
   of Ranks). The lift reads each abbreviation and reads an em dash as
   nothing; a lone hyphen or en dash where the page prints an em dash is
   refused. Every lifted value is unchanged (#339).
+- A withdrawn reading is held only to being stamped on no golden; its
+  condition is no longer judged. A reading replaced by another still
+  describes records the replacement governs, so requiring its condition to
+  fit no golden would have turned the gate red at the first withdrawal that
+  names a replacement, as rc.1's notes described it. ADR 0004 says the
+  harness refuses any golden stamped with a withdrawn reading (#332).
 
 ## 1.0.0-rc.1
 

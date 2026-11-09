@@ -75,7 +75,8 @@ type reading struct {
 
 // Every reading a record stamps is one whose condition it satisfies, and
 // every condition it satisfies is stamped, unless the reading is withdrawn:
-// a withdrawn reading is stamped on no record, and its condition fits none.
+// a withdrawn reading is stamped on no record, and its condition is not
+// judged (#332).
 //
 // TestEveryReadingIsReachable proves each reading is reachable from some
 // path. It does not prove any reading is stamped on the RIGHT records: a
@@ -345,10 +346,11 @@ func conditions(tables *rules.Rules) []reading {
 
 // verdict is what is wrong with how a record stamps one reading, if anything.
 // A standing reading is stamped exactly where its condition holds. A
-// withdrawn one is stamped on no record and its condition fits none: the
+// withdrawn one is stamped on no record, and that is all it is held to: the
 // goldens are new records, and this is what holds that no new record carries
-// a withdrawn reading. A record written before the withdrawal keeps its
-// stamp, and nothing here reads it.
+// a withdrawn reading. Its condition is not judged, since a reading replaced
+// by another still describes records the replacement governs (#332). A record
+// written before the withdrawal keeps its stamp, and nothing here reads it.
 //
 // A parked reading is not judged here unless it is withdrawn, which a parked
 // disagreement does not excuse.
@@ -358,28 +360,28 @@ func conditions(tables *rules.Rules) []reading {
 //
 // Implements: A withdrawn reading is stamped on no new record [Documents].
 func verdict(rec record, r reading) []string {
-	want := r.holds(rec)
 	got := slices.Contains(rec.Errata, r.id.String())
 
-	var wrong []string
+	if r.withdrawn {
+		if got {
+			return []string{fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id)}
+		}
+
+		return nil
+	}
+
+	want := r.holds(rec)
 
 	switch {
-	case r.withdrawn && got:
-		wrong = append(wrong, fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id))
 	case want && !got:
-		wrong = append(wrong, fmt.Sprintf("%s: satisfies %v but does not stamp it. Stamped on: %s",
-			rec.name, r.id, stampedOn(r.id)))
+		return []string{fmt.Sprintf("%s: satisfies %v but does not stamp it. Stamped on: %s",
+			rec.name, r.id, stampedOn(r.id))}
 	case got && !want:
-		wrong = append(wrong, fmt.Sprintf("%s: stamps %v but does not satisfy it. Stamped on: %s",
-			rec.name, r.id, stampedOn(r.id)))
+		return []string{fmt.Sprintf("%s: stamps %v but does not satisfy it. Stamped on: %s",
+			rec.name, r.id, stampedOn(r.id))}
 	}
 
-	if r.withdrawn && want {
-		wrong = append(wrong, fmt.Sprintf("%s: satisfies %v, which is withdrawn, so its condition asks "+
-			"for a stamp nothing may make", rec.name, r.id))
-	}
-
-	return wrong
+	return nil
 }
 
 func enlistmentAndService() []reading {
@@ -544,10 +546,19 @@ func serviceNamed(printed string) (traveller.ServiceName, bool) {
 	return none, false
 }
 
-// A withdrawn reading is stamped on no new record, and its condition fits
-// none: the goldens are what this build writes, so a golden it fits is a
-// record the engine would have to stamp with a decision that no longer
-// governs. No real reading is withdrawn yet, so test-only ones stand in.
+// A withdrawn reading is stamped on no new record: the goldens are what this
+// build writes, so a golden that stamps one is a record stamped with a
+// decision that no longer governs. Its condition is not judged. A withdrawn
+// reading keeps the prose its predicate is written from, and a reading
+// replaced by another still describes records the replacement now governs
+// (#332).
+//
+// No real reading is withdrawn, so E001 stands in, under its real predicate:
+// every golden that stamps it is refused, and each of those goldens with E001
+// struck from its errata passes. A struck copy is not what a build that had
+// withdrawn E001 would write, which would walk other paths; it stands in for
+// the case #332 is about, a record E001's prose still describes and that does
+// not carry it, and the test checks that the prose does describe it.
 //
 // Holds: A withdrawn reading is stamped on no new record.
 func TestAWithdrawnReadingOnAGoldenIsRefused(t *testing.T) {
@@ -570,40 +581,95 @@ func TestAWithdrawnReadingOnAGoldenIsRefused(t *testing.T) {
 		t.Fatal("E001 has no condition")
 	}
 
-	records := readRecords(t)
-	never := func(record) bool { return false }
+	e001Withdrawn := e001
 
-	for name, tc := range map[string]struct {
-		withdrawn reading
-		refused   bool
-	}{
-		// The goldens stamp E001, so treating it as withdrawn finds them.
-		"stamped on a golden": {reading{id: traveller.E001, holds: never, withdrawn: true}, true},
-		// No golden stamps E012, and a condition that fits every record
-		// still asks for it to be.
-		"fitting a golden": {reading{id: traveller.E012, holds: func(record) bool { return true }, withdrawn: true}, true},
-		"neither":          {reading{id: traveller.E012, holds: never, withdrawn: true}, false},
-		// E001 standing, with its own condition, is what every golden
-		// already agrees with.
-		"standing": {e001, false},
-	} {
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
+	e001Withdrawn.withdrawn = true
 
-			// A withdrawn reading's failure says so, which is what tells
-			// it from a standing reading's disagreement over the same
-			// record.
-			refused := false
+	stamped := 0
 
-			for _, rec := range records {
-				for _, wrong := range verdict(rec, tc.withdrawn) {
-					refused = refused || strings.Contains(wrong, "which is withdrawn")
-				}
-			}
+	for _, rec := range readRecords(t) {
+		if !slices.Contains(rec.Errata, traveller.E001.String()) {
+			continue
+		}
 
-			if refused != tc.refused {
-				t.Errorf("refused %v as withdrawn, want %v", refused, tc.refused)
-			}
+		stamped++
+
+		refused := slices.ContainsFunc(verdict(rec, e001Withdrawn), func(wrong string) bool {
+			return strings.Contains(wrong, "which is withdrawn")
 		})
+		if !refused {
+			t.Errorf("%s stamps E001, withdrawn, and was not refused", rec.name)
+		}
+
+		struck := rec
+
+		struck.Errata = slices.DeleteFunc(slices.Clone(rec.Errata), func(id string) bool {
+			return id == traveller.E001.String()
+		})
+
+		if !e001.holds(struck) {
+			t.Fatalf("%s, without E001, no longer satisfies E001's condition, so passing it proves nothing", rec.name)
+		}
+
+		if wrong := verdict(struck, e001Withdrawn); len(wrong) > 0 {
+			t.Errorf("%s, without E001, is refused for a withdrawn E001 its prose still describes: %v",
+				rec.name, wrong)
+		}
+	}
+
+	if stamped == 0 {
+		t.Fatal("no golden stamps E001, so this checks nothing")
+	}
+}
+
+// A standing reading's verdict refuses a record that disagrees with it, both
+// ways. Every golden agrees with every reading, so the main stamping test
+// never feeds verdict a disagreement; these copies do, E001's stamp struck
+// from a record its condition fits and added to one its condition does not.
+//
+// Holds: The errata a record stamps are exactly those whose reading's
+// condition holds.
+func TestAStandingReadingRefusesADisagreement(t *testing.T) {
+	t.Parallel()
+
+	tables, err := rules.Load()
+	if err != nil {
+		t.Fatalf("loading the rules: %v", err)
+	}
+
+	var e001 reading
+
+	for _, r := range conditions(tables) {
+		if r.id == traveller.E001 {
+			e001 = r
+		}
+	}
+
+	if e001.holds == nil {
+		t.Fatal("E001 has no condition")
+	}
+
+	var unstamped, overstamped int
+
+	for _, rec := range readRecords(t) {
+		copied := rec
+
+		if e001.holds(rec) {
+			copied.Errata = slices.DeleteFunc(slices.Clone(rec.Errata), func(id string) bool {
+				return id == traveller.E001.String()
+			})
+			unstamped++
+		} else {
+			copied.Errata = append(slices.Clone(rec.Errata), traveller.E001.String())
+			overstamped++
+		}
+
+		if len(verdict(copied, e001)) == 0 {
+			t.Errorf("%s, its E001 stamp flipped, was not refused", rec.name)
+		}
+	}
+
+	if unstamped == 0 || overstamped == 0 {
+		t.Fatalf("the goldens give %d records E001 fits and %d it does not; both are needed", unstamped, overstamped)
 	}
 }

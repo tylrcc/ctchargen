@@ -29,7 +29,7 @@ decision no longer holds is withdrawn, not deleted (#322). It keeps its
 erratum, which is never reused; it says why, and names the erratum that
 replaced it, if any; it is still explained, marked withdrawn, on records
 already stamped with it; and it is never stamped on a new one, which the
-stamping harness holds by refusing any golden its predicate fits.
+stamping harness holds by refusing any golden stamped with it.
 
 The tool explains its readings (#324). With `--readings`, a transcript keeps
 its inline ids and ends with the full text of each reading its record names,
