@@ -5,63 +5,68 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- ADR 0005 records the decision that the transcription is the page's text, in
-  Go: the rules tables are to move from embedded JSON to Go literals of what
-  the page prints, with the lift kept, so that the last `//go:embed` goes
-  (#337–#339). The glossary defines a transcription and the lift.
-- The Acquired Skills tables, the skill eligibility, the education gate and
-  E012's normalizations are a Go literal of the page's text in
-  `internal/rules/transcription.go`, no longer `skills.json`; what they lift to
-  is proven equal, and every golden is unchanged. A cell left empty is refused,
-  since the page prints a dash where a cell means nothing (#337).
-- The other six tables (services, mustering out, aging, weapons, ships and
-  nobility) are Go literals in the transcription too, each proven equal to
-  what its JSON lifted before the JSON went. `internal/rules/data/`, the last
-  `//go:embed`, the JSON wire layer and the tests that existed only for it are
-  gone; a table, a service or a column the type does not have no longer
-  compiles. Every golden is unchanged (#338).
-- The transcription is the page's text where it was not: the
-  characteristic abbreviations the tables print (`Intel 8+`, `+1 Stren`,
-  `+2 Social`), p. 23's `Rifl3` and `SMG`, and an em dash wherever the page
-  prints one (p. 9's Table 1, p. 10's commissions, promotions, DMs and Table
-  of Ranks). The lift reads each abbreviation and reads an em dash as
-  nothing; a lone hyphen or en dash where the page prints an em dash is
-  refused. Every lifted value is unchanged (#339).
-- A withdrawn reading is held only to being stamped on no golden; its
-  condition is no longer judged. A reading replaced by another still
-  describes records the replacement governs, so requiring its condition to
-  fit no golden would have turned the gate red at the first withdrawal that
-  names a replacement, as rc.1's notes described it. ADR 0004 says the
-  harness refuses any golden stamped with a withdrawn reading (#332).
-- A test holds `traveller.Errata` to the `Erratum` constants, so a constant
-  declared and left out of the list, which would have had no reading and
-  compiled, fails the gate naming it; the comments that said the compiler
-  held this say what does (#333).
-- `render`'s package doc and CLAUDE.md's account of it name the readings it
-  writes and its import of `rules`, which #324 added and neither said (#334).
+## 1.0.0-rc.2
+
+The second release candidate for `v1.0.0`. One command line changes: `batch`
+no longer takes `--auto`. Everything else is inside the tool. The rules tables
+are now the page's own text in Go, the last embedded file is gone, and the
+withdrawn-reading and erratum checks are corrected. The record, its shape, the
+sheet and the transcript are what rc.1 wrote, and every golden is unchanged.
+
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.2
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### What a referee will notice
+
 - **`batch` takes no `--auto`.** A batch is always decided by the policy,
-  having nobody to ask, so the flag said nothing a referee should have to
-  type. `ctchargen batch --count 20` is a batch now. This breaks a command
-  line that passes `batch --auto`, which is refused as an unknown flag: drop
-  `--auto` from it. The break is taken before `v1.0.0` freezes the CLI, and
-  `new`'s `--auto` is unchanged (#336).
-- The Prior Service Table's DMs are transcribed as p. 10 prints them: the
-  amount once, as a row heading ("DM of +1 if"), and a condition per service
-  beneath it. The lift reads the amount off the heading and refuses one it
-  cannot read. Every lifted value is unchanged (#344).
-- The Aging Table is transcribed as p. 9 prints it: both header rows, all six
-  characteristic rows, Education and Social Standing included, and each
-  cell's printed text with the term columns its leaders span. The lift checks
-  the headers align, that only the last age carries a plus, and that each
-  row's cells cover the columns once, and takes the bands from where the
-  cells begin. Every lifted value is unchanged (#345).
-- The Rank and Service Skills box is transcribed as p. 23 prints it: each
-  entry's label (`Navy Captain`, `Marine`) and grant (`Cutlass-1`). The lift
-  reads the label's service in the box's own spelling, which E012 decides,
-  and its rank title in that service's Table of Ranks; a label with no title
-  is service-wide, which E005 reads as granted once, at entry. A skill grant
-  must carry the box's `-1`. Every lifted grant is unchanged, and every cell
-  of the transcription is now the page's text (#346).
+  having nobody to ask, so `ctchargen batch --count 20` is a batch now. A
+  command line that passes `batch --auto` is refused as an unknown flag: drop
+  `--auto` from it. This is a deliberate break, taken before `v1.0.0` freezes
+  the CLI. `new`'s `--auto` is unchanged (#336).
+- A record written by rc.1 reads back, renders and validates as it did, and
+  `record` stays 1.
+
+### The transcription
+
+ADR 0005 records the decision: the rules tables are Go literals of what the
+page prints, with the lift kept, and the last `//go:embed` is gone (#340).
+
+- **All seven tables moved from embedded JSON to `internal/rules/transcription.go`**
+  (#337, #338). Each table's lifted values were proven equal to what its JSON
+  lifted before the JSON was deleted. A table, a service or a column the type
+  doesn't have no longer compiles, and an empty cell is refused.
+- **Every cell is the page's text** (#339, #344, #345, #346):
+  - the characteristic abbreviations the tables print (`Intel 8+`, `+1 Stren`);
+  - p. 23's `Rifl3-1` and `SMG-1`;
+  - an em dash wherever the page prints one;
+  - p. 10's DM amounts as the row headings it prints ("DM of +1 if");
+  - p. 9's Aging Table with both header rows, all six characteristic rows and
+    each cell's span;
+  - p. 23's box under its own labels (`Navy Captain`, `Marine`).
+
+  Each table was read again from the page, one page at a time, before typing.
+  Every lifted value is unchanged.
+
+### The readings
+
+- **A withdrawn reading is held only to being stamped on no golden** (#332). A
+  reading replaced by another still describes the records the replacement
+  governs. So requiring its condition to fit no golden, as rc.1 did, would have
+  turned the gate red at the first withdrawal that names a replacement.
+- **A test holds `traveller.Errata` to the `Erratum` constants** (#333). A
+  constant left out of the list would have had no reading and still compiled.
+
+### Notes
+
+- `render`'s package doc and CLAUDE.md name the readings `render` writes and
+  its import of `rules` (#334).
+- The glossary defines a transcription and the lift. Its **Auto run** now
+  covers both `new --auto` and every batch.
 
 ## 1.0.0-rc.1
 

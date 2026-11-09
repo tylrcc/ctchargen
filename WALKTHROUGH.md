@@ -1,6 +1,6 @@
 # Walkthrough
 
-> Release snapshot for `v1.0.0-rc.1`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-rc.2`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots"). `THEORY.md` explains why the system is shaped this way; this
 > document follows one character through the code.
@@ -22,17 +22,18 @@ five subcommands:
 
 There are no dependencies beyond the standard library at run time; the one
 module requirement, a JSON Schema validator, is imported only by tests. The
-rules tables are JSON embedded in the binary. The readings, the decisions
-taken where the page is silent, are Go values compiled into it (ADR 0004).
+rules tables are Go literals typed as the page prints them, lifted into the
+domain's values once per process (ADR 0005). The readings, the decisions taken
+where the page is silent, are Go values compiled in beside them (ADR 0004).
 
 ## Architecture
 
 ```text
 cmd/ctchargen/        the subcommands; stdout carries the record, stderr the conversation
 internal/traveller/   the domain: alphabets, values, sealed sums, events (imports nothing here)
-internal/rules/       every table of pp. 4–25, embedded and lifted once, and the readings as values
+internal/rules/       every table of pp. 4–25, transcribed in Go and lifted once, and the readings as values
 internal/dice/        an unseeded stream of dice
-internal/chargen/     the procedure, the Decider it asks, and the --auto Policy
+internal/chargen/     the procedure, the Decider it asks, and the auto run's Policy
 internal/render/      the record, the sheet and transcript projected from it, and the readings' text
 internal/scripted/    test support: the strict roller fixtures and walks play
 internal/coverage/    test code only: holds the Implements: and Holds: markers to each other
@@ -213,7 +214,7 @@ observer, the build), wraps the decider in the `logging` gate, and walks.
 		roll:   dice.New(),
 		log:    record,
 		char: &Character{
-			Name: in.Name, Age: traveller.NewAge(startingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
+			Name: in.Name, Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
 		},
 	}
 
@@ -230,7 +231,9 @@ observer, the build), wraps the decider in the `logging` gate, and walks.
 ```
 
 The character is created before the options are applied, so `WithBuild` can
-set `Character.Build` on it. The decider is only ever reached through
+set `Character.Build` on it. It begins at `traveller.StartingAge`, p. 4's 18,
+which is the domain's constant and not the engine's because the Aging Table's
+lift reads it too (section 8). The decider is only ever reached through
 `logging`, which is the subject of section 5.
 
 ## 4. The procedure
@@ -543,8 +546,10 @@ func (l *log) outcomef(because int, errata []traveller.Erratum, format string, a
 ```
 
 `stamped` returns them in id order, and that list is the record's `errata`.
-An id is a `traveller.Erratum`, a closed set of constants `E001` to `E015`.
-The engine names a reading only by its constant; what the reading says lives
+An id is a `traveller.Erratum`, a closed set of constants `E001` to `E015`,
+and `traveller.Errata` lists them; a const block cannot count itself, so a
+test that reads `erratum.go` holds the list to the constants (#333). The
+engine names a reading only by its constant; what the reading says lives
 in `rules`.
 
 ## 7. The readings, as values
@@ -595,16 +600,41 @@ An erratum names one decision for good. A reading whose decision no longer
 holds is not deleted but withdrawn: its `Withdrawal` says why, and names the
 erratum that replaced it, if one did. It stays in the array, so a record
 already stamped with it still names a reading that exists. No reading is
-withdrawn at this tag, so every path that handles one (in rendering, in the
-listing and in the stamping harness) is exercised only by test-only readings
-built for the purpose (`TestAWithdrawalNamesARealReplacement`, and
-`internal/render/readings_test.go`).
+withdrawn at this tag, so every path that handles one is exercised by a stand-in.
+In rendering and the listing, the stand-ins are test-only readings built for
+the purpose (`TestAWithdrawalNamesARealReplacement`, and
+`internal/render/readings_test.go`); in the stamping harness, E001 under its
+real predicate, treated as withdrawn (section 12).
 
 ## 8. The rules the engine reads
 
-`rules.Load` embeds every JSON table and lifts them once per process. Every
-caller gets the same `*Rules`, so every method that returns a slice returns a
-copy (#137).
+The tables are a **transcription**: Go literals in one file,
+`internal/rules/transcription.go`, each cell typed as the page prints it, with
+its glyphs, its abbreviations, its notation and its dashes (ADR 0005). The
+structure comes from the domain and the cells from the page. Which service a
+column belongs to is its position in `traveller.ServiceNames`, and a DM row
+keeps the heading p. 10 prints over it, so the amount is read off the row the
+way the page states it:
+
+`internal/rules/transcription.go` — `transcribedServices`
+
+```go
+	enlistment: printedThrows{
+		targets: perService{"8+", "9+", "5+", "7+", "7+", "3+"},
+		dms: []printedDMRow{
+			{
+				heading:    "DM of +1 if",
+				conditions: perService{"Intel 8+", "Intel 8+", "Dext 6+", "Intel 6+", "Stren 7+", "—"},
+			},
+```
+
+So a table the types do not name, a table given twice or a cell too many does
+not compile. Two cells swapped within a row still compile, as any two printed
+cells would, and catching that is the second transcription's work (the end of
+this section).
+
+`rules.Load` lifts the transcription once per process. Every caller gets the
+same `*Rules`, so every method that returns a slice returns a copy (#137).
 
 `internal/rules/rules.go` — `Load`
 
@@ -614,29 +644,33 @@ func Load() (*Rules, error) { return loaded() }
 var loaded = sync.OnceValues(load)
 ```
 
-`load` reads each file into a wire type that mirrors the JSON and nothing
-more, then runs the lifts in order. Lifting is the validation: a column out of
-p. 10's order, or a Table 1 cell that is no benefit (the font trap's bare
-"4"), refuses the load, and with it the binary. The readings are not among
-the lifts. They are not data to be parsed but values already typed.
+`load` runs the lifts in order, each reading one transcribed table. Lifting
+is the validation, and where the page's text becomes the domain's values: each
+judgement about the text, a normalization or what a dash means, is written
+down there rather than made in the transcriber's head. A Table 1 cell that is
+no benefit (the font trap's bare "4") refuses the load, and with it the binary.
+The grants are lifted after the Prior Service Table because p. 23's box labels
+name a rank by its title, which is read off the Table of Ranks. The readings
+are not among the lifts. They are not text to be parsed but values already
+typed.
 
 `internal/rules/lift.go` — `load`
 
 ```go
 	for _, lift := range []func() error{
-		func() error { return rules.liftPriorService(services) },
-		func() error { return rules.liftGrants(services) },
-		func() error { return rules.liftRetirement(services) },
-		func() error { return rules.liftSkills(skills) },
-		func() error { return rules.liftMustering(mustering) },
-		func() error { return rules.liftAging(aging) },
-		func() error { return rules.liftWeapons(weapons) },
-		func() error { return rules.liftNobility(nobility) },
-		func() error { return rules.liftShips(ships) },
+		func() error { return rules.liftPriorService(transcribedServices) },
+		func() error { return rules.liftGrants(transcribedServices) },
+		func() error { return rules.liftRetirement(transcribedServices) },
+		func() error { return rules.liftSkills(transcribedSkills) },
+		func() error { return rules.liftMustering(transcribedMustering) },
+		func() error { return rules.liftAging(transcribedAging) },
+		func() error { return rules.liftWeapons(transcribedWeapons) },
+		func() error { return rules.liftNobility(transcribedNobility) },
+		func() error { return rules.liftShips(transcribedShips) },
 	} {
 ```
 
-Every name in the data is parsed against `traveller`'s own alphabet, through
+Every name a cell prints is parsed against `traveller`'s own alphabet, through
 an index built from each value's `String()`:
 
 `internal/rules/parse.go` — `named`
@@ -652,8 +686,11 @@ func named[T fmt.Stringer](values []T) map[string]T {
 }
 ```
 
-So the spelling a record prints and the spelling the data is checked against
-are the same function.
+So the spelling a record prints and the spelling the transcription is checked
+against are the same function. A characteristic may also arrive abbreviated,
+as the narrower tables print it ("Intel 8+", "+1 Stren"). Each abbreviation
+opens exactly one of p. 4's six names, so `parseCharacteristic` reads it as a
+question settled by the page and not a reading.
 
 P. 12 makes skills "of three basic types: characteristic alterations …,
 weapon expertise …, and basic skill". Only a basic skill's name is open, an
@@ -696,29 +733,82 @@ func Sign(glyph rune) (int, bool) {
 }
 ```
 
-A data file broken two ways reports the same fault every run, so a lift that
-finds faults in a loop walks a slice in a fixed order rather than a map, whose
-order Go randomises (#53). The skill tables are read by name in sorted order
-and then lifted in `traveller.SkillTables` order, which is p. 11's:
+Three dashes look alike on screen, and the page prints only one of them where
+a cell means nothing: the em dash, which the lift reads as no benefit, no
+rank, no DM or no throw. A lone hyphen or en dash in that place is refused by
+name. A Go array short of a cell is padded with `""` in silence, so an empty
+cell is refused too, as a cell nobody read off the page:
 
-`internal/rules/lift.go` — `liftSkillTables`
+`internal/rules/parse.go` — `refuseEmpty`
+
+```go
+func refuseEmpty(cell string) error {
+	if strings.TrimSpace(cell) == "" {
+		return fmt.Errorf("%w: an empty cell; the page prints a dash where it means nothing", errMalformed)
+	}
+
+	return nil
+}
+```
+
+The Aging Table is typed with both of p. 9's header rows and each row's cells
+as the spans their dotted leaders run across. The lift takes the bands from
+where the cells begin, and holds the headers to the procedure: each age must
+be the age its term ends at, which is why the starting age is `traveller`'s:
+
+`internal/rules/lift.go` — `liftAgingHeaders`
+
+```go
+		if age != strconv.Itoa(traveller.StartingAge+traveller.Years*term) {
+			return 0, 0, fmt.Errorf("%w: aging table: age %q is not the age term %d ends at", errMalformed, ages[i], term)
+		}
+```
+
+The same header row carries the plus on 74+ that E014 rests on; the lift
+refuses a plus anywhere else, or none on the last age, and holds only that
+fact, not the reading.
+
+A transcription broken two ways reports the same fault every run, so a lift
+that finds faults in a loop walks the page's order rather than a map, whose
+order Go randomises (#53). The skill tables are lifted in
+`traveller.SkillTables` order, which is p. 11's, and each row's cells in the
+order of services:
+
+`internal/rules/lift.go` — `liftSkills`
 
 ```go
 	for _, table := range traveller.SkillTables {
-		rows := byTable[table]
+		for die, row := range t.tables[table] {
+			for i, cell := range row {
+				service := traveller.ServiceNames[i]
 
-		if len(rows) != Faces {
-			return fmt.Errorf("%w: acquired skills, %v: %d rows, want %d", errMalformed, table, len(rows), Faces)
-		}
+				result, err := parseTableResult(cell, r.normalize)
+				if err != nil {
+					return fmt.Errorf("acquired skills, %v, row %d, %v: %w", table, die+1, service, err)
+				}
+```
+
+The names a table abbreviates are expanded by E012's normalizations, which
+the transcription carries beside the tables they govern. They include the one
+glyph the font broke in the page image itself: p. 23's box is typed as
+printed, `Rifl3-1` among its grants, and no skill or weapon named `Rifl3`
+exists in the three books, so the normalization reads it as Rifle.
+
+`internal/rules/transcription.go` — `transcribedServices`
+
+```go
+	grants: []printedGrant{
+		{label: "Navy Captain", grant: "+1 Social"},
+		...
+		{label: "Army", grant: "Rifl3-1"},
 ```
 
 What the lift checks is the shape of a cell and the alphabet of a name, not
 that a value is the one the page prints. That is the second transcription's
-work, in this package's tests. Each file is decoded with plain
-`json.Unmarshal`, which tolerates an unknown key because the files carry
-their own `_cite` and `_note` keys. So a misspelled key leaves its field at
-zero; of four keys tried, three lifted that zero, and only the second
-transcription noticed (#317).
+work, in this package's tests, laid out apart from the page's grid and written
+in the normalized vocabulary, so it is independent of the first in shape and
+in words. A field misnamed in a literal does not compile, so the slip #317
+found, a misspelled field lifting as zero, cannot reach the lift.
 
 ## 9. The record and what is rendered from it
 
@@ -935,9 +1025,19 @@ ctchargen: usage: --readings ends a transcript, and needs --history
 
 ## 11. `batch`
 
-`batch` requires `--auto`, because it has nobody to ask, and builds one
-`batchRun` value carrying the inputs, the policy, the count, `--survivors`,
-the search bound and the dice. `write` picks the destination:
+A batch is always an auto run. It has nobody to ask, so it declares no
+`--auto`, and a command line passing one is refused by the flag package as a
+flag `batch` does not have, not accepted and ignored (#336). Run while writing
+this:
+
+```text
+$ ctchargen batch --count 1 --auto
+ctchargen: usage: flag provided but not defined: -auto; run `ctchargen batch --help`
+```
+
+`batch` builds one `batchRun` value carrying the inputs, the policy, the
+count, `--survivors`, the search bound and the dice. `write` picks the
+destination:
 
 - a directory takes one file per member, named by position;
 - standard output streams JSONL a record at a time;
@@ -1028,28 +1128,39 @@ prose as `rules` declares it. Whether a reading is withdrawn comes from
 	}
 ```
 
-`verdict` is what is wrong with how one record stamps one reading. A standing
-reading is stamped exactly where its condition holds, in both directions. A
-withdrawn one is stamped on no record, and its condition may fit none, since
-the goldens are new records and a condition that still fits one asks for a
-stamp nothing may make:
+`verdict` is what is wrong with how one record stamps one reading. A
+withdrawn reading is held only to being stamped on no record: the goldens are
+new records, and no new record may carry one. Its condition is not judged,
+since a reading replaced by another still describes records the replacement
+now governs (#332). A standing reading is stamped exactly where its condition
+holds, in both directions:
 
 `internal/chargen/stamping_test.go` — `verdict`
 
 ```go
-	switch {
-	case r.withdrawn && got:
-		wrong = append(wrong, fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id))
-	case want && !got:
-		wrong = append(wrong, fmt.Sprintf("%s: satisfies %v but does not stamp it. Stamped on: %s",
-			rec.name, r.id, stampedOn(r.id)))
-	case got && !want:
-		wrong = append(wrong, fmt.Sprintf("%s: stamps %v but does not satisfy it. Stamped on: %s",
-			rec.name, r.id, stampedOn(r.id)))
+	got := slices.Contains(rec.Errata, r.id.String())
+
+	if r.withdrawn {
+		if got {
+			return []string{fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id)}
+		}
+
+		return nil
 	}
 
-	if r.withdrawn && want {
+	want := r.holds(rec)
+
+	switch {
+	case want && !got:
 ```
+
+Every golden agrees with every reading, so the main stamping test never feeds
+`verdict` a disagreement. Two tests do, from copies of the goldens with
+E001's stamp flipped. `TestAStandingReadingRefusesADisagreement` strikes it
+from records its condition fits and adds it to the rest, and expects each
+refused. `TestAWithdrawnReadingOnAGoldenIsRefused` treats E001 as withdrawn,
+under its real predicate: every golden stamping it is refused, and each with
+the stamp struck passes, though E001's prose still describes it.
 
 A reading can be **parked**, naming the issue where its prose and its code
 disagree undecided: the harness counts its disagreements and asserts the
@@ -1103,7 +1214,8 @@ TestTheCoverageMapHolds -print` began, trimmed to its first rows:
 | Rule | Authority | Implementation | Test |
 | --- | --- | --- | --- |
 | Die roll conventions: `N+`, `N−`, exact | 1:2–3 | `internal/traveller.Target` | `internal/traveller.TestParseTarget`, `internal/traveller.TestTargetSatisfied` |
-| All characters begin at 18 | 1:4 | `internal/chargen.startingAge` | `internal/chargen.TestGoldens` |
+| All characters begin at 18 | 1:4 | `internal/traveller.StartingAge` | `internal/chargen.TestGoldens` |
+| Floor of 0 for an aging reduction | 1:4, 7–9 (E010) | `internal/traveller.Profile.AgeReduce` | `internal/traveller.TestAgeReduceFloorsAtZero` |
 ```
 
 Each of these checks runs under `task`, the gate, with the rest of the suite;
