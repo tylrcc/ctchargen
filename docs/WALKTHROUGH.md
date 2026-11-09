@@ -1,6 +1,6 @@
 # Walkthrough
 
-> Release snapshot for `v1.0.0-rc.2`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-rc.3`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots"). `THEORY.md` explains why the system is shaped this way; this
 > document follows one character through the code.
@@ -34,18 +34,20 @@ internal/traveller/   the domain: alphabets, values, sealed sums, events (import
 internal/rules/       every table of pp. 4–25, transcribed in Go and lifted once, and the readings as values
 internal/dice/        an unseeded stream of dice
 internal/chargen/     the procedure, the Decider it asks, and the auto run's Policy
-internal/render/      the record, the sheet and transcript projected from it, and the readings' text
+internal/render/      the record, the sheet and transcript rendered from its bytes, and the readings' text
 internal/scripted/    test support: the strict roller fixtures and walks play
 internal/coverage/    test code only: holds the Implements: and Holds: markers to each other
 internal/mutate/      a tool: runs a command against a scratch copy with one edit made
 ```
 
-The arrows point one way. `traveller` imports none of the others, `rules` and
-`chargen` import `traveller`, and `render` imports the record, and `rules` for
-the readings' prose. Data flows in a line: flags become `chargen.Inputs` and a
-`Policy` (or a person), `chargen` walks the procedure against `rules` and a
-roller and produces a `*chargen.Character` carrying its event log, and
-`render` projects that into the record and the documents made from it.
+The arrows point one way. `traveller` imports none of the others; `rules` and
+`chargen` import `traveller`, and `chargen` reads `rules` and rolls `dice`;
+`render` imports `chargen` for the character it projects, `traveller` for its
+values, and `rules` for the readings' prose. Data flows in a line: flags
+become `chargen.Inputs` and a `Policy` (or a person), `chargen` walks the
+procedure against `rules` and a roller and produces a `*chargen.Character`
+carrying its event log, and `render` projects that into the record, then
+renders the sheet and the transcript from the record's bytes.
 
 ## 1. The command
 
@@ -66,12 +68,21 @@ func main() {
 }
 ```
 
-`run` dispatches on the subcommand. Its `options` exist for tests: the only
-one, `withDice`, supplies a scripted roller.
+`run` answers help first and then dispatches on the subcommand. Its `options`
+exist for tests: the only one, `withDice`, supplies a scripted roller.
 
 `cmd/ctchargen/main.go` — `run`
 
 ```go
+	if args[0] == "help" || isHelpFlag(args[0]) {
+		if len(args) > 1 {
+			return fmt.Errorf("%w: %s; run `ctchargen <command> --help` for one command's flags",
+				errUsage, helpTakesNoArguments(args[1]))
+		}
+
+		return writeTopLevelHelp(out)
+	}
+
 	switch args[0] {
 	case "new":
 		return newCharacter(args[1:], in, out, asking, chosen.dice)
@@ -85,10 +96,35 @@ one, `withDice`, supplies a scripted roller.
 		return version(args[1:], out)
 ```
 
-The exit status is 0 or 1, whatever the failure (#121), and the reason goes to
-stderr after `ctchargen:`.
+Help asked for is not a misuse: it leaves by `out` and exits 0. A word after
+a help flag is refused rather than dropped, at the top level and on every
+subcommand, and every one of those refusals is worded by
+`helpTakesNoArguments`. The exit status is 0 or 1, whatever the failure
+(#121), and the reason goes to stderr after `ctchargen:`.
 
 ## 2. `new`: from flags to a generation
+
+`new` and `batch` declare the flags a character is generated from in one
+place. The strategies' defaults are read from `chargen.DefaultPolicy`, so the
+help prints the default an auto run applies and cannot disagree with it
+(#367):
+
+`cmd/ctchargen/new.go` — `declareCharacterFlags`
+
+```go
+func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags {
+	defaults := chargen.DefaultPolicy()
+
+	return characterFlags{
+		set:     set,
+		service: set.String("service", "", help.service+serviceChoices()),
+		name:    set.String("name", "", help.name),
+		career:  set.String(careerFlag, defaults.Career.String(), help.career+chargen.CareerChoices()),
+		skills:  set.String(skillsFlag, defaults.Skills.String(), help.skills+chargen.SkillsChoices()),
+		muster:  set.String(musterFlag, defaults.Muster.String(), help.muster+chargen.MusterChoices()),
+	}
+}
+```
 
 `newCharacter` parses the flags, refuses a positional word (the flag package
 stops at the first one, so `new foo --auto` would leave `--auto` unparsed),
@@ -138,6 +174,28 @@ to do with the character is gathered into one `newRendering`, and
 	return where.write(text)
 ```
 
+`rendered` always encodes the record first. A sheet or a transcript is then
+rendered from those bytes by `renderText`, the function `render` calls on a
+file it has read, so a character just generated and one written long ago take
+one route to the page (#363):
+
+`cmd/ctchargen/new.go` — `rendered`
+
+```go
+func rendered(character *chargen.Character, how newRendering) (string, error) {
+	encoded, err := render.JSON(character)
+	if err != nil {
+		return "", fmt.Errorf("rendering: %w", err)
+	}
+
+	if !how.sheet && !how.history {
+		return string(encoded), nil
+	}
+
+	return renderText(encoded, how.history, how.readings)
+}
+```
+
 `generate` picks the way in. `--auto` is an **auto run** under the policy. A
 run without it is a **guided run**, answered by a `player` that reads stdin and
 watches the record as it is written, so each throw reaches the person between
@@ -179,32 +237,35 @@ func (s source) options() []chargen.Option {
 ```
 
 In production `s` is nil, so a generation rolls dice of its own. A test
-passes a scripted source.
+passes a scripted source. `ctchargen version` prints the same `build()`, so
+the build a record names is the line `version` writes.
 
 ## 3. The engine's two ways in
 
 `Auto` and `Guided` differ in one argument to the shared `generate`. An auto
-run records the policy that answered it and the version of what it answers. A
-guided run records none, and that absence is what says a person answered.
+run passes a pointer to its policy, which becomes `Character.Policy`; a guided
+run passes nil, and that absence is what says a person answered.
 
-`internal/chargen/generate.go` — `Auto`
+`internal/chargen/generate.go` — `Auto, Guided`
 
 ```go
 func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
-	return generate(in, policy, &AutoPolicy{Policy: policy, Version: PolicyVersion}, options)
+	// The pointer is what marks an auto run: Guided passes nil.
+	return generate(in, policy, &policy, options)
 }
-```
-
-`internal/chargen/generate.go` — `Guided`
-
-```go
+...
 func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	return generate(in, decider, nil, options)
 }
 ```
 
+The version the policy answered as is not carried on the character. It is
+this build's `PolicyVersion`, and the record writes it beside the strategies
+(#369, section 9).
+
 `generate` loads the rules, builds a `run`, applies the options (a roller, an
-observer, the build), wraps the decider in the `logging` gate, and walks.
+observer, the build), wraps the decider in the `logging` gate, and walks; then
+it sorts the skills and takes the events and the stamped errata off the log.
 
 `internal/chargen/generate.go` — `generate`
 
@@ -214,7 +275,7 @@ observer, the build), wraps the decider in the `logging` gate, and walks.
 		roll:   dice.New(),
 		log:    record,
 		char: &Character{
-			Name: in.Name, Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
+			Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy,
 		},
 	}
 
@@ -230,11 +291,13 @@ observer, the build), wraps the decider in the `logging` gate, and walks.
 	run.char.Errata = record.stamped()
 ```
 
-The character is created before the options are applied, so `WithBuild` can
-set `Character.Build` on it. It begins at `traveller.StartingAge`, p. 4's 18,
-which is the domain's constant and not the engine's because the Aging Table's
-lift reads it too (section 8). The decider is only ever reached through
-`logging`, which is the subject of section 5.
+The character keeps no copy of its name or of the ruleset: the name is
+`Inputs.Name`, and the ruleset is the constant `chargen.Ruleset`, which the
+record writes (#386). The character is created before the options are
+applied, so `WithBuild` can set `Character.Build` on it. It begins at
+`traveller.StartingAge`, p. 4's 18, which is the domain's constant and not the
+engine's because the Aging Table's lift reads it too (section 8). The decider
+is only ever reached through `logging`, which is the subject of section 5.
 
 ## 4. The procedure
 
@@ -247,10 +310,7 @@ func (r *run) generate() error {
 	r.rollProfile()
 
 	err := r.enlist()
-	if err != nil {
-		return err
-	}
-
+	...
 	_, served := r.char.ServedIn()
 	if !served {
 		return r.assessTitle()
@@ -258,12 +318,9 @@ func (r *run) generate() error {
 
 	err = r.serve()
 	...
-	if !r.dead {
+	if !r.dead() {
 		err := r.musterOut()
-		if err != nil {
-			return err
-		}
-
+		...
 		r.pension()
 	}
 
@@ -271,22 +328,40 @@ func (r *run) generate() error {
 }
 ```
 
-A dead character does not muster out. That is not a reading: the doc comment
-above this method says the question was checked as a possible silence and
-found settled by p. 5. The same form of comment, "Settled by the page and not
-a reading", sits on each declaration whose question was checked that way, so
-it is answered beside the code that implements the answer and is not
+A dead character does not muster out. Whether he died is read off his
+departure, `dead()`, rather than kept in a flag beside it; `drafted()`, which
+the commission rule of p. 5 asks, is read off his enlistment the same way
+(#368). That a dead character does not muster out is not a reading: the doc
+comment above this method says the question was checked as a possible silence
+and found settled by p. 5. The same form of comment, "Settled by the page and
+not a reading", sits on each declaration whose question was checked that way,
+so it is answered beside the code that implements the answer and is not
 re-litigated. The 2D throw is one:
 
-`internal/chargen/roller.go` — `roll`
+`internal/chargen/roller.go` — `twoDice`
 
 ```go
 // Settled by the page and not a reading: checked as a possible silence at
 // milestone 0, and kept so it is not re-litigated as one. Which throws are two
 // dice. P. 10: "All rolls except draft are two-die throws." The draft is one
-// die (p. 5); so are the skills-table roll (p. 11), each mustering-out roll
-// (p. 9) and the medical-crisis recovery months (p. 7).
+// die (p. 5), and so are the other one-die throws Roller's Die lists.
+//
+// It is the one place a 2D throw is made of dice, so every roller throws one
+// the same way, and the order a fixture's script states is the order the
+// dice are drawn in.
+...
+func twoDice(r Roller) (first, second int) {
+	first = r.Die()
+	second = r.Die()
+
+	return first, second
+}
 ```
+
+The 2D throw is the engine's, not the roller's. A `Roller` has two methods,
+`Die` and `Among`, and nothing that throws two dice, so the unseeded stream
+and a scripted roller make a 2D throw the same way, first die then second
+(#376). `Roller`'s doc on `Die` is the one list of the one-die throws.
 
 `rollProfile` throws six 2D rolls in p. 4's order. `enlist` chooses a service
 (unless `--service` forced one), throws against its enlistment target, and on
@@ -319,7 +394,8 @@ page.
 `serve` runs terms until one ends the service. A term follows the order of
 the exposition, not the worked example's (E002): survival, commission,
 promotion, skills, reenlistment, then the aging round at the end of the term
-(E006).
+(E006). Commission, promotion and the term's skill eligibilities sit in the
+first elided stretch here.
 
 `internal/chargen/serve.go` — `term`
 
@@ -328,23 +404,29 @@ promotion, skills, reenlistment, then the aging round at the end of the term
 		// The fatal term counts, and its four years with it (E004).
 		r.char.Age = r.char.Age.PlusYears(traveller.Years)
 		r.char.Departure = traveller.KilledBySurvivalThrow{}
-		r.dead = true
 
 		return true, nil
 	}
-
-	err := r.commission(term)
 	...
-	r.grantEligibility(term)
-
 	err = r.trainSkills()
 	...
-	intent, forced, err := r.reenlist(term)
+	intent, err := r.reenlist(term)
 	...
 	r.char.Age = r.char.Age.PlusYears(traveller.Years)
 
 	err = r.agingRound(term)
+	...
+	if r.dead() {
+		return true, nil
+	}
 ```
+
+A death sets the departure, and that is all the run needs to know of it. A
+failed survival throw ends the term at once. The aging round can kill too,
+through a medical crisis, so the term asks `dead()` after it. `reenlist`
+returns the intent the term ends on, and an error. A 12 exactly is the intent
+`Continue`, with no flag beside it saying the term was forced, and the service
+goes on to another term only on `Continue`.
 
 Survival failure is death (p. 5), with no "injured instead". The outcome is
 stamped with E004, the reading of how a dead character's age is recorded:
@@ -352,6 +434,15 @@ stamped with E004, the reading of how a dead character's age is recorded:
 `internal/chargen/serve.go` — `survive`
 
 ```go
+	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.char.Profile))
+	seq := r.log.throw("survival", throw)
+
+	if throw.succeeded {
+		r.log.outcomef(seq, nil, "survived term %d", term)
+
+		return true
+	}
+	...
 	r.log.outcomef(seq, []traveller.Erratum{traveller.E004},
 		"died in term %d, aged %v", term, r.char.Age.PlusYears(traveller.Years))
 ```
@@ -360,9 +451,18 @@ Here is that path in full. It is the checked-in golden transcript of the
 fixture `scouts-died-unasked`, a scout killed by his first survival throw
 before anything was asked:
 
-`internal/chargen/testdata/scouts-died-unasked.transcript.md` — `term 1`
+`internal/chargen/testdata/scouts-died-unasked.transcript.md` — `enlistment to term 1`
 
 ```markdown
+## 15. enlistment (pp. 5, 10)
+
+ 16. enlistment, Scouts: rolled 5+2 +1 = 8 against 7+, made
+ 17. enlisted in the Scouts (from 16)
+
+## 18. rank and service skills (p. 23)
+
+ 19. Pilot-1 [E005]
+
 ## 20. term 1 (pp. 5-7)
 
  21. survival: rolled 1+3 = 4 against 7+, missed
@@ -397,11 +497,13 @@ table, the roller throws one die, and the service's table answers.
 
 `offeredTables` closes the Advanced Education Table below Education 8 (p. 11),
 so the page decides what may be chosen. `taken` is a decision aid, how often
-each table has been trained on, and it is not part of the record.
+each table has been trained on, one count per offered table, and it is not
+part of the record.
 
 The auto policy's answer depends on `--skills`. Each strategy ranks the
 tables, and `thinnest` keeps the tables trained on least before the ranking
-breaks the tie (policy version 3, #34):
+breaks the tie (policy version 3, #34). It takes the counts as parallel to the
+tables, which is how the engine passes them (#370):
 
 `internal/chargen/policy.go` — `SkillTable`
 
@@ -505,26 +607,36 @@ The choice event records the point, the alternatives and the answer, but not
 who answered: one run has one answerer, and the record says it once, in
 `policy`.
 
+The five yes-or-no points share one method, `yesOrNo`, which asks the decider
+and records its answer against `offered()`, which builds the "yes" and "no"
+offer fresh for each question, so a write through one record's slice cannot
+change what a later question is offered (#230). A yes-or-no point offers two answers by
+construction, so it does not go through `asked`.
+
 The one choice point that may vary its answer, which weapon a combat result
 names, is handed a `Vary` rather than the roller: a value that can draw among
 alternatives and do nothing else.
 
-`internal/chargen/roller.go` — `varyOnly`
+`internal/chargen/roller.go` — `Vary, varyOnly`
 
 ```go
+type Vary interface{ Among(n int) int }
+...
 type varyOnly struct{ roller Roller }
 
 func (v varyOnly) Among(n int) int { return v.roller.Among(n) }
 ```
 
-It is a struct and not the roller passed as an interface, because a type
-assertion would hand the dice back (#136). A die a decider threw would reach
-no event, and the record would stop carrying every die.
+`varyOnly` is a struct and not the roller passed as an interface, because a
+type assertion would hand the dice back (#136). A die a decider threw would
+reach no event, and the record would stop carrying every die.
 
 ## 6. The log and the readings it stamps
 
-Every event goes through the log, numbered in order. A consequence can name
-readings, and the log keeps the union of them.
+Every event goes through the log, numbered from 1 in the order it is
+appended: `next` is the count of events plus one, read off the events rather
+than kept beside them (#368). A consequence can name readings, and the log
+keeps the union of them.
 
 `internal/chargen/log.go` — `outcomef`
 
@@ -533,6 +645,14 @@ func (l *log) outcomef(because int, errata []traveller.Erratum, format string, a
 	for _, e := range errata {
 		l.errata[e] = true
 	}
+
+	l.add(traveller.OutcomeEvent{
+		Seq:         l.next(),
+		Because:     because,
+		Description: fmt.Sprintf(format, args...),
+		Errata:      errata,
+	})
+}
 ```
 
 `internal/chargen/log.go` — `stamped`
@@ -574,27 +694,28 @@ type Reading struct {
 ```
 
 Between the title and the stamping condition are the pages, what the page
-says, the gap, the reading and why. The readings are one array, the one at
-index `i` named by erratum `i+1`, and its size is the count check: the array
-is sized by its literal, and `Readings` returns it as an array sized by the
-errata, so a reading missing or one too many does not compile.
+says, the gap, the reading and why. The readings are one array, and its size
+is the count check: the array is sized by its literal, and `Readings` returns
+it as an array sized by the errata, so a reading missing or one too many does
+not compile.
 
 `internal/rules/readings.go` — `Readings`
 
 ```go
+// Readings is every reading, in erratum order: the one at index i is named
+// by erratum i+1, so erratum e's is Readings()[e-1]. Its result type is the count
+// check: readings is sized by its literal, so a reading missing, or one past
+// the last entry of traveller.Errata, does not compile here. TestTheReadings holds each to its
+// place.
 func Readings() [len(traveller.Errata)]Reading { return readings }
 ```
 
-`internal/rules/readings.go` — `ReadingOf`
-
-```go
-func ReadingOf(e traveller.Erratum) Reading { return readings[e-1] }
-```
-
-That each value sits in its own erratum's place is a test's, `TestTheReadings`,
-which also quotes E001's fields typed out by hand, so a field swapped with its
-neighbour fails. `ReadingNamed` finds a reading by the id a record spells
-(`"E004"`), and is what reads a record back to its readings.
+`Readings()[e-1]` is how the tests reach erratum `e`'s reading; there is no
+lookup by constant beside it. `TestTheReadings` holds each value to its own
+erratum's place, and quotes E001's fields typed out by hand, so a field
+swapped with its neighbour fails. `ReadingNamed` finds a reading by the
+id a record spells (`"E004"`), and is what reads a record back to its
+readings.
 
 An erratum names one decision for good. A reading whose decision no longer
 holds is not deleted but withdrawn: its `Withdrawal` says why, and names the
@@ -611,10 +732,11 @@ real predicate, treated as withdrawn (section 12).
 The tables are a **transcription**: Go literals in one file,
 `internal/rules/transcription.go`, each cell typed as the page prints it, with
 its glyphs, its abbreviations, its notation and its dashes (ADR 0005). The
-structure comes from the domain and the cells from the page. Which service a
-column belongs to is its position in `traveller.ServiceNames`, and a DM row
-keeps the heading p. 10 prints over it, so the amount is read off the row the
-way the page states it:
+structure comes from the domain and the cells from the page. The service
+tables keep the page's rows as rows, the six services across in
+`traveller.ServiceNames` order, the Table of Ranks among them (#358), and a DM
+row keeps the heading p. 10 prints over it, so the amount is read off the row
+the way the page states it:
 
 `internal/rules/transcription.go` — `transcribedServices`
 
@@ -639,6 +761,11 @@ same `*Rules`, so every method that returns a slice returns a copy (#137).
 `internal/rules/rules.go` — `Load`
 
 ```go
+// Load returns the lifted rules, loading and validating them once.
+//
+// Every caller in a process gets the same Rules, so nothing on it hands out a
+// way to write to it: the tables are reached through methods, and a method
+// that returns a slice returns a copy (#137).
 func Load() (*Rules, error) { return loaded() }
 
 var loaded = sync.OnceValues(load)
@@ -668,6 +795,30 @@ typed.
 		func() error { return rules.liftNobility(transcribedNobility) },
 		func() error { return rules.liftShips(transcribedShips) },
 	} {
+```
+
+The Prior Service Table's lift reads each DM row's heading to its amount once,
+before any service's column is read, so a bad heading is refused as the row's
+and named by the throw it heads (#371). Each service's column is then read
+out of those rows:
+
+`internal/rules/lift.go` — `readHeadings`
+
+```go
+func readHeadings(label string, rows printedThrows) (throwRows, error) {
+	read := throwRows{label: label, targets: rows.targets}
+
+	for _, row := range rows.dms {
+		amount, err := parseDMHeading(row.heading)
+		if err != nil {
+			return throwRows{}, fmt.Errorf("prior service table, %s: %w", label, err)
+		}
+
+		read.dms = append(read.dms, dmRow{amount: amount, conditions: row.conditions})
+	}
+
+	return read, nil
+}
 ```
 
 Every name a cell prints is parsed against `traveller`'s own alphabet, through
@@ -706,29 +857,36 @@ opens with an en dash, which looks like a minus and is not one:
 		return traveller.AlterationResult{Characteristic: characteristic, Delta: size}, nil
 	}
 
-	if glyph, _ := utf8.DecodeRuneInString(cell); glyph == traveller.EnDash {
-		return nil, fmt.Errorf("%w: %q: %w", errMalformed, cell, traveller.ErrEnDash)
+	signed, err := startsWithSign(cell)
+	if err != nil {
+		return nil, err
 	}
 
-	if startsWithSign(cell) {
+	if signed {
 		return nil, fmt.Errorf("%w: %q begins with a sign but is not a characteristic alteration", errMalformed, cell)
 	}
 ```
 
-Which glyphs are a sign is answered in one place, in `traveller`, and a
-target reads the same function, so the two cannot disagree (#297):
+`parseAlteration` and `startsWithSign` both ask `traveller.Sign` about the
+cell's first glyph, and an en dash is refused by whichever reads it first,
+with `traveller.ErrEnDash`. Which glyphs are a sign, and that an en dash is
+none, is answered in one place, in `traveller`. A target, a DM heading, an
+alteration, an aging cell, a skill cell's first glyph and a lone dash all read
+the same function, so none of them can disagree with another (#297, #378):
 
 `internal/traveller/target.go` — `Sign`
 
 ```go
-func Sign(glyph rune) (int, bool) {
+func Sign(glyph rune) (int, error) {
 	switch glyph {
 	case '+':
-		return 1, true
+		return 1, nil
 	case '-', '\u2212':
-		return -1, true
+		return -1, nil
+	case EnDash:
+		return 0, ErrEnDash
 	default:
-		return 0, false
+		return 0, nil
 	}
 }
 ```
@@ -753,20 +911,29 @@ func refuseEmpty(cell string) error {
 
 The Aging Table is typed with both of p. 9's header rows and each row's cells
 as the spans their dotted leaders run across. The lift takes the bands from
-where the cells begin, and holds the headers to the procedure: each age must
-be the age its term ends at, which is why the starting age is `traveller`'s:
+where the cells begin, and holds the headers to the procedure. Each age must
+be the age its term ends at, which is why the starting age is `traveller`'s,
+and the header row carries the plus on 74+ that E014 rests on. The lift
+refuses a plus anywhere else, or none on the last age, and holds only that
+fact, not the reading:
 
 `internal/rules/lift.go` — `liftAgingHeaders`
 
 ```go
+		age, open := strings.CutSuffix(ages[i], "+")
+
+		switch last := i == len(ages)-1; {
+		case open && !last:
+			return 0, 0, fmt.Errorf("%w: aging table: age %q carries a plus before the last column", errMalformed, ages[i])
+		case !open && last:
+			return 0, 0, fmt.Errorf("%w: aging table: the last age, %q, carries no plus; "+
+				"E014 reads that plus as the open column", errMalformed, ages[i])
+		}
+
 		if age != strconv.Itoa(traveller.StartingAge+traveller.Years*term) {
 			return 0, 0, fmt.Errorf("%w: aging table: age %q is not the age term %d ends at", errMalformed, ages[i], term)
 		}
 ```
-
-The same header row carries the plus on 74+ that E014 rests on; the lift
-refuses a plus anywhere else, or none on the last age, and holds only that
-fact, not the reading.
 
 A transcription broken two ways reports the same fault every run, so a lift
 that finds faults in a loop walks the page's order rather than a map, whose
@@ -799,8 +966,14 @@ exists in the three books, so the normalization reads it as Rifle.
 ```go
 	grants: []printedGrant{
 		{label: "Navy Captain", grant: "+1 Social"},
-		...
+		{label: "Navy Admiral", grant: "+1 Social"},
+		{label: "Marine", grant: "Cutlass-1"},
+		{label: "Marine Lieutenant", grant: "Revolver-1"},
 		{label: "Army", grant: "Rifl3-1"},
+		{label: "Army Lieutenant", grant: "SMG-1"},
+		{label: "Merchant 1st Officer", grant: "Pilot-1"},
+		{label: "Scout", grant: "Pilot-1"},
+	},
 ```
 
 What the lift checks is the shape of a cell and the alphabet of a name, not
@@ -812,43 +985,103 @@ found, a misspelled field lifting as zero, cannot reach the lift.
 
 ## 9. The record and what is rendered from it
 
-`render.JSON` projects the character into the record and marshals it. The
-sheet and the transcript are projected from that same record, never from the
-domain types, and `SheetFrom` and `TranscriptFrom` decode a record written
-earlier into it. Reading a record back is the same code path as rendering a
-fresh one.
+`render.JSON` projects the character into the record and encodes it,
+indented. `render.JSONLine`, which `batch` streams, is the same encoder with
+no indent, so the two cannot come to write different records (#382):
 
-`internal/render/json.go` — `JSON`
+`internal/render/json.go` — `encoded`
 
 ```go
-func JSON(character *chargen.Character) ([]byte, error) {
+func encoded(character *chargen.Character, indent string) ([]byte, error) {
 	projected, err := project(character)
 	if err != nil {
 		return nil, err
 	}
+
+	var out bytes.Buffer
+
+	encoder := json.NewEncoder(&out)
+	encoder.SetIndent("", indent)
+
+	err = encoder.Encode(projected)
+	if err != nil {
+		return nil, fmt.Errorf("marshalling the character: %w", err)
+	}
+
+	return out.Bytes(), nil
+}
 ```
 
-The `policy` object is present exactly when the character came from `Auto`:
+`project` writes the name from `Inputs.Name` and the ruleset from
+`chargen.Ruleset`. The `policy` object is present exactly when the character
+came from `Auto`, and the version it carries is this build's:
 
 `internal/render/json.go` — `projectPolicy`
 
 ```go
-func projectPolicy(answered *chargen.AutoPolicy) *policyRecord {
+func projectPolicy(answered *chargen.Policy) *policyRecord {
 	if answered == nil {
 		return nil
 	}
 
 	return &policyRecord{
-		Version: answered.Version,
-		Career:  answered.Policy.Career.String(),
-		Skills:  answered.Policy.Skills.String(),
-		Muster:  answered.Policy.Muster.String(),
+		Version: chargen.PolicyVersion,
+		Career:  answered.Career.String(),
+		Skills:  answered.Skills.String(),
+		Muster:  answered.Muster.String(),
 	}
 }
 ```
 
-The transcript walks the events in order. A choice's line names who answered,
-which comes from the record, not the event:
+The sheet and the transcript are rendered from the record's bytes and nothing
+else, never from the domain types. `rendered` hands them what `JSON` just
+wrote (section 2), and `render` hands them a file read from disk:
+
+`internal/render/sheet.go` — `Sheet`
+
+```go
+func Sheet(text []byte) (string, error) {
+	projected, events, err := decode(text)
+	if err != nil {
+		return "", err
+	}
+
+	return sheetOf(projected, events), nil
+}
+```
+
+`decode` reads the record, and then every event, once, before anything is
+rendered. An event that will not read refuses the record, so a sheet never
+ends by telling the referee to keep a record that could not be read to its
+end. Reading is the only thing that can fail; what is rendered from what was
+read cannot (#362):
+
+`internal/render/decode.go` — `decode`
+
+```go
+	events := make([]eventJSON, 0, len(decoded.Events))
+
+	for _, raw := range decoded.Events {
+		var event eventJSON
+
+		err := json.Unmarshal(raw, &event)
+		if err != nil {
+			return record{}, nil, fmt.Errorf("%w: an event will not read: %w", errNotARecord, err)
+		}
+
+		events = append(events, event)
+	}
+
+	return decoded, events, nil
+```
+
+Nothing is rebuilt into a domain type on the way back: the sheet is a
+projection of the record, as the record is of the character. A record whose
+`policy` is a bare number (beta.5 and earlier) fails to decode, so an old auto
+record is never read as a guided one.
+
+`Transcript` decodes the same way, and walks the events in order. A choice's
+line names who answered, which comes from the record, not the event:
 
 `internal/render/transcript.go` — `transcriptOf`
 
@@ -876,9 +1109,9 @@ On an auto record that reads `28. SkillTable: policy chose Advanced Education
 Table from Personal Development Table, Service Skills Table, Advanced
 Education Table`.
 
-`Transcript` and `TranscriptFrom` take a `readings` flag, which is
-`--readings`. With it, the transcript keeps its inline ids and, after the
-last event, writes a section of its own:
+`Transcript` takes a `readings` argument, which is `--readings`. With it, the
+transcript keeps its inline ids and, after the last event, writes a section of
+its own:
 
 `internal/render/transcript.go` — `transcriptOf`
 
@@ -943,33 +1176,34 @@ unchanged.
 
 The sheet never carries the readings. Its headline explains a service the
 character did not ask for. It finds the service attempted (forced in
-`inputs`, or the Service choice) and says the policy picked it only on an
-auto record:
+`inputs`, or the Service choice among the events) and says the policy picked
+it only on an auto record:
 
 `internal/render/sheet.go` — `serviceAttempted`
 
 ```go
 	if r.Inputs.Service != "" {
-		return r.Inputs.Service, false, nil
+		return r.Inputs.Service, false
 	}
 
-	choice, asked, err := choiceAt(r, traveller.ChoiceService.String())
-	if err != nil || !asked {
-		return "", false, err
+	choice, asked := choiceAt(events, traveller.ChoiceService.String())
+	if !asked {
+		return "", false
 	}
 
-	return choice.Chosen, r.Policy != nil, nil
+	return choice.Chosen, r.Policy != nil
 ```
 
-An event that will not read fails both renderings rather than being skipped.
-A record whose `policy` is a bare number (beta.5 and earlier) fails to decode,
-so an old auto record is never read as a guided one.
+Every event has been read by the time this runs, so finding the choice cannot
+fail.
 
 ## 10. `readings`
 
 `ctchargen readings` is how an id is read out without a transcript to hand.
-It has no flag set, as `version` has none: its words are ids. With none, it
-lists every reading; with some, it writes those in full, in the order asked.
+It has no flag set, as `version` has none: its words are ids. `answerHelp`
+answers `--help` for both, and refuses a word after it as every other help
+path does. With no ids, `readings` lists every reading; with some, it writes
+those in full, in the order asked.
 
 `cmd/ctchargen/readings.go` — `readings`
 
@@ -1039,8 +1273,10 @@ ctchargen: usage: flag provided but not defined: -auto; run `ctchargen batch --h
 count, `--survivors`, the search bound and the dice. `write` picks the
 destination:
 
-- a directory takes one file per member, named by position;
-- standard output streams JSONL a record at a time;
+- a directory takes one file per member, named by position, each written by
+  `render.JSON`;
+- standard output streams JSONL a record at a time, each written by
+  `render.JSONLine`;
 - a file is buffered, so a failed run opens nothing.
 
 Collisions are checked from the planned paths before anyone is generated.
@@ -1060,10 +1296,7 @@ The member loop is shared by all three:
 		}
 
 		character, err := b.member(i)
-		if err != nil {
-			return done, err
-		}
-
+		...
 		if traveller.Fatal(character.Departure) {
 			if b.survivors {
 				done.passed++
@@ -1078,7 +1311,8 @@ The member loop is shared by all three:
 `--survivors` passes over a dead character and generates another, so every
 member written is still exactly what its dice made. It gives up at a hundred
 attempts per character asked for, and when it does, that is a run-time error
-and not a usage error.
+and not a usage error. `traveller.Fatal` is the same test of a departure the
+engine's `dead()` makes.
 
 ## 12. How the tests drive it
 
@@ -1114,26 +1348,37 @@ also writes the schema's two published examples.
 
 ### The stamping harness
 
-`stamping_test.go` reads every checked-in golden and holds its `errata` to a
-predicate per reading. Each predicate is written by hand from the reading's
-`StampedOn` prose, never from the stamping code, and a failure quotes that
-prose as `rules` declares it. Whether a reading is withdrawn comes from
-`rules` too:
+`stamping_test.go` reads the record each fixture writes, generated fresh from
+the engine as it is now, and `TestGoldens` holds those records to the
+checked-in goldens (#373). It holds each record's `errata` to a predicate per
+reading. Each predicate is written by hand from the reading's `StampedOn`
+prose, never from the stamping code, and a failure quotes that prose as
+`rules` declares it. Whether a reading is withdrawn comes from `rules` too:
 
 `internal/chargen/stamping_test.go` — `conditions`
 
 ```go
+func conditions(tables *rules.Rules) []reading {
+	all := slices.Concat(
+		enlistmentAndService(),
+		agingAndCrisis(),
+		rankAndTitle(tables),
+	)
+
 	for i := range all {
-		all[i].withdrawn = rules.ReadingOf(all[i].id).Withdrawn()
+		all[i].withdrawn = rules.Readings()[all[i].id-1].Withdrawn()
 	}
+
+	return all
+}
 ```
 
 `verdict` is what is wrong with how one record stamps one reading. A
-withdrawn reading is held only to being stamped on no record: the goldens are
-new records, and no new record may carry one. Its condition is not judged,
-since a reading replaced by another still describes records the replacement
-now governs (#332). A standing reading is stamped exactly where its condition
-holds, in both directions:
+withdrawn reading is held only to being stamped on no record: the fixtures'
+records are new records, and no new record may carry one. Its condition is not
+judged, since a reading replaced by another still describes records the
+replacement now governs (#332). A standing reading is stamped exactly where
+its condition holds, in both directions:
 
 `internal/chargen/stamping_test.go` — `verdict`
 
@@ -1154,13 +1399,13 @@ holds, in both directions:
 	case want && !got:
 ```
 
-Every golden agrees with every reading, so the main stamping test never feeds
-`verdict` a disagreement. Two tests do, from copies of the goldens with
-E001's stamp flipped. `TestAStandingReadingRefusesADisagreement` strikes it
-from records its condition fits and adds it to the rest, and expects each
-refused. `TestAWithdrawnReadingOnAGoldenIsRefused` treats E001 as withdrawn,
-under its real predicate: every golden stamping it is refused, and each with
-the stamp struck passes, though E001's prose still describes it.
+Every record agrees with every reading, so the main stamping test never feeds
+`verdict` a disagreement. Two tests do, from copies of the records with E001's
+stamp flipped. `TestAStandingReadingRefusesADisagreement` strikes it from
+records its condition fits and adds it to the rest, and expects each refused.
+`TestAWithdrawnReadingOnAGoldenIsRefused` treats E001 as withdrawn, under its
+real predicate: every record stamping it is refused, and each with the stamp
+struck passes, though E001's prose still describes it.
 
 A reading can be **parked**, naming the issue where its prose and its code
 disagree undecided: the harness counts its disagreements and asserts the
@@ -1174,13 +1419,22 @@ brackets, and the test that holds it a `Holds:` marker naming the same rule.
 roster and the schema's `$comment`s for markers, and fails when a rule is
 named by an implementation and held by no test, held by a test and named by no
 implementation, or cited to an authority that does not exist. A marker is one
-rule's name and one cite:
+rule's name and one cite, and a page cite names its books and readings:
 
 `internal/coverage/coverage_test.go` — `implementsMarker`
 
 ```go
+var (
 	implementsMarker = regexp.MustCompile(`^Implements: (.+) \[([^\]]+)\]\.$`)
 	holdsMarker      = regexp.MustCompile(`^Holds: (.+)\.$`)
+
+	// pageCite is a page cite's leading book and page, "1:4" or "3:22".
+	pageCite = regexp.MustCompile(`^(\d+):(\d+)`)
+
+	// citedBook is every book a page cite names, "1:5; 3:22" naming 1 and 3,
+	// and citedReading every reading it names, "(E006, E007)" naming two.
+	citedBook    = regexp.MustCompile(`(\d+):\d+`)
+	citedReading = regexp.MustCompile(`E\d{3}`)
 ```
 
 A cite is a page in a closed shape (`1:4`, `1:9 (E006, E007)`), an ADR that
@@ -1191,20 +1445,49 @@ the check:
 `internal/coverage/coverage_test.go` — `readAuthorities`
 
 ```go
+func readAuthorities(dir string) (authorities, error) {
+	known := authorities{cites: make(map[string]bool)}
+
+	for _, label := range promises {
+		known.cites[label] = true
+	}
+
+	err := known.readADRs(dir)
+	if err != nil {
+		return authorities{}, err
+	}
+
 	for _, r := range rules.Readings() {
 		known.cites["("+r.ID.String()+")"] = true
 	}
+
+	return known, nil
+}
 ```
 
 The check writes nothing. The map from each rule to its page, implementation
 and test is what the markers already say, and `-print` writes it as a table
-on demand:
+on demand, once the check has passed:
 
 `internal/coverage/coverage_test.go` — `TestTheCoverageMapHolds`
 
 ```go
+	err = known.check(found)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	rows, err := mapped(found)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	if *printTable {
 		_, err := os.Stdout.WriteString(strings.Join(table(rows), "\n") + "\n")
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
 ```
 
 Run from `internal/coverage` while writing this, `go test -run

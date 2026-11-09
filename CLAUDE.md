@@ -10,11 +10,10 @@ A Go CLI that generates rules-accurate Classic Traveller characters from
 Books 1–3 (© 1977 text, FFE reprints). The repo was emptied at `41a213a` and
 rebuilt from that contract.
 
-**Current state: the v1 contract is delivered, and the prerelease review
-and the prerelease code audit (#27) are closed.**
 **What governs the work now is what Classic Traveller referees report about
 using the tool** (#26 was the first such report); the page and the clean room
-govern how a report gets answered. `v1.0.0-rc.2` is the current release.
+govern how a report gets answered. The current release is the README's
+`go install` line, which the release gate reads; this file does not repeat it.
 
 **What `v1.0.0` means, decided in #74.** Two things, and both must hold: a
 referee can trust what the tool prints at the table, **and** the record is
@@ -26,9 +25,6 @@ stale every time one closes.
 `docs/CODING_STANDARDS.md`'s "The record's shape": the freeze at `v1.0.0` (#62),
 the schema's open root and closed objects (#113, #129), and what `record`
 counts (#96).
-
-**The paragraphs above the `v1.0.0` ones go stale**; bring them current in
-the release pass, not as the work moves.
 
 ## Authority — read this before implementing any rule
 

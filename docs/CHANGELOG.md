@@ -5,108 +5,84 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- Four doc comments that claimed more than the code no longer do: the
-  rules parsers name every list they keep, a reading's prose fields are
-  counted right, two comments name their own identifiers, and the one-die
-  throws are listed once, with the medical crisis months cited as pp. 7-8,
-  read from the page (#375).
-- The schema states once why no record carries both Travellers' Aid and
-  ships, on the rule that refuses them, and defines the dice once for the
-  throw and the roll events. What it accepts is unchanged, and a test now
-  holds that dice no throw can make are refused in both (#374).
-- Two tests that held one property are one: the stamping test's check that
-  every reading reaches some golden carries the `Holds:` marker, and the
-  test that repeated it goes. The checks over records read what each
-  fixture writes now rather than its golden on disk, so a reading the
-  engine stops stamping is named by an ordinary run. The command's tests
-  have one failing writer where they had four (#373).
-- The CLI answers help for `version` and `readings` through one helper,
-  refuses a word after a help flag in one sentence, which a test now holds
-  on every path, lists the help spellings once, and has `version` print the
-  build line the record is stamped with. Every message is unchanged (#372).
-- Three leftovers go from the rules lift and the events: the Prior Service
-  Table's DM headings are read to their amounts once, so building a
-  service's throws from them can no longer fail; the aging lift keeps a row as its cells,
-  without a field nothing read; and a throw's and a roll's totals share one
-  sum (#371).
-- Code only tests reached is gone: `traveller.NewTarget` and
-  `Target.Modality` (the modality is unexported, and tests build targets
-  with `ParseTarget`), `rules.ReadingOf` (tests read `rules.Readings`), the
-  skills policy's fallback for counts not parallel to the tables, which
-  the engine never passes, and a nil check its one caller had made (#370).
-- `chargen.Character` no longer carries its name, the ruleset or the
-  policy's version: the record takes its name from the inputs, and the
-  ruleset and the version from the build's constants. `AutoPolicy` is gone
-  with the version, and `Character.Policy` is the `Policy` that answered.
-  The record is unchanged, and a test now holds the name it carries
-  (#369).
-- The engine's run state no longer keeps copies of what the character
-  holds: whether he died is read off his departure, whether he was drafted
-  off his enlistment, the service's name off the service joined, and an
-  event's number off the count of events. A 12 on the reenlistment throw
-  is the intent to continue, with no flag beside it (#368).
-- The passage prices and the 90% resale rate of pp. 21-22 are no longer
-  transcribed: they were lifted and checked, and nothing read them, since
-  selling a passage is play after generation. Passages are still benefits a
-  character holds, by class (#365).
-- Table 1's benefit sum has the six kinds of row p. 9 prints: passage,
-  characteristic, weapon, Travellers' Aid, ship and the dash. It also had a
-  cash kind no Table 1 row produces, so the engine's case for it could never
-  run; Table 2's cash is a number read beside the row, unchanged (#364).
-- Rendering a sheet or a transcript decodes the record's events once, and
-  only that reading can fail: the helpers that read the decoded events
-  return no error, and a malformed record is refused with the same error.
-  `render.JSON` and `render.JSONLine` are one encoder, indented or not, and
-  still return json's error: none can arise today, but a record that failed
-  to marshal is refused rather than written wrong (#362).
-- The sheet and the transcript are rendered only from the record's bytes.
-  `render.Sheet` and `render.Transcript` take the record, where there were
-  also forms taking the generated character; `new` renders what it encodes,
-  as `render` does with a record written earlier, and the test that held the
-  two routes equal is gone with the second route. Every sheet and transcript
-  is unchanged (#363).
-- A 2D throw is two dice in sequence in one place, `chargen`'s `twoDice`,
-  where every roller implemented it. `Roller` drops `TwoDice`, so a test
-  roller can no longer make a 2D throw that is not the stream's next two
-  dice; the worked example's reproduction now runs on the scripted roller
-  the fixtures use, its throws still written as the totals the page narrates
-  (#376, #377).
-- `Character.ServedIn` no longer guards against a character that was never
-  enlisted: generation enlists every one, and since #199 nothing outside the
-  module can build one. A nil enlistment would now panic, so a generation
-  defect shows rather than reading as no service (#376, #377).
-- The engine's five yes-or-no choice points record their answer through one
-  helper, and the strategy lists in the help are built from the same `names`
-  the record's choices are (#376, #377).
-- The Taskfile drops `vet`, `build` and `clean`. golangci-lint's govet runs
-  every analyzer `go vet` does, `test` compiles every package, and no task
-  makes the binary `clean` removed (#376, #377).
-- The `--career`, `--skills` and `--muster` defaults are read from
-  `chargen.DefaultPolicy`, where they were typed out beside it, and the fixtures generate under `DefaultPolicy`, so a
-  default changed in one place alone would have kept every golden passing
-  under a policy the tool no longer applied. No default changes (#367).
-- An en dash where a sign belongs is refused by name, with `ErrEnDash`,
-  everywhere a sign is read. `traveller.Sign` is the one place that recognises
-  it, where four parse paths each checked for it before; the Prior Service
-  Table's DM headings, Table 1's alterations and the Rank and Service Skills
-  box's grants missed it, and refused one only as no sign, no benefit or no
-  level (#366).
-- The changelog, the coding standards, the glossary and the release snapshots
-  `THEORY.md` and `WALKTHROUGH.md` are in `docs/`. The root keeps only what a
-  tool outside the repo looks for there: the README, the licence and
-  `CLAUDE.md`.
-- `internal/mutate` builds the mutated copy and its test binaries before it
-  runs the command, the way `go test` builds them, vet checks included, and
-  reports a mutation that does not build as `NOT BUILT`, exiting 1. It said
-  `KILLED` for one before, since the command failed on the build before any
-  test ran, so a mutation could read as shown killed when nothing had been
-  tested.
-- The Table of Ranks is transcribed as p. 10 prints it: Rank 1 to Rank 6 as
-  rows, the services across. It was held a service's column at a time, the
-  same way the second transcription walks it, so a slip made reading down a
-  column could have passed both; the two copies now read it in opposite
-  directions, as they do the other service tables. Every lifted rank is unchanged.
-  `muster.go` no longer names the deleted `mustering.json` (#354, #355).
+## 1.0.0-rc.3
+
+The third release candidate for `v1.0.0`, and the first with every `v1`
+issue closed. Nothing a referee runs changes: every command line, flag,
+default, message and exit status is what rc.2 accepted and printed, and the
+record, its shape, the sheet and the transcript are what rc.2 wrote. Every
+golden is unchanged. The work is inside: a readiness review asked whether the
+code was as clean, lean and simple as it could be (#362–#376), and this is
+its answer.
+
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.3
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### What a referee will notice
+
+Nothing. A record written by rc.2 reads back, renders and validates as it
+did, and `record` stays 1.
+
+### Fixed
+
+- **An en dash where a sign belongs is refused by name everywhere a sign is
+  read** (#366). `traveller.Sign` is the one place that recognises one. The
+  Prior Service Table's DM headings, Table 1's alterations and the Rank and
+  Service Skills box's grants refused one before only as no sign, no benefit
+  or no level.
+- **The default auto policy is written once** (#367). The strategy flags'
+  defaults are read from `chargen.DefaultPolicy`, which the fixtures generate
+  under. A default changed in one place alone would have kept every golden
+  passing under a policy the tool no longer applied. No default changes.
+- **Table 1's benefit sum has the six kinds of row p. 9 prints** (#364). A
+  cash kind no Table 1 row produces is gone; Table 2's cash is unchanged.
+
+### Simpler
+
+- **One route to the sheet and the transcript**, from the record's bytes
+  (#363). `new` renders what it encodes, as `render` does a record written
+  earlier.
+- **A record's events are decoded once**, and only reading a record can fail
+  (#362). `JSON` and `JSONLine` are one encoder, and still return json's
+  error: a record that failed to marshal is refused, never written wrong.
+- **Nothing is kept twice that something else holds**: the engine's run state
+  reads death, the draft and the service off the character (#368);
+  `Character` drops its copies of the name, the ruleset and the policy
+  version (#369); a 2D throw is made of dice in one place (#377).
+- **Gone because nothing read it**: the passage prices and resale rate
+  (#365), accessors and branches only tests reached (#370), a second parse of
+  the DM headings and a dead aging field (#371), and the Taskfile's `vet`,
+  `build` and `clean` (#377).
+- **Said once**: the CLI's help handling and build line (#372), the five
+  yes-or-no choice points' recording (#377), and the schema's Travellers' Aid
+  exclusion and dice (#374).
+- #376 recorded seven simplifications decided, four carried out and three
+  declined, with the reasons.
+
+### Tests
+
+- **Gaps found and held**: the record's name (#369), the wording of the
+  refusal of a word after `--help` on every path (#372), dice no throw can
+  make in both event kinds (#374), and a bad DM heading in each of the four
+  throws (#371).
+- **The checks over records read what each fixture writes now**, not its
+  golden on disk, so a reading the engine stops stamping is named by an
+  ordinary run (#373). The command's tests have one failing writer.
+- `internal/mutate` reports a mutation that does not build as `NOT BUILT`,
+  never `KILLED` (#359).
+
+### Notes
+
+- The changelog, coding standards, glossary and release snapshots are in
+  `docs/` (#361). The coding standards hold a comment's claims to the code
+  (#360), and four doc comments that claimed more were narrowed (#375).
+- p. 10's Table of Ranks is transcribed as rows, so its two transcriptions
+  read it in opposite directions (#354, #355, #358).
 
 ## 1.0.0-rc.2
 
