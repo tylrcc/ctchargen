@@ -7,13 +7,10 @@ import "github.com/philoserf/ctchargen/internal/traveller"
 // scripted roller the tests use to walk a particular path.
 type Roller interface {
 	// Die returns one six-sided die, for the draft (p. 5), the skills
-	// tables (p. 11), a mustering out roll (p. 9), and the months a medical
-	// crisis recovery adds (pp. 7-8).
+	// tables (p. 11), a mustering out roll (p. 9), the months a medical
+	// crisis recovery adds (pp. 7-8), and each die of a 2D throw, which
+	// twoDice draws.
 	Die() int
-
-	// TwoDice returns the two dice of a 2D throw, first die then second.
-	// P. 10: "All rolls except draft are two-die throws."
-	TwoDice() (int, int)
 
 	// Among returns an index into a set of n alternatives, for a choice the
 	// book hands to a player without naming any basis to choose on (#34).
@@ -49,7 +46,9 @@ type throw struct {
 
 func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
 
-// roll makes a 2D throw against a target and reports whether it was met.
+// twoDice draws the two dice of a 2D throw: the next two dice of the stream,
+// first then second. Both are handed back, not their sum, because the record
+// logs the dice.
 //
 // Settled by the page and not a reading: checked as a possible silence at
 // milestone 0, and kept so it is not re-litigated as one. Which throws are two
@@ -57,9 +56,24 @@ func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
 // die (p. 5); so are the skills-table roll (p. 11), each mustering-out roll
 // (p. 9) and the medical-crisis recovery months (p. 7).
 //
+// It is the one place a 2D throw is made of dice, so every roller throws one
+// the same way, and the order a fixture's script states is the order the
+// dice are drawn in.
+//
 // Implements: Two-die throws except the draft [1:10].
+//
+//nolint:nonamedreturns // the names carry the order
+func twoDice(r Roller) (first, second int) {
+	first = r.Die()
+	second = r.Die()
+
+	return first, second
+}
+
+// roll makes a 2D throw against a target, its dice drawn by twoDice, and
+// reports whether it was met.
 func roll(r Roller, target traveller.Target, modifier int) throw {
-	first, second := r.TwoDice()
+	first, second := twoDice(r)
 	t := throw{dice: [2]int{first, second}, modifier: modifier, target: target}
 
 	t.succeeded = target.Satisfied(t.total())

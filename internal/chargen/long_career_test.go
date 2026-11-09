@@ -65,9 +65,9 @@ func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 		Forced: chargen.ForceService(traveller.Other),
 	}
 
-	// Twelves for enlistment and the first term's survival, then throws that
-	// make every reenlistment without ever rolling the 12 that forces one.
-	character, err := chargen.Auto(inputs, chargen.DefaultPolicy(), chargen.WithRoller(&alwaysNine{}))
+	// Every throw a 10: every reenlistment is made, and none is the 12 that
+	// forces one.
+	character, err := chargen.Auto(inputs, chargen.DefaultPolicy(), chargen.WithRoller(&alwaysFive{}))
 	if err != nil {
 		t.Fatalf("generating: %v", err)
 	}
@@ -83,10 +83,9 @@ func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 	}
 }
 
-// alwaysNine makes every throw a 9: enough for every target Other prints,
-// and never the 12 that forces another term.
-type alwaysNine struct{}
+// alwaysFive makes every die a 5, so every throw a 10: enough for every
+// target Other prints, and never the 12 that forces another term.
+type alwaysFive struct{}
 
-func (alwaysNine) Die() int            { return 1 }
-func (alwaysNine) Among(int) int       { return 0 }
-func (alwaysNine) TwoDice() (int, int) { return 4, 5 }
+func (alwaysFive) Die() int      { return 5 }
+func (alwaysFive) Among(int) int { return 0 }

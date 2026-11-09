@@ -227,13 +227,7 @@ func parsed[T fmt.Stringer](word, flag string, all []T) (T, error) {
 
 // choices joins an alphabet the way a reader is shown it.
 func choices[T fmt.Stringer](all []T) string {
-	names := make([]string, 0, len(all))
-
-	for _, one := range all {
-		names = append(names, one.String())
-	}
-
-	return strings.Join(names, ", ")
+	return strings.Join(names(all, T.String), ", ")
 }
 
 // prefer picks the first of a ranked preference that is on offer, and falls

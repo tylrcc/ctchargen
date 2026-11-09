@@ -12,7 +12,6 @@ tasks:
     desc: The whole gate, in the order a failure is cheapest to read
     cmds:
       - task: tidy
-      - task: vet
       - task: lint
       - task: nilaway
       - task: vuln
@@ -24,13 +23,8 @@ tasks:
     cmds:
       - go mod tidy -diff
 
-  vet:
-    desc: go vet ./...
-    cmds:
-      - go vet ./...
-
   lint:
-    desc: golangci-lint, which also reports any formatting difference
+    desc: golangci-lint, which also reports any formatting difference and runs every go vet analyzer
     cmds:
       # First, because a malformed .golangci.yml otherwise surfaces as a
       # runtime linter error rather than a config error -- an invalid
@@ -86,13 +80,3 @@ tasks:
     desc: Format Markdown, JSON and YAML with bun fmt
     cmds:
       - bun fmt
-
-  build:
-    desc: Build every package
-    cmds:
-      - go build ./...
-
-  clean:
-    desc: Remove the built binary
-    cmds:
-      - rm -f ctchargen

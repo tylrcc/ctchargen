@@ -7,14 +7,15 @@ import (
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
+	"github.com/philoserf/ctchargen/internal/scripted"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // The worked example of Book 1 pp. 23-25, reproduced.
 //
 // The choice points make the instrument free: the procedure asks through a Decider and
-// throws through a Roller, so a narrated pair walks the example's own
-// character and the result is compared against the page. It is the one check
+// throws through a Roller, so the page's own answers and dice walk the
+// example's own character and the result is compared against the page. It is the one check
 // on this engine written by someone other than its author.
 //
 // Every value below is read from pp. 23-25. The page's own arithmetic is
@@ -26,118 +27,86 @@ import (
 // turns on.
 
 // errNotNarrated is what a scripted answer returns on a path the example
-// does not narrate. The t.Fatal above it stops the test first; this is what
+// does not narrate. The t.Fatal beside each return stops the test first; this is what
 // keeps the signature honest rather than returning a value nobody chose.
 var errNotNarrated = errors.New("the example does not narrate this")
 
 // dagger is the first blade on p. 12's list, and what Jamison chooses.
 const dagger = "Dagger"
 
-// jamisonThrows is every two-dice throw the engine makes, as totals, in the
-// order it makes them. The example narrates the same throws in its own
-// order; E002 puts skills before reenlistment, so the reenlistment throw
-// sits after that term's skills here and before them on the page.
+// jamisonDice is every die the engine throws, in the order it throws it.
+// The page narrates a two-dice throw by its total, so each is written here as
+// that total, through throws; a one-die roll is written as itself. The
+// example narrates the same throws in its own order; E002 puts skills before
+// reenlistment, so the reenlistment throw sits after that term's skills here
+// and before them on the page.
 //
 //nolint:gochecknoglobals // an immutable script, and Go has no const slice.
-var jamisonThrows = []int{
+var jamisonDice = slices.Concat(
 	// "generate all six characteristics; the rolls, consecutively, 6, 8, 8,
 	// 12, 8, 9" - UPP 688C89.
-	6, 8, 8, 12, 8, 9,
+	throws(6, 8, 8, 12, 8, 9),
 
 	// Enlistment in the Merchants, 7+: "he rolls 5 (+2=7)".
-	5,
+	throws(5),
 
 	// Term 1. Survival "he rolls 11 (+2=13)". Commission 4+: the page prints
 	// "DM of +7 allowed for intelligence", which its own sum corrects to +1 -
 	// "he rolls 7 (+1=8)" - and the Prior Service Table gives Merchants +1.
-	// Promotion 10+: "he rolls 10 (+1=11)". Reenlistment 4+: "he rolls 7".
-	11, 7, 10, 7,
+	// Promotion 10+: "he rolls 10 (+1=11)".
+	throws(11, 7, 10),
+	[]int{1, 5, 2, 5}, // skills: +1 strength, blade combat, vacc suit, electronics
+	throws(7),         // reenlistment 4+: "he rolls 7"
 
 	// Term 2. Survival "he rolls 3, which is the lowest possible and still
-	// survive (3+2=5)". Promotion "he rolls 12 (+1=13)". Reenlistment "6".
-	3, 12, 6,
+	// survive (3+2=5)". Promotion "he rolls 12 (+1=13)".
+	throws(3, 12),
+	[]int{3, 4}, // skills: +1 endurance, gun combat
+	throws(6),   // reenlistment "6"
 
 	// Term 3. Survival: the page prints "he rolls 2 (+2=11)", whose stated
 	// total needs a 9. Promotion "he rolls 8 (+1=9)" against the Merchants'
 	// 10+, which the page then calls failing "by two points" - it is one.
-	// Reenlistment "10".
-	9, 8, 10,
+	throws(9, 8),
+	[]int{5},   // skills: electronics
+	throws(10), // reenlistment "10"
 
 	// Term 4. Survival "he rolls 7 (+2=9)". Promotion "he throws 12
-	// (+1=13)", making him 1st Officer. Reenlistment "10". Then the aging
-	// round the page defers: strength 12, dexterity 8, endurance 9.
-	7, 12, 10, 12, 8, 9,
+	// (+1=13)", making him 1st Officer.
+	throws(7, 12),
+	[]int{5, 4}, // skills: blade combat, gun combat
+	throws(10),  // reenlistment "10"
+	// The aging round the page defers: strength 12, dexterity 8, endurance 9.
+	throws(12, 8, 9),
 
 	// Term 5. Survival "he rolls 7 (+2=9)". Promotion "he rolls 11 (+1=12)",
-	// making him Captain. Reenlistment "he rolls 3", which fails. Then the
-	// second aging round: strength 8, dexterity 6, endurance 11.
-	7, 11, 3, 8, 6, 11,
-}
-
-// jamisonDice is every one-die roll, in order: the skills tables term by
-// term, then the seven mustering out rolls.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
-var jamisonDice = []int{
-	1, 5, 2, 5, // term 1: +1 strength, blade combat, vacc suit, electronics
-	3, 4, // term 2: +1 endurance, gun combat
-	5,    // term 3: electronics
-	5, 4, // term 4: blade combat, gun combat
-	5, 3, // term 5: pilot, electronics
+	// making him Captain.
+	throws(7, 11),
+	[]int{5, 3}, // skills: pilot, electronics
+	throws(3),   // reenlistment "he rolls 3", which fails
+	// The second aging round: strength 8, dexterity 6, endurance 11.
+	throws(8, 6, 11),
 
 	// "Jamison elects to make one roll on Table 2 [he rolls 4= CR 20,000]
 	// and six rolls on Table 1 [he rolls 5 (+1=6); 6 (+1=7); 2 (+1=3);
 	// 6 (+1=7); 6 (+1=7); 6 (+1=7)]".
-	4,
-	5, 6, 2, 6, 6, 6,
-}
+	[]int{4},
+	[]int{5, 6, 2, 6, 6, 6},
+)
 
-// narrated rolls the sequence the page narrates, and refuses to be asked for more
-// than it was given: a throw the engine makes and the page does not narrate
-// would otherwise be answered with a zero nobody chose.
-type narrated struct {
-	t      *testing.T
-	throws []int
-	dice   []int
-}
+// throws writes each two-dice total the page narrates as the two dice the
+// engine throws for it, the first as high as the total allows. The page
+// gives only the total, and the total is all the procedure reads.
+func throws(totals ...int) []int {
+	dice := make([]int, 0, 2*len(totals))
 
-// Among is never called: the worked example drives its own decider, which
-// names each weapon the book names rather than choosing one. If this ever
-// fires, the reproduction has stopped following p. 25 and started guessing.
-func (s *narrated) Among(int) int {
-	s.t.Fatalf("the worked example drew among alternatives; p. 25 names them")
+	for _, total := range totals {
+		first := min(6, total-1)
 
-	return 0
-}
-
-func (s *narrated) Die() int {
-	s.t.Helper()
-
-	if len(s.dice) == 0 {
-		s.t.Fatal("the engine asked for a one-die roll the example does not narrate")
+		dice = append(dice, first, total-first)
 	}
 
-	next := s.dice[0]
-
-	s.dice = s.dice[1:]
-
-	return next
-}
-
-func (s *narrated) TwoDice() (int, int) {
-	s.t.Helper()
-
-	if len(s.throws) == 0 {
-		s.t.Fatal("the engine asked for a two-dice throw the example does not narrate")
-	}
-
-	total := s.throws[0]
-
-	s.throws = s.throws[1:]
-
-	first := min(6, total-1)
-
-	return first, total - first
+	return dice
 }
 
 // decisions answers the choice points the example narrates. Its queues are
@@ -243,7 +212,9 @@ func reproduceJamison(t *testing.T) *chargen.Character {
 		Name: "Jamison", Forced: chargen.ForceService(traveller.Merchants),
 	}
 
-	rolls := &narrated{t: t, throws: slices.Clone(jamisonThrows), dice: slices.Clone(jamisonDice)}
+	// The example names every weapon it takes, so it never draws among
+	// alternatives; a draw would mean the reproduction had started guessing.
+	rolls := scripted.New(t, "the worked example", jamisonDice, nil)
 
 	chosen := &decisions{
 		t: t,
@@ -272,10 +243,7 @@ func reproduceJamison(t *testing.T) *chargen.Character {
 		t.Fatalf("reproducing the example: %v", err)
 	}
 
-	if len(rolls.throws) != 0 || len(rolls.dice) != 0 {
-		t.Errorf("the example narrates %d throws and %d dice the engine never asked for",
-			len(rolls.throws), len(rolls.dice))
-	}
+	rolls.Finished()
 
 	return character
 }

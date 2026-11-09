@@ -199,7 +199,7 @@ func (r *run) rollProfile() {
 	r.log.step("characteristics", "p. 4")
 
 	for _, c := range traveller.Characteristics {
-		first, second := r.roll.TwoDice()
+		first, second := twoDice(r.roll)
 
 		r.char.Profile[c] = first + second
 

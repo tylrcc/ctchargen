@@ -29,22 +29,6 @@ func TestDieStaysInRangeAndReachesEveryFace(t *testing.T) {
 	}
 }
 
-// A 2D throw is two dice, each 1 through 6.
-//
-// Holds: Two-die throws except the draft.
-func TestTwoDiceIsTwoDice(t *testing.T) {
-	t.Parallel()
-
-	s := dice.New()
-
-	for i := range 1000 {
-		first, second := s.TwoDice()
-		if first < 1 || first > 6 || second < 1 || second > 6 {
-			t.Fatalf("throw %d: TwoDice() = (%d, %d), want two dice", i, first, second)
-		}
-	}
-}
-
 // Among reaches every alternative and nothing past them.
 func TestAmongReachesEveryAlternative(t *testing.T) {
 	t.Parallel()

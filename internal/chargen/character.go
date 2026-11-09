@@ -178,12 +178,6 @@ func (s *serviceCodec) DeclinedTheDraft() error { return nil }
 // Implements: A civilian entered no service, and the record names none [1:5
 // (E001)].
 func (c *Character) ServedIn() (traveller.ServiceName, bool) {
-	if c.Enlistment == nil {
-		var none traveller.ServiceName
-
-		return none, false
-	}
-
 	var codec serviceCodec
 
 	// A fold over a codec cannot fail: every case only assigns.

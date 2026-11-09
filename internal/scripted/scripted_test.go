@@ -63,7 +63,7 @@ func TestAScriptIsStrictBothWays(t *testing.T) {
 		want        string
 	}{
 		"a die past the end": {
-			dice: []int{3}, play: func(r *scripted.Roller) { r.TwoDice() },
+			dice: []int{3}, play: func(r *scripted.Roller) { r.Die(); r.Die() },
 			want: "the path: the procedure asked for die 2, and the script holds 1",
 		},
 		"a draw past the end": {
@@ -107,9 +107,7 @@ func TestAScriptReadToItsEndIsSilent(t *testing.T) {
 	failures := on(t, dice, among, func(r *scripted.Roller) {
 		dice[0], among[0] = 5, 0
 
-		first, second := r.TwoDice()
-
-		read = fmt.Sprint(first, second, r.Die(), r.Among(3))
+		read = fmt.Sprint(r.Die(), r.Die(), r.Die(), r.Among(3))
 		r.Finished()
 	})
 

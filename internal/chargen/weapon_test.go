@@ -112,7 +112,7 @@ func (r reaching) Weapon(
 // A decider handed a Vary cannot assert its way back to the Roller.
 //
 // The narrowing was by static type alone, so vary.(chargen.Roller) gave a
-// decider Die and TwoDice back, and the dice it threw reached no event: a
+// decider Die back, and the dice it threw reached no event: a
 // different character from the same dice, recorded as an honest one (#136).
 //
 // Every fixture walks its own script, so the same Weapon choices are reached

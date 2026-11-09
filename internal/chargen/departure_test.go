@@ -163,21 +163,3 @@ func TestACivilianEnteredNoService(t *testing.T) {
 		t.Error("no fixture declines the draft, so this checks nothing")
 	}
 }
-
-// A character who has not been enlisted has no service, and asking does not
-// panic.
-//
-// Nothing inside the tool reaches this: Auto and Guided both enlist before
-// anything asks. But Character is an exported type with exported fields, so a caller
-// can hold one that has never been through it - and Fold on a nil interface
-// is a panic, not a zero value.
-func TestAnUnenlistedCharacterHasNoService(t *testing.T) {
-	t.Parallel()
-
-	var blank chargen.Character
-
-	service, served := blank.ServedIn()
-	if served {
-		t.Errorf("a character with no enlistment served in the %v", service)
-	}
-}

@@ -85,30 +85,15 @@ func (l logging) Service(from []traveller.EnlistmentOffer) (traveller.ServiceNam
 }
 
 func (l logging) SubmitToDraft() (bool, error) {
-	chosen, err := l.to.SubmitToDraft()
-	if err != nil {
-		return chosen, err
-	}
-
-	return chosen, l.record(traveller.ChoiceSubmitToDraft, offered(), yesNo(chosen))
+	return l.yesOrNo(traveller.ChoiceSubmitToDraft, l.to.SubmitToDraft)
 }
 
 func (l logging) AttemptCommission() (bool, error) {
-	chosen, err := l.to.AttemptCommission()
-	if err != nil {
-		return chosen, err
-	}
-
-	return chosen, l.record(traveller.ChoiceAttemptCommission, offered(), yesNo(chosen))
+	return l.yesOrNo(traveller.ChoiceAttemptCommission, l.to.AttemptCommission)
 }
 
 func (l logging) AttemptPromotion() (bool, error) {
-	chosen, err := l.to.AttemptPromotion()
-	if err != nil {
-		return chosen, err
-	}
-
-	return chosen, l.record(traveller.ChoiceAttemptPromotion, offered(), yesNo(chosen))
+	return l.yesOrNo(traveller.ChoiceAttemptPromotion, l.to.AttemptPromotion)
 }
 
 func (l logging) SkillTable(
@@ -180,21 +165,11 @@ func (l logging) MusterTable(from []traveller.MusterTable) (traveller.MusterTabl
 }
 
 func (l logging) MusterTable1DM() (bool, error) {
-	chosen, err := l.to.MusterTable1DM()
-	if err != nil {
-		return chosen, err
-	}
-
-	return chosen, l.record(traveller.ChoiceMusterTable1DM, offered(), yesNo(chosen))
+	return l.yesOrNo(traveller.ChoiceMusterTable1DM, l.to.MusterTable1DM)
 }
 
 func (l logging) MusterTable2DM() (bool, error) {
-	chosen, err := l.to.MusterTable2DM()
-	if err != nil {
-		return chosen, err
-	}
-
-	return chosen, l.record(traveller.ChoiceMusterTable2DM, offered(), yesNo(chosen))
+	return l.yesOrNo(traveller.ChoiceMusterTable2DM, l.to.MusterTable2DM)
 }
 
 func (l logging) MusterWeapon(
@@ -288,6 +263,17 @@ func (d *describeWeaponBenefit) TakeExpertise(weapon traveller.WeaponName) error
 	d.text = expertiseIn(weapon)
 
 	return nil
+}
+
+// yesOrNo asks a yes-or-no choice point and records what was chosen. Only the
+// point differs between the five that ask one.
+func (l logging) yesOrNo(point traveller.ChoicePoint, ask func() (bool, error)) (bool, error) {
+	chosen, err := ask()
+	if err != nil {
+		return chosen, err
+	}
+
+	return chosen, l.record(point, offered(), yesNo(chosen))
 }
 
 // record writes the answer into the generation record, and refuses one that

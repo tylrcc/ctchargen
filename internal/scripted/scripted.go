@@ -55,16 +55,6 @@ func (r *Roller) Die() int {
 	return face
 }
 
-// TwoDice is the script's next two dice.
-func (r *Roller) TwoDice() (int, int) {
-	r.t.Helper()
-
-	first := r.Die()
-	second := r.Die()
-
-	return first, second
-}
-
 // Among is the script's next draw, which must index one of n alternatives.
 func (r *Roller) Among(n int) int {
 	r.t.Helper()

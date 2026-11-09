@@ -7,13 +7,10 @@
 //
 // The stream is not seeded. No two are alike and none can be brought back:
 // the record is the only way back to a character (ADR 0001), and it logs
-// every die this hands out. Three properties are load-bearing all the same,
+// every die this hands out. Two properties are load-bearing all the same,
 // because every fixture's script and every reader of a record rest on them:
 //
 //   - The die is one of six faces, each as likely as the others.
-//   - A 2D throw is two of those in sequence, first die then second, and
-//     both are handed back because the record logs the dice and not only
-//     their total.
 //   - Among is one index in n, each as likely as the others, for the
 //     choices the book leaves to a player without naming a basis.
 package dice
@@ -24,8 +21,6 @@ import "math/rand/v2"
 const faces = 6
 
 // Stream is a source of dice. The zero value is not usable; call New.
-//
-// Implements: Two-die throws except the draft [1:10].
 type Stream struct {
 	r *rand.Rand
 }
@@ -56,21 +51,4 @@ func (s *Stream) Die() int {
 // n must be positive; IntN says so itself.
 func (s *Stream) Among(n int) int {
 	return s.r.IntN(n)
-}
-
-// TwoDice returns the two dice of a 2D throw, first die then second.
-//
-// Book 1 p. 10: "All rolls except draft are two-die throws." The caller sums
-// them; both are returned because the generation record logs the dice, not
-// only their total.
-//
-// The results are named because the order is the record's: first die, then
-// second. Unlabelled, two ints say nothing about which is which.
-//
-//nolint:nonamedreturns // the names carry the order
-func (s *Stream) TwoDice() (first, second int) {
-	first = s.Die()
-	second = s.Die()
-
-	return first, second
 }

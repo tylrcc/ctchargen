@@ -5,6 +5,22 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A 2D throw is two dice in sequence in one place, `chargen`'s `twoDice`,
+  where every roller implemented it. `Roller` drops `TwoDice`, so a test
+  roller can no longer make a 2D throw that is not the stream's next two
+  dice; the worked example's reproduction now runs on the scripted roller
+  the fixtures use, its throws still written as the totals the page narrates
+  (#376, #377).
+- `Character.ServedIn` no longer guards against a character that was never
+  enlisted: generation enlists every one, and since #199 nothing outside the
+  module can build one. A nil enlistment would now panic, so a generation
+  defect shows rather than reading as no service (#376, #377).
+- The engine's five yes-or-no choice points record their answer through one
+  helper, and the strategy lists in the help are built from the same `names`
+  the record's choices are (#376, #377).
+- The Taskfile drops `vet`, `build` and `clean`. golangci-lint's govet runs
+  every analyzer `go vet` does, `test` compiles every package, and no task
+  makes the binary `clean` removed (#376, #377).
 - The `--career`, `--skills` and `--muster` defaults are read from
   `chargen.DefaultPolicy`, where they were typed out beside it, and the fixtures generate under `DefaultPolicy`, so a
   default changed in one place alone would have kept every golden passing
