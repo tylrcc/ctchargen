@@ -86,7 +86,8 @@ type batchRun struct {
 	policy chargen.Policy
 	count  int
 
-	// attempts bounds the search for the living at count*attempts characters.
+	// attempts bounds the search for the living at attempts characters per
+	// member asked for.
 	attempts int
 	dice     source
 }
@@ -265,7 +266,9 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 	var done tally
 
 	for i := 0; done.written < b.count; i++ {
-		if i >= b.count*b.attempts {
+		// Divided, not multiplied: count*attempts overflows an int for a
+		// count near its top, and the batch gave up having drawn nobody (#423).
+		if i/b.attempts >= b.count {
 			// Not a usage error: the flags were well formed, and what
 			// failed was the search. The bound's own comment says
 			// reaching it means something is wrong rather than unlucky,

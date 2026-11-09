@@ -11,10 +11,11 @@ import (
 // The loop has no bound, and needs none under dice: the reenlistment throw of
 // p. 6 fails eventually and the survival throw of p. 5 ends things sooner
 // than that, so a career terminates with probability 1. That is a contract on
-// the Roller, not a property of this function - a roller that answers every
-// 2D throw with 12 never fails a reenlistment and this never returns, which is
-// why the fixture that walks past the Aging Table's last column scripts a
-// finite list of dice rather than an endless supply of 12s (#54).
+// the Roller, not a property of this function - a roller whose every die is
+// a 6 makes every 2D throw a 12, never fails a reenlistment, and this never
+// returns, which is why the fixture that walks past the Aging Table's last
+// column scripts a finite list of dice rather than an endless supply of 6s
+// (#54).
 func (r *run) serve() error {
 	for term := 1; ; term++ {
 		done, err := r.term(traveller.Term(term))

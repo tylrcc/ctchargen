@@ -131,3 +131,23 @@ func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 		t.Errorf("%d members were written before the failure, want 2", out.writes)
 	}
 }
+
+// A batch of more members than its search bound can count still generates
+// (#423). The bound is count times attemptsPerMember, and a count near the
+// top of an int made that product overflow, so the batch gave up having
+// generated nobody. Here it writes its first member and stops only when the
+// output fails on the second.
+//
+// Holds: A batch gives up rather than drawing forever.
+func TestAHugeBatchGeneratesRatherThanGivingUpAtOnce(t *testing.T) {
+	t.Parallel()
+
+	out := failsAfter{left: 1}
+
+	err := run([]string{cmdBatch, flagCount, "4611686018427387904", flagService, other},
+		nil, &out, io.Discard)
+	if !errors.Is(err, errWriteFailed) || out.writes != 1 {
+		t.Errorf("a huge batch wrote %d notes and said %v, want one note and then the write failure",
+			out.writes, err)
+	}
+}

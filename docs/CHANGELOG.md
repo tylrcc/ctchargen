@@ -70,6 +70,8 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
 - A characteristic change the floor or the ceiling held is no longer `+0` on
   the sheet: it says the table's change and where it stayed, as the
   generation record does: `Strength +1 (held at 15)` (#409).
+- A `batch --count` near the top of an int generates instead of giving up at
+  once having generated nobody: its search bound overflowed (#423).
 - A character with no enlistment, which only a generation defect could
   produce, now fails loudly in the renderer rather than reading as one who
   never served, as #377 decided for the engine (#393).
