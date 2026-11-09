@@ -3,6 +3,11 @@ package rules
 import (
 	"fmt"
 	"maps"
+	"regexp"
+	"slices"
+	"strconv"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
@@ -479,47 +484,26 @@ func (r *Rules) liftPassages(t musteringTranscription) error {
 	return nil
 }
 
+// liftAging lifts the Aging Table as p. 9 prints it, and the medical crisis.
+// The headers give the last printed term, each row's cells give its effects
+// across the term columns, and the bands are where the rows' cells begin,
+// taken together.
+//
 // Implements: Education and Social Standing are unaffected by aging [1:9].
 // Implements: Intelligence is unaffected before age 66 [1:9].
 func (r *Rules) liftAging(t agingTranscription) error {
-	for _, band := range t.bands {
-		lifted := agingBand{fromTerm: traveller.Term(band.fromTerm)}
-		for _, e := range band.effects {
-			characteristic, err := parseCharacteristic(e.characteristic)
-			if err != nil {
-				return fmt.Errorf("aging band from term %d: %w", band.fromTerm, err)
-			}
-
-			saving, err := traveller.ParseTarget(e.saving)
-			if err != nil {
-				return fmt.Errorf("%w: aging band from term %d: %w", errMalformed, band.fromTerm, err)
-			}
-
-			lifted.effects = append(lifted.effects, AgingEffect{
-				Characteristic: characteristic, Reduction: e.reduction, Saving: saving,
-			})
-		}
-
-		if len(r.aging.bands) > 0 && lifted.fromTerm <= r.aging.bands[len(r.aging.bands)-1].fromTerm {
-			return fmt.Errorf("%w: aging bands are out of order at term %d", errMalformed, band.fromTerm)
-		}
-
-		r.aging.bands = append(r.aging.bands, lifted)
+	first, last, err := liftAgingHeaders(t.terms, t.ages)
+	if err != nil {
+		return err
 	}
 
-	if len(r.aging.bands) == 0 {
-		return fmt.Errorf("%w: aging: no bands", errMalformed)
+	rows, err := liftAgingRows(t.rows, first, last)
+	if err != nil {
+		return err
 	}
 
-	// The last term the table's header row prints. It has to reach the last
-	// band, or the band would begin at a term the table never names.
-	last := traveller.Term(t.lastPrintedTerm)
-	if last < r.aging.bands[len(r.aging.bands)-1].fromTerm {
-		return fmt.Errorf("%w: aging: the last printed term is %d, before the last band begins",
-			errMalformed, t.lastPrintedTerm)
-	}
-
-	r.aging.lastPrintedTerm = last
+	r.aging.bands = agingBands(rows)
+	r.aging.lastPrintedTerm = traveller.Term(last)
 
 	saving, err := traveller.ParseTarget(t.crisisSaving)
 	if err != nil {
@@ -598,4 +582,207 @@ func (r *Rules) liftNobility(titles []printedTitle) error {
 	}
 
 	return nil
+}
+
+// liftAgingHeaders reads the table's two header rows: the terms, each one more
+// than the term before it, and the ages, each the age its term ends at
+// (traveller.StartingAge plus traveller.Years a term), with a plus on the last
+// age and nowhere else. That plus is the page fact
+// E014 rests on; E014 itself is a reading, and the lift holds only the fact.
+func liftAgingHeaders(terms, ages []string) (int, int, error) {
+	if len(terms) == 0 || len(terms) != len(ages) {
+		return 0, 0, fmt.Errorf("%w: aging table: %d terms and %d ages", errMalformed, len(terms), len(ages))
+	}
+
+	var first, previous int
+
+	for i, printed := range terms {
+		term, err := strconv.Atoi(printed)
+		if err != nil {
+			return 0, 0, fmt.Errorf("%w: aging table: term %q is not a number", errMalformed, printed)
+		}
+
+		if i > 0 && term != previous+1 {
+			return 0, 0, fmt.Errorf("%w: aging table: term %q does not follow %d", errMalformed, printed, previous)
+		}
+
+		age, open := strings.CutSuffix(ages[i], "+")
+
+		switch last := i == len(ages)-1; {
+		case open && !last:
+			return 0, 0, fmt.Errorf("%w: aging table: age %q carries a plus before the last column", errMalformed, ages[i])
+		case !open && last:
+			return 0, 0, fmt.Errorf("%w: aging table: the last age, %q, carries no plus; "+
+				"E014 reads that plus as the open column", errMalformed, ages[i])
+		}
+
+		if age != strconv.Itoa(traveller.StartingAge+traveller.Years*term) {
+			return 0, 0, fmt.Errorf("%w: aging table: age %q is not the age term %d ends at", errMalformed, ages[i], term)
+		}
+
+		if i == 0 {
+			first = term
+		}
+
+		previous = term
+	}
+
+	return first, previous, nil
+}
+
+// agingRow is one characteristic's row, lifted: its effect over each printed
+// span, nil where the cell says it has none.
+type agingRow struct {
+	characteristic traveller.Characteristic
+	cells          []agingCell
+}
+
+type agingCell struct {
+	from, through int
+	effect        *AgingEffect
+}
+
+// liftAgingRows reads the six rows, in the order p. 9 prints them, which is
+// p. 4's. Each row's cells cover the term columns once, left to right.
+func liftAgingRows(printed []printedAgingRow, first, last int) ([]agingRow, error) {
+	if len(printed) != len(traveller.Characteristics) {
+		return nil, fmt.Errorf("%w: aging table: %d rows, want %d", errMalformed,
+			len(printed), len(traveller.Characteristics))
+	}
+
+	rows := make([]agingRow, 0, len(printed))
+
+	for i, row := range printed {
+		characteristic, err := parseCharacteristic(row.label)
+		if err != nil {
+			return nil, fmt.Errorf("aging table: %w", err)
+		}
+
+		if characteristic != traveller.Characteristics[i] {
+			return nil, fmt.Errorf("%w: aging table: row %d is %v, want %v", errMalformed, i+1, characteristic,
+				traveller.Characteristics[i])
+		}
+
+		cells, err := liftAgingCells(row.cells, characteristic, first, last)
+		if err != nil {
+			return nil, err
+		}
+
+		rows = append(rows, agingRow{characteristic: characteristic, cells: cells})
+	}
+
+	return rows, nil
+}
+
+// liftAgingCells reads one row's cells, refusing a gap, an overlap or a cell
+// past the last printed term.
+func liftAgingCells(printed []printedSpan, row traveller.Characteristic, first, last int) ([]agingCell, error) {
+	next := first
+
+	cells := make([]agingCell, 0, len(printed))
+
+	for _, span := range printed {
+		if span.through > last {
+			return nil, fmt.Errorf("%w: aging table, %v: a cell across terms %d to %d runs past the last printed term, %d",
+				errMalformed, row, span.from, span.through, last)
+		}
+
+		if span.from != next || span.through < span.from {
+			return nil, fmt.Errorf("%w: aging table, %v: a cell across terms %d to %d, where term %d is next",
+				errMalformed, row, span.from, span.through, next)
+		}
+
+		effect, err := parseAgingCell(span.text, row)
+		if err != nil {
+			return nil, fmt.Errorf("aging table, %v, terms %d to %d: %w", row, span.from, span.through, err)
+		}
+
+		cells = append(cells, agingCell{from: span.from, through: span.through, effect: effect})
+		next = span.through + 1
+	}
+
+	if next != last+1 {
+		return nil, fmt.Errorf("%w: aging table, %v: the cells stop before term %d", errMalformed, row, last)
+	}
+
+	return cells, nil
+}
+
+// agingCellText is a cell that reduces a characteristic, as p. 9 prints one:
+// "−1 (8+)", the reduction and, in parentheses, the saving throw.
+var agingCellText = regexp.MustCompile(`^(.)(\d+) \((\d+\+)\)$`)
+
+// The two things p. 9 prints where a cell has no effect.
+const (
+	noEffectBefore66 = "no effect before age 66"
+	unaffected       = "unaffected by aging"
+)
+
+// parseAgingCell reads a cell's text as a reduction and its saving throw, or
+// as one of the two phrases the page prints for no effect, nil.
+func parseAgingCell(text string, characteristic traveller.Characteristic) (*AgingEffect, error) {
+	if text == noEffectBefore66 || text == unaffected {
+		return nil, nil //nolint:nilnil // no effect is a cell, not an error
+	}
+
+	match := agingCellText.FindStringSubmatch(text)
+	if match == nil {
+		return nil, fmt.Errorf("%w: %q is not a reduction and saving throw, nor a phrase p. 9 prints", errMalformed, text)
+	}
+
+	sign, _ := utf8.DecodeRuneInString(match[1])
+	if sign == traveller.EnDash {
+		return nil, fmt.Errorf("%w: %q: %w", errMalformed, text, traveller.ErrEnDash)
+	}
+
+	if direction, ok := traveller.Sign(sign); !ok || direction > 0 {
+		return nil, fmt.Errorf("%w: %q is not a reduction", errMalformed, text)
+	}
+
+	reduction, err := strconv.Atoi(match[2])
+	if err != nil {
+		return nil, fmt.Errorf("%w: %q: %w", errMalformed, text, err)
+	}
+
+	saving, err := traveller.ParseTarget(match[3])
+	if err != nil {
+		return nil, fmt.Errorf("%w: %q: %w", errMalformed, text, err)
+	}
+
+	return &AgingEffect{Characteristic: characteristic, Reduction: reduction, Saving: saving}, nil
+}
+
+// agingBands is the table's bands: each begins where some row's cell begins,
+// and holds, in row order, the reduction of each row whose cell over it has
+// one.
+func agingBands(rows []agingRow) []agingBand {
+	var starts []int
+
+	for _, row := range rows {
+		for _, cell := range row.cells {
+			if !slices.Contains(starts, cell.from) {
+				starts = append(starts, cell.from)
+			}
+		}
+	}
+
+	slices.Sort(starts)
+
+	bands := make([]agingBand, 0, len(starts))
+
+	for _, start := range starts {
+		band := agingBand{fromTerm: traveller.Term(start)}
+
+		for _, row := range rows {
+			for _, cell := range row.cells {
+				if cell.from <= start && start <= cell.through && cell.effect != nil {
+					band.effects = append(band.effects, *cell.effect)
+				}
+			}
+		}
+
+		bands = append(bands, band)
+	}
+
+	return bands
 }

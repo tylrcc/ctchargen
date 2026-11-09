@@ -68,9 +68,12 @@ func musteringCopy() musteringTranscription {
 func agingCopy() agingTranscription {
 	a := transcribedAging
 
-	a.bands = slices.Clone(a.bands)
-	for i := range a.bands {
-		a.bands[i].effects = slices.Clone(a.bands[i].effects)
+	a.terms = slices.Clone(a.terms)
+	a.ages = slices.Clone(a.ages)
+
+	a.rows = slices.Clone(a.rows)
+	for i := range a.rows {
+		a.rows[i].cells = slices.Clone(a.rows[i].cells)
 	}
 
 	return a
@@ -334,30 +337,79 @@ func TestMalformedMustering(t *testing.T) {
 func TestMalformedAging(t *testing.T) {
 	t.Parallel()
 
-	broken := agingCopy()
+	for name, tc := range agingBreakages {
+		broken := agingCopy()
 
-	broken.bands[0].effects[0].characteristic = "Wisdom"
-	refuses(t, "a band reducing a characteristic that does not exist", (&Rules{}).liftAging(broken), "Wisdom")
+		tc.breaks(&broken)
+		refuses(t, name, (&Rules{}).liftAging(broken), tc.mentions)
+	}
+}
 
-	broken = agingCopy()
-	broken.bands[0].effects[0].saving = "eight"
-	refuses(t, "a saving throw that will not parse", (&Rules{}).liftAging(broken), "aging band")
-
-	broken = agingCopy()
-	broken.bands[0], broken.bands[2] = broken.bands[2], broken.bands[0]
-	refuses(t, "bands out of order", (&Rules{}).liftAging(broken), "out of order")
-
-	broken = agingCopy()
-	broken.bands = nil
-	refuses(t, "no bands at all", (&Rules{}).liftAging(broken), "no bands")
-
-	broken = agingCopy()
-	broken.lastPrintedTerm = 0
-	refuses(t, "a last printed term before the last band", (&Rules{}).liftAging(broken), "last printed term")
-
-	broken = agingCopy()
-	broken.crisisSaving = "eight"
-	refuses(t, "a crisis saving throw that will not parse", (&Rules{}).liftAging(broken), "medical crisis")
+// agingBreakages is each way to break the Aging Table's transcription, and
+// what the refusal must name.
+//
+//nolint:gochecknoglobals // a test table too long for its function.
+var agingBreakages = map[string]struct {
+	breaks   func(*agingTranscription)
+	mentions string
+}{
+	"a row for a characteristic that does not exist": {
+		func(a *agingTranscription) { a.rows[0].label = "Wisdom" }, "Wisdom",
+	},
+	"rows out of the page's order": {
+		func(a *agingTranscription) { a.rows[0], a.rows[1] = a.rows[1], a.rows[0] }, "row 1 is Dexterity",
+	},
+	"a row missing": {
+		func(a *agingTranscription) { a.rows = a.rows[:5] }, "5 rows",
+	},
+	"a cell that is neither a reduction nor a phrase p. 9 prints": {
+		func(a *agingTranscription) { a.rows[0].cells[0].text = "−1 (eight)" }, "is not a reduction",
+	},
+	"a reduction typed with an en dash": {
+		func(a *agingTranscription) { a.rows[0].cells[0].text = "–1 (8+)" }, "an en dash is not a minus",
+	},
+	"a cell that adds rather than reduces": {
+		func(a *agingTranscription) { a.rows[0].cells[0].text = "+1 (8+)" }, "is not a reduction",
+	},
+	"a gap between two cells": {
+		func(a *agingTranscription) { a.rows[0].cells[1].from = 9 }, "where term 8 is next",
+	},
+	"two cells overlapping": {
+		func(a *agingTranscription) { a.rows[0].cells[1].from = 7 }, "where term 8 is next",
+	},
+	"a row's cells stopping short": {
+		func(a *agingTranscription) { a.rows[0].cells[2].through = 13 }, "stop before term 14",
+	},
+	"a cell past the last printed term": {
+		func(a *agingTranscription) { a.rows[0].cells[2].through = 15 }, "runs past the last printed term",
+	},
+	"an age that is not the age its term ends at": {
+		func(a *agingTranscription) { a.ages[3] = "45" }, "is not the age term 7 ends at",
+	},
+	"a plus on an age before the last": {
+		func(a *agingTranscription) { a.ages[9] = "70+" }, "carries a plus before the last column",
+	},
+	"no plus on the last age": {
+		func(a *agingTranscription) { a.ages[10] = "74" }, "carries no plus",
+	},
+	"a term out of sequence": {
+		func(a *agingTranscription) { a.terms[2] = "7" }, "does not follow",
+	},
+	"a cell that runs backwards": {
+		func(a *agingTranscription) { a.rows[0].cells[0].through = 3 }, "a cell across terms 4 to 3",
+	},
+	"no header rows": {
+		func(a *agingTranscription) { a.terms, a.ages = nil, nil }, "0 terms and 0 ages",
+	},
+	"a term that is not a number": {
+		func(a *agingTranscription) { a.terms[0] = "four" }, "is not a number",
+	},
+	"header rows of two lengths": {
+		func(a *agingTranscription) { a.ages = a.ages[:10] }, "11 terms and 10 ages",
+	},
+	"a crisis saving throw that will not parse": {
+		func(a *agingTranscription) { a.crisisSaving = "eight" }, "medical crisis",
+	},
 }
 
 func TestMalformedWeaponsAndNobility(t *testing.T) {

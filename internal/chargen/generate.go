@@ -8,12 +8,6 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// startingAge is where every character begins. P. 4: "All characters begin
-// the game the same way, untrained, inexperienced, about 18 years of age."
-//
-// Implements: All characters begin at 18 [1:4].
-const startingAge = 18
-
 // Ruleset names the text this tool implements. All page cites in a record's
 // generation log are to these three books and nothing else.
 //
@@ -101,7 +95,7 @@ func generate(in Inputs, decider Decider, policy *AutoPolicy, options []Option) 
 		roll:   dice.New(),
 		log:    record,
 		char: &Character{
-			Name: in.Name, Age: traveller.NewAge(startingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
+			Name: in.Name, Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy, Ruleset: Ruleset,
 		},
 	}
 

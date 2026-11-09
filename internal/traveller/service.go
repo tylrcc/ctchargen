@@ -69,3 +69,9 @@ type Term int
 //
 // Implements: A term is four years [1:5].
 const Years = 4
+
+// StartingAge is where every character begins. P. 4: "All characters begin
+// the game the same way, untrained, inexperienced, about 18 years of age."
+//
+// Implements: All characters begin at 18 [1:4].
+const StartingAge = 18

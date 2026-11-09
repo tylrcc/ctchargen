@@ -49,6 +49,12 @@ release turns out to be.
   amount once, as a row heading ("DM of +1 if"), and a condition per service
   beneath it. The lift reads the amount off the heading and refuses one it
   cannot read. Every lifted value is unchanged (#344).
+- The Aging Table is transcribed as p. 9 prints it: both header rows, all six
+  characteristic rows, Education and Social Standing included, and each
+  cell's printed text with the term columns its leaders span. The lift checks
+  the headers align, that only the last age carries a plus, and that each
+  row's cells cover the columns once, and takes the bands from where the
+  cells begin. Every lifted value is unchanged (#345).
 
 ## 1.0.0-rc.1
 

@@ -3,12 +3,10 @@ package rules
 import "github.com/philoserf/ctchargen/internal/traveller"
 
 // Where the transcription still departs from the print, and why: the page's
-// cells are typed as printed, but two of its layouts are not. The Rank and
+// cells are typed as printed, but one of its layouts is not. The Rank and
 // Service Skills box (p. 23) labels each grant by its rank's title ("Navy
 // Captain") and suffixes a level ("Cutlass-1"), where printedGrant holds a
-// rank number and the skill alone (#346); and the Aging Table (p. 9) prints
-// each cell as "−1 (8+)" across dotted column bands, where printedBand holds a
-// reduction and a saving throw per band (#345). The education gate is not a
+// rank number and the skill alone (#346). The education gate is not a
 // cell: p. 11 says it in prose, "education 8 or greater", and printedGate
 // names the characteristic as p. 4 does.
 
@@ -167,25 +165,25 @@ type musteringTranscription struct {
 	resalePercent        int
 }
 
-// printedEffect is one characteristic's cell of an aging band: its
-// reduction and the saving throw that prevents it.
-type printedEffect struct {
-	characteristic string
-	reduction      int
-	saving         string
+// printedSpan is one cell of an Aging Table row as p. 9 prints it: its text,
+// and the term columns its dotted leaders run across, from and through.
+type printedSpan struct {
+	text          string
+	from, through int
 }
 
-// printedBand is a column group of the Aging Table, from the term it starts.
-type printedBand struct {
-	fromTerm int
-	effects  []printedEffect
+// printedAgingRow is one characteristic's row of the Aging Table: its label
+// as printed, and its cells left to right.
+type printedAgingRow struct {
+	label string
+	cells []printedSpan
 }
 
-// agingTranscription is the Aging Table (p. 9) and the medical crisis
-// (pp. 7-8).
+// agingTranscription is the Aging Table (p. 9), its two header rows and its
+// six rows, and the medical crisis (pp. 7-8).
 type agingTranscription struct {
-	lastPrintedTerm                    int
-	bands                              []printedBand
+	terms, ages                        []string
+	rows                               []printedAgingRow
 	crisisSaving                       string
 	crisisRecoversTo, crisisMonthsDice int
 }
@@ -337,43 +335,43 @@ var transcribedMustering = musteringTranscription{
 
 // transcribedAging is Book 1 p. 9 (Aging Table); p. 7 (when a round is run).
 //
-// The table's header rows are Term of Service 4 through 14 and Age 34 through
-// 74+. Its three column groups are read off the Intelligence row, whose 'no
-// effect before age 66' ends where age 66 - term 12 - begins. Education and
-// Social Standing are unaffected throughout. The last band is terminal per
-// E014: the Age row's 74+ is the only cell in either header carrying a plus, so
-// the column it labels is open-ended, and the term row's 14 is simply the term
-// that first reaches it.
+// The table prints two header rows, Term of Service 4 through 14 and Age 34
+// through 74+, and a row per characteristic. A row's cells are each stretched
+// by dotted leaders across a group of term columns; where a group begins is
+// read off where each cell's leaders begin, and the lift takes the bands from
+// every row's cells together. Education and Social Standing are unaffected
+// throughout. The last band is terminal per E014: the Age row's 74+ is the
+// only cell in either header carrying a plus, so the column it labels is
+// open-ended, and the term row's 14 is simply the term that first reaches it.
 var transcribedAging = agingTranscription{
-	// Book 1 p. 9, the Term of Service header row; E014 reads the column it
-	// labels as terminal.
-	lastPrintedTerm: 14,
-	bands: []printedBand{
-		{ // ages 34, 38, 42, 46
-			fromTerm: 4,
-			effects: []printedEffect{
-				{characteristic: "Strength", reduction: 1, saving: "8+"},
-				{characteristic: "Dexterity", reduction: 1, saving: "7+"},
-				{characteristic: "Endurance", reduction: 1, saving: "8+"},
-			},
-		},
-		{ // ages 50, 54, 58, 62
-			fromTerm: 8,
-			effects: []printedEffect{
-				{characteristic: "Strength", reduction: 1, saving: "9+"},
-				{characteristic: "Dexterity", reduction: 1, saving: "8+"},
-				{characteristic: "Endurance", reduction: 1, saving: "9+"},
-			},
-		},
-		{ // ages 66, 70, 74+
-			fromTerm: 12,
-			effects: []printedEffect{
-				{characteristic: "Strength", reduction: 2, saving: "9+"},
-				{characteristic: "Dexterity", reduction: 2, saving: "9+"},
-				{characteristic: "Endurance", reduction: 2, saving: "9+"},
-				{characteristic: "Intelligence", reduction: 1, saving: "9+"},
-			},
-		},
+	terms: []string{"4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"},
+	ages:  []string{"34", "38", "42", "46", "50", "54", "58", "62", "66", "70", "74+"},
+	rows: []printedAgingRow{
+		{label: "Strength", cells: []printedSpan{
+			{text: "−1 (8+)", from: 4, through: 7},
+			{text: "−1 (9+)", from: 8, through: 11},
+			{text: "−2 (9+)", from: 12, through: 14},
+		}},
+		{label: "Dexterity", cells: []printedSpan{
+			{text: "−1 (7+)", from: 4, through: 7},
+			{text: "−1 (8+)", from: 8, through: 11},
+			{text: "−2 (9+)", from: 12, through: 14},
+		}},
+		{label: "Endurance", cells: []printedSpan{
+			{text: "−1 (8+)", from: 4, through: 7},
+			{text: "−1 (9+)", from: 8, through: 11},
+			{text: "−2 (9+)", from: 12, through: 14},
+		}},
+		{label: "Intelligence", cells: []printedSpan{
+			{text: "no effect before age 66", from: 4, through: 11},
+			{text: "−1 (9+)", from: 12, through: 14},
+		}},
+		{label: "Education", cells: []printedSpan{
+			{text: "unaffected by aging", from: 4, through: 14},
+		}},
+		{label: "Social Standing", cells: []printedSpan{
+			{text: "unaffected by aging", from: 4, through: 14},
+		}},
 	},
 
 	// Book 1 pp. 7-8; E008, E009
