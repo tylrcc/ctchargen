@@ -301,3 +301,48 @@ func TestAnUnknownEventKindDoesNotValidate(t *testing.T) {
 		t.Error("an event of an unknown kind validated; the schema no longer pins the five kinds")
 	}
 }
+
+// Dice the procedure cannot throw do not validate, in either event that
+// carries dice: more than two, or a face no die has. Both kinds read one
+// definition of the dice (#374), and this holds that each still reads it.
+func TestDiceNoThrowCanMakeDoNotValidate(t *testing.T) {
+	t.Parallel()
+
+	schema := compileSchema(t)
+
+	for _, kind := range []string{"throw", "roll"} {
+		for name, dice := range map[string][]any{
+			"three dice": {float64(1), float64(2), float64(3)},
+			"a die of 7": {float64(7)},
+			"a die of 0": {float64(0)},
+			"no dice":    {},
+		} {
+			body := example(t, "character.complete.json")
+
+			firstOfKind(t, body, kind)["dice"] = dice
+
+			if schema.Validate(body) == nil {
+				t.Errorf("a %s event with %s validated", kind, name)
+			}
+		}
+	}
+}
+
+// firstOfKind is the record's first event of kind, found by kind rather than
+// by index for the reason TestAnUnknownKeyInsideAnEventDoesNotValidate gives.
+func firstOfKind(t *testing.T, body map[string]any, kind string) map[string]any {
+	t.Helper()
+
+	events, _ := body["events"].([]any)
+
+	for _, logged := range events {
+		event, isObject := logged.(map[string]any)
+		if isObject && event["kind"] == kind {
+			return event
+		}
+	}
+
+	t.Fatalf("the example logs no %s event", kind)
+
+	return nil
+}

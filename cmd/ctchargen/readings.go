@@ -19,13 +19,8 @@ import (
 // Implements: The readings are listed, and those asked for are written in full
 // [CLI sketch].
 func readings(args []string, out io.Writer) error {
-	if len(args) > 0 && isHelpFlag(args[0]) {
-		if len(args) > 1 {
-			return fmt.Errorf("%w: %s; help takes no arguments, and was given %q",
-				errUsage, readingsUsage, args[1])
-		}
-
-		return writeUsageText(out, "usage: ctchargen "+readingsUsage+"\n")
+	if asked, err := answerHelp(args, out, readingsUsage); asked {
+		return err
 	}
 
 	text := render.ReadingsIndex()

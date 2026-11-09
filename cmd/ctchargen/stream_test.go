@@ -98,17 +98,21 @@ func TestABatchToAFileIsStillWrittenAtOnce(t *testing.T) {
 	}
 }
 
-// failsAfter writes a few records and then fails, as a filling disk does.
-// errClosedPipe is reused only as a sentinel to match on; nothing here is a
-// pipe.
+// failsAfter lets left writes through and fails every one after, with
+// errWriteFailed. Zero fails at once, as a closed pipe or a refusing disk
+// does; more is a disk that fills, or a usage line that got out before the
+// flag list met a closed pipe. It is the one failing writer the command's
+// tests use (#373).
 type failsAfter struct {
 	left   int
 	writes int
 }
 
+var errWriteFailed = errors.New("the write failed")
+
 func (c *failsAfter) Write(text []byte) (int, error) {
 	if c.left == 0 {
-		return 0, errClosedPipe
+		return 0, errWriteFailed
 	}
 
 	c.left--
@@ -145,7 +149,7 @@ func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 	switch {
 	case err == nil:
 		t.Fatal("a batch hit a failing write and reported success")
-	case !errors.Is(err, errClosedPipe):
+	case !errors.Is(err, errWriteFailed):
 		t.Errorf("error %q does not carry the write failure", err)
 	case !strings.Contains(err.Error(), "member 3"):
 		t.Errorf("error %q does not name the member it stopped on", err)

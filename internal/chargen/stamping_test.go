@@ -11,12 +11,10 @@ import (
 )
 
 // The stamping predicates, and the checks that the roster reaches every
-// choice point. They read the checked-in goldens rather than generating
-// records, so they read what a referee would be handed.
-
-// goldens is where the records these checks read live: the tool's own output,
-// regenerated from the fixtures and checked in.
-const goldens = "testdata"
+// choice point. They read the record each fixture writes, the bytes a
+// referee would be handed, as the engine writes them now: TestGoldens holds
+// those to the checked-in goldens, and reading them fresh lets an engine
+// change be named here by what it did (#373).
 
 // nobility is the Social Standing at which Book 3 p. 22 confers a title, as
 // E011's reading states it: "final Social Standing is 11 or
@@ -78,16 +76,17 @@ type reading struct {
 // a withdrawn reading is stamped on no record, and its condition is not
 // judged (#332).
 //
-// TestEveryReadingIsReachable proves each reading is reachable from some
-// path. It does not prove any reading is stamped on the RIGHT records: a
-// reading applied one term too early, or to a civilian who never had a term,
-// passes it. Both directions are checked here, because an erratum stamped
-// that should not be is as much a defect as one missing - a record's errata
-// list is the tool's claim about which readings its character rests on.
+// Reaching some golden is not enough: a reading applied one term too early,
+// or to a civilian who never had a term, would still reach one. So both
+// directions are checked record by record, because an erratum stamped that
+// should not be is as much a defect as one missing - a record's errata list
+// is the tool's claim about which readings its character rests on - and
+// unreached then holds that every reading reaches some golden at all.
 //
 // Holds: E011 is stamped only where the reading changed the answer.
 // Holds: The errata a record stamps are exactly those whose reading's condition
 // holds.
+// Holds: Every reading that governed a record is named on it.
 func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 	t.Parallel()
 
@@ -294,9 +293,11 @@ func namesNoRecord() []traveller.Erratum {
 	return []traveller.Erratum{traveller.E012, traveller.E015}
 }
 
-// unreached holds the readings no golden stamps to namesNoRecord. A withdrawn
-// reading is stamped on none by definition, and verdict holds it; it is not
-// one of these.
+// unreached holds the readings no golden stamps to namesNoRecord: every
+// reading not withdrawn and not pinned there is stamped on some golden, and
+// one that reaches none is named. It is the one check of that (#373). A
+// withdrawn reading is stamped on none by definition, and verdict holds it;
+// it is not one of these.
 //
 // The set is asserted rather than logged so that a change in either
 // direction is a finding: a golden that stamps one of these is wrong, and a

@@ -61,11 +61,28 @@ func writeTopLevelHelp(out io.Writer) error {
 	return writeUsageText(out, topLevelUsage)
 }
 
-// writeVersionUsage answers `ctchargen version --help`. `version` has no flag
-// set, so it cannot go through writeHelp: that would print the usage line, a
-// blank line, and then nothing at all.
-func writeVersionUsage(out io.Writer) error {
-	return writeUsageText(out, "usage: ctchargen "+versionUsage+"\n")
+// answerHelp answers --help for a command with no flag set, version or
+// readings, reporting whether it was asked; when it was not, the error is
+// nil and the command goes on. Such a command cannot go through writeHelp:
+// that would print the usage line, a blank line, and then nothing at all. A
+// word after the help flag is refused rather than dropped with the help
+// (#84).
+func answerHelp(args []string, out io.Writer, line string) (bool, error) {
+	if len(args) == 0 || !isHelpFlag(args[0]) {
+		return false, nil
+	}
+
+	if len(args) > 1 {
+		return true, fmt.Errorf("%w: %s; %s", errUsage, line, helpTakesNoArguments(args[1]))
+	}
+
+	return true, writeUsageText(out, "usage: ctchargen "+line+"\n")
+}
+
+// helpTakesNoArguments is the refusal of a word after a help flag, wherever
+// one is met (#69, #84).
+func helpTakesNoArguments(given string) string {
+	return fmt.Sprintf("help takes no arguments, and was given %q", given)
 }
 
 // writeUsageText writes a usage that is already composed.
@@ -98,8 +115,7 @@ func writeUsageText(out io.Writer, text string) error {
 // Implements: A word after a help flag is refused, not discarded [CLI sketch].
 func writeHelp(out io.Writer, line string, flags *flag.FlagSet) error {
 	if flags.NArg() > 0 {
-		return fmt.Errorf("%w: %s; help takes no arguments, and was given %q",
-			errUsage, line, flags.Arg(0))
+		return fmt.Errorf("%w: %s; %s", errUsage, line, helpTakesNoArguments(flags.Arg(0)))
 	}
 
 	_, err := fmt.Fprintf(out, "usage: ctchargen %s\n\n", line)

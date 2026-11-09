@@ -177,11 +177,7 @@ func (d destination) write(text string) error {
 		return fmt.Errorf("writing: %w", err)
 	}
 
-	return d.done()
-}
-
-func (d destination) done() error {
-	err := d.close()
+	err = d.close()
 	if err != nil {
 		return fmt.Errorf("closing the output: %w", err)
 	}

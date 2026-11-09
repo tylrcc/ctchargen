@@ -226,20 +226,6 @@ func TestTheSubcommandListsAgree(t *testing.T) {
 	}
 }
 
-// haltingPipe lets one write through and fails after, so that the flag list
-// meets a closed pipe the usage line got through.
-type haltingPipe struct{ wrote bool }
-
-func (h *haltingPipe) Write(text []byte) (int, error) {
-	if h.wrote {
-		return 0, errClosedPipe
-	}
-
-	h.wrote = true
-
-	return len(text), nil
-}
-
 // A help nobody received is not a help that was given. Exiting 0 on a write
 // that failed would tell a script the flags had been printed, and the whole
 // point of this issue is a reader who cannot see them.
@@ -250,17 +236,17 @@ func TestHelpReportsAWriteThatFailed(t *testing.T) {
 		args []string
 		out  io.Writer
 	}{
-		"top level":       {[]string{flagHelp}, brokenPipe{}},
-		cmdNew:            {[]string{cmdNew, flagHelp}, brokenPipe{}},
-		cmdReadings:       {[]string{cmdReadings, flagHelp}, brokenPipe{}},
-		"the flags alone": {[]string{cmdNew, flagHelp}, &haltingPipe{}},
+		"top level":       {[]string{flagHelp}, &failsAfter{}},
+		cmdNew:            {[]string{cmdNew, flagHelp}, &failsAfter{}},
+		cmdReadings:       {[]string{cmdReadings, flagHelp}, &failsAfter{}},
+		"the flags alone": {[]string{cmdNew, flagHelp}, &failsAfter{left: 1}},
 	} {
 		err := run(tc.args, nil, tc.out, io.Discard)
 
 		switch {
 		case err == nil:
 			t.Errorf("%s: a help nobody received was reported as written", name)
-		case !errors.Is(err, errClosedPipe):
+		case !errors.Is(err, errWriteFailed):
 			t.Errorf("%s: error %q does not carry the write failure", name, err)
 		}
 	}
@@ -304,19 +290,25 @@ func TestTheCommandsWithoutFlagsAnswerHelp(t *testing.T) {
 // its own NArg check, so the word was never looked at; `version` has no flag
 // set and tested args[0] alone.
 //
+// Every path refuses it in the same sentence, typed out here rather than
+// read from the code that writes it (#372).
+//
 // Holds: A word after a help flag is refused, not discarded.
 func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 	t.Parallel()
 
+	refusal := `help takes no arguments, and was given "` + wantTypo + `"`
+
 	for name, args := range map[string][]string{
-		"top level":     {flagHelp, wantTypo},
-		"top level, -h": {flagShort, wantTypo},
-		cmdHelp:         {cmdHelp, wantTypo},
-		cmdVersion:      {cmdVersion, flagHelp, wantTypo},
-		cmdReadings:     {cmdReadings, flagHelp, wantTypo},
-		cmdNew:          {cmdNew, flagHelp, wantTypo},
-		cmdBatch:        {cmdBatch, flagHelp, wantTypo},
-		cmdRender:       {cmdRender, flagHelp, wantTypo},
+		"top level":        {flagHelp, wantTypo},
+		"top level, -h":    {flagShort, wantTypo},
+		"top level, -help": {"-help", wantTypo},
+		cmdHelp:            {cmdHelp, wantTypo},
+		cmdVersion:         {cmdVersion, flagHelp, wantTypo},
+		cmdReadings:        {cmdReadings, flagHelp, wantTypo},
+		cmdNew:             {cmdNew, flagHelp, wantTypo},
+		cmdBatch:           {cmdBatch, flagHelp, wantTypo},
+		cmdRender:          {cmdRender, flagHelp, wantTypo},
 	} {
 		err := run(args, nil, io.Discard, io.Discard)
 		if err == nil {
@@ -325,8 +317,8 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 			continue
 		}
 
-		if !strings.Contains(err.Error(), wantTypo) {
-			t.Errorf("%s: error %q does not name the word", name, err)
+		if !strings.Contains(err.Error(), refusal) {
+			t.Errorf("%s: error %q does not say %q", name, err, refusal)
 		}
 	}
 }

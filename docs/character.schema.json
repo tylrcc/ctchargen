@@ -4,7 +4,7 @@
   "title": "Classic Traveller character record",
   "$comment": "Implements: The record matches the schema that describes it [JSON conventions].",
 
-  "description": "What ctchargen writes, as this build writes it. A description of the output, kept honest by the gate - not a promise to records already written. Nothing in it is hand-written, and nothing in it can be brought back by running the tool again: the dice are not seeded, so the record is the only way back to a character (ADR 0001). It carries every die of every roll and throw in order, and a draw that is not a throw appears as the choice it produced, so every number on a sheet can be checked against the page from the record alone.\n\nTwo of the optional benefit fields cannot appear together in any character this tool can generate. Book 1 p. 9 prints Travellers' Aid only in the Navy and Marines columns of Mustering Out Table 1, and the two starships only in the Scout and Merchant columns, and a character serves one service. So no valid record carries both travellersAid and ships. That is a fact about the rules rather than a gap in the fixtures, which is why character.complete.json shows the ships and not the membership.\n\nThe root object accepts a field it does not know; every object inside it does not. That is the narrower half of the v1.0.0 freeze, and it is deliberate (#76, #113). A later build may add a top-level section, and a reader holding this schema will load the record and render what it understands. A key added inside an existing object is still refused, and so is an event of a kind this build does not write, because those are the structures a sheet is rendered from and pinning them is what keeps this schema worth validating against.",
+  "description": "What ctchargen writes, as this build writes it. A description of the output, kept honest by the gate - not a promise to records already written. Nothing in it is hand-written, and nothing in it can be brought back by running the tool again: the dice are not seeded, so the record is the only way back to a character (ADR 0001). It carries every die of every roll and throw in order, and a draw that is not a throw appears as the choice it produced, so every number on a sheet can be checked against the page from the record alone.\n\nThe root object accepts a field it does not know; every object inside it does not. That is the narrower half of the v1.0.0 freeze, and it is deliberate (#76, #113). A later build may add a top-level section, and a reader holding this schema will load the record and render what it understands. A key added inside an existing object is still refused, and so is an event of a kind this build does not write, because those are the structures a sheet is rendered from and pinning them is what keeps this schema worth validating against.",
 
   "type": "object",
   "additionalProperties": true,
@@ -146,7 +146,7 @@
       },
       "not": {
         "required": ["travellersAid", "ships"],
-        "description": "P. 9 prints Travellers' Aid only in the Navy and Marines columns of Mustering Out Table 1 and the two starships only in the Scout and Merchant columns, and a character serves one service. No record this tool can generate carries both."
+        "description": "P. 9 prints Travellers' Aid only in the Navy and Marines columns of Mustering Out Table 1 and the two starships only in the Scout and Merchant columns, and a character serves one service. No record this tool can generate carries both. That is a fact about the rules rather than a gap in the fixtures, which is why character.complete.json shows the ships and not the membership."
       }
     },
     "annualRetirementPay": {
@@ -253,6 +253,13 @@
     },
     "credits": { "type": "integer", "minimum": 0 },
     "sequence": { "type": "integer", "minimum": 1 },
+    "dice": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": { "type": "integer", "minimum": 1, "maximum": 6 },
+      "description": "The dice as rolled, in order: first die then second where there are two. The record logs the dice and not only their total, because that is what an auditor walks against the page."
+    },
 
     "stepEvent": {
       "type": "object",
@@ -273,13 +280,7 @@
         "seq": { "$ref": "#/$defs/sequence" },
         "kind": { "const": "throw" },
         "step": { "type": "string", "minLength": 1 },
-        "dice": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 2,
-          "items": { "type": "integer", "minimum": 1, "maximum": 6 },
-          "description": "The dice as rolled, first die then second. The record logs the dice and not only their total, because that is what an auditor walks against the page."
-        },
+        "dice": { "$ref": "#/$defs/dice" },
         "dm": { "type": "integer" },
         "target": {
           "type": "string",
@@ -299,13 +300,7 @@
         "seq": { "$ref": "#/$defs/sequence" },
         "kind": { "const": "roll" },
         "step": { "type": "string", "minLength": 1 },
-        "dice": {
-          "type": "array",
-          "minItems": 1,
-          "maxItems": 2,
-          "items": { "type": "integer", "minimum": 1, "maximum": 6 },
-          "description": "The dice as rolled. The record logs the dice and not only their total, because that is what an auditor walks against the page."
-        },
+        "dice": { "$ref": "#/$defs/dice" },
         "dm": { "type": "integer" },
         "total": { "type": "integer" }
       }

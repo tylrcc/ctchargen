@@ -227,12 +227,12 @@ func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 
 	err := run([]string{
 		cmdBatch, flagCount, "2", flagService, other,
-	}, nil, &out, brokenPipe{})
+	}, nil, &out, &failsAfter{})
 	if err == nil {
 		t.Fatal("a summary nobody received was reported as written")
 	}
 
-	if !errors.Is(err, errClosedPipe) {
+	if !errors.Is(err, errWriteFailed) {
 		t.Errorf("error %q does not carry the write failure", err)
 	}
 }

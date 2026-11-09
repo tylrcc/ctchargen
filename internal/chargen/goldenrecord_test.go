@@ -2,11 +2,11 @@ package chargen_test
 
 import (
 	"encoding/json"
-	"os"
-	"path/filepath"
 	"strconv"
 	"strings"
 	"testing"
+
+	"github.com/philoserf/ctchargen/internal/render"
 )
 
 // twelve is the reenlistment throw p. 6 singles out, and E003 turns on.
@@ -14,9 +14,10 @@ const twelve = 12
 
 // record is as much of the written record as the conditions need.
 //
-// It is decoded from the golden files rather than generated, because the
-// readings state every condition over a record - "records where the
-// enlistment throw failed" - and a record is what this reads.
+// It is decoded from the written record rather than read off the Character,
+// because the readings state every condition over a record - "records where
+// the enlistment throw failed" - and a record is what this reads. The record
+// is the one each fixture writes now; TestGoldens holds it to its golden.
 type record struct {
 	name string
 
@@ -130,36 +131,37 @@ func (r record) departedBy(how string) bool {
 
 func (r record) died() bool { return r.Departure != nil && r.Departure.Fatal }
 
-// readRecords decodes every golden record, and refuses to run on none: a
-// check over an empty roster passes by saying nothing.
+// readRecords decodes the record every fixture writes, as the engine writes
+// it now, and refuses to run on none: a check over an empty roster passes by
+// saying nothing.
+//
+// It reads what the engine generates rather than the goldens on disk, which
+// TestGoldens holds equal, so an engine change is judged here by what it did
+// to a reading rather than only as a golden diff (#373). Each record is named
+// as its golden is.
 func readRecords(t *testing.T) []record {
 	t.Helper()
 
-	paths, err := filepath.Glob(filepath.Join(goldens, "*.json"))
-	if err != nil {
-		t.Fatalf("looking for records: %v", err)
+	if len(fixtures) == 0 {
+		t.Fatal("no fixtures on the roster")
 	}
 
-	if len(paths) == 0 {
-		t.Fatalf("no records in %s", goldens)
-	}
+	records := make([]record, 0, len(fixtures))
 
-	records := make([]record, 0, len(paths))
-
-	for _, path := range paths {
-		text, err := os.ReadFile(path)
+	for _, fixture := range fixtures {
+		text, err := render.JSON(fixture.generate(t))
 		if err != nil {
-			t.Fatalf("reading %s: %v", path, err)
+			t.Fatalf("%s: %v", fixture.name, err)
 		}
 
 		var rec record
 
 		err = json.Unmarshal(text, &rec)
 		if err != nil {
-			t.Fatalf("reading %s: %v", path, err)
+			t.Fatalf("reading %s: %v", fixture.name, err)
 		}
 
-		rec.name = filepath.Base(path)
+		rec.name = fixture.name + ".json"
 		withTerms(&rec)
 
 		records = append(records, rec)

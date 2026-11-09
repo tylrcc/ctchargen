@@ -5,6 +5,20 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The schema states once why no record carries both Travellers' Aid and
+  ships, on the rule that refuses them, and defines the dice once for the
+  throw and the roll events. What it accepts is unchanged, and a test now
+  holds that dice no throw can make are refused in both (#374).
+- Two tests that held one property are one: the stamping test's check that
+  every reading reaches some golden carries the `Holds:` marker, and the
+  test that repeated it goes. The checks over records read what each
+  fixture writes now rather than its golden on disk, so a reading the
+  engine stops stamping is named by an ordinary run. The command's tests
+  have one failing writer where they had four (#373).
+- The CLI answers help for `version` and `readings` through one helper,
+  refuses a word after a help flag in one sentence, which a test now holds
+  on every path, lists the help spellings once, and has `version` print the
+  build line the record is stamped with. Every message is unchanged (#372).
 - Three leftovers go from the rules lift and the events: the Prior Service
   Table's DM headings are read to their amounts once, so building a
   service's throws from them can no longer fail; the aging lift keeps a row as its cells,

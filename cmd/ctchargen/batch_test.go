@@ -150,14 +150,6 @@ func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 	}
 }
 
-// refusingWriter fails every write, which is how the write path's failure is
-// reached without filling a disk.
-type refusingWriter struct{}
-
-var errRefused = errors.New("refused")
-
-func (refusingWriter) Write([]byte) (int, error) { return 0, errRefused }
-
 // A write that fails is reported as the write, and abandons what it opened
 // rather than leaving the descriptor held or finishing a partial record.
 func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
@@ -166,7 +158,7 @@ func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
 	finished, abandoned := false, false
 
 	where := destination{
-		out: refusingWriter{},
+		out: &failsAfter{},
 		close: func() error {
 			finished = true
 
@@ -176,7 +168,7 @@ func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
 	}
 
 	err := where.write("anything")
-	if !errors.Is(err, errRefused) {
+	if !errors.Is(err, errWriteFailed) {
 		t.Errorf("a failed write was reported as %v, want the write's own error", err)
 	}
 
@@ -237,12 +229,12 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 	err = run([]string{
 		cmdBatch, flagCount, "5", flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
-	}, nil, io.Discard, refusingWriter{})
+	}, nil, io.Discard, &failsAfter{})
 	if err == nil {
 		t.Fatal("a batch wrote a record over a directory")
 	}
 
-	if !errors.Is(err, errRefused) || !strings.Contains(err.Error(), "is a directory") {
+	if !errors.Is(err, errWriteFailed) || !strings.Contains(err.Error(), "is a directory") {
 		t.Errorf("a stopped batch that could not report said %v, want both failures", err)
 	}
 }
@@ -273,10 +265,10 @@ func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
 		t.Errorf("opening with --force left the old record as %q", got)
 	}
 
-	where.out = refusingWriter{}
+	where.out = &failsAfter{}
 
 	err = where.write("this week's\n")
-	if !errors.Is(err, errRefused) {
+	if !errors.Is(err, errWriteFailed) {
 		t.Fatalf("a failed write was reported as %v, want the write's own error", err)
 	}
 

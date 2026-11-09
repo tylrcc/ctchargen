@@ -97,6 +97,20 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 		return fmt.Errorf("%w: ctchargen %s; run `ctchargen --help`", errUsage, commandList)
 	}
 
+	// Help asked for is not a misuse: it leaves by out and exits 0. A bare
+	// `ctchargen` stays an error, because nothing was asked for at all.
+	// There is no `help <command>`; --help on the command is the one way in,
+	// so there is one place a command's flags are described - and a word
+	// after it is refused rather than dropped, as `new` refuses one.
+	if args[0] == "help" || isHelpFlag(args[0]) {
+		if len(args) > 1 {
+			return fmt.Errorf("%w: %s; run `ctchargen <command> --help` for one command's flags",
+				errUsage, helpTakesNoArguments(args[1]))
+		}
+
+		return writeTopLevelHelp(out)
+	}
+
 	switch args[0] {
 	case "new":
 		return newCharacter(args[1:], in, out, asking, chosen.dice)
@@ -108,20 +122,6 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 		return readings(args[1:], out)
 	case "version":
 		return version(args[1:], out)
-	// Help asked for is not a misuse: it leaves by out and exits 0. A bare
-	// `ctchargen` stays an error, because nothing was asked for at all.
-	// There is no `help <command>`; --help on the command is the one way in,
-	// so there is one place a command's flags are described - and a word
-	// after it is refused rather than dropped, as `new` refuses one.
-	case "help", "-h", "-help", "--help":
-		if len(args) > 1 {
-			return fmt.Errorf(
-				"%w: help takes no arguments, and was given %q; run `ctchargen <command> --help` for one command's flags",
-				errUsage, args[1],
-			)
-		}
-
-		return writeTopLevelHelp(out)
 	default:
 		return fmt.Errorf("%w: unknown command %q; want %s; run `ctchargen --help`",
 			errUsage, args[0], commandList)
@@ -130,33 +130,26 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 
 // version writes the build.
 //
-// It takes no flags, so --help is answered here rather than by a flag set:
-// the top-level help promises that every command answers --help, and version
-// is one of those it lists. Anything else is refused rather than ignored,
+// It takes no flags, so --help is answered by answerHelp rather than by a
+// flag set: the top-level help promises that every command answers --help,
+// and version is one of those it lists. Anything else is refused rather than ignored,
 // which is what the others do with a word they were not expecting.
 func version(args []string, out io.Writer) error {
+	if asked, err := answerHelp(args, out, versionUsage); asked {
+		return err
+	}
+
 	if len(args) > 0 {
-		if isHelpFlag(args[0]) {
-			// A word after the help flag, which version alone would
-			// otherwise discard: it tests args[0] and nothing else (#84).
-			if len(args) > 1 {
-				return fmt.Errorf("%w: %s; help takes no arguments, and was given %q",
-					errUsage, versionUsage, args[1])
-			}
-
-			return writeVersionUsage(out)
-		}
-
 		return fmt.Errorf("%w: %s; it takes no arguments, and was given %q",
 			errUsage, versionUsage, args[0])
 	}
 
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
+	stamp := build()
+	if stamp == "" {
 		return fmt.Errorf("%w: no build information is embedded", errUsage)
 	}
 
-	_, err := fmt.Fprintf(out, "%s %s\n", info.Main.Path, buildVersion(info))
+	_, err := fmt.Fprintln(out, stamp)
 	if err != nil {
 		return fmt.Errorf("writing the version: %w", err)
 	}
@@ -184,7 +177,8 @@ func buildVersion(info *debug.BuildInfo) string {
 }
 
 // isHelpFlag reports the spellings of --help the flag package itself answers,
-// for the commands that have no flag set to answer them: version and readings.
+// for what has no flag set to answer them: the top level, version and
+// readings.
 func isHelpFlag(arg string) bool {
 	return arg == "-h" || arg == "-help" || arg == "--help"
 }

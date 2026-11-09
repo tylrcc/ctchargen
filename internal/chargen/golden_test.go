@@ -5,13 +5,11 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"slices"
 	"strconv"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
-	"github.com/philoserf/ctchargen/internal/rules"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
@@ -207,46 +205,6 @@ func TestGoldensRegenerate(t *testing.T) {
 
 		if string(first) != string(second) {
 			t.Errorf("%s did not generate the same record twice from its fixture", f.name)
-		}
-	}
-}
-
-// Every recorded reading is reachable by some fixture.
-//
-// This gate holds every reading to a fixture, and until the engine walked the ranked
-// services it could not hold. The readings stamped on no record by design are
-// namesNoRecord's, and one stamped anyway fails here. A withdrawn reading is
-// reachable by none, by definition; the stamping harness holds it.
-//
-// Holds: Every reading that governed a record is named on it.
-func TestEveryReadingIsReachable(t *testing.T) {
-	t.Parallel()
-
-	stamped := make(map[traveller.Erratum]bool)
-
-	for _, f := range fixtures {
-		for _, erratum := range f.generate(t).Errata {
-			stamped[erratum] = true
-		}
-	}
-
-	unstamped := namesNoRecord()
-
-	for _, erratum := range traveller.Errata {
-		if rules.Readings()[erratum-1].Withdrawn() {
-			continue
-		}
-
-		if slices.Contains(unstamped, erratum) {
-			if stamped[erratum] {
-				t.Errorf("%v is stamped on a record; namesNoRecord pins it as stamped on none", erratum)
-			}
-
-			continue
-		}
-
-		if !stamped[erratum] {
-			t.Errorf("%v is reachable by no fixture on the roster", erratum)
 		}
 	}
 }

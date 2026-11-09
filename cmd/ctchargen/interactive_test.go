@@ -301,14 +301,6 @@ func TestInteractiveOffersTheGamblingModifier(t *testing.T) {
 	}
 }
 
-// brokenPipe fails every write, as a terminal does when the reader on the
-// other end goes away.
-type brokenPipe struct{}
-
-func (brokenPipe) Write([]byte) (int, error) { return 0, errClosedPipe }
-
-var errClosedPipe = errors.New("the other end closed")
-
 // A player nobody can be shown anything is not asked anything either. The
 // failure is remembered and reported at the next question, rather than being
 // swallowed once per line for the length of a career.
@@ -319,12 +311,12 @@ func TestInteractiveStopsWhenItCannotBeRead(t *testing.T) {
 
 	// Partly: the run stops at the first question nobody can be shown.
 	err := run([]string{cmdNew, flagService, other, flagSheet},
-		answers("1", 300), io.Discard, brokenPipe{}, withDice(otherWalked.partly(t)))
+		answers("1", 300), io.Discard, &failsAfter{}, withDice(otherWalked.partly(t)))
 
 	switch {
 	case err == nil:
 		t.Fatal("the run finished while nobody could see the questions")
-	case !errors.Is(err, errClosedPipe):
+	case !errors.Is(err, errWriteFailed):
 		t.Errorf("error %q does not carry the write failure that caused it", err)
 	}
 }
