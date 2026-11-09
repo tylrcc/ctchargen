@@ -15,6 +15,18 @@ the thing — what it did, what it promised, what held it ("the gate", "the
 document", "row", "decision table") — not only its identifiers and paths. A
 name-only sweep left stale prose in every ticket of #203 and #204.
 
+## A comment claims no more than the code does
+
+A doc comment, a note or a commit message that says what the code does is
+read against the code, and a claim wider than the code is a finding. Check
+hardest where the claim is universal — every, all, each, never, none, only —
+by naming each case it covers and finding it in the code: "every table" is
+every table in the file, not the one the change touched. A reading credited
+with a decision is held to what that reading's prose decides. Four overclaims
+reached review in #346, #354 and #359; three were true of the case in hand
+and false of the rest, and one credited E005 with a convention of the code's
+own.
+
 ## A quotation from the page is verbatim
 
 Comments and documents quote Book 1 to 3 to show where a rule comes from. A
