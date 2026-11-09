@@ -68,7 +68,7 @@ func ReadingNamed(id string) (Reading, bool) {
 
 // Readings is every reading, in erratum order. Its result type is the count
 // check: readings is sized by its literal, so a reading missing, or one past
-// the last erratum, does not compile here. TestTheReadings holds each to its
+// the last entry of traveller.Errata, does not compile here. TestTheReadings holds each to its
 // place.
 func Readings() [len(traveller.Errata)]Reading { return readings }
 

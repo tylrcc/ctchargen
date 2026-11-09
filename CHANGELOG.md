@@ -33,6 +33,10 @@ release turns out to be.
   fit no golden would have turned the gate red at the first withdrawal that
   names a replacement, as rc.1's notes described it. ADR 0004 says the
   harness refuses any golden stamped with a withdrawn reading (#332).
+- A test holds `traveller.Errata` to the `Erratum` constants, so a constant
+  declared and left out of the list, which would have had no reading and
+  compiled, fails the gate naming it; the comments that said the compiler
+  held this say what does (#333).
 
 ## 1.0.0-rc.1
 

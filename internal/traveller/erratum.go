@@ -13,9 +13,11 @@ import "fmt"
 // An erratum names one decision for good: never reused, never renumbered,
 // and a withdrawn reading keeps its constant (ADR 0004).
 //
-// The rules package declares one reading per constant, with its title and
-// its prose, so a reading missing or one too many does not compile, and its
-// tests hold each to its constant's place.
+// The rules package declares one reading per entry of Errata, with its title
+// and its prose: the compiler holds the readings to Errata's length, so a
+// reading missing or one too many does not compile, and rules' tests hold
+// each to its place. Errata is held to the constants below by a test that
+// reads this file, since a const block cannot count itself (#333).
 type Erratum int
 
 // The recorded readings, each declared in the rules package with its title.
@@ -39,6 +41,8 @@ const (
 
 // Errata is every recorded reading, in id order, for iteration and for the
 // gate.
+//
+// Implements: Every erratum constant is in Errata, in order [Domain model].
 var Errata = [...]Erratum{
 	E001, E002, E003, E004, E005, E006, E007,
 	E008, E009, E010, E011, E012, E013, E014, E015,

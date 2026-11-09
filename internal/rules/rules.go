@@ -9,8 +9,9 @@
 // defect that surfaces immediately rather than a runtime condition some path
 // might reach.
 //
-// The readings are Go values here, one per erratum, so a reading missing or
-// one with no erratum does not compile. They are not lifted: nothing parses
+// The readings are Go values here, one per entry of traveller.Errata, so a
+// reading missing or one too many does not compile; traveller's tests hold
+// Errata to the Erratum constants. They are not lifted: nothing parses
 // prose.
 //
 // Every table is transcribed twice: once as the page prints it, and once into

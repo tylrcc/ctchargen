@@ -158,8 +158,9 @@ readings are the fallback.
 | `CLAUDE.md`                   | This file.                                                                                                                                                                                           |
 
 Each fact lives in one place, so there is no second copy to hold to the
-first. The readings are values in `rules`, one per `Erratum` constant, so a
-reading missing or one too many does not compile. The `--auto` policy is
+first. The readings are values in `rules`, one per entry of
+`traveller.Errata`, so a reading missing or one too many does not compile,
+and a test holds `Errata` to the `Erratum` constants. The `--auto` policy is
 its own doc comments. The coverage map is the markers beside the code, and a
 rule an implementation names and no test holds, or the reverse, fails
 `internal/coverage`; the map is printed on demand and never committed. What
