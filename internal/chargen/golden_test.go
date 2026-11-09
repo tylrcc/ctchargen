@@ -11,6 +11,7 @@ import (
 
 	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
+	"github.com/philoserf/ctchargen/internal/rules"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
@@ -191,7 +192,8 @@ func TestGoldensRegenerate(t *testing.T) {
 //
 // This gate holds every reading to a fixture, and until the engine walked the ranked
 // services it could not hold. The readings stamped on no record by design are
-// namesNoRecord's, and one stamped anyway fails here.
+// namesNoRecord's, and one stamped anyway fails here. A withdrawn reading is
+// reachable by none, by definition; the stamping harness holds it.
 //
 // Holds: Every reading that governed a record is named on it.
 func TestEveryReadingIsReachable(t *testing.T) {
@@ -208,6 +210,10 @@ func TestEveryReadingIsReachable(t *testing.T) {
 	unstamped := namesNoRecord()
 
 	for _, erratum := range traveller.Errata {
+		if rules.ReadingOf(erratum).Withdrawn() {
+			continue
+		}
+
 		if slices.Contains(unstamped, erratum) {
 			if stamped[erratum] {
 				t.Errorf("%v is stamped on a record; namesNoRecord pins it as stamped on none", erratum)

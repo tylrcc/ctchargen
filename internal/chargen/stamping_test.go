@@ -1,6 +1,7 @@
 package chargen_test
 
 import (
+	"fmt"
 	"slices"
 	"strings"
 	"testing"
@@ -66,10 +67,15 @@ type reading struct {
 	// predicate keeps running and the number stays true.
 	parked     string
 	disagreeOn int
+
+	// withdrawn is whether the reading is withdrawn, as rules declares it,
+	// which changes what verdict holds a record to.
+	withdrawn bool
 }
 
 // Every reading a record stamps is one whose condition it satisfies, and
-// every condition it satisfies is stamped.
+// every condition it satisfies is stamped, unless the reading is withdrawn:
+// a withdrawn reading is stamped on no record, and its condition fits none.
 //
 // TestEveryReadingIsReachable proves each reading is reachable from some
 // path. It does not prove any reading is stamped on the RIGHT records: a
@@ -109,7 +115,7 @@ func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 			// predicate outright would leave it compiled and never run, and
 			// a predicate nobody runs rots: rename a step and it quietly
 			// starts answering about nothing.
-			if r.parked != "" {
+			if r.parked != "" && !r.withdrawn {
 				if want != got {
 					disagreements[r.id]++
 				}
@@ -117,13 +123,8 @@ func TestEveryReadingIsStampedWhereItsConditionHolds(t *testing.T) {
 				continue
 			}
 
-			switch {
-			case want && !got:
-				t.Errorf("%s: satisfies %v but does not stamp it. Stamped on: %s",
-					rec.name, r.id, stampedOn(r.id))
-			case got && !want:
-				t.Errorf("%s: stamps %v but does not satisfy it. Stamped on: %s",
-					rec.name, r.id, stampedOn(r.id))
+			for _, wrong := range verdict(rec, r) {
+				t.Error(wrong)
 			}
 		}
 	}
@@ -292,7 +293,9 @@ func namesNoRecord() []traveller.Erratum {
 	return []traveller.Erratum{traveller.E012, traveller.E015}
 }
 
-// unreached holds the readings no golden stamps to namesNoRecord.
+// unreached holds the readings no golden stamps to namesNoRecord. A withdrawn
+// reading is stamped on none by definition, and verdict holds it; it is not
+// one of these.
 //
 // The set is asserted rather than logged so that a change in either
 // direction is a finding: a golden that stamps one of these is wrong, and a
@@ -303,7 +306,7 @@ func unreached(t *testing.T, readings []reading, stamped map[traveller.Erratum]b
 	var got []traveller.Erratum
 
 	for _, r := range readings {
-		if !stamped[r.id] {
+		if !stamped[r.id] && !r.withdrawn {
 			got = append(got, r.id)
 		}
 	}
@@ -327,11 +330,57 @@ func stampedOn(id traveller.Erratum) string {
 // Implements: The errata a record stamps are exactly those whose reading's
 // condition holds [Documents] in The record.
 func conditions(tables *rules.Rules) []reading {
-	return slices.Concat(
+	all := slices.Concat(
 		enlistmentAndService(),
 		agingAndCrisis(),
 		rankAndTitle(tables),
 	)
+
+	for i := range all {
+		all[i].withdrawn = rules.ReadingOf(all[i].id).Withdrawn()
+	}
+
+	return all
+}
+
+// verdict is what is wrong with how a record stamps one reading, if anything.
+// A standing reading is stamped exactly where its condition holds. A
+// withdrawn one is stamped on no record and its condition fits none: the
+// goldens are new records, and this is what holds that no new record carries
+// a withdrawn reading. A record written before the withdrawal keeps its
+// stamp, and nothing here reads it.
+//
+// A parked reading is not judged here unless it is withdrawn, which a parked
+// disagreement does not excuse.
+//
+// Implements: The errata a record stamps are exactly those whose reading's
+// condition holds [Documents] in The record.
+//
+// Implements: A withdrawn reading is stamped on no new record [Documents] in
+// The record.
+func verdict(rec record, r reading) []string {
+	want := r.holds(rec)
+	got := slices.Contains(rec.Errata, r.id.String())
+
+	var wrong []string
+
+	switch {
+	case r.withdrawn && got:
+		wrong = append(wrong, fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id))
+	case want && !got:
+		wrong = append(wrong, fmt.Sprintf("%s: satisfies %v but does not stamp it. Stamped on: %s",
+			rec.name, r.id, stampedOn(r.id)))
+	case got && !want:
+		wrong = append(wrong, fmt.Sprintf("%s: stamps %v but does not satisfy it. Stamped on: %s",
+			rec.name, r.id, stampedOn(r.id)))
+	}
+
+	if r.withdrawn && want {
+		wrong = append(wrong, fmt.Sprintf("%s: satisfies %v, which is withdrawn, so its condition asks "+
+			"for a stamp nothing may make", rec.name, r.id))
+	}
+
+	return wrong
 }
 
 func enlistmentAndService() []reading {
@@ -494,4 +543,68 @@ func serviceNamed(printed string) (traveller.ServiceName, bool) {
 	var none traveller.ServiceName
 
 	return none, false
+}
+
+// A withdrawn reading is stamped on no new record, and its condition fits
+// none: the goldens are what this build writes, so a golden it fits is a
+// record the engine would have to stamp with a decision that no longer
+// governs. No real reading is withdrawn yet, so test-only ones stand in.
+//
+// Holds: A withdrawn reading is stamped on no new record.
+func TestAWithdrawnReadingOnAGoldenIsRefused(t *testing.T) {
+	t.Parallel()
+
+	tables, err := rules.Load()
+	if err != nil {
+		t.Fatalf("loading the rules: %v", err)
+	}
+
+	var e001 reading
+
+	for _, r := range conditions(tables) {
+		if r.id == traveller.E001 {
+			e001 = r
+		}
+	}
+
+	if e001.holds == nil {
+		t.Fatal("E001 has no condition")
+	}
+
+	records := readRecords(t)
+	never := func(record) bool { return false }
+
+	for name, tc := range map[string]struct {
+		withdrawn reading
+		refused   bool
+	}{
+		// The goldens stamp E001, so treating it as withdrawn finds them.
+		"stamped on a golden": {reading{id: traveller.E001, holds: never, withdrawn: true}, true},
+		// No golden stamps E012, and a condition that fits every record
+		// still asks for it to be.
+		"fitting a golden": {reading{id: traveller.E012, holds: func(record) bool { return true }, withdrawn: true}, true},
+		"neither":          {reading{id: traveller.E012, holds: never, withdrawn: true}, false},
+		// E001 standing, with its own condition, is what every golden
+		// already agrees with.
+		"standing": {e001, false},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			// A withdrawn reading's failure says so, which is what tells
+			// it from a standing reading's disagreement over the same
+			// record.
+			refused := false
+
+			for _, rec := range records {
+				for _, wrong := range verdict(rec, tc.withdrawn) {
+					refused = refused || strings.Contains(wrong, "which is withdrawn")
+				}
+			}
+
+			if refused != tc.refused {
+				t.Errorf("refused %v as withdrawn, want %v", refused, tc.refused)
+			}
+		})
+	}
 }

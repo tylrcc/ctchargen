@@ -15,6 +15,11 @@ release turns out to be.
   byte for byte, and the stamping and coverage checks read them rather than
   the document (#321). E007's rationale gains the comma "printed in, in the
   UPP" needed, and nothing else in any reading changes.
+- A reading can be withdrawn. It keeps its erratum, says why, and names the
+  erratum that replaced it, if any. The stamping harness refuses any golden
+  that stamps a withdrawn reading or that its condition fits, and a
+  replacement that is no erratum, or the reading itself, is refused. No reading
+  is withdrawn (#322).
 
 ## 1.0.0-beta.7
 

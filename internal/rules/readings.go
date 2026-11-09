@@ -30,7 +30,26 @@ type Reading struct {
 
 	// StampedOn is the stamping condition: which records name the erratum.
 	StampedOn string
+
+	// Withdrawal is zero for a reading that stands.
+	Withdrawal Withdrawal
 }
+
+// Withdrawal is why a reading's decision no longer governs new records, and
+// what replaced it. A withdrawn reading keeps its erratum, which is never
+// reused, and stays among the readings, so a record already stamped with it
+// still names one that exists; it is never stamped on a new one.
+type Withdrawal struct {
+	// Why is the reason, in prose. A withdrawal is one that says why.
+	Why string
+
+	// ReplacedBy is the erratum whose reading took this one's place, or zero
+	// where none did.
+	ReplacedBy traveller.Erratum
+}
+
+// Withdrawn is whether the reading's decision no longer governs new records.
+func (r Reading) Withdrawn() bool { return r.Withdrawal != Withdrawal{} }
 
 // ReadingOf is the reading an erratum names.
 func ReadingOf(e traveller.Erratum) Reading { return readings[e-1] }

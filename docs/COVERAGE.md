@@ -174,6 +174,8 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | A roll with nothing to meet is not recorded as a throw that succeeded | Generation record | `internal/traveller.RollEvent` | `internal/render.TestEveryGoldenMatchesTheSchema`, `internal/render.TestTheFlatShapeIsWhatWasWritten` |
 | A stopped session says what was answered and that nothing was written | ADR 0001 | `cmd/ctchargen.player.stopped` | `cmd/ctchargen.TestAStoppedSessionSaysWhatWasLost` |
 | A strategy given without --auto is refused, not ignored | CLI sketch | `cmd/ctchargen.strategiesWithoutAuto` | `cmd/ctchargen.TestAStrategyWithoutAutoIsRefused` |
+| A withdrawal says why, and its replacement is another erratum that exists | Documents | `internal/rules.refusedWithdrawal` | `internal/rules.TestAWithdrawalNamesARealReplacement` |
+| A withdrawn reading is stamped on no new record | Documents | `internal/chargen.verdict` | `internal/chargen.TestAWithdrawnReadingOnAGoldenIsRefused` |
 | A word after a help flag is refused, not discarded | CLI sketch | `cmd/ctchargen.writeHelp` | `cmd/ctchargen.TestAWordAfterAHelpFlagIsRefused` |
 | A word that names no strategy never becomes one | Choice points | `internal/chargen.parsed` | `internal/chargen.TestAWordThatNamesNoStrategyIsNotOne` |
 | A write that fails partway stops the batch, naming the member | CLI sketch | `cmd/ctchargen.writingTo` | `cmd/ctchargen.TestABatchReportsAWriteThatFailedPartway` |
@@ -191,7 +193,7 @@ and Book 2 pp. 18–19 give the two ships the benefits name.
 | Every step the errata conditions read is found, as the kind they read it as | Documents | `internal/chargen.record.dice` | `internal/chargen.TestEveryStepTheConditionsReadIsFound` |
 | Every step, throw, choice and consequence, in order | Generation record | `internal/chargen.log` | `internal/chargen.TestGoldens` |
 | The alternatives offered are exactly the engine's | Choice points | `cmd/ctchargen.player.choose` | `cmd/ctchargen.TestInteractiveAsksTheYesOrNoPoints` |
-| The errata a record stamps are exactly those whose reading's condition holds | Documents | `internal/chargen.conditions` | `internal/chargen.TestEveryReadingIsStampedWhereItsConditionHolds` |
+| The errata a record stamps are exactly those whose reading's condition holds | Documents | `internal/chargen.conditions`, `internal/chargen.verdict` | `internal/chargen.TestEveryReadingIsStampedWhereItsConditionHolds` |
 | The errata are on the transcript and not the sheet | Generation record | `internal/render.sheetOf` | `internal/render.TestTheErrataAreOnTheTranscriptAndNotTheSheet` |
 | The input ending is an error, not a default | Choice points | `cmd/ctchargen.errNoAnswer` | `cmd/ctchargen.TestInteractiveRefusesToInventAnAnswer` |
 | The kept transcript numbers every event, so no number is skipped | Generation record | `internal/render.writeEvent` | `internal/chargen.TestNoTranscriptSkipsANumber` |

@@ -2,9 +2,11 @@ package rules //nolint:testpackage // the lift is tested on mutated text, which 
 
 import (
 	"errors"
+	"fmt"
 	"go/ast"
 	"go/parser"
 	"go/token"
+	"slices"
 	"strings"
 	"testing"
 
@@ -160,6 +162,12 @@ func TestTheReadingsAreTheDocument(t *testing.T) {
 				t.Errorf("%v %s is declared\n%q\nand %s has\n%q", document.ID, field, pair[0], readingsFile, pair[1])
 			}
 		}
+
+		// The document has no form for a withdrawal, so a reading withdrawn
+		// before the document goes (#323) fails here until it has one.
+		if declared.Withdrawn() {
+			t.Errorf("%v is declared withdrawn, %+v, and %s cannot say so", document.ID, declared.Withdrawal, readingsFile)
+		}
 	}
 }
 
@@ -283,4 +291,89 @@ var readingBreakages = map[string]struct {
 		},
 		"E001",
 	},
+}
+
+// A withdrawal says why, and names as its replacement only an erratum that
+// exists and is not its own. No real reading is withdrawn yet, so the cases
+// that must be refused are test-only readings, each one real reading with its
+// withdrawal broken one way; every real reading is held to the same check.
+//
+// Holds: A withdrawal says why, and its replacement is another erratum that
+// exists.
+func TestAWithdrawalNamesARealReplacement(t *testing.T) {
+	t.Parallel()
+
+	for _, r := range Readings() {
+		err := refusedWithdrawal(r)
+		if err != nil {
+			t.Errorf("%v: %v", r.ID, err)
+		}
+	}
+
+	withdrawn := func(w Withdrawal) Reading {
+		r := ReadingOf(traveller.E004)
+
+		r.Withdrawal = w
+
+		return r
+	}
+
+	const why = "A later decision replaced it."
+
+	for name, w := range map[string]Withdrawal{
+		"with no reason, replaced":  {ReplacedBy: traveller.E005},
+		"replaced by itself":        {Why: why, ReplacedBy: traveller.E004},
+		"replaced by no erratum":    {Why: why, ReplacedBy: traveller.Erratum(len(traveller.Errata) + 1)},
+		"replaced by a negative id": {Why: why, ReplacedBy: -1},
+		"with a reason of spaces":   {Why: " \n "},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			if refusedWithdrawal(withdrawn(w)) == nil {
+				t.Errorf("withdrawal %+v was accepted", w)
+			}
+		})
+	}
+
+	for name, w := range map[string]Withdrawal{
+		"with no replacement": {Why: "The page settles it after all."},
+		"replaced":            {Why: why, ReplacedBy: traveller.E005},
+	} {
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+
+			r := withdrawn(w)
+
+			err := refusedWithdrawal(r)
+			if err != nil || !r.Withdrawn() {
+				t.Errorf("withdrawal %+v: withdrawn %v, refused with %v", w, r.Withdrawn(), err)
+			}
+		})
+	}
+}
+
+// errWithdrawal is a withdrawal that does not say why, or names a replacement
+// that is no other erratum.
+var errWithdrawal = errors.New("malformed withdrawal")
+
+// refusedWithdrawal is why a reading's withdrawal is malformed, or nil.
+//
+// Implements: A withdrawal says why, and its replacement is another erratum
+// that exists [Documents] in The record.
+func refusedWithdrawal(r Reading) error {
+	w := r.Withdrawal
+
+	switch {
+	case !r.Withdrawn():
+		return nil
+	case strings.TrimSpace(w.Why) == "":
+		return fmt.Errorf("%w: %v is withdrawn and does not say why", errWithdrawal, r.ID)
+	case w.ReplacedBy == r.ID:
+		return fmt.Errorf("%w: %v is replaced by itself", errWithdrawal, r.ID)
+	case w.ReplacedBy != 0 && !slices.Contains(traveller.Errata[:], w.ReplacedBy):
+		return fmt.Errorf("%w: %v is replaced by %v, which is no erratum", errWithdrawal, r.ID, w.ReplacedBy)
+	}
+
+	return nil
 }
