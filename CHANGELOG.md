@@ -20,6 +20,13 @@ release turns out to be.
   `//go:embed`, the JSON wire layer and the tests that existed only for it are
   gone; a table, a service or a column the type does not have no longer
   compiles. Every golden is unchanged (#338).
+- The transcription is the page's text where it was not: the
+  characteristic abbreviations the tables print (`Intel 8+`, `+1 Stren`,
+  `+2 Social`), p. 23's `Rifl3` and `SMG`, and an em dash wherever the page
+  prints one (p. 9's Table 1, p. 10's commissions, promotions, DMs and Table
+  of Ranks). The lift reads each abbreviation and reads an em dash as
+  nothing; a lone hyphen or en dash where the page prints an em dash is
+  refused. Every lifted value is unchanged (#339).
 
 ## 1.0.0-rc.1
 

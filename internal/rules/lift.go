@@ -84,9 +84,12 @@ func checkDraft(draft [len(traveller.ServiceNames)]int) error {
 // Implements: A table broken two ways reports the same one every run [JSON
 // conventions].
 func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceName) (Service, error) {
-	service := Service{Name: name, Draft: t.draft[i], Ranks: t.ranks[i]}
+	ranks, err := liftRanks(t.ranks[i])
+	if err != nil {
+		return Service{}, fmt.Errorf("%v: %w", name, err)
+	}
 
-	var err error
+	service := Service{Name: name, Draft: t.draft[i], Ranks: ranks}
 
 	service.Enlistment, err = liftThrow(t.enlistment[i], "enlistment")
 	if err != nil {
@@ -114,40 +117,88 @@ func liftServiceColumn(t servicesTranscription, i int, name traveller.ServiceNam
 	// anything (#53). The order is the page's.
 	for _, printed := range []struct {
 		label string
-		cell  *printedThrow
+		cell  printedThrow
+		into  *Throw
 	}{
-		{"commission", t.commission[i]},
-		{"promotion", t.promotion[i]},
+		{"commission", t.commission[i], &service.commission},
+		{"promotion", t.promotion[i], &service.promotion},
 	} {
-		label, cell := printed.label, printed.cell
+		throw, isPrinted, err := liftOptionalThrow(printed.cell, printed.label)
+		if err != nil {
+			return Service{}, fmt.Errorf("%v: %w", name, err)
+		}
 
-		if (cell != nil) != hasRanks {
+		if isPrinted != hasRanks {
 			return Service{}, fmt.Errorf(
 				"%w: %v prints %s but %s ranks: p. 10 makes ranks, commissions and promotions one fact",
-				errMalformed, name, label, map[bool]string{true: "also", false: "no"}[hasRanks],
+				errMalformed, name, printed.label, map[bool]string{true: "also", false: "no"}[hasRanks],
 			)
 		}
-	}
 
-	if !hasRanks {
-		return service, nil
-	}
-
-	// Both are printed here: the check above refused a column with ranks
-	// that leaves either out.
-	service.commission, err = liftThrow(*t.commission[i], "commission")
-	if err != nil {
-		return Service{}, fmt.Errorf("%v: %w", name, err)
-	}
-
-	service.promotion, err = liftThrow(*t.promotion[i], "promotion")
-	if err != nil {
-		return Service{}, fmt.Errorf("%v: %w", name, err)
+		*printed.into = throw
 	}
 
 	return service, nil
 }
 
+// liftRanks reads a service's column of the Table of Ranks (p. 10): a name
+// for each rank it has, from Rank 1, and an em dash for each it does not. A
+// name below a dash would be a rank the service has without the one before
+// it, which the table never prints.
+func liftRanks(cells [rankRows]string) ([]string, error) {
+	var ranks []string
+
+	for row, cell := range cells {
+		err := refuseEmpty(cell)
+		if err == nil {
+			err = refuseDashMistyped(cell)
+		}
+
+		if err != nil {
+			return nil, fmt.Errorf("table of ranks, rank %d: %w", row+1, err)
+		}
+
+		if cell == emDash {
+			continue
+		}
+
+		if len(ranks) != row {
+			return nil, fmt.Errorf("%w: table of ranks, rank %d: %q is printed below a dash", errMalformed, row+1, cell)
+		}
+
+		ranks = append(ranks, cell)
+	}
+
+	return ranks, nil
+}
+
+// liftOptionalThrow lifts a throw a service may not have: an em dash for a
+// target is the page saying it has none, and every DM beside it must then be
+// a dash too.
+func liftOptionalThrow(printed printedThrow, what string) (Throw, bool, error) {
+	err := refuseDashMistyped(printed.target)
+	if err != nil {
+		return Throw{}, false, fmt.Errorf("%s: %w", what, err)
+	}
+
+	if printed.target != emDash {
+		throw, err := liftThrow(printed, what)
+
+		return throw, true, err
+	}
+
+	for _, dm := range printed.dms {
+		if dm.condition != emDash {
+			return Throw{}, false, fmt.Errorf("%w: %s: a DM of %q beside a throw the page does not print",
+				errMalformed, what, dm.condition)
+		}
+	}
+
+	return Throw{}, false, nil
+}
+
+// liftThrow lifts a throw the page prints: its target, and each DM whose
+// condition is not an em dash. The three dashes are decided once, on emDash.
 func liftThrow(printed printedThrow, what string) (Throw, error) {
 	target, err := traveller.ParseTarget(printed.target)
 	if err != nil {
@@ -157,6 +208,15 @@ func liftThrow(printed printedThrow, what string) (Throw, error) {
 	throw := Throw{Target: target}
 
 	for _, dm := range printed.dms {
+		if dm.condition == emDash {
+			continue
+		}
+
+		err := refuseDashMistyped(dm.condition)
+		if err != nil {
+			return Throw{}, fmt.Errorf("%s: %w", what, err)
+		}
+
 		lifted, err := parseDM(dm.dm, dm.condition)
 		if err != nil {
 			return Throw{}, fmt.Errorf("%s: %w", what, err)

@@ -1,6 +1,8 @@
 package rules
 
 import (
+	"errors"
+	"strings"
 	"testing"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -43,8 +45,8 @@ func TestParseAlteration(t *testing.T) {
 		t.Errorf("-1 Social Standing lifted to %v %d (%v, %v)", characteristic, size, ok, err)
 	}
 
-	// A transcription is typed with an ASCII hyphen, and the minus the page
-	// prints may be typed as U+2212, the minus sign. Someone transcribing
+	// A keyboard types a minus as an ASCII hyphen, and the minus the page
+	// prints is U+2212, the minus sign. Someone transcribing
 	// p. 11 types what he sees, and the two are indistinguishable on screen,
 	// so both must lift the same way.
 	minusSign, minusSignSize, ok, err := parseAlteration("\u22121 Social Standing")
@@ -143,5 +145,118 @@ func TestLoadIsOnce(t *testing.T) {
 
 	if first != second {
 		t.Error("Load lifted the tables twice")
+	}
+}
+
+// The page abbreviates characteristics wherever a table is narrow, and each
+// abbreviation reads as the one characteristic it begins: p. 9's "+1 Intel",
+// p. 10's "Educ 9+", p. 11's "+1 Stren". The full names, as p. 4 prints
+// them and the Aging Table repeats them, read too. Anything else is refused.
+func TestThePagesCharacteristicAbbreviationsRead(t *testing.T) {
+	t.Parallel()
+
+	for printed, want := range map[string]traveller.Characteristic{
+		"Stren": traveller.Strength, "Dext": traveller.Dexterity, "Endur": traveller.Endurance,
+		"Intel": traveller.Intelligence, "Educ": traveller.Education, "Social": traveller.SocialStanding,
+		"Strength": traveller.Strength, "Social Standing": traveller.SocialStanding,
+	} {
+		got, err := parseCharacteristic(printed)
+		if err != nil || got != want {
+			t.Errorf("%q read as %v (%v), want %v", printed, got, err, want)
+		}
+	}
+
+	for _, printed := range []string{"Intl", "Str", "Edu", "Soc", "intel", "Intel "} {
+		_, err := parseCharacteristic(printed)
+		if err == nil {
+			t.Errorf("%q was read as a characteristic", printed)
+		}
+	}
+}
+
+// An em dash is what the page prints where a cell means nothing, and it
+// means nothing wherever it stands. A hyphen or an en dash in its place is
+// refused by name: the hyphen is what was typed before the page's text was
+// restored (#339), and the en dash is the glyph #288 refuses everywhere.
+func TestAnEmDashBenefitIsNothing(t *testing.T) {
+	t.Parallel()
+
+	benefit, err := parseBenefitRow("—", map[string]string{})
+	if err != nil || benefit != (traveller.NoBenefit{}) {
+		t.Errorf("an em dash benefit read as %v (%v)", benefit, err)
+	}
+
+	for _, typed := range []string{"-", "–"} {
+		_, err := parseBenefitRow(typed, map[string]string{})
+		if err == nil {
+			t.Errorf("a benefit cell of %q was read", typed)
+		}
+	}
+}
+
+// An em dash throw is a throw the service does not have, and an em dash DM
+// beside a printed throw is a DM it does not have.
+func TestAnEmDashThrowOrDMIsNothing(t *testing.T) {
+	t.Parallel()
+
+	none := printedThrow{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}}
+
+	throw, printed, err := liftOptionalThrow(none, "commission")
+	if err != nil || printed || throw.Target != (traveller.Target{}) {
+		t.Errorf("an em dash throw read as %v, printed %v (%v)", throw, printed, err)
+	}
+
+	dashes := printedThrow{target: "3+", dms: []printedDM{{dm: 1, condition: "—"}, {dm: 2, condition: "—"}}}
+
+	throw, err = liftThrow(dashes, "enlistment")
+	if err != nil || len(throw.DMs) != 0 {
+		t.Errorf("em dash DMs read as %v (%v)", throw.DMs, err)
+	}
+
+	for _, typed := range []string{"-", "–"} {
+		_, _, refused := liftOptionalThrow(printedThrow{target: typed}, "commission")
+		if refused == nil ||
+			!strings.Contains(refused.Error(), "the page prints an em dash") && !errors.Is(refused, traveller.ErrEnDash) {
+			t.Errorf("a commission of %q was not refused by name: %v", typed, refused)
+		}
+
+		mistyped := printedThrow{target: "3+", dms: []printedDM{{dm: 1, condition: typed}}}
+
+		_, refused = liftThrow(mistyped, "enlistment")
+		if refused == nil ||
+			!strings.Contains(refused.Error(), "the page prints an em dash") && !errors.Is(refused, traveller.ErrEnDash) {
+			t.Errorf("a DM of %q was not refused by name: %v", typed, refused)
+		}
+	}
+
+	// A throw the page does not print has no DM either.
+	beside := printedThrow{target: "—", dms: []printedDM{{dm: 1, condition: "Intel 6+"}}}
+
+	_, _, err = liftOptionalThrow(beside, "commission")
+	if err == nil {
+		t.Error("a DM beside a dashed commission was read")
+	}
+}
+
+// A column of the Table of Ranks names each rank from Rank 1 and prints a
+// dash for each the service does not have; a name below a dash, a hyphen, or
+// nothing at all is refused.
+func TestAnEmDashRankIsNone(t *testing.T) {
+	t.Parallel()
+
+	ranks, err := liftRanks([rankRows]string{"4th Officer", "3rd Officer", "2nd Officer", "1st Officer", "Captain", "—"})
+	if err != nil || len(ranks) != 5 {
+		t.Errorf("Merchants' ranks read as %v (%v)", ranks, err)
+	}
+
+	for name, cells := range map[string][rankRows]string{
+		"a hyphen for a rank": {"Ensign", "-", "—", "—", "—", "—"},
+		"a rank after a dash": {"Ensign", "—", "Commander", "—", "—", "—"},
+		"a rank left empty":   {"Ensign", "", "—", "—", "—", "—"},
+	} {
+		_, err := liftRanks(cells)
+		if err == nil {
+			t.Errorf("%s was read", name)
+		}
 	}
 }

@@ -62,8 +62,8 @@ func NewTarget(number int, modality Modality) Target {
 
 // Sign reads one glyph as the sign of a number: +1 for a plus, and -1 for
 // either of the two characters a minus may arrive as: the ASCII hyphen a
-// transcription is typed with, and U+2212, the minus sign, for the minus the page
-// prints. Anything else is no sign, EnDash included.
+// keyboard types for one, and U+2212, the minus sign, which is the minus the
+// page prints. Anything else is no sign, EnDash included.
 //
 // It is the one place that says which glyphs are signs, so a target and a
 // table cell agree on it.

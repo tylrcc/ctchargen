@@ -2,13 +2,26 @@ package rules
 
 import "github.com/philoserf/ctchargen/internal/traveller"
 
+// Where the transcription still departs from the print, and why: the page's
+// cells are typed as printed, but three of its layouts are not. The Rank and
+// Service Skills box (p. 23) labels each grant by its rank's title ("Navy
+// Captain") and suffixes a level ("Cutlass-1"), where printedGrant holds a
+// rank number and the skill alone; the Aging Table (p. 9) prints each cell as
+// "−1 (8+)" across dotted column bands, where printedBand holds a reduction
+// and a saving throw per band; and the Prior Service Table (p. 10) prints its
+// DM amounts once, as row headings ("DM of +1 if"), where printedDM carries
+// each beside its condition, a dash's included. The education gate is not a
+// cell: p. 11 says it in prose, "education 8 or greater", and printedGate
+// names the characteristic as p. 4 does.
+
 // skillsTranscription is the Acquired Skills Table as p. 11 prints it, with
 // the eligibility and the education gate that govern it.
 //
 // Which table a grid is, and which service a column belongs to, are positions
 // in traveller's own order: the tables in traveller.SkillTables order and the
-// services in traveller.ServiceNames order. A cell is printed text, today's
-// transcription of the page; where it still departs from the print is #339.
+// services in traveller.ServiceNames order. A cell is the page's text: its
+// abbreviations, its notation and its dashes, read off the page one page at
+// a time (#339).
 type skillsTranscription struct {
 	tables        [len(traveller.SkillTables)][Faces][len(traveller.ServiceNames)]string
 	eligibility   Eligibility
@@ -35,12 +48,12 @@ type printedGate struct {
 var transcribedSkills = skillsTranscription{
 	tables: [len(traveller.SkillTables)][Faces][len(traveller.ServiceNames)]string{
 		traveller.PersonalDevelopment: { // Personal Development Table
-			{"+1 Strength", "+1 Strength", "+1 Strength", "+1 Strength", "+1 Strength", "+1 Strength"},
-			{"+1 Dexterity", "+1 Dexterity", "+1 Dexterity", "+1 Dexterity", "+1 Dexterity", "+1 Dexterity"},
-			{"+1 Endurance", "+1 Endurance", "+1 Endurance", "+1 Endurance", "+1 Endurance", "+1 Endurance"},
-			{"+1 Social Standing", "Gambling", "Gambling", "Gun Cbt", "+1 Strength", "Blade Cbt"},
-			{"+1 Intelligence", "Brawling", "Brawling", "+1 Intelligence", "Blade Cbt", "Brawling"},
-			{"+1 Education", "Blade Cbt", "+1 Education", "+1 Education", "Bribery", "-1 Social Standing"},
+			{"+1 Stren", "+1 Stren", "+1 Stren", "+1 Stren", "+1 Stren", "+1 Stren"},
+			{"+1 Dext", "+1 Dext", "+1 Dext", "+1 Dext", "+1 Dext", "+1 Dext"},
+			{"+1 Endur", "+1 Endur", "+1 Endur", "+1 Endur", "+1 Endur", "+1 Endur"},
+			{"+1 Social", "Gambling", "Gambling", "Gun Cbt", "+1 Stren", "Blade Cbt"},
+			{"+1 Intel", "Brawling", "Brawling", "+1 Intel", "Blade Cbt", "Brawling"},
+			{"+1 Educ", "Blade Cbt", "+1 Educ", "+1 Educ", "Bribery", "−1 Social"},
 		},
 		traveller.ServiceSkills: { // Service Skills Table
 			{"Ship's Boat", "ATV", "ATV", "Air/Raft", "Steward", "Forgery"},
@@ -117,15 +130,18 @@ type printedPension struct {
 	pay   int64
 }
 
+// rankRows is the rows the Table of Ranks prints, Rank 1 to Rank 6 (p. 10).
+const rankRows = 6
+
 // servicesTranscription is the Prior Service Table and the Table of Ranks as
 // p. 10 prints them, a column per service in traveller.ServiceNames order,
 // with the Rank and Service Skills box and the retirement pay table.
 type servicesTranscription struct {
 	enlistment, survival  [len(traveller.ServiceNames)]printedThrow
-	commission, promotion [len(traveller.ServiceNames)]*printedThrow
+	commission, promotion [len(traveller.ServiceNames)]printedThrow
 	draft                 [len(traveller.ServiceNames)]int
 	reenlist              [len(traveller.ServiceNames)]string
-	ranks                 [len(traveller.ServiceNames)][]string
+	ranks                 [len(traveller.ServiceNames)][rankRows]string
 	grants                []printedGrant
 	pensions              []printedPension
 	perAdditionalTerm     int64
@@ -183,54 +199,54 @@ type printedTitle struct {
 // reprint's font turns a printed minus into a digit and an em dash into a 4.
 var transcribedServices = servicesTranscription{
 	enlistment: [len(traveller.ServiceNames)]printedThrow{
-		{target: "8+", dms: []printedDM{{dm: 1, condition: "Intelligence 8+"}, {dm: 2, condition: "Education 9+"}}},
-		{target: "9+", dms: []printedDM{{dm: 1, condition: "Intelligence 8+"}, {dm: 2, condition: "Strength 8+"}}},
-		{target: "5+", dms: []printedDM{{dm: 1, condition: "Dexterity 6+"}, {dm: 2, condition: "Endurance 5+"}}},
-		{target: "7+", dms: []printedDM{{dm: 1, condition: "Intelligence 6+"}, {dm: 2, condition: "Strength 8+"}}},
-		{target: "7+", dms: []printedDM{{dm: 1, condition: "Strength 7+"}, {dm: 2, condition: "Intelligence 6+"}}},
-		{target: "3+"},
+		{target: "8+", dms: []printedDM{{dm: 1, condition: "Intel 8+"}, {dm: 2, condition: "Educ 9+"}}},
+		{target: "9+", dms: []printedDM{{dm: 1, condition: "Intel 8+"}, {dm: 2, condition: "Stren 8+"}}},
+		{target: "5+", dms: []printedDM{{dm: 1, condition: "Dext 6+"}, {dm: 2, condition: "Endur 5+"}}},
+		{target: "7+", dms: []printedDM{{dm: 1, condition: "Intel 6+"}, {dm: 2, condition: "Stren 8+"}}},
+		{target: "7+", dms: []printedDM{{dm: 1, condition: "Stren 7+"}, {dm: 2, condition: "Intel 6+"}}},
+		{target: "3+", dms: []printedDM{{dm: 1, condition: "—"}, {dm: 2, condition: "—"}}},
 	},
 	survival: [len(traveller.ServiceNames)]printedThrow{
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intelligence 7+"}}},
-		{target: "6+", dms: []printedDM{{dm: 2, condition: "Endurance 8+"}}},
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Education 6+"}}},
-		{target: "7+", dms: []printedDM{{dm: 2, condition: "Endurance 9+"}}},
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intelligence 7+"}}},
-		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intelligence 9+"}}},
+		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intel 7+"}}},
+		{target: "6+", dms: []printedDM{{dm: 2, condition: "Endur 8+"}}},
+		{target: "5+", dms: []printedDM{{dm: 2, condition: "Educ 6+"}}},
+		{target: "7+", dms: []printedDM{{dm: 2, condition: "Endur 9+"}}},
+		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intel 7+"}}},
+		{target: "5+", dms: []printedDM{{dm: 2, condition: "Intel 9+"}}},
 	},
-	commission: [len(traveller.ServiceNames)]*printedThrow{
-		{target: "10+", dms: []printedDM{{dm: 1, condition: "Social Standing 9+"}}},
-		{target: "9+", dms: []printedDM{{dm: 1, condition: "Education 7+"}}},
-		{target: "5+", dms: []printedDM{{dm: 1, condition: "Endurance 7+"}}},
-		nil,
-		{target: "4+", dms: []printedDM{{dm: 1, condition: "Intelligence 6+"}}},
-		nil,
+	commission: [len(traveller.ServiceNames)]printedThrow{
+		{target: "10+", dms: []printedDM{{dm: 1, condition: "Social 9+"}}},
+		{target: "9+", dms: []printedDM{{dm: 1, condition: "Educ 7+"}}},
+		{target: "5+", dms: []printedDM{{dm: 1, condition: "Endur 7+"}}},
+		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
+		{target: "4+", dms: []printedDM{{dm: 1, condition: "Intel 6+"}}},
+		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
 	},
-	promotion: [len(traveller.ServiceNames)]*printedThrow{
-		{target: "8+", dms: []printedDM{{dm: 1, condition: "Education 8+"}}},
-		{target: "9+", dms: []printedDM{{dm: 1, condition: "Social Standing 8+"}}},
-		{target: "6+", dms: []printedDM{{dm: 1, condition: "Education 7+"}}},
-		nil,
-		{target: "10+", dms: []printedDM{{dm: 1, condition: "Intelligence 9+"}}},
-		nil,
+	promotion: [len(traveller.ServiceNames)]printedThrow{
+		{target: "8+", dms: []printedDM{{dm: 1, condition: "Educ 8+"}}},
+		{target: "9+", dms: []printedDM{{dm: 1, condition: "Social 8+"}}},
+		{target: "6+", dms: []printedDM{{dm: 1, condition: "Educ 7+"}}},
+		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
+		{target: "10+", dms: []printedDM{{dm: 1, condition: "Intel 9+"}}},
+		{target: "—", dms: []printedDM{{dm: 1, condition: "—"}}},
 	},
 	draft:    [len(traveller.ServiceNames)]int{1, 2, 3, 4, 5, 6},
 	reenlist: [len(traveller.ServiceNames)]string{"6+", "6+", "7+", "3+", "4+", "5+"},
-	ranks: [len(traveller.ServiceNames)][]string{
+	ranks: [len(traveller.ServiceNames)][rankRows]string{
 		{"Ensign", "Lieutenant", "Lt Cmdr", "Commander", "Captain", "Admiral"},
 		{"Lieutenant", "Captain", "Force Cmdr", "Lt Colonel", "Colonel", "Brigadier"},
 		{"Lieutenant", "Captain", "Major", "Lt Colonel", "Colonel", "General"},
-		{},
-		{"4th Officer", "3rd Officer", "2nd Officer", "1st Officer", "Captain"},
-		{},
+		{"—", "—", "—", "—", "—", "—"},
+		{"4th Officer", "3rd Officer", "2nd Officer", "1st Officer", "Captain", "—"},
+		{"—", "—", "—", "—", "—", "—"},
 	},
 	grants: []printedGrant{
-		{service: traveller.Navy, rank: 5, grant: "+1 Social Standing"},
-		{service: traveller.Navy, rank: 6, grant: "+1 Social Standing"},
+		{service: traveller.Navy, rank: 5, grant: "+1 Social"},
+		{service: traveller.Navy, rank: 6, grant: "+1 Social"},
 		{service: traveller.Marines, rank: 0, grant: "Cutlass"},
 		{service: traveller.Marines, rank: 1, grant: "Revolver"},
-		{service: traveller.Army, rank: 0, grant: "Rifle"},
-		{service: traveller.Army, rank: 1, grant: "Submachine Gun"},
+		{service: traveller.Army, rank: 0, grant: "Rifl3"},
+		{service: traveller.Army, rank: 1, grant: "SMG"},
 		{service: traveller.Merchants, rank: 4, grant: "Pilot"},
 		{service: traveller.Scouts, rank: 0, grant: "Pilot"},
 	},
@@ -255,12 +271,12 @@ var transcribedServices = servicesTranscription{
 var transcribedMustering = musteringTranscription{
 	table1: [MusterRows][len(traveller.ServiceNames)]string{
 		{"Low Psg", "Low Psg", "Low Psg", "Low Psg", "Low Psg", "Low Psg"},
-		{"+1 Intelligence", "+2 Intelligence", "+1 Intelligence", "+2 Intelligence", "+1 Intelligence", "+1 Intelligence"},
-		{"+2 Education", "+1 Education", "+2 Education", "+2 Education", "+1 Education", "+1 Education"},
+		{"+1 Intel", "+2 Intel", "+1 Intel", "+2 Intel", "+1 Intel", "+1 Intel"},
+		{"+2 Educ", "+1 Educ", "+2 Educ", "+2 Educ", "+1 Educ", "+1 Educ"},
 		{"Blade", "Blade", "Gun", "Blade", "Gun", "Gun"},
 		{"Travellers'", "Travellers'", "High Psg", "Gun", "Blade", "High Psg"},
-		{"High Psg", "High Psg", "Mid Psg", "Scout", "Low Psg", "-"},
-		{"+2 Social Standing", "+2 Social Standing", "+1 Social Standing", "-", "Merchant", "-"},
+		{"High Psg", "High Psg", "Mid Psg", "Scout", "Low Psg", "—"},
+		{"+2 Social", "+2 Social", "+1 Social", "—", "Merchant", "—"},
 	},
 	table2: [MusterRows][len(traveller.ServiceNames)]int64{
 		{1000, 2000, 2000, 20000, 1000, 1000},

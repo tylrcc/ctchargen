@@ -26,24 +26,11 @@ import (
 func servicesCopy() servicesTranscription {
 	s := transcribedServices
 
-	for i := range s.ranks {
-		s.ranks[i] = slices.Clone(s.ranks[i])
-	}
-
 	for i := range s.enlistment {
 		s.enlistment[i].dms = slices.Clone(s.enlistment[i].dms)
 		s.survival[i].dms = slices.Clone(s.survival[i].dms)
-	}
-
-	for _, column := range []*[len(traveller.ServiceNames)]*printedThrow{&s.commission, &s.promotion} {
-		for i, printed := range column {
-			if printed != nil {
-				copied := *printed
-
-				copied.dms = slices.Clone(printed.dms)
-				column[i] = &copied
-			}
-		}
+		s.commission[i].dms = slices.Clone(s.commission[i].dms)
+		s.promotion[i].dms = slices.Clone(s.promotion[i].dms)
 	}
 
 	s.grants = slices.Clone(s.grants)
@@ -120,7 +107,7 @@ func TestMalformedServices(t *testing.T) {
 			"p. 10 makes ranks",
 		},
 		"a commission missing from a service with ranks": {
-			func(s *servicesTranscription) { s.commission[0] = nil },
+			func(s *servicesTranscription) { s.commission[0] = s.commission[3] },
 			"p. 10 makes ranks",
 		},
 		// Draft scans for the service printing the die, so a face printed

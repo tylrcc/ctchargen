@@ -11,9 +11,10 @@ import (
 )
 
 // The lift's parsers. Every one of them checks a printed string against the
-// domain's own closed alphabet rather than against a second list kept here:
-// a name that does not name a value of the type is a defect in the
-// transcription, and the lift is where it must be caught.
+// domain's own closed alphabet rather than against a second list kept here,
+// save one: the abbreviations the tables print for a characteristic, which
+// the type does not spell. A name that names no value of the type is a defect
+// in the transcription, and the lift is where it must be caught.
 
 // named indexes an alphabet by the name its values give themselves, so that
 // the transcription's spelling is checked against the type and nothing else.
@@ -45,8 +46,36 @@ func lookup[T any](index map[string]T, name, kind string) (T, error) {
 	return value, nil
 }
 
+// parseCharacteristic reads a characteristic as the page names it: in full,
+// as p. 4 prints the six and the Aging Table repeats them, or abbreviated, as
+// the narrower tables print them.
 func parseCharacteristic(name string) (traveller.Characteristic, error) {
+	if c, ok := abbreviatedCharacteristics[name]; ok {
+		return c, nil
+	}
+
 	return lookup(characteristics, name, "characteristic")
+}
+
+// abbreviatedCharacteristics is each abbreviation the tables print for a
+// characteristic: p. 9's Table 1 ("+1 Intel", "+2 Educ", "+2 Social"),
+// p. 10's DM rows ("Intel 8+", "Stren 8+", "Dext 6+", "Endur 5+"), p. 11's
+// Acquired Skills Table ("+1 Stren", "−1 Social") and p. 23's box
+// ("+1 Social").
+//
+// Settled by the page and not a reading: each is the opening of exactly one of
+// the six names p. 4 prints, so nothing is decided in reading it. It is not
+// E012's either, which says so of Table 1's rows itself: "Table 1's
+// characteristic rows (+1 Intel, +2 Educ, +2 Social and the rest) are not
+// normalized here because a characteristic is never recorded as a printed
+// string".
+var abbreviatedCharacteristics = map[string]traveller.Characteristic{
+	"Stren":  traveller.Strength,
+	"Dext":   traveller.Dexterity,
+	"Endur":  traveller.Endurance,
+	"Intel":  traveller.Intelligence,
+	"Educ":   traveller.Education,
+	"Social": traveller.SocialStanding,
 }
 
 func parseTitle(name string) (traveller.Title, error) {
@@ -187,6 +216,11 @@ func parseBenefitRow(cell string, normalize map[string]string) (traveller.Benefi
 		return traveller.NoBenefit{}, nil
 	}
 
+	err = refuseDashMistyped(cell)
+	if err != nil {
+		return nil, err
+	}
+
 	characteristic, size, isAlteration, err := parseAlteration(cell)
 	if err != nil {
 		return nil, err
@@ -219,11 +253,32 @@ func parseBenefitRow(cell string, normalize map[string]string) (traveller.Benefi
 	return nil, fmt.Errorf("%w: %q is not a benefit any row of Table 1 prints", errMalformed, cell)
 }
 
-// emDash is what Table 1 prints where a service has no benefit at that row.
-// It is a hyphen in the transcription and an em dash on the page (#339); text
-// extraction turns it into the digit 4, which is why nothing here is ever
-// read from extracted text.
-const emDash = "-"
+// emDash is what the page prints where a cell means nothing: a benefit
+// Table 1 does not give, and a commission, a promotion, a DM or a rank a
+// service does not have. Text extraction turns it into the digit
+// 4, which is why nothing here is ever read from extracted text.
+//
+// Three dashes look alike on screen, and each is decided here. The em dash is
+// what the page prints, and means nothing. An en dash standing alone in a
+// cell is refused by name, and one opening a number is refused as no sign
+// (#288). A hyphen standing alone is refused by name too: it is what the
+// transcription held before it was restored to the page's text (#339), and a
+// cell typed with one is a cell not read off the page. A hyphen that opens a
+// number is a minus, and is read as one (traveller.Sign).
+const emDash = "—"
+
+// refuseDashMistyped refuses a cell that is a lone hyphen or en dash where the
+// page prints an em dash.
+func refuseDashMistyped(cell string) error {
+	switch cell {
+	case "-":
+		return fmt.Errorf("%w: %q is a hyphen; the page prints an em dash where a cell means nothing", errMalformed, cell)
+	case string(traveller.EnDash):
+		return fmt.Errorf("%w: %q: %w", errMalformed, cell, traveller.ErrEnDash)
+	}
+
+	return nil
+}
 
 const travellersAid = "Travellers' Aid"
 
