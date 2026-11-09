@@ -37,6 +37,8 @@ release turns out to be.
   declared and left out of the list, which would have had no reading and
   compiled, fails the gate naming it; the comments that said the compiler
   held this say what does (#333).
+- `render`'s package doc and CLAUDE.md's account of it name the readings it
+  writes and its import of `rules`, which #324 added and neither said (#334).
 
 ## 1.0.0-rc.1
 

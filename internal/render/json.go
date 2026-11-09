@@ -2,6 +2,16 @@
 // wants: JSON, a character sheet in the book's own style, and a transcript
 // of the generation record.
 //
+// It also writes the readings: one in full (Reading), every one as an index
+// (ReadingsIndex), those an id names (ReadingsNamed), and the section a
+// transcript asked for with its readings closes on, before the line that says
+// to keep the record. That is why it imports rules, where the readings are
+// declared, and the only reason. A reading is written in this build's words,
+// whatever build wrote the record naming it, since a record carries ids and
+// never text. On a transcript, an id this build has no reading for is named as
+// such rather than refused, since the rest of the record is still the
+// record's; asked for by name (ReadingsNamed), it is refused (ErrNoReading).
+//
 // The domain types are the interface and JSON is a projection. Where the two
 // disagree - a sum that must marshal flat, an array-backed profile that must
 // marshal as six named keys - the codec here absorbs the difference and the

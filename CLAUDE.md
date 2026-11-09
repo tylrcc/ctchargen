@@ -172,7 +172,8 @@ is verified by breaking it.
 ## The shape of the tree
 
 The arrows point one way: `traveller` imports none of the others; `rules` and
-`chargen` import `traveller`; `render` imports the record. A domain type that
+`chargen` import `traveller`; `render` imports `chargen` for the record and
+`traveller` for its values, and `rules` for the readings it writes. A domain type that
 needs to know about dice or JSON is in the wrong package. Each package's doc
 comment is its contract; read it before changing the package.
 
@@ -189,7 +190,8 @@ promise (#199).
 - `chargen`: the procedure, the `Decider` it asks, and the `--auto` `Policy`,
   which describes itself. Its tests hold the readings, the choice points and
   the schema's strategies to the goldens.
-- `render`: the record's projections, and reading one back.
+- `render`: the record's projections, reading one back, and the readings
+  written out, in full or as an index.
 - `internal/coverage`: test code only. Holds the `Implements:` and `Holds:`
   markers to each other and their cites to what exists, writing nothing;
   `-print` shows the map.
