@@ -28,10 +28,10 @@
 
 ## 21. skills and training (pp. 6, 11)
 
- 22. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 1
  24. Medical-1 (from 23) [E002]
- 25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 1
  27. Streetwise-1 (from 26) [E002]
  28. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -44,7 +44,7 @@
 
 ## 33. skills and training (pp. 6, 11)
 
- 34. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Service Skills Table: rolled 1
  36. Forgery-1 (from 35) [E002]
  37. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -57,7 +57,7 @@
 
 ## 42. skills and training (pp. 6, 11)
 
- 43. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 43. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  44. Personal Development Table: rolled 1
  45. Strength +1, 12 to 13 (from 44) [E002]
  46. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -70,7 +70,7 @@
 
 ## 51. skills and training (pp. 6, 11)
 
- 52. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 52. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  53. Advanced Education Table (education 8+): rolled 1
  54. Medical-2 (from 53) [E002]
  55. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -92,7 +92,7 @@
 
 ## 67. skills and training (pp. 6, 11)
 
- 68. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Advanced Education Table: rolled 1
  70. Streetwise-2 (from 69) [E002]
  71. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -114,7 +114,7 @@
 
 ## 83. skills and training (pp. 6, 11)
 
- 84. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 84. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  85. Service Skills Table: rolled 1
  86. Forgery-2 (from 85) [E002]
  87. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -136,7 +136,7 @@
 
 ## 99. skills and training (pp. 6, 11)
 
-100. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+100. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Personal Development Table: rolled 1
 102. Strength +1, 13 to 14 (from 101) [E002]
 103. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -158,7 +158,7 @@
 
 ## 115. skills and training (pp. 6, 11)
 
-116. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+116. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 117. Advanced Education Table (education 8+): rolled 1
 118. Medical-3 (from 117) [E002]
 119. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -180,7 +180,7 @@
 
 ## 131. skills and training (pp. 6, 11)
 
-132. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+132. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 133. Advanced Education Table: rolled 1
 134. Streetwise-3 (from 133) [E002]
 135. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -202,7 +202,7 @@
 
 ## 147. skills and training (pp. 6, 11)
 
-148. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+148. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 149. Service Skills Table: rolled 1
 150. Forgery-3 (from 149) [E002]
 151. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -224,7 +224,7 @@
 
 ## 163. skills and training (pp. 6, 11)
 
-164. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+164. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 165. Personal Development Table: rolled 1
 166. Strength +1, 14 to 15 (from 165) [E002]
 167. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -246,7 +246,7 @@
 
 ## 179. skills and training (pp. 6, 11)
 
-180. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+180. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 181. Advanced Education Table (education 8+): rolled 1
 182. Medical-4 (from 181) [E002]
 183. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -270,7 +270,7 @@
 
 ## 197. skills and training (pp. 6, 11)
 
-198. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+198. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 199. Advanced Education Table: rolled 1
 200. Streetwise-4 (from 199) [E002]
 201. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -294,7 +294,7 @@
 
 ## 215. skills and training (pp. 6, 11)
 
-216. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+216. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 217. Service Skills Table: rolled 1
 218. Forgery-4 (from 217) [E002]
 219. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -318,7 +318,7 @@
 
 ## 233. skills and training (pp. 6, 11)
 
-234. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+234. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 235. Personal Development Table: rolled 1
 236. Strength +1, 15 to 15 (from 235) [E002]
 237. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -342,7 +342,7 @@
 
 ## 251. skills and training (pp. 6, 11)
 
-252. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+252. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 253. Advanced Education Table (education 8+): rolled 1
 254. Medical-5 (from 253) [E002]
 255. reenlistment: rolled 6+6 = 12 against 5+, made

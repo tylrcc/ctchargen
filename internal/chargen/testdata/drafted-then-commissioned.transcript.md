@@ -20,7 +20,7 @@
 
  16. enlistment, Navy: rolled 2+3 = 5 against 8+, missed
  17. the Navy rejected him (from 16)
- 18. SubmitToDraft: policy chose yes from yes, no
+ 18. submit to the draft (p. 5): policy chose yes from yes, no
  19. draft: rolled 5
  20. drafted into the Merchants (from 19) [E001]
 
@@ -31,71 +31,71 @@
 
 ## 24. skills and training (pp. 6, 11)
 
- 25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Advanced Education Table: rolled 2
  27. Mechanical-1 (from 26) [E002]
- 28. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Service Skills Table: rolled 6
  30. Jack of all Trades-1 (from 29) [E002]
  31. reenlistment: rolled 6+1 = 7 against 4+, made
- 32. ReenlistIntent: policy chose continue from continue, discharge
+ 32. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
 
 ## 34. term 2 (pp. 5-7)
 
  35. survival: rolled 4+3 +2 = 9 against 5+, made
  36. survived term 2 (from 35)
- 37. AttemptCommission: policy chose yes from yes, no
+ 37. attempt a commission (p. 6): policy chose yes from yes, no
  38. commission: rolled 2+5 +1 = 8 against 4+, made
  39. commissioned: 4th Officer (from 38)
- 40. AttemptPromotion: policy chose yes from yes, no
+ 40. attempt promotion (p. 6): policy chose yes from yes, no
  41. promotion: rolled 5+6 = 11 against 10+, made
  42. promoted: 3rd Officer (from 41)
 
 ## 43. skills and training (pp. 6, 11)
 
- 44. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 44. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  45. Personal Development Table: rolled 1
  46. Strength +1, 7 to 8 (from 45) [E002]
- 47. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 47. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  48. Advanced Education Table: rolled 2
  49. Mechanical-2 (from 48) [E002]
- 50. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 50. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  51. Service Skills Table: rolled 5
  52. Electronic-1 (from 51) [E002]
  53. reenlistment: rolled 4+6 = 10 against 4+, made
- 54. ReenlistIntent: policy chose continue from continue, discharge
+ 54. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  55. reenlisted for term 3 (from 53)
 
 ## 56. term 3 (pp. 5-7)
 
  57. survival: rolled 5+1 +2 = 8 against 5+, made
  58. survived term 3 (from 57)
- 59. AttemptPromotion: policy chose yes from yes, no
+ 59. attempt promotion (p. 6): policy chose yes from yes, no
  60. promotion: rolled 3+4 = 7 against 10+, missed
  61. not promoted this term (from 60)
 
 ## 62. skills and training (pp. 6, 11)
 
- 63. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 63. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  64. Personal Development Table: rolled 5
- 65. Weapon: policy chose Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+ 65. weapon of expertise, specified immediately (p. 11): policy chose Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
  66. Blade Combat: Cudgel-1 (from 64) [E002]
  67. reenlistment: rolled 4+2 = 6 against 4+, made
- 68. ReenlistIntent: policy chose continue from continue, discharge
+ 68. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  69. reenlisted for term 4 (from 67)
 
 ## 70. term 4 (pp. 5-7)
 
  71. survival: rolled 5+2 +2 = 9 against 5+, made
  72. survived term 4 (from 71)
- 73. AttemptPromotion: policy chose yes from yes, no
+ 73. attempt promotion (p. 6): policy chose yes from yes, no
  74. promotion: rolled 4+1 = 5 against 10+, missed
  75. not promoted this term (from 74)
 
 ## 76. skills and training (pp. 6, 11)
 
- 77. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  78. Advanced Education Table: rolled 6
  79. Medical-1 (from 78) [E002]
  80. reenlistment: rolled 1+2 = 3 against 4+, missed
@@ -112,13 +112,13 @@
 
 ## 89. mustering out, 5 rolls (pp. 7, 9, 21-23)
 
- 90. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 90. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
  91. Table 2, Cash Allowances: rolled 4
  92. CR 20000, bringing the total to CR 20000 (from 91)
- 93. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 93. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
  94. Table 2, Cash Allowances: rolled 4
  95. CR 20000, bringing the total to CR 40000 (from 94)
- 96. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 96. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
  97. Table 2, Cash Allowances: rolled 3
  98. CR 10000, bringing the total to CR 50000 (from 97)
  99. Table 1, Material Benefits: rolled 6

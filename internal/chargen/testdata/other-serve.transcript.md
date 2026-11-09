@@ -28,10 +28,10 @@
 
 ## 21. skills and training (pp. 6, 11)
 
- 22. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  23. Advanced Education Table: rolled 4
  24. Gambling-1 (from 23) [E002]
- 25. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Service Skills Table: rolled 2
  27. Gambling-2 (from 26) [E002]
  28. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -44,11 +44,11 @@
 
 ## 33. skills and training (pp. 6, 11)
 
- 34. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 34. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  35. Personal Development Table: rolled 3
  36. Endurance +1, 4 to 5 (from 35) [E002]
  37. reenlistment: rolled 2+5 = 7 against 5+, made
- 38. ReenlistIntent: policy chose continue from continue, discharge
+ 38. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  39. reenlisted for term 3 (from 37)
 
 ## 40. term 3 (pp. 5-7)
@@ -58,11 +58,11 @@
 
 ## 43. skills and training (pp. 6, 11)
 
- 44. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 44. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  45. Advanced Education Table: rolled 1
  46. Streetwise-1 (from 45) [E002]
  47. reenlistment: rolled 2+5 = 7 against 5+, made
- 48. ReenlistIntent: policy chose continue from continue, discharge
+ 48. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  49. reenlisted for term 4 (from 47)
 
 ## 50. term 4 (pp. 5-7)
@@ -72,12 +72,12 @@
 
 ## 53. skills and training (pp. 6, 11)
 
- 54. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 54. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  55. Service Skills Table: rolled 5
- 56. Weapon: policy chose Automatic Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+ 56. weapon of expertise, specified immediately (p. 11): policy chose Automatic Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
  57. Gun Combat: Automatic Pistol-1 (from 55) [E002]
  58. reenlistment: rolled 3+4 = 7 against 5+, made
- 59. ReenlistIntent: policy chose continue from continue, discharge
+ 59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  60. reenlisted for term 5 (from 58)
 
 ## 61. aging, end of term 4 (pp. 7-9)
@@ -96,7 +96,7 @@
 
 ## 71. skills and training (pp. 6, 11)
 
- 72. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 72. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  73. Personal Development Table: rolled 6
  74. Social Standing -1, 7 to 6 (from 73) [E002]
  75. reenlistment: rolled 1+2 = 3 against 5+, missed
@@ -113,16 +113,16 @@
 
 ## 84. mustering out, 5 rolls (pp. 7, 9, 21-23)
 
- 85. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
- 86. MusterTable2DM: policy chose yes from yes, no
+ 85. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 86. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
  87. Table 2, Cash Allowances: rolled 4 +1 = 5
  88. CR 10000, bringing the total to CR 10000 (from 87)
- 89. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
- 90. MusterTable2DM: policy chose yes from yes, no
+ 89. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 90. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
  91. Table 2, Cash Allowances: rolled 4 +1 = 5
  92. CR 10000, bringing the total to CR 20000 (from 91)
- 93. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
- 94. MusterTable2DM: policy chose yes from yes, no
+ 93. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 94. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
  95. Table 2, Cash Allowances: rolled 3 +1 = 4
  96. CR 10000, bringing the total to CR 30000 (from 95)
  97. Table 1, Material Benefits: rolled 6

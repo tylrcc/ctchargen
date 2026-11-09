@@ -28,14 +28,14 @@
 
 ## 21. skills and training (pp. 6, 11)
 
- 22. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 4
  24. Computer-1 (from 23) [E002]
- 25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 6
  27. Forgery-1 (from 26) [E002]
  28. reenlistment: rolled 5+2 = 7 against 5+, made
- 29. ReenlistIntent: policy chose continue from continue, discharge
+ 29. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  30. reenlisted for term 2 (from 28)
 
 ## 31. term 2 (pp. 5-7)
@@ -45,11 +45,11 @@
 
 ## 34. skills and training (pp. 6, 11)
 
- 35. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  36. Service Skills Table: rolled 3
  37. Brawling-1 (from 36) [E002]
  38. reenlistment: rolled 4+5 = 9 against 5+, made
- 39. ReenlistIntent: policy chose continue from continue, discharge
+ 39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  40. reenlisted for term 3 (from 38)
 
 ## 41. term 3 (pp. 5-7)
@@ -59,12 +59,12 @@
 
 ## 44. skills and training (pp. 6, 11)
 
- 45. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  46. Personal Development Table: rolled 4
- 47. Weapon: policy chose Cutlass from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+ 47. weapon of expertise, specified immediately (p. 11): policy chose Cutlass from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
  48. Blade Combat: Cutlass-1 (from 46) [E002]
  49. reenlistment: rolled 5+2 = 7 against 5+, made
- 50. ReenlistIntent: policy chose continue from continue, discharge
+ 50. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  51. reenlisted for term 4 (from 49)
 
 ## 52. term 4 (pp. 5-7)
@@ -74,11 +74,11 @@
 
 ## 55. skills and training (pp. 6, 11)
 
- 56. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  57. Advanced Education Table (education 8+): rolled 1
  58. Medical-1 (from 57) [E002]
  59. reenlistment: rolled 3+5 = 8 against 5+, made
- 60. ReenlistIntent: policy chose continue from continue, discharge
+ 60. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  61. reenlisted for term 5 (from 59)
 
 ## 62. aging, end of term 4 (pp. 7-9)

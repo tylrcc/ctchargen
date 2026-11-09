@@ -91,6 +91,68 @@ func TestAnUnknownEventKindIsSaidToBeUnknown(t *testing.T) {
 	}
 }
 
+// A choice is named on the transcript in the words of the page that poses
+// it, with that page, and never by the Decider method's name, which is the
+// record's word for it and nobody else's (#402). The labels are typed out
+// here from the pages, not read from the code that writes them.
+//
+// Holds: A choice is named in the words of the page that poses it.
+func TestAChoiceIsNamedInThePagesWords(t *testing.T) {
+	t.Parallel()
+
+	for point, want := range map[string]string{
+		"Service":           "service to enlist in (pp. 5, 10)",
+		"SubmitToDraft":     "submit to the draft (p. 5)",
+		"AttemptCommission": "attempt a commission (p. 6)",
+		"AttemptPromotion":  "attempt promotion (p. 6)",
+		"ReenlistIntent":    "leave the service or remain for another term (pp. 6-7, 21)",
+		"AssumeTitle":       "assume the hereditary title (p. 5)",
+		"SkillTable":        "acquired skills table to consult (pp. 6, 11)",
+		"Weapon":            "weapon of expertise, specified immediately (p. 11)",
+		"MusterTable":       "mustering out table to consult (pp. 7, 9)",
+		"MusterTable1DM":    "add +1 on Table 1 for rank 5 or 6 (pp. 7, 9)",
+		"MusterTable2DM":    "DM +1 on Table 2 for gambling expertise (pp. 7, 9)",
+		"MusterWeapon":      "weapon benefit, or +1 expertise in lieu (p. 22)",
+	} {
+		transcript, err := render.Transcript(minimalRecord(
+			`"policy":{"version":3,"career":"serve","skills":"advanced","muster":"cash"},`+
+				`"events":[{"seq":4,"kind":"choice","point":"`+point+
+				`","alternatives":["a","b"],"chosen":"a"}]`,
+		), false)
+		if err != nil {
+			t.Fatalf("%s: %v", point, err)
+		}
+
+		line := "  4. " + want + ": policy chose a from a, b"
+		if !strings.Contains(transcript, line) {
+			t.Errorf("%s is not named %q:\n%s", point, line, transcript)
+		}
+
+		if strings.Contains(transcript, point+":") {
+			t.Errorf("%s is named by its method:\n%s", point, transcript)
+		}
+	}
+}
+
+// A choice point this build does not know is said to be unknown, as an
+// unknown event kind is, rather than printed as though it were a page's words.
+//
+// Holds: A choice point this build does not know is said to be unknown.
+func TestAnUnknownChoicePointIsSaidToBeUnknown(t *testing.T) {
+	t.Parallel()
+
+	transcript, err := render.Transcript(minimalRecord(
+		`"events":[{"seq":4,"kind":"choice","point":"Portent","alternatives":["a"],"chosen":"a"}]`,
+	), false)
+	if err != nil {
+		t.Fatalf("reading a record with an unknown choice point: %v", err)
+	}
+
+	if !strings.Contains(transcript, `unknown choice point "Portent"`) {
+		t.Errorf("an unknown choice point rendered as %q", transcript)
+	}
+}
+
 // Each of decode's two refusals names what is missing.
 func TestARecordMustCarryAUPPAndARuleset(t *testing.T) {
 	t.Parallel()

@@ -28,14 +28,14 @@
 
 ## 21. skills and training (pp. 6, 11)
 
- 22. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 3
  24. Electronic-1 (from 23) [E002]
- 25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 1
  27. Streetwise-1 (from 26) [E002]
  28. reenlistment: rolled 6+2 = 8 against 5+, made
- 29. ReenlistIntent: policy chose continue from continue, discharge
+ 29. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  30. reenlisted for term 2 (from 28)
 
 ## 31. term 2 (pp. 5-7)
@@ -45,11 +45,11 @@
 
 ## 34. skills and training (pp. 6, 11)
 
- 35. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  36. Service Skills Table: rolled 2
  37. Gambling-1 (from 36) [E002]
  38. reenlistment: rolled 5+5 = 10 against 5+, made
- 39. ReenlistIntent: policy chose continue from continue, discharge
+ 39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  40. reenlisted for term 3 (from 38)
 
 ## 41. term 3 (pp. 5-7)
@@ -59,11 +59,11 @@
 
 ## 44. skills and training (pp. 6, 11)
 
- 45. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  46. Personal Development Table: rolled 1
  47. Strength +1, 2 to 3 (from 46) [E002]
  48. reenlistment: rolled 1+4 = 5 against 5+, made
- 49. ReenlistIntent: policy chose continue from continue, discharge
+ 49. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  50. reenlisted for term 4 (from 48)
 
 ## 51. term 4 (pp. 5-7)
@@ -73,11 +73,11 @@
 
 ## 54. skills and training (pp. 6, 11)
 
- 55. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 55. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  56. Advanced Education Table (education 8+): rolled 3
  57. Electronic-2 (from 56) [E002]
  58. reenlistment: rolled 5+5 = 10 against 5+, made
- 59. ReenlistIntent: policy chose continue from continue, discharge
+ 59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  60. reenlisted for term 5 (from 58)
 
 ## 61. aging, end of term 4 (pp. 7-9)
@@ -96,11 +96,11 @@
 
 ## 71. skills and training (pp. 6, 11)
 
- 72. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 72. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  73. Advanced Education Table: rolled 1
  74. Streetwise-2 (from 73) [E002]
  75. reenlistment: rolled 5+1 = 6 against 5+, made
- 76. ReenlistIntent: policy chose continue from continue, retire
+ 76. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  77. reenlisted for term 6 (from 75)
 
 ## 78. aging, end of term 5 (pp. 7-9)
@@ -119,11 +119,11 @@
 
 ## 88. skills and training (pp. 6, 11)
 
- 89. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 89. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  90. Service Skills Table: rolled 2
  91. Gambling-2 (from 90) [E002]
  92. reenlistment: rolled 3+4 = 7 against 5+, made
- 93. ReenlistIntent: policy chose continue from continue, retire
+ 93. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  94. reenlisted for term 7 (from 92)
 
 ## 95. aging, end of term 6 (pp. 7-9)
@@ -142,7 +142,7 @@
 
 ## 105. skills and training (pp. 6, 11)
 
-106. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+106. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 107. Personal Development Table: rolled 3
 108. Endurance +1, 4 to 5 (from 107) [E002]
 109. reenlistment: rolled 4+1 = 5 against 5+, made

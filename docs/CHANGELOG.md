@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The transcript names each choice in the words of the page that poses it,
+  with that page — `attempt a commission (p. 6)` where it printed
+  `AttemptCommission` — and says a choice point it does not know is unknown.
+  The record's `point` values are unchanged (#402).
+
 ## 1.0.0-rc.3
 
 The third release candidate for `v1.0.0`, and the first with every `v1`

@@ -28,10 +28,10 @@
 
 ## 21. skills and training (pp. 6, 11)
 
- 22. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 2
  24. Forgery-1 (from 23) [E002]
- 25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 3
  27. Electronic-1 (from 26) [E002]
  28. reenlistment: rolled 2+1 = 3 against 5+, missed
@@ -39,13 +39,13 @@
 
 ## 30. mustering out, 1 rolls (pp. 7, 9, 21-23)
 
- 31. MusterTable: policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 31. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
  32. Table 2, Cash Allowances: rolled 3
  33. CR 10000, bringing the total to CR 10000 (from 32)
 
 ## 34. titles (p. 5; Book 3 p. 22)
 
- 35. AssumeTitle: policy chose yes from yes, no
+ 35. assume the hereditary title (p. 5): policy chose yes from yes, no
  36. social standing 12 confers baron/baroness, and it is assumed
 
 ---

@@ -25,84 +25,84 @@
 
  19. survival: rolled 1+6 = 7 against 5+, made
  20. survived term 1 (from 19)
- 21. AttemptCommission: policy chose yes from yes, no
+ 21. attempt a commission (p. 6): policy chose yes from yes, no
  22. commission: rolled 3+6 = 9 against 4+, made
  23. commissioned: 4th Officer (from 22)
- 24. AttemptPromotion: policy chose yes from yes, no
+ 24. attempt promotion (p. 6): policy chose yes from yes, no
  25. promotion: rolled 4+1 = 5 against 10+, missed
  26. not promoted this term (from 25)
 
 ## 27. skills and training (pp. 6, 11)
 
- 28. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Advanced Education Table: rolled 2
  30. Mechanical-1 (from 29) [E002]
- 31. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 31. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  32. Service Skills Table: rolled 3
- 33. Weapon: policy chose Halberd from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+ 33. weapon of expertise, specified immediately (p. 11): policy chose Halberd from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
  34. Blade Combat: Halberd-1 (from 32) [E002]
- 35. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 35. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  36. Personal Development Table: rolled 3
  37. Endurance +1, 9 to 10 (from 36) [E002]
  38. reenlistment: rolled 6+5 = 11 against 4+, made
- 39. ReenlistIntent: policy chose continue from continue, discharge
+ 39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  40. reenlisted for term 2 (from 38)
 
 ## 41. term 2 (pp. 5-7)
 
  42. survival: rolled 2+6 = 8 against 5+, made
  43. survived term 2 (from 42)
- 44. AttemptPromotion: policy chose yes from yes, no
+ 44. attempt promotion (p. 6): policy chose yes from yes, no
  45. promotion: rolled 4+2 = 6 against 10+, missed
  46. not promoted this term (from 45)
 
 ## 47. skills and training (pp. 6, 11)
 
- 48. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  49. Advanced Education Table: rolled 6
  50. Medical-1 (from 49) [E002]
  51. reenlistment: rolled 3+4 = 7 against 4+, made
- 52. ReenlistIntent: policy chose continue from continue, discharge
+ 52. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  53. reenlisted for term 3 (from 51)
 
 ## 54. term 3 (pp. 5-7)
 
  55. survival: rolled 2+4 = 6 against 5+, made
  56. survived term 3 (from 55)
- 57. AttemptPromotion: policy chose yes from yes, no
+ 57. attempt promotion (p. 6): policy chose yes from yes, no
  58. promotion: rolled 4+6 = 10 against 10+, made
  59. promoted: 3rd Officer (from 58)
 
 ## 60. skills and training (pp. 6, 11)
 
- 61. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 61. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  62. Service Skills Table: rolled 2
  63. Vacc Suit-1 (from 62) [E002]
- 64. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 64. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  65. Personal Development Table: rolled 4
  66. Strength +1, 10 to 11 (from 65) [E002]
  67. reenlistment: rolled 5+5 = 10 against 4+, made
- 68. ReenlistIntent: policy chose continue from continue, discharge
+ 68. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  69. reenlisted for term 4 (from 67)
 
 ## 70. term 4 (pp. 5-7)
 
  71. survival: rolled 2+6 = 8 against 5+, made
  72. survived term 4 (from 71)
- 73. AttemptPromotion: policy chose yes from yes, no
+ 73. attempt promotion (p. 6): policy chose yes from yes, no
  74. promotion: rolled 5+6 = 11 against 10+, made
  75. promoted: 2nd Officer (from 74)
 
 ## 76. skills and training (pp. 6, 11)
 
- 77. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  78. Advanced Education Table: rolled 3
  79. Electronic-1 (from 78) [E002]
- 80. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 80. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  81. Service Skills Table: rolled 5
  82. Electronic-2 (from 81) [E002]
  83. reenlistment: rolled 6+5 = 11 against 4+, made
- 84. ReenlistIntent: policy chose continue from continue, discharge
+ 84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  85. reenlisted for term 5 (from 83)
 
 ## 86. aging, end of term 4 (pp. 7-9)
@@ -118,21 +118,21 @@
 
  94. survival: rolled 6+2 = 8 against 5+, made
  95. survived term 5 (from 94)
- 96. AttemptPromotion: policy chose yes from yes, no
+ 96. attempt promotion (p. 6): policy chose yes from yes, no
  97. promotion: rolled 5+5 = 10 against 10+, made
  98. promoted: 1st Officer (from 97)
  99. Pilot-1 (from 97)
 
 ## 100. skills and training (pp. 6, 11)
 
-101. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+101. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 102. Personal Development Table: rolled 4
 103. Strength +1, 10 to 11 (from 102) [E002]
-104. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+104. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 105. Advanced Education Table: rolled 5
 106. Gunnery-1 (from 105) [E002]
 107. reenlistment: rolled 6+2 = 8 against 4+, made
-108. ReenlistIntent: policy chose continue from continue, retire
+108. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 109. reenlisted for term 6 (from 107)
 
 ## 110. aging, end of term 5 (pp. 7-9)

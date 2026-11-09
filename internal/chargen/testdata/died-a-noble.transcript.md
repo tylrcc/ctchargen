@@ -20,7 +20,7 @@
 
  16. enlistment, Navy: rolled 1+5 +1 = 7 against 8+, missed
  17. the Navy rejected him (from 16)
- 18. SubmitToDraft: policy chose yes from yes, no
+ 18. submit to the draft (p. 5): policy chose yes from yes, no
  19. draft: rolled 6
  20. drafted into the Other (from 19) [E001]
 
@@ -31,14 +31,14 @@
 
 ## 24. skills and training (pp. 6, 11)
 
- 25. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Advanced Education Table: rolled 5
  27. Brawling-1 (from 26) [E002]
- 28. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Service Skills Table: rolled 2
  30. Gambling-1 (from 29) [E002]
  31. reenlistment: rolled 1+6 = 7 against 5+, made
- 32. ReenlistIntent: policy chose continue from continue, discharge
+ 32. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
 
 ## 34. term 2 (pp. 5-7)
@@ -48,11 +48,11 @@
 
 ## 37. skills and training (pp. 6, 11)
 
- 38. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  39. Personal Development Table: rolled 5
  40. Brawling-2 (from 39) [E002]
  41. reenlistment: rolled 6+3 = 9 against 5+, made
- 42. ReenlistIntent: policy chose continue from continue, discharge
+ 42. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  43. reenlisted for term 3 (from 41)
 
 ## 44. term 3 (pp. 5-7)
@@ -62,11 +62,11 @@
 
 ## 47. skills and training (pp. 6, 11)
 
- 48. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  49. Advanced Education Table: rolled 6
  50. Forgery-1 (from 49) [E002]
  51. reenlistment: rolled 6+2 = 8 against 5+, made
- 52. ReenlistIntent: policy chose continue from continue, discharge
+ 52. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  53. reenlisted for term 4 (from 51)
 
 ## 54. term 4 (pp. 5-7)
@@ -76,11 +76,11 @@
 
 ## 57. skills and training (pp. 6, 11)
 
- 58. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 58. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  59. Service Skills Table: rolled 6
  60. Bribery-1 (from 59) [E002]
  61. reenlistment: rolled 3+6 = 9 against 5+, made
- 62. ReenlistIntent: policy chose continue from continue, discharge
+ 62. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  63. reenlisted for term 5 (from 61)
 
 ## 64. aging, end of term 4 (pp. 7-9)

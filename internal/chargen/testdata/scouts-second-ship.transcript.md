@@ -32,10 +32,10 @@
 
 ## 23. skills and training (pp. 6, 11)
 
- 24. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 24. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  25. Advanced Education Table (education 8+): rolled 1
  26. Medical-1 (from 25) [E002]
- 27. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  28. Advanced Education Table: rolled 2
  29. Mechanical-1 (from 28) [E002]
  30. reenlistment: rolled 6+6 = 12 against 3+, made
@@ -48,11 +48,11 @@
 
 ## 35. skills and training (pp. 6, 11)
 
- 36. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 36. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  37. Service Skills Table: rolled 6
  38. Jack of all Trades-1 (from 37) [E002]
  39. reenlistment: rolled 6+4 = 10 against 3+, made
- 40. ReenlistIntent: policy chose continue from continue, discharge
+ 40. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  41. reenlisted for term 3 (from 39)
 
 ## 42. term 3 (pp. 5-7)
@@ -62,12 +62,12 @@
 
 ## 45. skills and training (pp. 6, 11)
 
- 46. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  47. Personal Development Table: rolled 4
- 48. Weapon: policy chose Laser Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+ 48. weapon of expertise, specified immediately (p. 11): policy chose Laser Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
  49. Gun Combat: Laser Carbine-1 (from 47) [E002]
  50. reenlistment: rolled 4+6 = 10 against 3+, made
- 51. ReenlistIntent: policy chose continue from continue, discharge
+ 51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  52. reenlisted for term 4 (from 50)
 
 ## 53. term 4 (pp. 5-7)
@@ -77,11 +77,11 @@
 
 ## 56. skills and training (pp. 6, 11)
 
- 57. SkillTable: policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 57. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  58. Advanced Education Table (education 8+): rolled 2
  59. Navigation-1 (from 58) [E002]
  60. reenlistment: rolled 4+4 = 8 against 3+, made
- 61. ReenlistIntent: policy chose continue from continue, discharge
+ 61. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  62. reenlisted for term 5 (from 60)
 
 ## 63. aging, end of term 4 (pp. 7-9)
@@ -100,11 +100,11 @@
 
 ## 73. skills and training (pp. 6, 11)
 
- 74. SkillTable: policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 74. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  75. Advanced Education Table: rolled 3
  76. Electronic-1 (from 75) [E002]
  77. reenlistment: rolled 6+2 = 8 against 3+, made
- 78. ReenlistIntent: policy chose continue from continue, retire
+ 78. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  79. reenlisted for term 6 (from 77)
 
 ## 80. aging, end of term 5 (pp. 7-9)
@@ -123,11 +123,11 @@
 
 ## 90. skills and training (pp. 6, 11)
 
- 91. SkillTable: policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+ 91. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  92. Service Skills Table: rolled 2
  93. Vacc Suit-1 (from 92) [E002]
  94. reenlistment: rolled 5+4 = 9 against 3+, made
- 95. ReenlistIntent: policy chose continue from continue, retire
+ 95. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  96. reenlisted for term 7 (from 94)
 
 ## 97. aging, end of term 6 (pp. 7-9)
@@ -146,7 +146,7 @@
 
 ## 107. skills and training (pp. 6, 11)
 
-108. SkillTable: policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+108. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 109. Personal Development Table: rolled 1
 110. Strength +1, 6 to 7 (from 109) [E002]
 111. reenlistment: rolled 6+2 = 8 against 3+, made
@@ -163,29 +163,29 @@
 
 ## 120. mustering out, 7 rolls (pp. 7, 9, 21-23)
 
-121. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+121. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 122. Table 1, Material Benefits: rolled 4
-123. MusterWeapon: policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+123. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
 124. a Dagger (from 122)
-125. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+125. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 126. Table 1, Material Benefits: rolled 6
 127. a Scout ship, Type S (from 126)
-128. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+128. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 129. Table 1, Material Benefits: rolled 3
 130. Education +2, 8 to 10 (from 129)
-131. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+131. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 132. Table 1, Material Benefits: rolled 5
-133. MusterWeapon: policy chose Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+133. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
 134. a Body Pistol (from 132)
-135. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+135. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 136. Table 1, Material Benefits: rolled 1
 137. a Low Passage (from 136)
-138. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+138. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 139. Table 1, Material Benefits: rolled 6
 140. a second scout ship, which is lost (from 139)
-141. MusterTable: policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
+141. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 142. Table 1, Material Benefits: rolled 5
-143. MusterWeapon: policy chose expertise in Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun, expertise in Body Pistol
+143. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun, expertise in Body Pistol
 144. expertise instead: Body Pistol-1 (from 142)
 
 ---

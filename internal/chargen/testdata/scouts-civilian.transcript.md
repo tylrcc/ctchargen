@@ -20,7 +20,7 @@
 
  16. enlistment, Scouts: rolled 4+2 = 6 against 7+, missed
  17. the Scouts rejected him (from 16)
- 18. SubmitToDraft: policy chose no from yes, no
+ 18. submit to the draft (p. 5): policy chose no from yes, no
  19. declined the draft, and remains a civilian [E001]
 
 ---

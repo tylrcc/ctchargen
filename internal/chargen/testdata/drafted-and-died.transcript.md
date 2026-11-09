@@ -20,7 +20,7 @@
 
  16. enlistment, Navy: rolled 2+2 +2 = 6 against 8+, missed
  17. the Navy rejected him (from 16)
- 18. SubmitToDraft: policy chose yes from yes, no
+ 18. submit to the draft (p. 5): policy chose yes from yes, no
  19. draft: rolled 6
  20. drafted into the Other (from 19) [E001]
 

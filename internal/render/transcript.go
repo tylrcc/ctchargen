@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
 // Transcript renders a record's generation log as prose: every step entered,
@@ -106,8 +108,63 @@ func writeEvent(out *strings.Builder, event eventJSON) {
 // the event's, and the live view, which has no record yet, prints its own.
 func choiceLine(event eventJSON, answerer string) string {
 	return fmt.Sprintf("%3d. %s: %s chose %s from %s",
-		event.Seq, event.Point, answerer, event.Chosen,
+		event.Seq, pointLabel(event.Point), answerer, event.Chosen,
 		strings.Join(event.Alternatives, ", "))
+}
+
+// pointLabel names a choice point as the transcript's reader knows it. The
+// record carries the Decider method's name, which is the record's word and
+// stays frozen with it; a referee reading the transcript gets the page's
+// (#402). A point this build does not know is said to be unknown, as an
+// unknown event kind is.
+//
+// Implements: A choice point this build does not know is said to be unknown
+// [Generation record].
+func pointLabel(point string) string {
+	for _, known := range traveller.ChoicePoints {
+		if known.String() == point {
+			return choiceWords(known)
+		}
+	}
+
+	return fmt.Sprintf("(unknown choice point %q)", point)
+}
+
+// choiceWords is each choice in the words of the page that poses it, with
+// that page. A switch rather than a map, so that a choice point added to
+// traveller is a lint failure here until it is given its words.
+//
+// Implements: A choice is named in the words of the page that poses it
+// [Generation record].
+func choiceWords(point traveller.ChoicePoint) string {
+	switch point {
+	case traveller.ChoiceService:
+		return "service to enlist in (pp. 5, 10)"
+	case traveller.ChoiceSubmitToDraft:
+		return "submit to the draft (p. 5)"
+	case traveller.ChoiceAttemptCommission:
+		return "attempt a commission (p. 6)"
+	case traveller.ChoiceAttemptPromotion:
+		return "attempt promotion (p. 6)"
+	case traveller.ChoiceReenlistIntent:
+		return "leave the service or remain for another term (pp. 6-7, 21)"
+	case traveller.ChoiceAssumeTitle:
+		return "assume the hereditary title (p. 5)"
+	case traveller.ChoiceSkillTable:
+		return "acquired skills table to consult (pp. 6, 11)"
+	case traveller.ChoiceWeapon:
+		return "weapon of expertise, specified immediately (p. 11)"
+	case traveller.ChoiceMusterTable:
+		return "mustering out table to consult (pp. 7, 9)"
+	case traveller.ChoiceMusterTable1DM:
+		return "add +1 on Table 1 for rank 5 or 6 (pp. 7, 9)"
+	case traveller.ChoiceMusterTable2DM:
+		return "DM +1 on Table 2 for gambling expertise (pp. 7, 9)"
+	case traveller.ChoiceMusterWeapon:
+		return "weapon benefit, or +1 expertise in lieu (p. 22)"
+	}
+
+	return fmt.Sprintf("ChoicePoint(%d)", int(point))
 }
 
 func throwLine(event eventJSON) string {
