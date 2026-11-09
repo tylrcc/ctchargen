@@ -19,6 +19,7 @@
 package render
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 
@@ -26,35 +27,37 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// JSONLine marshals a character onto one line, which is what batch writes:
+// JSONLine is a character's record on one line, which is what batch writes:
 // a stream of records, one per line, that a reader can take one at a time.
-func JSONLine(character *chargen.Character) ([]byte, error) {
+func JSONLine(character *chargen.Character) ([]byte, error) { return encoded(character, "") }
+
+// JSON is a character's record, indented, with a trailing newline.
+func JSON(character *chargen.Character) ([]byte, error) { return encoded(character, "  ") }
+
+// encoded is a character's record and a newline, indented by indent, or on
+// one line with none.
+//
+// It returns json's error rather than deciding it cannot happen. None can
+// with the values the record holds today, but a record that failed to
+// marshal must never be written, and a returned error is the one handling
+// that neither crashes nor writes it wrong (#362).
+func encoded(character *chargen.Character, indent string) ([]byte, error) {
 	projected, err := project(character)
 	if err != nil {
 		return nil, err
 	}
 
-	text, err := json.Marshal(projected)
+	var out bytes.Buffer
+
+	encoder := json.NewEncoder(&out)
+	encoder.SetIndent("", indent)
+
+	err = encoder.Encode(projected)
 	if err != nil {
 		return nil, fmt.Errorf("marshalling the character: %w", err)
 	}
 
-	return append(text, '\n'), nil
-}
-
-// JSON marshals a character, indented, with a trailing newline.
-func JSON(character *chargen.Character) ([]byte, error) {
-	projected, err := project(character)
-	if err != nil {
-		return nil, err
-	}
-
-	text, err := json.MarshalIndent(projected, "", "  ")
-	if err != nil {
-		return nil, fmt.Errorf("marshalling the character: %w", err)
-	}
-
-	return append(text, '\n'), nil
+	return out.Bytes(), nil
 }
 
 // recordShape is the number the record carries to say which shape it is.

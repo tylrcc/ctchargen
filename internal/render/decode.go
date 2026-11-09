@@ -16,31 +16,40 @@ var errNotARecord = errors.New("not a character record")
 // Enlistment or a Departure back into an interface would give the renderer
 // nothing it does not already have, and would need a decoder for every sum
 // that could go wrong in a way the wire shape cannot.
-func decode(text []byte) (record, error) {
+//
+// Every event is read here, once, before anything is rendered, and one that
+// will not read refuses the record: a sheet ends by telling the referee the
+// record is the only way back to this character, and that is not something to
+// say about a record that could not be read to its end. Reading is the only
+// thing that can fail; what is rendered from what was read cannot (#362).
+func decode(text []byte) (record, []eventJSON, error) {
 	var decoded record
 
 	err := json.Unmarshal(text, &decoded)
 	if err != nil {
-		return record{}, fmt.Errorf("%w: %w", errNotARecord, err)
+		return record{}, nil, fmt.Errorf("%w: %w", errNotARecord, err)
 	}
 
 	if decoded.UPP == "" {
-		return record{}, fmt.Errorf("%w: it carries no UPP", errNotARecord)
+		return record{}, nil, fmt.Errorf("%w: it carries no UPP", errNotARecord)
 	}
 
 	if decoded.Ruleset == "" {
-		return record{}, fmt.Errorf("%w: it names no ruleset", errNotARecord)
+		return record{}, nil, fmt.Errorf("%w: it names no ruleset", errNotARecord)
 	}
 
-	return decoded, nil
-}
+	events := make([]eventJSON, 0, len(decoded.Events))
 
-// unmarshalEvent reads one logged event out of the record.
-func unmarshalEvent(raw json.RawMessage, into *eventJSON) error {
-	err := json.Unmarshal(raw, into)
-	if err != nil {
-		return fmt.Errorf("%w: an event will not read: %w", errNotARecord, err)
+	for _, raw := range decoded.Events {
+		var event eventJSON
+
+		err := json.Unmarshal(raw, &event)
+		if err != nil {
+			return record{}, nil, fmt.Errorf("%w: an event will not read: %w", errNotARecord, err)
+		}
+
+		events = append(events, event)
 	}
 
-	return nil
+	return decoded, events, nil
 }

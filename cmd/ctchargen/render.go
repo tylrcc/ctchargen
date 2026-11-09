@@ -97,3 +97,14 @@ func renderText(text []byte, history, readings bool) (string, error) {
 
 	return rendered, wrapRender(err)
 }
+
+// wrapRender gives a record that will not read the context of the command
+// that asked for it to be rendered: reading is the one thing rendering can
+// fail on (#362).
+func wrapRender(err error) error {
+	if err == nil {
+		return nil
+	}
+
+	return fmt.Errorf("rendering: %w", err)
+}

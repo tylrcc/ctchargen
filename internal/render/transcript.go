@@ -15,12 +15,12 @@ import (
 // the ids beside the outcomes can be read without the tool to hand. It takes
 // the record's bytes, for the reason Sheet does.
 func Transcript(text []byte, readings bool) (string, error) {
-	projected, err := decode(text)
+	projected, events, err := decode(text)
 	if err != nil {
 		return "", err
 	}
 
-	return transcriptOf(projected, readings)
+	return transcriptOf(projected, events, readings), nil
 }
 
 // eventJSON is every event kind at once. On the wire they are a
@@ -44,19 +44,12 @@ type eventJSON struct {
 	Errata       []string `json:"errata"`
 }
 
-func transcriptOf(r record, readings bool) (string, error) {
+func transcriptOf(r record, events []eventJSON, readings bool) string {
 	var out strings.Builder
 
 	fmt.Fprintf(&out, "# Generation record: %s\n", nameOrBlank(r.Name))
 
-	for _, raw := range r.Events {
-		var event eventJSON
-
-		err := unmarshalEvent(raw, &event)
-		if err != nil {
-			return "", err
-		}
-
+	for _, event := range events {
 		if event.Kind == kindChoice {
 			fmt.Fprintln(&out, choiceLine(event, r.answerer()))
 
@@ -74,7 +67,7 @@ func transcriptOf(r record, readings bool) (string, error) {
 
 	endWithKeep(&out)
 
-	return out.String(), nil
+	return out.String()
 }
 
 // writeEvent writes every kind but a choice, whose line is choiceLine's.

@@ -16,12 +16,12 @@ import (
 // is what it is written from, and with one route there is no second one to
 // disagree with it (#363).
 func Sheet(text []byte) (string, error) {
-	projected, err := decode(text)
+	projected, events, err := decode(text)
 	if err != nil {
 		return "", err
 	}
 
-	return sheetOf(projected)
+	return sheetOf(projected, events), nil
 }
 
 // sheetOf writes the sheet, and ends it by saying what to keep.
@@ -32,27 +32,11 @@ func Sheet(text []byte) (string, error) {
 //
 // Implements: The errata are on the transcript and not the sheet [Generation
 // record].
-func sheetOf(r record) (string, error) {
-	// Every event is read before anything is printed, and one that will not
-	// read refuses the sheet. The sheet shows one choice event at most, but
-	// it ends by telling the referee that the record is the only way back to
-	// this character, and that is not something to say about a record it
-	// could not finish reading.
-	_, err := choices(r)
-	if err != nil {
-		return "", err
-	}
-
+func sheetOf(r record, events []eventJSON) string {
 	var out strings.Builder
 
 	fmt.Fprintf(&out, "# %s\n\n", nameOrBlank(r.Name))
-
-	lead, err := headline(r)
-	if err != nil {
-		return "", err
-	}
-
-	fmt.Fprintf(&out, "%s\n\n", lead)
+	fmt.Fprintf(&out, "%s\n\n", headline(r, events))
 
 	writeSection(&out, "Skills", skillLines(r))
 	writeSection(&out, "Possessions", possessionLines(r))
@@ -65,7 +49,7 @@ func sheetOf(r record) (string, error) {
 
 	endWithKeep(&out)
 
-	return out.String(), nil
+	return out.String()
 }
 
 // keepTheRecord is the one line every rendering ends with.
@@ -101,11 +85,11 @@ func age(a ageRecord) string {
 
 // headline is the line the book itself leads with: the UPP, the age, and
 // what the character is.
-func headline(r record) (string, error) {
+func headline(r record, events []eventJSON) string {
 	parts := []string{"UPP " + r.UPP, "age " + age(r.Age)}
 
 	if r.Service == "" {
-		return strings.Join(append(parts, "civilian, no prior service"), ", "), nil
+		return strings.Join(append(parts, "civilian, no prior service"), ", ")
 	}
 
 	serving := r.Service
@@ -113,12 +97,7 @@ func headline(r record) (string, error) {
 		serving += " " + r.RankName
 	}
 
-	whose, err := whoseService(r)
-	if err != nil {
-		return "", err
-	}
-
-	parts = append(parts, serving+whose+", "+terms(r.Terms))
+	parts = append(parts, serving+whoseService(r, events)+", "+terms(r.Terms))
 
 	if r.Nobility != nil && r.Nobility.Assumed {
 		parts = append(parts, r.Nobility.Title)
@@ -128,7 +107,7 @@ func headline(r record) (string, error) {
 		parts = append(parts, r.Departure.How)
 	}
 
-	return strings.Join(parts, ", "), nil
+	return strings.Join(parts, ", ")
 }
 
 // terms is the count and the word, so a one-term character does not read
@@ -162,22 +141,19 @@ const oneTerm = 1
 //
 // Implements: The headline names the service attempted, not the one the draft
 // gave [1:5].
-func whoseService(r record) (string, error) {
-	attempted, byPolicy, err := serviceAttempted(r)
-	if err != nil {
-		return "", err
-	}
+func whoseService(r record, events []eventJSON) string {
+	attempted, byPolicy := serviceAttempted(r, events)
 
 	switch {
 	case attempted == "":
-		return "", nil
+		return ""
 	case attempted != r.Service:
-		return fmt.Sprintf(" (%s after the %s refused him)", r.Enlistment.How, attempted), nil
+		return fmt.Sprintf(" (%s after the %s refused him)", r.Enlistment.How, attempted)
 	case byPolicy:
-		return " (service chosen by the policy)", nil
+		return " (service chosen by the policy)"
 	default:
 		// He asked for this service and is in it. He knows.
-		return "", nil
+		return ""
 	}
 }
 
@@ -188,17 +164,17 @@ func whoseService(r record) (string, error) {
 // redundant. A forced run carries it in `inputs` and logs no choice at all -
 // there was nothing to ask. An unforced run logs the choice and leaves
 // `inputs.service` empty, and that answer is the one the draft can override.
-func serviceAttempted(r record) (string, bool, error) {
+func serviceAttempted(r record, events []eventJSON) (string, bool) {
 	if r.Inputs.Service != "" {
-		return r.Inputs.Service, false, nil
+		return r.Inputs.Service, false
 	}
 
-	choice, asked, err := choiceAt(r, traveller.ChoiceService.String())
-	if err != nil || !asked {
-		return "", false, err
+	choice, asked := choiceAt(events, traveller.ChoiceService.String())
+	if !asked {
+		return "", false
 	}
 
-	return choice.Chosen, r.Policy != nil, nil
+	return choice.Chosen, r.Policy != nil
 }
 
 func writeSection(out *strings.Builder, heading string, lines []string) {
@@ -294,27 +270,6 @@ func serviceLines(r record) []string {
 	}
 }
 
-// choices reads the record's choice events, which are the only place it says
-// what was decided. A record whose events will not read fails here.
-func choices(r record) ([]eventJSON, error) {
-	var found []eventJSON
-
-	for _, raw := range r.Events {
-		var event eventJSON
-
-		err := unmarshalEvent(raw, &event)
-		if err != nil {
-			return nil, err
-		}
-
-		if event.Kind == kindChoice {
-			found = append(found, event)
-		}
-	}
-
-	return found, nil
-}
-
 // choiceAt returns a named choice point's event, and whether it was put at
 // all. A point nobody was asked is not the same as one the policy took.
 //
@@ -322,17 +277,12 @@ func choices(r record) ([]eventJSON, error) {
 // answered, and who answered is the record's to say rather than the event's.
 // Reading only who leads to crediting a decider with an outcome he did not
 // pick.
-func choiceAt(r record, point string) (eventJSON, bool, error) {
-	made, err := choices(r)
-	if err != nil {
-		return eventJSON{}, false, err
-	}
-
-	for _, choice := range made {
-		if choice.Point == point {
-			return choice, true, nil
+func choiceAt(events []eventJSON, point string) (eventJSON, bool) {
+	for _, event := range events {
+		if event.Kind == kindChoice && event.Point == point {
+			return event, true
 		}
 	}
 
-	return eventJSON{}, false, nil
+	return eventJSON{}, false
 }

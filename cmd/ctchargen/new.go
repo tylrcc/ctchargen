@@ -314,13 +314,3 @@ func rendered(character *chargen.Character, how newRendering) (string, error) {
 
 	return renderText(encoded, how.history, how.readings)
 }
-
-// wrapRender gives a rendering failure the context of the command that asked
-// for it.
-func wrapRender(err error) error {
-	if err == nil {
-		return nil
-	}
-
-	return fmt.Errorf("rendering: %w", err)
-}

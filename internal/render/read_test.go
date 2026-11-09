@@ -136,26 +136,16 @@ func TestAPolicyNamedByVersionAloneIsRefused(t *testing.T) {
 func TestAnEventThatWillNotReadIsRefused(t *testing.T) {
 	t.Parallel()
 
-	// Both, because the sheet reaches the events by two routes: once up front
-	// for every record, and again for the headline of a serving character,
-	// which asks whose service this is. A civilian returns from the headline
-	// before that question, so only a record carrying a service exercises
-	// the second route.
-	for name, unreadable := range map[string][]byte{
-		"a civilian": minimalRecord(`"events":[3]`),
-		"a serving character": minimalRecord(
-			`"service":"Navy","terms":2,"enlistment":{"how":"enlisted"},"events":[3]`,
-		),
-	} {
-		_, err := render.Sheet(unreadable)
-		if err == nil || !strings.Contains(err.Error(), "an event will not read") {
-			t.Errorf("%s: the sheet rendered a record it could not read: %v", name, err)
-		}
+	unreadable := minimalRecord(`"events":[3]`)
 
-		_, err = render.Transcript(unreadable, false)
-		if err == nil || !strings.Contains(err.Error(), "an event will not read") {
-			t.Errorf("%s: the transcript rendered a record it could not read: %v", name, err)
-		}
+	_, err := render.Sheet(unreadable)
+	if err == nil || !strings.Contains(err.Error(), "an event will not read") {
+		t.Errorf("the sheet rendered a record it could not read: %v", err)
+	}
+
+	_, err = render.Transcript(unreadable, false)
+	if err == nil || !strings.Contains(err.Error(), "an event will not read") {
+		t.Errorf("the transcript rendered a record it could not read: %v", err)
 	}
 }
 

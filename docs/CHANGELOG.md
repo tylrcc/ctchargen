@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Rendering a sheet or a transcript decodes the record's events once, and
+  only that reading can fail: the helpers that read the decoded events
+  return no error, and a malformed record is refused with the same error.
+  `render.JSON` and `render.JSONLine` are one encoder, indented or not, and
+  still return json's error: none can arise today, but a record that failed
+  to marshal is refused rather than written wrong (#362).
 - The sheet and the transcript are rendered only from the record's bytes.
   `render.Sheet` and `render.Transcript` take the record, where there were
   also forms taking the generated character; `new` renders what it encodes,
