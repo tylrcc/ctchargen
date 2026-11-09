@@ -1,4 +1,34 @@
+---
+name:
+upp: "7868A9"
+strength: 7
+dexterity: 8
+endurance: 6
+intelligence: 8
+education: 10
+social: 9
+age: 46
+service: "Scouts"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Body Pistol-1"
+  - "Electronic-1"
+  - "Jack of all Trades-1"
+  - "Laser Carbine-1"
+  - "Mechanical-1"
+  - "Medical-1"
+  - "Navigation-1"
+  - "Pilot-1"
+  - "Vacc Suit-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Scouts, 7 terms, retired at 46. Musters out with a Scout ship, Type S, held in constructive possession.
 
 UPP 7868A9, age 46, Scouts, 7 terms, retired
 

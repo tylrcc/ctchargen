@@ -1,4 +1,34 @@
+---
+name:
+upp: "766BDE"
+strength: 7
+dexterity: 6
+endurance: 6
+intelligence: 11
+education: 13
+social: 14
+age: 46
+service: "Navy"
+rank: "Captain"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Engineer-1"
+  - "Forward Observer-1"
+  - "Jack of all Trades-1"
+  - "Navigation-2"
+  - "Pilot-1"
+  - "Ship's Boat-2"
+  - "Vacc Suit-2"
+credits: 0
+pension: 8000
+nobility: "count/countess"
+---
+
 # (unnamed)
+
+Navy Captain, 7 terms, retired at 46. Known for Navigation-2, Ship's Boat-2 and Vacc Suit-2. Musters out with Travellers' Aid Society membership.
 
 UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 

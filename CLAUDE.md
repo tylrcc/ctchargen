@@ -17,11 +17,12 @@ govern how a report gets answered. The current release is the README's
 
 **What `v1.0.0` means, decided in #74 and narrowed in #398.** A referee can
 trust what the tool prints at the table, and the command line he types is
-held: its flags, types, defaults and exit status (#126). The note's own shape
-is not frozen; it may keep moving after `v1.0.0`, as the playtests ask (ADR
-0006). The `v1` label carries which issues that covers today — this paragraph
-states the bar and never the list, because a list here goes stale every time
-one closes.
+held: its flags, types, defaults and exit status (#126), and so are the note's
+property names and their meanings, which vault queries stand on (#399). The
+rest of the note's shape is not frozen; it may keep moving after `v1.0.0`, as
+the playtests ask (ADR 0006). The `v1` label carries which issues that covers
+today — this paragraph states the bar and never the list, because a list here
+goes stale every time one closes.
 
 ## Authority — read this before implementing any rule
 

@@ -1,4 +1,29 @@
+---
+name:
+upp: "1A848A"
+strength: 1
+dexterity: 10
+endurance: 8
+intelligence: 4
+education: 8
+social: 10
+age: 42
+service: "Other"
+terms: 6
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Automatic Rifle-1"
+  - "Brawling-2"
+  - "Electronic-2"
+  - "Mechanical-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Other, killed by the survival throw in term 6, aged 42. Known for Brawling-2 and Electronic-2.
 
 UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 

@@ -1,4 +1,31 @@
+---
+name:
+upp: "754777"
+strength: 7
+dexterity: 5
+endurance: 4
+intelligence: 7
+education: 7
+social: 7
+age: 34
+service: "Merchants"
+rank: "3rd Officer"
+terms: 4
+status: "alive"
+departure: "forced out"
+skills:
+  - "Cudgel-1"
+  - "Electronic-1"
+  - "Jack of all Trades-1"
+  - "Mechanical-2"
+  - "Medical-1"
+credits: 50000
+pension: 0
+---
+
 # (unnamed)
+
+Merchants 3rd Officer, 4 terms, forced out at 34. Known for Mechanical-2. Musters out with CR 50000.
 
 UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 4 terms, forced out
 

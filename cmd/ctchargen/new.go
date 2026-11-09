@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"strings"
+	"unicode/utf8"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/render"
@@ -197,6 +198,13 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 	// (#128). Carriage return too: markdown ends a line at either.
 	if strings.ContainsAny(*f.name, "\n\r") {
 		return chargen.Inputs{}, policy, fmt.Errorf("%w: --name %q is more than one line", errUsage, *f.name)
+	}
+
+	// And it is text. The note writes it into its properties as a YAML
+	// string, which reads a byte that is not UTF-8 back as another letter, so
+	// the name a vault saw would not be the one typed.
+	if !utf8.ValidString(*f.name) {
+		return chargen.Inputs{}, policy, fmt.Errorf("%w: --name %q is not UTF-8 text", errUsage, *f.name)
 	}
 
 	in := chargen.Inputs{Name: *f.name}

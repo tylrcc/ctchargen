@@ -1,4 +1,30 @@
+---
+name:
+upp: "8346C5"
+strength: 8
+dexterity: 3
+endurance: 4
+intelligence: 6
+education: 12
+social: 5
+age: 38
+service: "Other"
+terms: 5
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Brawling-1"
+  - "Computer-1"
+  - "Cutlass-1"
+  - "Forgery-1"
+  - "Medical-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Other, killed by the survival throw in term 5, aged 38.
 
 UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 

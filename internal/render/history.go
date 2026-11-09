@@ -90,7 +90,7 @@ func changeWords(change chargen.Change) string {
 type gainWordsCodec struct{ out string }
 
 func (g *gainWordsCodec) Skill(skill traveller.Skill) error {
-	g.out = fmt.Sprintf("%s-%d", skill.Name, skill.Level)
+	g.out = skillText(string(skill.Name), skill.Level)
 
 	return nil
 }

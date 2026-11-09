@@ -1,4 +1,25 @@
+---
+name:
+upp: "8777A8"
+strength: 8
+dexterity: 7
+endurance: 7
+intelligence: 7
+education: 10
+social: 8
+age: 22
+service: "Other"
+terms: 1
+status: "dead"
+departure: "killed by the survival throw"
+skills: []
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Other, killed by the survival throw in term 1, aged 22.
 
 UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed by the survival throw
 

@@ -1,4 +1,28 @@
+---
+name:
+upp: "205688"
+strength: 2
+dexterity: 0
+endurance: 5
+intelligence: 6
+education: 8
+social: 8
+age: 46
+service: "Other"
+terms: 7
+status: "dead"
+departure: "killed by a medical crisis"
+skills:
+  - "Electronic-2"
+  - "Gambling-2"
+  - "Streetwise-2"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Other, killed by a medical crisis in term 7, aged 46. Known for Electronic-2, Gambling-2 and Streetwise-2.
 
 UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 

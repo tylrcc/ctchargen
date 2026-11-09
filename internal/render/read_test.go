@@ -93,7 +93,7 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 					Term: 1,
 					Raised: []chargen.Raise{
 						{How: chargen.Commissioned, Rank: "Lieutenant", Grants: []chargen.Gain{skill("Submachine Gun", 1)}},
-						{How: chargen.Promoted, Rank: "Captain"},
+						{How: chargen.Promoted, Rank: captain},
 					},
 					Gained: []chargen.Gain{skill("Tactics", 1), skill("Halberd", 1)},
 				},
@@ -424,5 +424,188 @@ func TestTheGenerationRecordIsOneHeading(t *testing.T) {
 		if !strings.Contains(record, want) {
 			t.Errorf("the generation record does not read %q:\n%s", want, record)
 		}
+	}
+}
+
+// captain is the rank the tests below confer, by the Army's and the Navy's
+// name for it.
+const captain = "Captain"
+
+// pilot is the one skill the tests below give a Scout or a merchant.
+const pilot = "Pilot"
+
+// profile is a Profile from six values, in the order p. 4 rolls them.
+func profile(values ...int) traveller.Profile {
+	var p traveller.Profile
+
+	copy(p[:], values)
+
+	return p
+}
+
+// A note opens with properties a vault can query (#399): flat keys in the
+// sheet's own words, single values because a character serves one service
+// (Book 1 p. 5), `status` saying outright whether he lived (#418), skills in
+// the book's notation, and the name as an alias when one was given. A key
+// with nothing to say is absent rather than blank, but for name. The UPP is
+// quoted, since six digits would otherwise read as a number.
+//
+// Holds: A note opens with properties a vault can query.
+func TestANoteOpensWithItsProperties(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range map[string]noteCase{
+		"a named officer who took his title": {
+			func(c *chargen.Character) {
+				c.Inputs.Name = "Kira Vance"
+				c.Profile = profile(7, 9, 3, 7, 4, 11)
+				c.Age = traveller.NewAge(26)
+				c.Terms = 2
+				c.Enlistment = traveller.Enlisted{Service: traveller.Army}
+				c.RankName = captain
+				c.Departure = traveller.ForcedOut{}
+				c.Skills = []traveller.Skill{{Name: "Brawling", Level: 1}, {Name: "Rifle", Level: 2}}
+				c.Benefits.Cash = 30000
+				c.Nobility = chargen.Nobility{Eligible: true, Title: traveller.Knight, Assumed: true}
+			},
+			"---\nname: \"Kira Vance\"\naliases:\n  - \"Kira Vance\"\nupp: \"79374B\"\n" +
+				"strength: 7\ndexterity: 9\nendurance: 3\nintelligence: 7\neducation: 4\nsocial: 11\n" +
+				"age: 26\nservice: \"Army\"\nrank: \"Captain\"\nterms: 2\nstatus: \"alive\"\ndeparture: \"forced out\"\n" +
+				"skills:\n  - \"Brawling-1\"\n  - \"Rifle-2\"\ncredits: 30000\npension: 0\nnobility: \"knight/dame\"\n---\n",
+		},
+		"an unnamed civilian": {
+			func(c *chargen.Character) {
+				c.Profile = profile(7, 7, 7, 7, 7, 7)
+				c.Enlistment = traveller.DeclinedTheDraft{}
+			},
+			"---\nname:\nupp: \"777777\"\n" +
+				"strength: 7\ndexterity: 7\nendurance: 7\nintelligence: 7\neducation: 7\nsocial: 7\n" +
+				"age: 18\nterms: 0\nstatus: \"alive\"\nskills: []\ncredits: 0\npension: 0\n---\n",
+		},
+		// What a referee types is escaped, not trusted: quotes, a colon, a
+		// hash, a backslash and a letter outside ASCII all read back as typed.
+		"a name a referee typed": {
+			func(c *chargen.Character) {
+				c.Inputs.Name = `O'Brien: "Red" #1 \ Mår`
+				c.Profile = profile(7, 7, 7, 7, 7, 7)
+				c.Enlistment = traveller.DeclinedTheDraft{}
+			},
+			"---\nname: \"O'Brien: \\\"Red\\\" #1 \\\\ Mår\"\n" +
+				"aliases:\n  - \"O'Brien: \\\"Red\\\" #1 \\\\ Mår\"\n",
+		},
+		"a dead Scout": {
+			func(c *chargen.Character) {
+				c.Profile = profile(6, 6, 6, 6, 6, 6)
+				c.Age = traveller.NewAge(30)
+				c.Terms = 3
+				c.Enlistment = traveller.Enlisted{Service: traveller.Scouts}
+				c.Departure = traveller.KilledBySurvivalThrow{}
+				c.Skills = []traveller.Skill{{Name: pilot, Level: 1}}
+			},
+			"---\nname:\nupp: \"666666\"\n" +
+				"strength: 6\ndexterity: 6\nendurance: 6\nintelligence: 6\neducation: 6\nsocial: 6\n" +
+				"age: 30\nservice: \"Scouts\"\nterms: 3\nstatus: \"dead\"\ndeparture: \"killed by the survival throw\"\n" +
+				"skills:\n  - \"Pilot-1\"\ncredits: 0\npension: 0\n---\n",
+		},
+	} {
+		note := noteOf(tc.change)
+		if !strings.HasPrefix(note, tc.want) {
+			got, _, _ := strings.Cut(note, "\n# ")
+			t.Errorf("%s: the note opens\n%s\nwant\n%s", name, got, tc.want)
+		}
+	}
+}
+
+// A note's heading is followed by a paragraph a referee can read aloud
+// (#425): the service and rank, terms, how he left and at what age, his two
+// or three best skills, and what he mustered out with that matters - credits,
+// a ship, Travellers' Aid. The dead are told how and when they died (#418);
+// a civilian, that he declined the draft. The words are typed out here, not
+// read from the code that writes them.
+//
+// Holds: A note opens with a summary a referee can read aloud.
+func TestANoteOpensWithASummary(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range summaryCases() {
+		note := noteOf(tc.change)
+
+		heading := "\n# (unnamed)\n\n"
+		if !strings.Contains(note, heading+tc.want+"\n\nUPP ") {
+			_, after, _ := strings.Cut(note, heading)
+			got, _, _ := strings.Cut(after, "\nUPP ")
+			t.Errorf("%s: the summary reads %q, want %q", name, got, tc.want)
+		}
+	}
+}
+
+// noteCase is a character, as a change to the least one, and what its note
+// should read.
+type noteCase struct {
+	change func(c *chargen.Character)
+	want   string
+}
+
+// summaryCases are an officer, a merchant with a ship, a civilian and a dead
+// Scout, each with the summary its note should open with.
+func summaryCases() map[string]noteCase {
+	return map[string]noteCase{
+		"an officer": {
+			func(c *chargen.Character) {
+				c.Age = traveller.NewAge(26)
+				c.Terms = 2
+				c.Enlistment = traveller.Enlisted{Service: traveller.Army}
+				c.RankName = captain
+				c.Departure = traveller.ForcedOut{}
+				c.Skills = []traveller.Skill{
+					{Name: "Brawling", Level: 1},
+					{Name: "Medical", Level: 1},
+					{Name: "Rifle", Level: 2},
+					{Name: "Tactics", Level: 1},
+				}
+				c.Benefits.Cash = 30000
+			},
+			"Army Captain, 2 terms, forced out at 26. Known for Rifle-2. " +
+				"Musters out with CR 30000.",
+		},
+		"a merchant with a ship": {
+			func(c *chargen.Character) {
+				c.Age = traveller.NewAge(46)
+				c.Terms = 7
+				c.Enlistment = traveller.Enlisted{Service: traveller.Merchants}
+				c.Departure = traveller.Retired{}
+				c.Skills = []traveller.Skill{{Name: pilot, Level: 1}}
+				c.Benefits.TravellersAid = true
+				c.Benefits.Ships = []chargen.Ship{{Kind: traveller.FreeTrader, Tons: 200}}
+			},
+			"Merchants, 7 terms, retired at 46. " +
+				"Musters out with Travellers' Aid Society membership and a Free Trader, Type A.",
+		},
+		"a civilian": {
+			func(c *chargen.Character) { c.Enlistment = traveller.DeclinedTheDraft{} },
+			"A civilian who declined the draft at 18.",
+		},
+		"a Scout with his ship": {
+			func(c *chargen.Character) {
+				c.Age = traveller.NewAge(46)
+				c.Terms = 7
+				c.Enlistment = traveller.Enlisted{Service: traveller.Scouts}
+				c.Departure = traveller.Retired{}
+				c.Skills = []traveller.Skill{{Name: pilot, Level: 2}, {Name: "Electronic", Level: 3}}
+				c.Benefits.Ships = []chargen.Ship{{Kind: traveller.ScoutShip, Tons: 100}}
+			},
+			"Scouts, 7 terms, retired at 46. Known for Electronic-3 and Pilot-2. " +
+				"Musters out with a Scout ship, Type S, held in constructive possession.",
+		},
+		"a dead Scout": {
+			func(c *chargen.Character) {
+				c.Age = traveller.NewAge(30)
+				c.Terms = 3
+				c.Enlistment = traveller.Enlisted{Service: traveller.Scouts}
+				c.Departure = traveller.KilledBySurvivalThrow{}
+				c.Skills = []traveller.Skill{{Name: pilot, Level: 1}}
+			},
+			"Scouts, killed by the survival throw in term 3, aged 30.",
+		},
 	}
 }

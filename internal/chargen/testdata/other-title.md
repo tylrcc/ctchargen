@@ -1,4 +1,28 @@
+---
+name:
+upp: "A68AAC"
+strength: 10
+dexterity: 6
+endurance: 8
+intelligence: 10
+education: 10
+social: 12
+age: 22
+service: "Other"
+terms: 1
+status: "alive"
+departure: "forced out"
+skills:
+  - "Electronic-1"
+  - "Forgery-1"
+credits: 10000
+pension: 0
+nobility: "baron/baroness"
+---
+
 # (unnamed)
+
+Other, 1 term, forced out at 22. Musters out with CR 10000.
 
 UPP A68AAC, age 22, Other, 1 term, baron/baroness, forced out
 

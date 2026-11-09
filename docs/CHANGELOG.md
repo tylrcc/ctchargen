@@ -47,6 +47,12 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   its own, so a note's outline shows the sheet's sections and one entry for
   the record. The live view prints each step as a plain numbered line (#422).
 
+- A note opens with properties a vault can query — the UPP, the six
+  characteristics, age, service, rank, terms, `status` (`alive` or `dead`),
+  departure, skills, credits, pension and nobility, with the name as an alias
+  — and under its heading a one-paragraph summary a referee can read aloud.
+  The property names freeze at `v1.0.0` (#399, #418, #425).
+
 ## 1.0.0-rc.3
 
 The third release candidate for `v1.0.0`, and the first with every `v1`

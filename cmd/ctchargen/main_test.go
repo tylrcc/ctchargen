@@ -53,6 +53,9 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		// A name is one line, on both commands that take one (#128).
 		"a name with a newline": {[]string{cmdNew, flagAuto, flagName, "Jamison\n\n## Possessions"}, wantOneLine},
 		"a name with a return":  {[]string{cmdNew, flagAuto, flagName, "Jamison\r## Possessions"}, wantOneLine},
+		// A name reaches the note's properties as YAML, which reads a byte
+		// that is not UTF-8 back as another letter.
+		"a name that is not UTF-8": {[]string{cmdNew, flagAuto, flagName, "Jami\xffson"}, "not UTF-8"},
 		"a batch name with a newline": {
 			[]string{cmdBatch, flagCount, "1", flagName, "Jamison\n# Forged"}, wantOneLine,
 		},
@@ -131,8 +134,8 @@ func TestTheNoteCarriesTheNameGiven(t *testing.T) {
 
 	note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagName, given}, nil)
 
-	if !strings.HasPrefix(note, "# "+given+"\n") {
-		t.Errorf("the note does not open with %q:\n%s", "# "+given, note)
+	if !strings.HasPrefix(note, "---\nname: \""+given+"\"\n") || !strings.Contains(note, "\n# "+given+"\n") {
+		t.Errorf("the note does not carry %q as its name property and heading:\n%s", given, note)
 	}
 }
 

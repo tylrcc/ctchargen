@@ -102,7 +102,9 @@ func TestANoteWithItsReadingsEndsWithThem(t *testing.T) {
 			plain := render.Note(character, false)
 			got := render.Note(character, true)
 
-			body, footer, found := strings.Cut(plain, "---\n\n")
+			// The closing lines follow the last rule; the first closes the
+			// properties.
+			body, footer, found := strings.CutLast(plain, "---\n\n")
 			if !found {
 				t.Fatalf("the plain note has no footer:\n%s", plain)
 			}

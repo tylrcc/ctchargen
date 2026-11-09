@@ -1,4 +1,29 @@
+---
+name:
+upp: "556ACA"
+strength: 5
+dexterity: 5
+endurance: 6
+intelligence: 10
+education: 12
+social: 10
+age: 34
+service: "Other"
+terms: 4
+status: "alive"
+departure: "forced out"
+skills:
+  - "Electronic-1"
+  - "Forgery-1"
+  - "Jack of all Trades-1"
+  - "Streetwise-1"
+credits: 16000
+pension: 0
+---
+
 # (unnamed)
+
+Other, 4 terms, forced out at 34. Musters out with CR 16000.
 
 UPP 556ACA, age 34, Other, 4 terms, forced out
 

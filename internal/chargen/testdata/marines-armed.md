@@ -1,4 +1,36 @@
+---
+name:
+upp: "3B8A89"
+strength: 3
+dexterity: 11
+endurance: 8
+intelligence: 10
+education: 8
+social: 9
+age: 46
+service: "Marines"
+rank: "Force Cmdr"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Bayonet-1"
+  - "Brawling-1"
+  - "Cutlass-1"
+  - "Dagger-1"
+  - "Mechanical-2"
+  - "Revolver-1"
+  - "Shotgun-1"
+  - "Sword-1"
+  - "Tactics-1"
+  - "Vacc Suit-1"
+credits: 37000
+pension: 8000
+---
+
 # (unnamed)
+
+Marines Force Cmdr, 7 terms, retired at 46. Known for Mechanical-2. Musters out with CR 37000.
 
 UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 

@@ -70,6 +70,16 @@ choice made, step by step with its page cite. The note ends by naming the
 ruleset, the build and who answered its choices, so it drops into a notes
 vault as it is.
 
+**A note opens with properties** a vault can query — `upp`, the six
+characteristics, `age`, `service`, `rank`, `terms`, `status` (`alive` or
+`dead`), `departure`, `skills` in the book's notation, `credits`, `pension`,
+`nobility`, and the name with an alias when one was given — so Dataview or
+Bases can answer "which crew have Pilot?" Their names freeze at `v1.0.0`.
+Under the heading, **a one-paragraph summary** says who he is in words a
+referee can read aloud: "Army Captain, 2 terms, forced out at 26. Known for
+Rifle-2. Musters out with CR 30000." `age` is completed years, and `terms`
+counts every term begun, the one a death ended included.
+
 **A reading is how the tool decides where the page is silent or contradicts
 itself**, and the generation record names the reading beside each outcome it
 governed, as an id like `E002`. **`--readings`** ends the note with the full

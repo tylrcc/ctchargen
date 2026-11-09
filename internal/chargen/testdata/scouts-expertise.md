@@ -1,4 +1,33 @@
+---
+name:
+upp: "865EBC"
+strength: 8
+dexterity: 6
+endurance: 5
+intelligence: 14
+education: 11
+social: 12
+age: 46
+service: "Scouts"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Dagger-1"
+  - "Electronic-2"
+  - "Jack of all Trades-1"
+  - "Mechanical-1"
+  - "Medical-1"
+  - "Navigation-1"
+  - "Pilot-1"
+credits: 0
+pension: 0
+nobility: "baron/baroness"
+---
+
 # (unnamed)
+
+Scouts, 7 terms, retired at 46. Known for Electronic-2. Musters out with a Scout ship, Type S, held in constructive possession.
 
 UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 

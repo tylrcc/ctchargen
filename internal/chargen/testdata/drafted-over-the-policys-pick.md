@@ -1,4 +1,33 @@
+---
+name:
+upp: "671682"
+strength: 6
+dexterity: 7
+endurance: 1
+intelligence: 6
+education: 8
+social: 2
+age: 42
+service: "Marines"
+rank: "Lieutenant"
+terms: 6
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "ATV-2"
+  - "Administration-2"
+  - "Cutlass-1"
+  - "Gambling-1"
+  - "Pike-1"
+  - "Revolver-1"
+  - "Sword-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Marines Lieutenant, killed by the survival throw in term 6, aged 42. Known for ATV-2 and Administration-2.
 
 UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused him), 6 terms, killed by the survival throw
 

@@ -1,4 +1,29 @@
+---
+name:
+upp: "335C6C"
+strength: 3
+dexterity: 3
+endurance: 5
+intelligence: 12
+education: 6
+social: 12
+age: 38
+service: "Other"
+terms: 5
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Brawling-2"
+  - "Bribery-1"
+  - "Forgery-1"
+  - "Gambling-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Other, killed by the survival throw in term 5, aged 38. Known for Brawling-2.
 
 UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed by the survival throw
 

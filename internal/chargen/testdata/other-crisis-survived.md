@@ -1,4 +1,30 @@
+---
+name:
+upp: "196799"
+strength: 1
+dexterity: 9
+endurance: 6
+intelligence: 7
+education: 9
+social: 9
+age: 46
+service: "Other"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Automatic Rifle-1"
+  - "Brawling-2"
+  - "Electronic-2"
+  - "Forgery-1"
+  - "Mechanical-1"
+credits: 16000
+pension: 0
+---
+
 # (unnamed)
+
+Other, 7 terms, retired at 46. Known for Brawling-2 and Electronic-2. Musters out with CR 16000.
 
 UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 

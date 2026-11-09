@@ -58,7 +58,7 @@ func TestABatchToStandardOutputArrivesANoteAtATime(t *testing.T) {
 
 	// One note after another, a blank line between each and the next, so each
 	// opens its own heading rather than running on from the last.
-	if apart := strings.Count(out.got.String(), "character.\n\n# "); apart != members-1 {
+	if apart := strings.Count(out.got.String(), "character.\n\n---\nname:"); apart != members-1 {
 		t.Errorf("%d notes set apart from the one before, want %d", apart, members-1)
 	}
 }

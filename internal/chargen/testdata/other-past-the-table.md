@@ -1,4 +1,28 @@
+---
+name:
+upp: "FAABCC"
+strength: 15
+dexterity: 10
+endurance: 10
+intelligence: 11
+education: 12
+social: 12
+age: 86
+service: "Other"
+terms: 17
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Forgery-4"
+  - "Medical-5"
+  - "Streetwise-4"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Other, killed by the survival throw in term 17, aged 86. Known for Medical-5, Forgery-4 and Streetwise-4.
 
 UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 

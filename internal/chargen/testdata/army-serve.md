@@ -1,4 +1,36 @@
+---
+name:
+upp: "965BCD"
+strength: 9
+dexterity: 6
+endurance: 5
+intelligence: 11
+education: 12
+social: 13
+age: 46
+service: "Army"
+rank: "General"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "ATV-2"
+  - "Administration-1"
+  - "Electronic-2"
+  - "Gambling-1"
+  - "Halberd-1"
+  - "Mechanical-1"
+  - "Rifle-1"
+  - "Submachine Gun-2"
+  - "Tactics-3"
+credits: 30000
+pension: 8000
+nobility: "marquis/marchioness"
+---
+
 # (unnamed)
+
+Army General, 7 terms, retired at 46. Known for Tactics-3, ATV-2 and Electronic-2. Musters out with CR 30000.
 
 UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 

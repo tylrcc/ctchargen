@@ -1,4 +1,32 @@
+---
+name:
+upp: "A69ABC"
+strength: 10
+dexterity: 6
+endurance: 9
+intelligence: 10
+education: 11
+social: 12
+age: 30
+service: "Marines"
+rank: "Captain"
+terms: 3
+status: "alive"
+departure: "forced out"
+skills:
+  - "ATV-2"
+  - "Cutlass-1"
+  - "Laser Rifle-1"
+  - "Revolver-1"
+  - "Tactics-2"
+credits: 70000
+pension: 0
+nobility: "baron/baroness"
+---
+
 # (unnamed)
+
+Marines Captain, 3 terms, forced out at 30. Known for ATV-2 and Tactics-2. Musters out with CR 70000.
 
 UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 

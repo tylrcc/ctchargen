@@ -28,3 +28,7 @@ trust what the tool prints, and the record is frozen and supported — keeps
 its first half and the command line (#126); a note's headings and lines may
 keep moving after `v1.0.0`, as the playtests ask of them. Decided with this
 ADR, 2026-11-09.
+
+Narrowed on 2026-11-09 (#399): a note now opens with properties, YAML a
+vault's queries stand on, so the property names and their meanings freeze at
+`v1.0.0`. Headings and prose stay free.

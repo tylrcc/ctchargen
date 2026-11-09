@@ -32,6 +32,7 @@ func Note(character *chargen.Character, readings bool) string {
 
 	var out strings.Builder
 
+	writeProperties(&out, r)
 	writeSheet(&out, r)
 	writeGenerationRecord(&out, r)
 

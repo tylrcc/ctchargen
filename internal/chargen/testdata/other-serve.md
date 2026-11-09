@@ -1,4 +1,28 @@
+---
+name:
+upp: "644776"
+strength: 6
+dexterity: 4
+endurance: 4
+intelligence: 7
+education: 7
+social: 6
+age: 38
+service: "Other"
+terms: 5
+status: "alive"
+departure: "retired"
+skills:
+  - "Automatic Pistol-1"
+  - "Gambling-2"
+  - "Streetwise-1"
+credits: 30000
+pension: 0
+---
+
 # (unnamed)
+
+Other, 5 terms, retired at 38. Known for Gambling-2. Musters out with CR 30000.
 
 UPP 644776, age 38, Other, 5 terms, retired
 

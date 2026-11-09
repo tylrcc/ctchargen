@@ -1,4 +1,26 @@
+---
+name:
+upp: "673735"
+strength: 6
+dexterity: 7
+endurance: 3
+intelligence: 7
+education: 3
+social: 5
+age: 22
+service: "Scouts"
+terms: 1
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Pilot-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Scouts, killed by the survival throw in term 1, aged 22.
 
 UPP 673735, age 22, Scouts, 1 term, killed by the survival throw
 

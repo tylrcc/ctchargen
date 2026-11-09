@@ -15,7 +15,7 @@ import (
 // Implements: The errata are on the generation record and not the sheet
 // [Generation record].
 func writeSheet(out *strings.Builder, r view) {
-	fmt.Fprintf(out, "# %s\n\n", nameOrBlank(r.Name))
+	fmt.Fprintf(out, "# %s\n\n%s\n\n", nameOrBlank(r.Name), summary(r))
 	fmt.Fprintf(out, "%s\n\n", headline(r))
 
 	writeSection(out, "Skills", skillLines(r))
@@ -152,7 +152,7 @@ func writeSection(out *strings.Builder, heading string, lines []string) {
 func skillLines(r view) []string {
 	lines := make([]string, 0, len(r.Skills))
 	for _, skill := range r.Skills {
-		lines = append(lines, fmt.Sprintf("%s-%d", skill.Name, skill.Level))
+		lines = append(lines, skillText(skill.Name, skill.Level))
 	}
 
 	return lines
@@ -194,7 +194,7 @@ func credits(amount int64) string { return fmt.Sprintf("CR %d", amount) }
 // Implements: A ship's terms follow its kind, not its numbers [1:22–23].
 func shipLine(ship shipView) string {
 	if ship.Kind == traveller.ScoutShip.String() {
-		return fmt.Sprintf("%s, %d tons, held in constructive possession", ship.Kind, ship.Tons)
+		return fmt.Sprintf("%s, %d tons, %s", ship.Kind, ship.Tons, heldNotOwned)
 	}
 
 	if ship.PaymentYears == 0 {
@@ -321,3 +321,13 @@ func serving(r view) string {
 
 	return r.Service + " " + r.RankName
 }
+
+// skillText is a skill in the book's notation, Skill-1 (p. 12): the one form
+// the sheet, the summary, the service history and the properties all write.
+func skillText(name string, level int) string {
+	return fmt.Sprintf("%s-%d", name, level)
+}
+
+// heldNotOwned is how a scout ship is held: in constructive possession, not
+// owned (p. 23).
+const heldNotOwned = "held in constructive possession"

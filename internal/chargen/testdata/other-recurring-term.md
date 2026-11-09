@@ -1,4 +1,29 @@
+---
+name:
+upp: "DBBCCC"
+strength: 13
+dexterity: 11
+endurance: 11
+intelligence: 12
+education: 12
+social: 12
+age: 54
+service: "Other"
+terms: 9
+status: "alive"
+departure: "retired"
+skills:
+  - "Forgery-2"
+  - "Medical-3"
+  - "Streetwise-3"
+credits: 3000
+pension: 0
+nobility: "baron/baroness"
+---
+
 # (unnamed)
+
+Other, 9 terms, retired at 54. Known for Medical-3, Streetwise-3 and Forgery-2. Musters out with CR 3000.
 
 UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 

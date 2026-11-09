@@ -1,4 +1,27 @@
+---
+name:
+upp: "64499B"
+strength: 6
+dexterity: 4
+endurance: 4
+intelligence: 9
+education: 9
+social: 11
+age: 22
+service: "Other"
+terms: 1
+status: "alive"
+departure: "discharged"
+skills:
+  - "Brawling-1"
+credits: 0
+pension: 0
+nobility: "knight/dame"
+---
+
 # (unnamed)
+
+Other, 1 term, discharged at 22.
 
 UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, discharged
 

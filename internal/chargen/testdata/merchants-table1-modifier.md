@@ -1,4 +1,33 @@
+---
+name:
+upp: "ACA469"
+strength: 10
+dexterity: 12
+endurance: 10
+intelligence: 4
+education: 6
+social: 9
+age: 42
+service: "Merchants"
+rank: "1st Officer"
+terms: 6
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Electronic-2"
+  - "Gunnery-1"
+  - "Halberd-1"
+  - "Mechanical-1"
+  - "Medical-1"
+  - "Pilot-1"
+  - "Vacc Suit-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Merchants 1st Officer, killed by the survival throw in term 6, aged 42. Known for Electronic-2.
 
 UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 

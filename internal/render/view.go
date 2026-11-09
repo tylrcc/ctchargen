@@ -12,6 +12,7 @@ import (
 type view struct {
 	Name       string
 	UPP        string
+	Profile    traveller.Profile
 	Age        ageView
 	Terms      int
 	Enlistment enlistmentView
@@ -119,6 +120,7 @@ func viewOf(character *chargen.Character) view {
 	out := view{
 		Name:       character.Inputs.Name,
 		UPP:        character.Profile.UPP(),
+		Profile:    character.Profile,
 		Age:        ageView{Years: character.Age.Years(), Months: character.Age.Months()},
 		Terms:      character.Terms,
 		Enlistment: foldEnlistment(character.Enlistment),

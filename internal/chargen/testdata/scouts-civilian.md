@@ -1,4 +1,23 @@
+---
+name:
+upp: "76B348"
+strength: 7
+dexterity: 6
+endurance: 11
+intelligence: 3
+education: 4
+social: 8
+age: 18
+terms: 0
+status: "alive"
+skills: []
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+A civilian who declined the draft at 18.
 
 UPP 76B348, age 18, civilian, no prior service
 

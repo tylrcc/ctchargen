@@ -1,4 +1,37 @@
+---
+name:
+upp: "73AB8C"
+strength: 7
+dexterity: 3
+endurance: 10
+intelligence: 11
+education: 8
+social: 12
+age: 46
+service: "Marines"
+rank: "Colonel"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Computer-2"
+  - "Cudgel-1"
+  - "Cutlass-1"
+  - "Electronic-1"
+  - "Gambling-1"
+  - "Leader-1"
+  - "Medical-1"
+  - "Revolver-2"
+  - "Tactics-1"
+  - "Vacc Suit-3"
+credits: 35000
+pension: 8000
+nobility: "baron/baroness"
+---
+
 # (unnamed)
+
+Marines Colonel, 7 terms, retired at 46. Known for Vacc Suit-3, Computer-2 and Revolver-2. Musters out with CR 35000 and Travellers' Aid Society membership.
 
 UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 

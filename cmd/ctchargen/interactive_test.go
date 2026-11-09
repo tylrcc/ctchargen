@@ -55,7 +55,7 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 	}
 
 	// And the note at the end, on the channel the player did not watch.
-	if !strings.HasPrefix(note, "# ") || !strings.Contains(note, "UPP ") {
+	if !strings.HasPrefix(note, "---\nname:") || !strings.Contains(note, "UPP ") {
 		t.Errorf("the run did not end with the note:\n%s", note)
 	}
 
@@ -339,7 +339,7 @@ func TestTheQuestionsStayOutOfTheNote(t *testing.T) {
 		t.Error("the questions did not go to the channel meant for them")
 	}
 
-	if strings.Contains(note, "Which skills table?") || !strings.HasPrefix(note, "# ") {
+	if strings.Contains(note, "Which skills table?") || !strings.HasPrefix(note, "---\nname:") {
 		t.Errorf("the data channel does not hold a note on its own:\n%s", note)
 	}
 

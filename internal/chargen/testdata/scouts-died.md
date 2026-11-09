@@ -1,4 +1,27 @@
+---
+name:
+upp: "7C8669"
+strength: 7
+dexterity: 12
+endurance: 8
+intelligence: 6
+education: 6
+social: 9
+age: 26
+service: "Scouts"
+terms: 2
+status: "dead"
+departure: "killed by the survival throw"
+skills:
+  - "Air/Raft-2"
+  - "Pilot-1"
+credits: 0
+pension: 0
+---
+
 # (unnamed)
+
+Scouts, killed by the survival throw in term 2, aged 26. Known for Air/Raft-2.
 
 UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 

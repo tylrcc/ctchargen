@@ -1,4 +1,36 @@
+---
+name:
+upp: "825A9B"
+strength: 8
+dexterity: 2
+endurance: 5
+intelligence: 10
+education: 9
+social: 11
+age: 46
+service: "Merchants"
+rank: "Captain"
+terms: 7
+status: "alive"
+departure: "retired"
+skills:
+  - "Bribery-1"
+  - "Dagger-2"
+  - "Engineer-1"
+  - "Laser Carbine-1"
+  - "Mechanical-2"
+  - "Navigation-4"
+  - "Pilot-1"
+  - "Sword-1"
+  - "Vacc Suit-1"
+credits: 45000
+pension: 8000
+nobility: "knight/dame"
+---
+
 # (unnamed)
+
+Merchants Captain, 7 terms, retired at 46. Known for Navigation-4, Dagger-2 and Mechanical-2. Musters out with CR 45000 and a Free Trader, Type A.
 
 UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
