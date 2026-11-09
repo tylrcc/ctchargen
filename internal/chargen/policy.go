@@ -8,7 +8,8 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// Policy is the --auto decider: it answers every question the procedure asks,
+// Policy is the auto run's decider (new --auto, and every batch): it answers
+// every question the procedure asks,
 // under three named strategies, each over one group of choice points. Career
 // (--career) answers Service, SubmitToDraft, AttemptCommission,
 // AttemptPromotion, ReenlistIntent and AssumeTitle; Skills (--skills) answers
@@ -197,7 +198,7 @@ func SkillsChoices() string { return choices(skillsStrategies) }
 // MusterChoices is the values --muster takes, as a reader is shown them.
 func MusterChoices() string { return choices(musterStrategies) }
 
-// DefaultPolicy is what a bare --auto run applies. A record names its
+// DefaultPolicy is what an auto run applies when it names no strategy. A record names its
 // strategies either way, so no record is silent about the policy that made
 // it.
 func DefaultPolicy() Policy {
@@ -516,7 +517,7 @@ func (p Policy) MusterTable1DM() (bool, error) { return p.Muster != MusterSparta
 // "Individuals with gambling expertise are allowed a DM of +1 on table 2") and
 // the roll is on Table 2.
 //
-// cash and goods answer yes; spartan answers no. Under --auto only cash is
+// cash and goods answer yes; spartan answers no. On an auto run only cash is
 // ever asked: it is the only strategy that rolls on Table 2, because goods
 // and spartan both prefer Table 1 and Table 1 is always on offer. So --auto
 // reaches only cash's yes, and goods' yes and spartan's no are answers no

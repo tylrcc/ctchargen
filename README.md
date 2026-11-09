@@ -58,8 +58,8 @@ ctchargen new --auto --name "Alexander Jamison" -o jamison.json
 ctchargen new --auto --history                  # the transcript, throw by throw
 ctchargen new --sheet                           # asks at every choice point
 
-ctchargen batch --count 20 --auto --service merchants
-ctchargen batch --count 20 --auto --service merchants -o characters/
+ctchargen batch --count 20 --service merchants
+ctchargen batch --count 20 --service merchants -o characters/
 
 ctchargen render characters/01.json
 ctchargen render --history characters/01.json
@@ -97,15 +97,16 @@ line, which is the shape that pipes — and it streams, so the first record
 reaches the pipe before the run finishes rather than after:
 
 ```sh
-ctchargen batch --count 100 --auto | jq -r '[.upp, .service, .terms] | @tsv'
+ctchargen batch --count 100 | jq -r '[.upp, .service, .terms] | @tsv'
 ```
 
-`batch` requires `--auto`, because it has nobody to ask.
+**A batch is always decided by the policy**, because it has nobody to ask, so
+it takes no `--auto`.
 
 **A batch says what it did**, on standard error so it cannot corrupt the JSONL:
 
 ```sh
-$ ctchargen batch --count 100 --auto --service scouts > roster.jsonl
+$ ctchargen batch --count 100 --service scouts > roster.jsonl
 100 written, 76 died
 ```
 
@@ -115,7 +116,7 @@ When what you want is twenty scouts for the starport rather than a hundred
 outcomes, **`--survivors`** passes over the dead and generates another:
 
 ```sh
-$ ctchargen batch --count 20 --auto --service scouts --survivors > roster.jsonl
+$ ctchargen batch --count 20 --service scouts --survivors > roster.jsonl
 20 written, 68 passed over for dying
 ```
 
@@ -132,19 +133,19 @@ $ ctchargen new --service other
 Answered 1, 2, 1; the session is lost and nothing was written.
 ```
 
-**Without `--service` the tool picks one**, and with `--auto` that pick is the
-policy's rather than yours. The sheet says so on its headline, and so does the
+**Without `--service` the tool picks one**, and on an auto run (`new --auto`,
+or any batch) that pick is the policy's rather than yours. The sheet says so on its headline, and so does the
 record. Naming a service does not guarantee you get it either: a failed
 enlistment throw sends the character to the draft, which may put him somewhere
 else entirely — the sheet says that too.
 
-**Three flags steer `--auto`** where the procedure offers a choice, on both
-`new` and `batch`. `--career` governs enlistment, the draft, commission and
-promotion attempts, reenlistment and the title; `--skills` the skills table
+**Three flags steer the policy** where the procedure offers a choice, on
+`new --auto` and on `batch`. `--career` governs enlistment, the draft,
+commission and promotion attempts, reenlistment and the title; `--skills` the skills table
 and the weapon a combat result names; `--muster` the mustering-out table, its
 two DMs and repeated weapons. What each strategy answers at each choice is in
-the doc comment of the `chargen.Policy` method that asks it. Without `--auto`
-the three are refused: you answer every choice they would have, and the
+the doc comment of the `chargen.Policy` method that asks it. On `new` without
+`--auto` the three are refused: you answer every choice they would have, and the
 record names no policy for them to belong to.
 
 | Flag       | Values                                        |

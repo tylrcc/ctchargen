@@ -31,7 +31,7 @@ func (c *countingWriter) Write(text []byte) (int, error) {
 // A batch to standard output arrives a record at a time.
 //
 // It used to accumulate the whole run in a strings.Builder and write once at
-// the end, including to stdout, so `batch --count 50000 --auto | jq` produced
+// the end, including to stdout, so `batch --count 50000 | jq` produced
 // nothing until the run finished and held the run in memory while it did
 // (#44). What distinguishes the two is not the bytes - they are the same
 // bytes - but when they leave, and the count of writes is what says so.
@@ -45,7 +45,7 @@ func TestABatchToStandardOutputArrivesARecordAtATime(t *testing.T) {
 	var out countingWriter
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other,
+		cmdBatch, flagCount, "5", flagService, other,
 	}, nil, &out, io.Discard)
 	if err != nil {
 		t.Fatalf("generating: %v", err)
@@ -77,7 +77,7 @@ func TestABatchToAFileIsStillWrittenAtOnce(t *testing.T) {
 	var out countingWriter
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other,
+		cmdBatch, flagCount, "5", flagService, other,
 		flagOutput, path,
 	}, nil, &out, io.Discard)
 	if err != nil {
@@ -125,7 +125,7 @@ func (c *failsAfter) Write(text []byte) (int, error) {
 // records already gone, and the run has to report where it stopped rather
 // than carrying on.
 //
-// A closed pipe is not this case, whatever it looks like. `batch --auto |
+// A closed pipe is not this case, whatever it looks like. `batch |
 // head -1` dies by SIGPIPE before Write ever returns an error, which is what
 // a tool in a pipeline should do; what reaches here is a failure the runtime
 // hands back, such as a redirected file that has run out of room.
@@ -137,7 +137,7 @@ func TestABatchReportsAWriteThatFailedPartway(t *testing.T) {
 	out := failsAfter{left: 2}
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other,
+		cmdBatch, flagCount, "5", flagService, other,
 	}, nil, &out, io.Discard)
 
 	// A streamed member has no file name, so the failure names its position
@@ -192,7 +192,7 @@ func TestAnExistingFileIsRefusedFirst(t *testing.T) {
 	)
 
 	err = run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other, flagOutput, path,
+		cmdBatch, flagCount, "5", flagService, other, flagOutput, path,
 	}, nil, io.Discard, &asking, withDice(rolled.source(otherByPolicy.roller(t))))
 	if !errors.Is(err, errWouldOverwrite) {
 		t.Fatalf("a batch onto an existing file said %v, want the --force refusal", err)
@@ -236,7 +236,7 @@ func TestAFailedFileWriteClaimsNothing(t *testing.T) {
 	)
 
 	err := run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other,
+		cmdBatch, flagCount, "5", flagService, other,
 		flagForce, flagOutput, path,
 	}, nil, io.Discard, &asking, withDice(rolled.source(otherByPolicy.roller(t))))
 	if err == nil {

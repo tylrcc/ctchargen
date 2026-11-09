@@ -160,8 +160,8 @@ readings are the fallback.
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings are values in `rules`, one per entry of
 `traveller.Errata`, so a reading missing or one too many does not compile,
-and a test holds `Errata` to the `Erratum` constants. The `--auto` policy is
-its own doc comments. The coverage map is the markers beside the code, and a
+and a test holds `Errata` to the `Erratum` constants. The auto run's policy
+is its own doc comments. The coverage map is the markers beside the code, and a
 rule an implementation names and no test holds, or the reverse, fails
 `internal/coverage`; the map is printed on demand and never committed. What
 still describes
@@ -187,7 +187,7 @@ promise (#199).
   readings, declared as values. The lift validates the tables' cells and
   names; their values are the second transcription's.
 - `dice`: an unseeded stream. The record is the only way back (ADR 0001).
-- `chargen`: the procedure, the `Decider` it asks, and the `--auto` `Policy`,
+- `chargen`: the procedure, the `Decider` it asks, and the auto run's `Policy`,
   which describes itself. Its tests hold the readings, the choice points and
   the schema's strategies to the goldens.
 - `render`: the record's projections, reading one back, and the readings

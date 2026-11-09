@@ -42,7 +42,7 @@ func TestABatchSaysHowManyDied(t *testing.T) {
 	const wanted = 100
 
 	out, asking := mustRun(t, []string{
-		cmdBatch, flagCount, strconv.Itoa(wanted), flagAuto, flagService, scouts,
+		cmdBatch, flagCount, strconv.Itoa(wanted), flagService, scouts,
 	}, nil)
 
 	written := livingCount(t, out)
@@ -70,7 +70,7 @@ func TestSurvivorsWritesOnlyTheLiving(t *testing.T) {
 	const wanted = 20
 
 	out, asking := mustRun(t, []string{
-		cmdBatch, flagCount, "20", flagAuto, flagService, scouts,
+		cmdBatch, flagCount, "20", flagService, scouts,
 		flagSurvivors,
 	}, nil)
 
@@ -158,7 +158,7 @@ func TestAFailedSearchCountsOnce(t *testing.T) {
 	var out, asking strings.Builder
 
 	err := run([]string{
-		cmdBatch, flagCount, "2", flagAuto, flagService, other, flagSurvivors,
+		cmdBatch, flagCount, "2", flagService, other, flagSurvivors,
 	}, nil, &out, &asking, withDice(livesThenDies(t)))
 	if err == nil {
 		t.Fatal("a search that never finds the second survivor reported success")
@@ -226,7 +226,7 @@ func TestABatchReportsASummaryThatCouldNotBeWritten(t *testing.T) {
 	var out strings.Builder
 
 	err := run([]string{
-		cmdBatch, flagCount, "2", flagAuto, flagService, other,
+		cmdBatch, flagCount, "2", flagService, other,
 	}, nil, &out, brokenPipe{})
 	if err == nil {
 		t.Fatal("a summary nobody received was reported as written")
@@ -307,7 +307,7 @@ func TestARefusedSurvivorBatchKeysOnTheIndicesItWrites(t *testing.T) {
 		var out strings.Builder
 
 		err = run([]string{
-			cmdBatch, flagCount, strconv.Itoa(wanted), flagAuto,
+			cmdBatch, flagCount, strconv.Itoa(wanted),
 			flagService, scouts,
 			flagSurvivors, flagOutput, dir,
 		}, nil, &out, io.Discard)
@@ -432,7 +432,7 @@ func TestADirectoryBatchLeavesWhatItWroteBeforeAnObstruction(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "6", flagAuto, flagService, other,
+		cmdBatch, flagCount, "6", flagService, other,
 		flagOutput, dir, flagForce,
 	}, nil, io.Discard, io.Discard)
 	if err == nil {

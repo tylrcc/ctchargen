@@ -211,7 +211,7 @@
       "type": "object",
       "additionalProperties": false,
       "required": ["version", "career", "skills", "muster"],
-      "description": "The --auto policy that answered this record's choice points: present on every auto run, whether or not the policy was asked anything, and absent from every guided run, where the player answered every choice and no policy decided any of it. Its presence is the whole of what says who answered; a choice event does not repeat it, because a run has one answerer.",
+      "description": "The policy that answered this record's choice points: present on every auto run, whether or not the policy was asked anything, and absent from every guided run, where the player answered every choice and no policy decided any of it. Its presence is the whole of what says who answered; a choice event does not repeat it, because a run has one answerer.",
       "properties": {
         "version": {
           "type": "integer",

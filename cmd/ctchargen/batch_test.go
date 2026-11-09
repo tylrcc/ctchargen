@@ -16,18 +16,17 @@ const (
 	flagCount = "--count"
 )
 
-// batch writes what it rolled: the dead are written like anyone else.
-func TestBatchRefusesWithoutAuto(t *testing.T) {
+// A batch is refused without a count of at least one.
+func TestBatchRefusesWithoutACount(t *testing.T) {
 	t.Parallel()
 
 	for name, args := range map[string][]string{
-		"no --auto":  {cmdBatch, flagCount, "3"},
-		"no --count": {cmdBatch, flagAuto},
-		"zero count": {cmdBatch, flagAuto, flagCount, "0"},
+		"no --count": {cmdBatch},
+		"zero count": {cmdBatch, flagCount, "0"},
 	} {
 		err := run(args, nil, io.Discard, io.Discard)
-		if err == nil {
-			t.Errorf("%s: batch accepted %v", name, args)
+		if err == nil || !errors.Is(err, errUsage) || !strings.Contains(err.Error(), "--count") {
+			t.Errorf("%s: batch %v said %v, want a usage error naming --count", name, args, err)
 		}
 	}
 }
@@ -39,7 +38,7 @@ func TestBatchIntoADirectory(t *testing.T) {
 	dir := t.TempDir()
 
 	mustRun(t, []string{
-		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir,
 	}, nil)
 
 	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
@@ -53,14 +52,14 @@ func TestBatchIntoADirectory(t *testing.T) {
 
 	// A second run refuses to replace them, and --force replaces them.
 	err = run([]string{
-		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir,
 	}, nil, io.Discard, io.Discard)
 	if err == nil {
 		t.Error("a second batch overwrote the first without --force")
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir, flagForce,
+		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir, flagForce,
 	}, nil, io.Discard, io.Discard)
 	if err != nil {
 		t.Errorf("--force did not replace the members: %v", err)
@@ -77,7 +76,7 @@ func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 	dir := filepath.Join(t.TempDir(), "characters") + string(filepath.Separator)
 
 	mustRun(t, []string{
-		cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "3", flagService, other, flagOutput, dir,
 	}, nil)
 
 	written, err := filepath.Glob(filepath.Join(dir, "*.json"))
@@ -109,7 +108,7 @@ func TestARefusedBatchWritesNothing(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "4", flagAuto, flagService, other, flagOutput, dir,
+		cmdBatch, flagCount, "4", flagService, other, flagOutput, dir,
 	}, nil, io.Discard, io.Discard)
 	if err == nil {
 		t.Fatal("a batch overwrote an existing member without --force")
@@ -139,7 +138,7 @@ func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "2", flagAuto, flagService, other,
+		cmdBatch, flagCount, "2", flagService, other,
 		flagOutput, filepath.Join(blocking, "members") + string(filepath.Separator),
 	}, nil, io.Discard, io.Discard)
 	if err == nil {
@@ -211,7 +210,7 @@ func TestABatchThatStopsSaysWhatItWrote(t *testing.T) {
 	var asking strings.Builder
 
 	err = run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other,
+		cmdBatch, flagCount, "5", flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
 	}, nil, io.Discard, &asking)
 	if err == nil {
@@ -236,7 +235,7 @@ func TestAStoppedBatchThatCannotReportSaysBoth(t *testing.T) {
 	}
 
 	err = run([]string{
-		cmdBatch, flagCount, "5", flagAuto, flagService, other,
+		cmdBatch, flagCount, "5", flagService, other,
 		flagForce, flagOutput, dir + string(filepath.Separator),
 	}, nil, io.Discard, refusingWriter{})
 	if err == nil {
@@ -374,7 +373,7 @@ func TestBatchMembersAreNamedByIndex(t *testing.T) {
 			dir := t.TempDir()
 
 			mustRun(t, []string{
-				cmdBatch, flagCount, strconv.Itoa(tc.count), flagAuto, flagService, other, flagOutput, dir,
+				cmdBatch, flagCount, strconv.Itoa(tc.count), flagService, other, flagOutput, dir,
 			}, nil)
 
 			found, err := filepath.Glob(filepath.Join(dir, "*.json"))
@@ -415,7 +414,7 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 		"a batch member": func(dir string) ([]string, string) {
 			blocked := filepath.Join(dir, "2.json")
 
-			return []string{cmdBatch, flagCount, "3", flagAuto, flagService, other, flagOutput, dir}, blocked
+			return []string{cmdBatch, flagCount, "3", flagService, other, flagOutput, dir}, blocked
 		},
 	} {
 		t.Run(name, func(t *testing.T) {
@@ -442,5 +441,36 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 				t.Errorf("a directory in the way was reported as %q, advising --force, which cannot help", err)
 			}
 		})
+	}
+}
+
+// A batch is always an auto run: it has nobody to ask, so it needs no flag to
+// say so (#336). `batch --count 1` writes a record that names the policy and
+// each strategy given,
+// and --auto, which no longer means anything to a batch, is the flag
+// package's own usage error rather than a word accepted and ignored. A
+// strategy is accepted without it, since it is always the policy's.
+//
+// Holds: A batch is always an auto run, and takes no --auto.
+func TestABatchIsAlwaysAuto(t *testing.T) {
+	t.Parallel()
+
+	out, _ := mustRun(t, []string{
+		cmdBatch, flagCount, "1", flagCareer, "retire", flagSkills, "service", flagMuster, "goods",
+	}, nil)
+
+	for _, want := range []string{`"policy":`, `"career":"retire"`, `"skills":"service"`, `"muster":"goods"`} {
+		if !strings.Contains(out, want) {
+			t.Errorf("batch with all three strategies wrote no %s in its record:\n%s", want, out)
+		}
+	}
+
+	err := run([]string{cmdBatch, flagAuto, flagCount, "1"}, nil, io.Discard, io.Discard)
+
+	switch {
+	case err == nil:
+		t.Error("batch --auto was accepted")
+	case !errors.Is(err, errUsage) || !strings.Contains(err.Error(), "auto"):
+		t.Errorf("batch --auto: %v, want a usage error naming the flag", err)
 	}
 }

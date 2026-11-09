@@ -11,7 +11,8 @@ every choice made. The only way back to a character.
 _Avoid_: Output, result, JSON file
 
 **Auto run**:
-A generation the `--auto` policy answers, every choice point of it. Its
+A generation the policy answers, every choice point of it: `new --auto`, and
+every batch, which has nobody else to ask. Its
 record names the policy, the version of what it answers and its strategies,
 whether or not the policy was asked anything.
 _Avoid_: Automatic mode, batch (a batch is many auto runs)

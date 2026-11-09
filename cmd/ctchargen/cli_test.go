@@ -30,8 +30,12 @@ var cliBaseline = map[string][]string{
 		baseHistory, "muster string cash", "name string ", baseOutput, baseReadings,
 		"service string ", "sheet bool false", "skills string advanced",
 	},
+	// batch's "auto bool false" was removed on purpose, before v1.0.0
+	// freezes the CLI: a batch is always decided by the policy, and the flag
+	// said nothing (#336). Like seed and answers before it (#216), it went
+	// while the CLI could still change; after v1.0.0 no entry is taken out.
 	cmdBatch: {
-		"auto bool false", "career string serve", "count int 0", baseForce,
+		"career string serve", "count int 0", baseForce,
 		"muster string cash", "name string ", baseOutput,
 		"service string ", "skills string advanced", "survivors bool false",
 	},

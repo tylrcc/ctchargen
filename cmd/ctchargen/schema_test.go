@@ -131,7 +131,7 @@ func TestEveryBatchMemberMatchesTheSchema(t *testing.T) {
 
 	compiled := schema(t)
 
-	out, _ := mustRun(t, []string{cmdBatch, flagCount, "5", flagAuto, flagService, merchants}, nil)
+	out, _ := mustRun(t, []string{cmdBatch, flagCount, "5", flagService, merchants}, nil)
 
 	lines := strings.Split(strings.TrimSpace(out), "\n")
 	if len(lines) != 5 {

@@ -58,7 +58,7 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		"a name with a newline": {[]string{cmdNew, flagAuto, flagName, "Jamison\n\n## Possessions"}, wantOneLine},
 		"a name with a return":  {[]string{cmdNew, flagAuto, flagName, "Jamison\r## Possessions"}, wantOneLine},
 		"a batch name with a newline": {
-			[]string{cmdBatch, flagAuto, flagCount, "1", flagName, "Jamison\n# Forged"}, wantOneLine,
+			[]string{cmdBatch, flagCount, "1", flagName, "Jamison\n# Forged"}, wantOneLine,
 		},
 		// All three, because each is now parsed by its own function at the
 		// boundary rather than by one loop over a map. A test of one used
@@ -68,7 +68,7 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		"no such skills": {[]string{cmdNew, flagAuto, flagSkills, "osmosis"}, wantNoStrategy},
 		"no such muster": {[]string{cmdNew, flagAuto, flagMuster, "gold"}, wantNoStrategy},
 		"no such batch muster": {
-			[]string{cmdBatch, flagAuto, flagCount, "1", flagMuster, "gold"}, wantNoStrategy,
+			[]string{cmdBatch, flagCount, "1", flagMuster, "gold"}, wantNoStrategy,
 		},
 		// Without --auto a strategy is refused for being given at all, but a
 		// word that names none is still refused as naming none: the flags are
@@ -102,7 +102,7 @@ func TestRunWritesEachRendering(t *testing.T) {
 		"json build": {[]string{cmdNew, flagAuto, flagService, other}, `"build"`},
 		// And so does every member of a batch, which generates on a path of
 		// its own: one that skipped the build would ship unnoticed (#282).
-		"batch build": {[]string{cmdBatch, flagAuto, flagCount, "1", flagService, other}, `"build"`},
+		"batch build": {[]string{cmdBatch, flagCount, "1", flagService, other}, `"build"`},
 		"json ruleset": {
 			[]string{cmdNew, flagAuto, flagService, other},
 			`"ruleset": "Classic Traveller, Books 1-3`,

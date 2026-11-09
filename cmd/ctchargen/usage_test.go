@@ -34,7 +34,7 @@ var (
 		flagMuster, flagSheet, flagHistory, flagReadings, flagOutput, flagForce,
 	}
 	batchFlags = []string{
-		flagCount, flagAuto, flagService, flagName, flagCareer,
+		flagCount, flagService, flagName, flagCareer,
 		flagSkills, flagMuster, flagOutput, flagForce, flagSurvivors,
 	}
 	renderFlags = []string{flagHistory, flagReadings, flagOutput, flagForce}
@@ -184,7 +184,7 @@ func TestAPositionalArgumentIsRefused(t *testing.T) {
 	for name, args := range map[string][]string{
 		cmdNew:            {cmdNew, wantTypo},
 		"new before auto": {cmdNew, wantTypo, flagAuto},
-		cmdBatch:          {cmdBatch, flagAuto, flagCount, "1", wantTypo},
+		cmdBatch:          {cmdBatch, flagCount, "1", wantTypo},
 		// The two that take no word and have no flag set refuse one too,
 		// rather than printing as though nothing had been typed. readings
 		// has no flag set either, but its words are ids.

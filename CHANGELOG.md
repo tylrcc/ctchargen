@@ -39,6 +39,12 @@ release turns out to be.
   held this say what does (#333).
 - `render`'s package doc and CLAUDE.md's account of it name the readings it
   writes and its import of `rules`, which #324 added and neither said (#334).
+- **`batch` takes no `--auto`.** A batch is always decided by the policy,
+  having nobody to ask, so the flag said nothing a referee should have to
+  type. `ctchargen batch --count 20` is a batch now. This breaks a command
+  line that passes `batch --auto`, which is refused as an unknown flag: drop
+  `--auto` from it. The break is taken before `v1.0.0` freezes the CLI, and
+  `new`'s `--auto` is unchanged (#336).
 
 ## 1.0.0-rc.1
 

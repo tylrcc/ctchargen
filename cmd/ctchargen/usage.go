@@ -25,7 +25,7 @@ const commandList = "new|batch|render|readings|version"
 // cannot go stale.
 const (
 	newUsage      = "new [flags]"
-	batchUsage    = "batch --auto --count N [flags]"
+	batchUsage    = "batch --count N [flags]"
 	renderUsage   = "render [flags] <character.json>"
 	readingsUsage = "readings [E001 ...]"
 	versionUsage  = "version"
@@ -36,7 +36,7 @@ const (
 const topLevelUsage = "usage: ctchargen <command> [flags]\n" +
 	"\n" +
 	"  new       generate one character, asking at every choice unless --auto\n" +
-	"  batch     generate many characters, under --auto\n" +
+	"  batch     generate many characters, each decided by the policy\n" +
 	"  render    write a record saved earlier as a sheet or as a transcript\n" +
 	"  readings  list the readings, or write the ones named in full\n" +
 	"  version   write the build\n" +

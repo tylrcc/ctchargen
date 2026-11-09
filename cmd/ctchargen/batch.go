@@ -24,7 +24,12 @@ import (
 // It always says what it did. A run that wrote seventy-four corpses and
 // printed nothing was the trap the report named.
 //
+// A batch is always an auto run: it has nobody to ask, so it declares no
+// --auto, and a command line passing one is refused by the flag package as a
+// flag batch does not have, not accepted and ignored (#336).
+//
 // Implements: Every batch member matches the schema [JSON conventions].
+// Implements: A batch is always an auto run, and takes no --auto [CLI sketch].
 func batch(args []string, out, asking io.Writer, dice source) error {
 	flags := declareBatchFlags()
 
@@ -42,10 +47,6 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 	if flags.set.NArg() > 0 {
 		return fmt.Errorf("%w: %s; it takes no arguments, and was given %q",
 			errUsage, batchUsage, flags.set.Arg(0))
-	}
-
-	if !*flags.auto {
-		return fmt.Errorf("%w: batch requires --auto; there is nobody to ask", errUsage)
 	}
 
 	if *flags.count < 1 {
@@ -84,9 +85,9 @@ type batchRun struct {
 type batchFlagSet struct {
 	characterFlags
 
-	count                  *int
-	auto, force, survivors *bool
-	output                 *string
+	count            *int
+	force, survivors *bool
+	output           *string
 }
 
 func declareBatchFlags() batchFlagSet {
@@ -102,7 +103,6 @@ func declareBatchFlags() batchFlagSet {
 			muster:  "the mustering out `strategy`: ",
 		}),
 		count: set.Int("count", 0, "how many characters to generate"),
-		auto:  set.Bool("auto", false, "required: a batch has nobody to ask"),
 		output: set.String("o", "",
 			"a .jsonl file, or a directory to write one file per character; absent, JSONL to standard output"),
 		force: set.Bool("force", false, "replace output files that already exist"),
@@ -276,7 +276,7 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 // streamed writes the batch to standard output as JSONL, one record to the
 // line, each as it is generated.
 //
-// JSONL exists to be piped, so `batch --count 50000 --auto | jq` sees the
+// JSONL exists to be piped, so `batch --count 50000 | jq` sees the
 // first record at once and the run holds one record in memory rather than
 // all of them (#44). The atomicity that justifies buffering is about not
 // leaving a file half-written and not clobbering one on a retry, and there is
