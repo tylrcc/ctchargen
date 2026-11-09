@@ -1,392 +1,389 @@
 # A theory of ctchargen
 
-> Release snapshot for `v1.0.0-beta.7`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-rc.1`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots").
 
 ## What it is for
 
-A Classic Traveller referee rolls characters at the table, and the 1977 rules
-make that a long walk through Book 1 pp. 4–25: six characteristics, an
-enlistment throw that may fail into a draft, terms of four years each with a
-survival throw that kills on failure, commissions and promotions, skill rolls
-on tables the character's Education may close, a reenlistment throw that can
-compel another term, aging that can push a characteristic to zero and into a
-crisis, and mustering out on two benefit tables. The tool walks that procedure
-and writes down what happened.
+ctchargen makes a Classic Traveller character the way Book 1 pp. 4–25 says
+to, and it hands the referee a record he can check against the page. That
+second half is the point. Any generator can print a UPP and a skill list.
+This one is built so that every number on the sheet goes back to a printed
+page, a die that was thrown, and a choice someone made. Where the book is
+silent or contradicts itself, the sheet goes back to a decision recorded
+here, under its own name.
 
-Everything in the design follows from one claim the tool makes to a referee:
-**any number on the sheet can be checked against the printed page from the
-record alone.** The record is a JSON document that logs every die thrown, in
-order, every choice put and its alternatives, every consequence, and every
-place the text was silent and a reading had to be made. It is not a summary of
-a character. It is the evidence that the character was made by the rules.
+The world it models is one procedure. Six characteristics are rolled. Then
+there is one enlistment attempt, with the draft behind it. Then come terms of
+service: survival, commission, promotion, skills, reenlistment, aging. Then
+mustering out, and last a title the final Social Standing may confer. The
+procedure has throws (2D against a target with modifiers), rolls (one die,
+or two, read off a table), and points where the player chooses. Every one of
+those is a noun in the code. A service is a `traveller.ServiceName`. A term
+is a `traveller.Term`. A throw against a target is a `ThrowEvent`, and a
+roll with nothing to meet is a `RollEvent`. A choice point is a `ChoicePoint`
+and a method on `chargen.Decider`. A place the page is silent is a
+`rules.Reading`, and the id a record carries for that reading is a
+`traveller.Erratum`. GLOSSARY.md keeps that vocabulary. Its "avoid" lines are
+worth reading, because some words the code uses carefully are ones a sibling
+tool would use loosely: a reading is not an erratum, a walk is not a
+fixture, and a script is not a seed.
 
-Two consequences shape the rest. First, the authority is a specific printed
-text (the FFE reprints of the © 1977 Books 1–3), not "Traveller" as anyone
-remembers it, and the code is organised so that every rule can be traced to a
-page. Second, the record is the only way back to a character. The dice are not
-seeded, so there is nothing to re-run (ADR 0001), and the record therefore has
-to carry everything, including which build wrote it (ADR 0002).
+The authority model ranks first and outranks everything else. The © 1977
+text governs. Memory of later editions does not. A reading decided here
+governs only where the page is silent. The errata of the implementation
+deleted at `41a213a` are a last resort, and even then only a pointer to a
+page that has to be reread. Old code and old transcriptions never come back.
+A maintainer who leaves this model out of his own understanding will "fix"
+something into the 1981 rules. The best-known trap is survival failure: here
+it is death, with no injury option (p. 5).
 
-## The page, the readings, and the font trap
+## The page, and why it is read twice
 
-The rules come in three ranks: the held page, then the readings recorded in
-`internal/rules/data/ERRATA.md`, then, as a pointer only, the errata of the
-implementation removed at `41a213a`. Nothing is implemented from memory,
-because memory of Traveller is mostly the 1981 revision, which differs exactly
-where it matters (survival failure is death, with no "injured instead").
+The reprints' embedded font substitutes glyphs, and the substitutions look
+like data. A dash cell comes out as the digit 4, a minus comes out as a 3,
+and "Travellers' Aid" comes out as `Travellers9`. That one fact explains a
+lot of the repository's shape. Every table is transcribed twice from the same
+visual reading: once into `internal/rules/data/*.json` row by row, and once
+into `internal/rules/transcription_test.go` service by service, down each
+column. The rows-versus-columns split is deliberate. It is the only
+independence one reading pass can offer.
 
-The tables reach the code through a hazard that shaped the whole data path.
-The reprints' embedded font substitutes glyphs, and the substitutes look like
-data: a "—" cell extracts as the digit 4, a minus sign extracts as a 3. So
-tables are read visually, one page at a time, and transcribed twice from that
-one reading, once into `internal/rules/data/*.json` and once into the `rules`
-tests. The second copy is the check. It catches a glyph the eye also misread
-only when the misreading resolves to nothing, which is why a skill name the
-three books never define is treated as a broken glyph (`Rifl3`) and not as a
-new skill.
+`rules.Load` lifts the JSON once per process, through `sync.OnceValues`. It
+validates each cell's shape and checks every name against the closed
+alphabets of `traveller`. A cell that names no service, or a target written
+in a notation pp. 2–3 do not use, is a build defect and fails on the first
+load. The lift does not check values. A key misspelled in the data leaves
+its field at zero, and only the second transcription notices that the page
+prints something else. The two copies split their jobs: the lift holds
+shape, and the tests hold value. A change that makes the lift check values
+from a second list kept beside it repeats the copy the tests already are.
 
-The same discipline governs what may be said about the page. A visual read
-shows shapes, not encodings: an image cannot say which character a minus is
-set in, so nothing in the tree claims one. And a quotation of the page carries
-the page's emphasis and no other. ERRATA.md's quotations once carried bold the
-page never printed, added to stress the words a reading turned on; it was
-removed against each page (#310), because a reading argues in its own prose
-and quotes the page plain.
+CLAUDE.md's Authority point 6 sets which numbers are data. A number that
+indexes a printed table belongs in the data. The Aging Table's last printed
+term is one: it picks a column. A bare procedural bound is a Go constant
+with its cite, placed beside the code that applies it. The three-roll cap on
+Mustering Out Table 2 and the rank that opens Table 1's +1 are examples
+(`maxRollsOnTableTwo`, `minRankForTable1Modifier` in `chargen/muster.go`).
+The rule moves numbers in both directions, so a number on the wrong side of
+it is a defect, not a style choice.
 
-A **reading** is a decision where the page is silent or contradicts itself.
-Each has an id, a page cite, a rationale, and a **stamping condition**: a
-predicate over the finished record saying when that reading governed it. A
-record carries the ids of the readings that governed it, in `errata`. The
-readings document is not commentary. `rules` embeds it and lifts it on every
-load, and a heading with no `traveller.Erratum` constant, or a constant with no
-heading, refuses the load. So a malformed `ERRATA.md` stops the binary, which
-is deliberate: a reading the code applies and the document does not describe
-is the one failure the record cannot reveal.
+## Readings, errata and stamping
 
-The stamping conditions are checked by `stamping_test.go`, and the way they are
-checked encodes a lesson. Each predicate is written from the document's prose,
-never from the stamping code, because a predicate transcribed from the code it
-checks is one reading written twice: the same trap the double transcription
-exists for. The predicates read the checked-in goldens and key on transcript
-step names, so rewording a step ("enlistment,", "aging,") can silently empty a
-predicate. `TestEveryStepTheConditionsReadIsFound` exists because the split of
-rolls from throws (#50) once did exactly that to E011.
+A reading has three expressions in the tree. They are kept apart on purpose,
+because the check between them only works if they stay independent.
 
-## The domain, and why it is all sums
+The **prose** is a `rules.Reading` value in `internal/rules/readings.go`. Its
+fields are title, pages, what the page says, the gap, the reading, why, and
+the stamping condition, all kept verbatim with the page's emphasis as inline
+markdown. The values sit in an array the compiler sizes. `rules.Readings()`
+returns `[len(traveller.Errata)]Reading`, so a reading missing from the
+array, or one past the last erratum, does not compile. `TestTheReadings`
+holds each value to its index. The tie runs from the readings to the
+`Errata` array, not to the `const` block the array lists. A constant missing
+from `Errata` compiles with no reading (#333). Until rc.1 the prose was
+`ERRATA.md`, embedded and parsed on every load. ADR 0004 made it code, and
+gave up a single consequence: a malformed reading no longer stops the
+binary, because the compiler and the gate stop it first.
 
-`internal/traveller` is the vocabulary a referee and the code share, and it
-imports nothing else in the module. Its load-bearing idea is that a thing which
-is "exactly one of" several cases is a sealed sum with a `Fold` over a cases
-interface: how a character entered a service (`Enlistment`), what a skills
-cell does (`TableResult`), what a Table 1 row grants (`BenefitRow`), how a
-service ended (`Departure`), what a weapon benefit is (`WeaponBenefit`), and
-every kind of `Event`. Adding a case adds a method, so every fold stops
-compiling until it handles the new case. Non-test code never type-switches on a
-sum. That is why "a renderer cannot forget a case" is a property of the build
-and not of review. Plain enumerations (services, characteristics, skill
-tables, choice points) are held instead by the `exhaustive` linter, which is
-the weaker half of the same promise.
+The **stamping site** is in the engine. An outcome event that a reading
+governed carries the erratum as a literal, for example
+`[]traveller.Erratum{traveller.E004}` on a death at the survival throw.
+`log.stamped` takes the union of those, in id order, as the record's
+`errata`. The engine never reads a reading's prose. `chargen` imports
+`rules` for tables, and only its tests read the readings. That is why a
+reading's wording can change without changing a single character.
 
-Every closed alphabet's `String()` is injective, and the system leans on that
-in a non-obvious place. The engine refuses a decider's answer that was not
-offered by comparing **rendered** names, because one choice point (the muster
-weapon) answers with a sum, and comparing sums needs a fold. Two values that
-spelt the same would let a decider answer with one and have the other
-recorded. `traveller`'s spelling tests hold injectivity, and a second test
-greps the package for every `var X = [...]T` so a new alphabet cannot escape
-the first.
+The **predicate** lives in test code: one function per reading in
+`internal/chargen/stamping_test.go`, written by hand from the stamped-on
+prose and never from the stamping site (#66, #77). It runs over every
+checked-in golden, in both directions. A reading stamped where its condition
+fails is as much a defect as one missing where the condition holds, because
+a record's errata list is the tool's claim about what the character rests
+on. A failure quotes the prose through `rules.ReadingOf`, not a copy typed
+beside the predicate. This is the same trap as the double transcription
+again: a condition copied from the code that does the stamping checks
+nothing.
 
-The notation of pp. 2–3 is also the domain's. A throw's sign follows its
-number and a modifier's precedes it, so a target with a leading sign is a
-modifier passed off as a throw and is refused. Which glyphs count as a sign is
-said once, by `traveller.Sign`: a plus, the ASCII hyphen a data file is typed
-with, and U+2212, the way the minus the page prints may be typed. The en dash
-looks the same on screen and is not one. In a target and at the head of a
-skills cell it is refused by name (`ErrEnDash`), so the slip a transcriber
-makes is reported as what it is (#296, #288, #297); a Table 1 cell opening
-with one is refused too, but only as no benefit the table prints.
+Two readings, E012 and E015, are stamped on no record by design. E012 is a
+spelling normalization. E015 matters only to the worked example's
+reproduction. `namesNoRecord` pins that set, so a reading that silently stops
+appearing is a failure, and so is one that starts.
 
-Zero values fail closed: the zero `Target` is "0 exactly", which no throw
-meets. A characteristic has two floors because the page has two: an ordinary
-alteration floors at 1, aging at 0 (E010), and zero is the doorway to the
-medical crisis of pp. 7–8.
+ADR 0004 also gave an erratum a lifetime. From `v1.0.0`, an erratum names one
+decision for good, the decision being both what the reading decides and when
+it is stamped. Wording can change under an erratum. A changed decision needs
+a new erratum. A decision that no longer holds is withdrawn, never deleted:
+the `Withdrawal` field says why and names any replacement, the reading stays
+in the array so old records still resolve, and `render.Reading` marks it
+withdrawn. Nothing at generation time refuses a withdrawn erratum. The
+harness's `verdict` refuses any golden that stamps one, or that its
+predicate fits. No reading is withdrawn yet, and the form has never been
+used for real. As built, it collides with the predicate rule for any
+withdrawal whose replacement governs the same records (#332).
 
-## The engine: a procedure that asks, and a record that cannot lie about who answered
+## The domain is sums, so the compiler counts the cases
 
-`chargen` walks the procedure in the exposition's order, not the worked
-example's (E002), one method per page section on a `run`. It never decides
-anything on its own behalf. Every question goes to a `Decider`, which has one
-method per choice point, each typed to its own alphabet. The interface is wide
-on purpose. A single method over a label would let a new choice point be added
-without every decider noticing, and `TestChoicePointsMatchTheDecider` holds the
-method names to the `ChoicePoint` alphabet. The schema's `point` enum is held
-only through the goldens, which every choice point must reach and which are
-validated against the schema, so it is held one way: a value the engine stops
-offering would linger in the enum unnoticed. Renaming a Decider method
-therefore changes the record.
+`traveller` imports nothing in this module, and nothing in it rolls, reads a
+table or marshals. Its rule for what becomes a type is that types carry
+identity, never rule invariants. A service outside the six does not exist.
+A range a page prints is not a type.
 
-There are two ways in, and the difference is a fact the record states once.
-`chargen.Auto(in, policy)` is an **auto run**: the `--auto` policy answers
-every choice point, and the record carries a `policy` object (its version and
-its three strategies) whether or not the policy was asked anything.
-`chargen.Guided(in, decider)` is a **guided run**: a person answers, and the
-record carries no policy. The absence is the statement. Choice events do not
-carry who answered. Before #276 they did, and the default credited the policy
-with any decider's choices, which the worked-example test was quietly doing.
-A quarter of forced-scout records are auto runs the policy answered nothing in
-(killed by the first survival throw), and the golden `scouts-died-unasked`
-exists to hold the rule there.
+Wherever the book says "exactly one of", the code has a sealed interface
+with a `Fold` method over a cases interface that has one method per case.
+This covers `Enlistment` (enlisted, drafted, declined the draft),
+`TableResult`, `BenefitRow`, `Departure`, `WeaponBenefit` and `Event`. Go
+does not check a type switch for exhaustiveness, so a fold is how adding a
+case breaks every consumer at compile time: the JSON codecs in `render`,
+the death test `traveller.Fatal`, the live view. The plain enums are a
+weaker strength. The exhaustive linter catches a missing `switch` case, and
+only under `task`. The package doc spells out the difference, and it is real:
+dropping the linter drops the plain enums' guarantee, and nothing can drop
+the folds'.
 
-Every decider is reached through `logging`, a decorator that implements every
-Decider method, so a choice point cannot reach the engine without reaching the
-log. It is the single place the **offer**'s rules are kept. It renders the
-offer before asking, so a decider writing into its slice cannot put its own
-answer there and pass. It hands each decider its own copy of every slice,
-because a shared slice once let one decider's write change what every later
-character was offered (#55, #137). It refuses a list question with fewer than
-two alternatives, because the Decider contract is that a method is called only
-when more than one answer is legal, and a question no reader could have
-decided differently has no business in the record. The sites that can reach
-one answer (reenlistment from the seventh term, and every mustering-out roll
-after three have gone to Table 2) settle it themselves as readings of the
-page. The decorator's refusal is there
-for the site that forgets.
+Some modelling choices only make sense against a sibling design that did it
+differently. The civilian who declined the draft is a case of `Enlistment`,
+not a nil service with a flag beside it. The book's single word "died"
+becomes two `Departure` cases, because a survival death and a medical-crisis
+death carry different fields. `Fatal` lives in `traveller` because it was
+once stated twice and the two copies could disagree (#100). `Age` carries
+months only because a survived medical crisis adds 1D of them, and
+`PlusMonths` floors toward negative infinity to protect its one invariant.
+`RollEvent` is separate from `ThrowEvent` so that a roll with nothing to
+meet is never written as `"succeeded": true` (#50).
 
-The `--auto` policy describes itself. Each `Policy` method's doc comment says
-what each strategy answers at that choice point, and there is no other policy
-document. `PolicyVersion` moves only when an answer changes, which is what a
-referee reads to tell which answers made a record.
+## The engine asks, and the record says who answered
 
-## Dice, and the discipline of consumption
+`chargen` walks the procedure and decides nothing on its own behalf. Every
+point where the book lets a player choose is a method on `Decider`. Each
+method is typed to its own alphabet, and that typing is what closes the set.
+A new choice point is a new method, and every decider stops compiling. The
+`ChoicePoint` enum is unavoidably a second list. A reflection test holds it
+to the interface's methods, so the two cannot drift.
 
-`internal/dice` is an unseeded stream. A decider never sees it. The one choice
-point that needs variety (which weapon, #34) is handed a `Vary`, which can draw
-among alternatives and do nothing else, wrapped so that a type assertion cannot
-recover the roller (#136). A die thrown by a decider would reach no event, and
-the record would stop carrying every die.
+Three deciders exist: the `--auto` `Policy`, the interactive `player` in
+the command, and the tests' scripted deciders. The engine cannot tell them
+apart. Each one is reached through `logging`, the decorator `generate`
+wraps around whatever it is handed. Being the only path in, it can make
+promises no single decider has to keep:
 
-The order dice are consumed in is load-bearing, though not for replay, which no
-longer exists. It is load-bearing for the fixtures. A **fixture** is a
-**script** (the dice and draws of one path, in the order the procedure asks for
-them) plus the inputs and policy that walk it, and its record is checked in as
-a **golden**. A **walk** is the command tests' equivalent with no golden: a
-script extracted from a record the tool wrote, proven only by the test that
-drives it. Both are played through `internal/scripted`, which is strict both
-ways: asking past the end of a script fails, and so does finishing with any of
-it unread. A 2D throw is two dice in sequence, and a throw the procedure does
-not make consumes nothing.
+- a question with fewer than two legal answers is refused before it is asked
+  (`asked`), so the record never shows a choice nobody could have made
+  differently;
+- each slice a decider is handed is its own copy, so writing to an offer
+  changes nothing the engine offers later (#55, #137, #230);
+- an answer outside the offer is refused, not applied (`errNotOffered`).
 
-Changing the order is an ordinary change, and the fixture's dice are
-re-scripted from a record that walks the new path. But no failure names the
-throw that moved. A script that runs out or is left unread names an index; a
-reorder usually re-paths a fixture, changes its count, and fails wherever the
-new path diverges; and a change that moves no path, such as swapping the two
-dice of one throw, fails nothing but a golden, whose message says to
-regenerate. So a golden diff after a change to consumption is read before it
-is regenerated, or the fixture is silently re-pathed (#289).
+That last check compares rendered names. It is sound only while `String()`
+is injective on every alphabet, and a test in `traveller` holds exactly that
+(#48).
 
-Goldens are regenerated (`go test ./internal/chargen -regenerate`), never
-hand-edited. The same fixtures write the schema's two published examples, so
-the documented record cannot drift from the emitted one. A golden holds more
-than its path. It pins every value, so a rule such as "values 2–12 initially"
-is held by the goldens that roll both ends, not by a test that names the
-range (#294).
+Who answered is fixed when the run is entered, not carried per event.
+`chargen.Auto` records an `AutoPolicy`: the strategies and `PolicyVersion`.
+`chargen.Guided` records none, and that absence is the record's statement
+that a person made every choice. `PolicyVersion` changes only when an answer
+changes, and it is currently 3. A new choice point does not bump it, because
+no earlier record was answered differently. `build` changes with every
+commit and cannot do this job. The policy's documentation is its own method
+doc comments: each says when the engine asks and what each strategy answers,
+and nothing else describes `--auto`.
 
-## The rules lift, and the second transcription
+The narrowest seam in the engine is `Vary`. A decider may draw among the
+alternatives it was offered. The weapon lists of pp. 12–13 come in a printed
+order, but that order is not a preference (#34). A decider may not throw
+dice: a die thrown by a decider reaches no event, and the record would stop
+carrying every die. `varyOnly` wraps the roller, so a type assertion cannot
+recover the dice from the value (#136).
 
-`internal/rules` embeds every table of pp. 4–25 and lifts it once per process
-(`sync.OnceValues`). "The lift is the validation" means that every string in
-the JSON goes through a parser keyed to `traveller`'s own alphabets, and shape
-errors are refused before any character is generated:
+The order inside a term is the exposition's, under E002: survival,
+commission, promotion, skills, reenlistment, then aging (E006). The worked
+example narrates it differently. The fixtures' scripts walk this order, so
+it is a fixed choice, not an incidental one. `serve` has no bound on terms,
+because a 12 exactly on reenlistment recurs without limit (E003). That makes
+termination a contract on the roller, not a property of the loop (#54).
 
-- columns other than the six services in p. 10 order;
-- a bare "4" where a Table 1 cell should be a benefit, which is the font trap;
-- a commission printed without ranks;
-- retirement rows that do not ascend;
-- a skills cell that opens with a sign and is not an alteration, or with an
-  en dash.
+## Dice, scripts, and why the record is the only way back
 
-Past the lift, a `Career` is a `Career`, and nothing re-checks it. Everything
-the lift hands out is a copy, because `Load` gives every caller in a process
-the same `Rules`.
+ADR 0001 withdrew replay. The `dice` stream is unseeded, and nothing brings a
+character back except the record, which logs every die. That decision runs
+through the whole tree. There is no seed field on a record. Interactive mode
+cannot be resumed, and a stopped session tells the player what it lost.
+Fixtures state their dice instead of carrying a seed that happened to reach
+them.
 
-A file broken two ways reports the same fault every run, the first in the
-order the page prints its tables: the Prior Service Table's rows as p. 10
-lists them, the Acquired Skills tables as p. 11 does, and table names in
-sorted order. A reader fixing a fault must be able to tell whether the fix
-worked, which an answer that changed with Go's map order denied (#53, #286).
-
-What the lift validates is the shape of a cell and the alphabet of a name.
-What it does not validate is that a value is the one the page prints, and that
-is the second transcription's work. The division is principled for cells: a
-sign at the head of a cell decides whether it is an alteration or a skill, so
-the lift checks it, while an en dash inside a name is no different from any
-other typo and is left to the second copy (#300). Keys fall the same way.
-`read` decodes with plain `json.Unmarshal`, which tolerates an unknown key
-because the data files carry their own `_cite` and `_note` keys beside the
-ones the wire types read. So a misspelled key leaves its field at zero, and
-of four keys tried, three accepted a zero the page never prints: a medical
-crisis lasting "0D months" lifts cleanly, and only `tables_test.go` refuses
-it. A wrong value is the second transcription's to catch, and the claim that
-the lift is the whole validation is the thing narrowed, not the decoding
-(#317).
-
-Where a number lives is decided by one rule rather than argued case by case.
-A number that **indexes** a printed table is data: the Aging Table's last
-printed term, which E014 turns on, lives in `aging.json`, and the Annual
-Retirement Pay table's last row, from which pay "per additional term" counts,
-lives in `services.json` (#292, #312). A bare procedural bound is a constant
-beside the code that applies it, with its cite: the three-roll cap on Table 2,
-the rank thresholds, the seven-term voluntary cap. Being printed is not the
-test. A number on the wrong side is a finding in either direction (#65).
+A **script** is a path's dice and draws in the order the procedure asks for
+them. `internal/scripted` plays one strictly in both directions: asking past
+the end fails naming the roller, and a die left unread fails at `Finished`.
+A **fixture** is a script with a checked-in golden. A **walk** is the
+command tests' script, extracted from a record, with no golden. The order
+in which dice are consumed matters to every script. A change that reorders
+throws re-paths fixtures, and a golden diff is sometimes the only symptom,
+so that diff is read before it is regenerated. The Jamison reproduction of
+pp. 23–25 is the one check written from someone else's numbers: a narrated
+decider and roller walk the example's character. It follows each stated
+total where the example's own arithmetic slips, and differs from p. 25 in
+exactly the benefit E015 accounts for.
 
 ## The record and its projections
 
-`render` turns a `Character` into the record, and turns the record, never the
-domain, into the sheet and the transcript. `SheetFrom` and `TranscriptFrom`
-decode a record written earlier and render it through the same code, so
-reading a record back is the same operation as rendering one fresh. The sheet
-reads the record's events on purpose (the headline explains a draft by finding
-the service choice), and an event that will not read fails both renderings
-rather than being skipped. A transcript ending "the record is the only way
-back" about a record it could not finish reading would be lying.
+`render` turns a `Character` into a `record` struct with JSON tags, and
+writes every output from that struct. That includes outputs for a character
+generated a moment earlier: `Sheet` and `Transcript` project first, and
+`SheetFrom` and `TranscriptFrom` decode a saved record into the same struct.
+So `ctchargen render` cannot disagree with what `new` printed. Decoding
+rebuilds no domain type. A sheet is a projection of the record, and
+rebuilding the sums would add nothing but decoders that can fail.
 
-The record's shape is governed by a freeze that has not happened yet. Until
-`v1.0.0` it moves freely (#62), and `record` stays 1 through every pre-release
-change (#96). From the freeze it is a public contract. The schema
-(`docs/character.schema.json`, hand-formatted) opens only its root object, so a
-later build may add a section that an older reader skips, while every object
-inside stays closed (#113). Old records are not promised to read: a beta.5
-auto record, whose `policy` is a bare number, is refused rather than read as a
-guided one, because misattribution is worse than refusal.
+The record's shape is frozen at `v1.0.0` (#62). `record` counts the shape,
+and it stays 1 until the freeze (#96). `ruleset` names the books. `build`
+names the writer, comes from `debug.ReadBuildInfo`, and only the command
+sets it. A test-generated record carries none, so a golden does not differ
+by machine (ADR 0002). The hand-written `docs/character.schema.json` is
+open at the root and closed in every nested object (#113). Event kinds are
+closed as well (#129). A later build can add a top-level section, and a
+reader still validates the parts it knows.
+
+Since #324, `render` also writes readings. `--readings` on a `--history`
+transcript ends the transcript with the full text of each erratum the record
+names. `ctchargen readings` lists every reading with its status, or prints
+the ones named. This adds a `render` → `rules` dependency. The text printed
+for a record's errata is this build's text, not the writer's. ADR 0004's rule
+that a reading may be reworded but never changed into a different decision
+is what makes that safe. An
+id this build does not know is reported, not refused, because the rest of
+the transcript still belongs to the record. The sheet still leaves ids out,
+since it is the page a player keeps. The package doc and CLAUDE.md's tree do
+not yet describe this responsibility (#334).
 
 ## The command
 
-`cmd/ctchargen` keeps two channels apart. The record, sheet or transcript goes
-to stdout; questions and the running commentary go to stderr. `ctchargen new |
-jq` pipes a record, not a conversation. Interactive mode shows each throw
-between questions through `WithObserver`. A session that stops is lost, and the
-tool says what was answered and that nothing was written, rather than offering
-a way back it cannot honour.
+`cmd/ctchargen` is thin on purpose, and its seams are about channels and
+refusals. The record goes to stdout. Questions and complaints go to stderr,
+so `ctchargen new | jq` pipes a record and not a conversation. Every failure
+exits 1 (#121). The difference between misuse (`errUsage`) and a search
+that could not finish (`errSearch`) shows up in the message only. A stray
+positional word is refused, because the flag package stops at it and leaves
+the flags after it unparsed. A path that exists is never overwritten without
+`--force`. `batch` writes the dead like anyone else, and `--survivors` skips
+past them without rerolling them, up to a bound on how many it generates.
 
-Every generation the command makes takes `source.options()`, which carries the
-build name (`chargen.WithBuild`) and, under test, a scripted roller. That one
-call is why a record cannot leave the command without its `build`. A test
-generating in-process passes no build, so goldens do not differ by machine.
+The interactive `player` is a `Decider` that reads numbers. It never invents
+an answer: input that runs out is `errNoAnswer`, not a default. ADR 0003
+decided its tests go through the command and not through the player's
+methods. The thing a person notices breaking is the wiring (stderr against
+stdout, the line saying nothing was written), and only the command's tests
+can see that. The flags, types and defaults are typed out in `cli_test.go`
+and held one way only (#126): a new flag breaks nobody, and a changed one
+does.
 
-`batch` is many auto runs, written as JSONL to stdout (streamed, one record at
-a time), to a file (buffered, so a failed run opens nothing), or to a directory
-(one file per member, named by position so `--survivors`, which passes over the
-dead and generates more, changes who fills a slot but not which files are
-written). Collisions are checked before anyone is generated, from paths alone.
+## What the gate holds, now that checks are tests
 
-## The gate holds the documents to the code
+There is no CI (#149). The gate is a local `task`. ADR 0004's last move was
+that no markdown file is parsed, generated or held to the code. What used to
+be a committed `docs/COVERAGE.md` is now `internal/coverage`, a test-only
+package that writes nothing. It walks every Go doc comment, package doc,
+fixture-roster comment and schema `$comment` for `Implements: <rule>
+[<authority>].` and `Holds: <rule>.` markers. It fails on a rule implemented
+and not held, a rule held and not implemented, two implementations citing
+different pages, a marker found anywhere else, or a cite outside a closed
+grammar. The grammar allows Books 1–3 pages with any readings in
+parentheses, a reading alone, an ADR named by its file, or one of eight
+promise labels. `-print` writes the map as one table, on demand.
 
-There is no CI (#149). `task` is the gate, and much of what it holds is the
-repo's own documents. `docs/COVERAGE.md`'s tables are generated from
-`Implements:` markers beside the code and `Holds:` markers on tests. A rule
-implemented and held by nothing, or held and implemented by nothing, fails the
-generator. So does a cite outside a closed set, and a page cite is checked
-whole: its shape (pages or en-dash ranges, then any readings), every book it
-names (1 to 3), and every reading it names (#287, #311).
+The promise labels ("Choice points", "Generation record", "JSON
+conventions" and the rest) are the section names of the v1 contract, which
+has since been removed from the tree. They were kept as labels for the
+tool's own promises. That boundary is a historical accident, and it is now
+load-bearing: it is the vocabulary a promise has to be cited in.
+CODING_STANDARDS.md says where a marker goes. It goes on the declaration that
+carries the rule, never on a test. A promise the harness keeps goes on the
+test helper or roster that carries it. A promise no single declaration
+carries goes on its package doc.
 
-Where a marker sits is a rule of its own (#293). It goes on the declaration
-that carries the rule: engine code for a rule of the book; test code, a helper
-or a roster, for a promise of the tool's own that the harness keeps (the
-stamping conditions, the fixture roster). It never goes on a test, which holds
-a rule rather than carrying it. A rule several declarations carry is marked on
-each, and only a promise no single declaration carries goes on a package doc:
-the alphabets' spellings, and the coverage generator's own.
+Coverage is not measured (#198). The mutation rule does that job instead: a
+new invariant counts as done only when `go run ./internal/mutate` shows a
+deliberate edit killed and quotes what the failure said. The tool edits a
+scratch copy, never the tree. `task fix` is not safe to run blind in a tree
+that quotes a primary source. `godot` and `dupword` have both damaged a
+verbatim quotation before.
 
-The schema's strategy enums are held to the code by a test. The CLI's flags
-and defaults are typed out in `cli_test.go` and held one way, because a new
-flag breaks nobody. And a new invariant is not considered done until a
-deliberate mutation has been shown to kill it: `go run ./internal/mutate`
-edits a scratch copy, runs a command, and prints `KILLED` or `SURVIVED`. Note
-that it prints `KILLED` for any failure, compile errors included, so a kill is
-read from its output, not its verdict.
+## What it is shaped to accommodate, and what would need rethinking
 
-The tests call code the way its user does. The interactive session is tested
-through the command, because what is under test is what a person sees:
-questions on stderr, the record kept off stdout, the stop and what it cost
-(ADR 0003).
+**A new reading** is cheap and well guarded. It needs a constant, an entry
+in `Errata`, a `Reading` value, a stamping literal at the outcome it governs,
+a predicate written from its prose, a fixture that reaches it, and an
+`Implements:` marker citing it. The compiler or the gate refuses most of
+those when they are left out. The constant-to-`Errata` link is one
+exception (#333).
 
-## What it is shaped to accommodate, and what it is not
+**A new choice point** is also designed for. Add a `Decider` method and the
+compiler takes the maintainer through the policy, the logging decorator, the
+player and the test deciders. Two costs come with it. Each strategy has to
+be given an answer. And the schema's `point` enum is closed (#123), so after
+`v1.0.0` a new choice point is a change to the record's shape. A new `--auto` strategy is cheap the same way: it bumps
+`PolicyVersion` only if it changes an existing answer, and the schema's
+strategy enums, which a test holds to the code, are closed too.
 
-**Cheap, by design:**
+**A new case of a sum** is a compile error in every fold, which is the
+point. From `v1.0.0`, though, a case that reaches the record is a shape
+change, so it also bumps `record` and loosens a schema object the freeze
+closed.
 
-- **A new reading.** Add a heading in ERRATA.md and a constant; the lift
-  refuses one without the other. Stamp it where its condition holds and write
-  its predicate from its prose.
-- **A new `--auto` strategy.** It is a `Policy` method branch with its doc
-  comment, plus a bump of `PolicyVersion` if any answer changes. The schema's
-  enum test will demand the new word.
-- **A new choice point.** It breaks every Decider at compile time, the logging
-  decorator included, and needs a fixture that reaches it, a schema `point`
-  value, and a choice-point check.
-- **A corrected table cell.** Change both transcriptions from a fresh visual
-  read of that page alone.
+**Withdrawing a reading** has a form and no precedent, and the first use
+will have to settle #332 first.
 
-**Fundamental: rethink before touching:**
+**Another edition, or Books 4+**, would mean rethinking things at the
+foundation. `Ruleset` is a constant, the schema pins it with `const`, the
+alphabets are Book 1's, and the authority model forbids opening those books.
+A maintainer adding a Mercenary prior-service table would not be extending
+this tool. He would be founding a sibling.
 
-- **Seeding the dice or offering replay.** ADR 0001 withdrew it and took the
-  seed off every record. Bringing it back reopens the record, the fixtures and
-  the interactive session at once.
-- **Anything that lets a record omit a die or a choice.** For example, a
-  decider rolling its own dice, or a summary event. The audit claim rests on
-  completeness.
-- **Changing the record's shape after `v1.0.0`.** Before the freeze it is
-  routine; after it, the `record` field counts.
-- **Rules outside Books 1–3.** Books 2 and 3 are consulted only where Book 1
-  points; Book 4 and later are out of authority. A referee's house rule has no
-  home here, and adding one would break the "checkable against the page" claim.
+**Replay** was withdrawn and can come back only as a re-walk of a record,
+never as a seed (ADR 0001). A maintainer who adds a seed "for debugging"
+brings back the parts the ADR listed as having each needed its own repair.
 
-**Where a maintainer who missed the theory would do damage:**
-
-- **`task fix`.** It has already rewritten verbatim quotations of the book:
-  `godot` and `dupword` are configured off that behaviour now, but read the
-  diff.
-- **Trusting `pdftotext`, or reading a table in a page range.** The prerelease
-  review lost a cell to a six-page read.
-- **Writing about the page from memory or from extraction.** A claim about
-  the page needs the page itself. The books are held on disk as PDFs that may
-  be iCloud placeholders, and the answer to one that is not local is to fetch
-  it and wait, not to reason around it.
-- **Hand-editing a golden, or regenerating one without reading its diff.**
-- **Rewording a transcript step name** without checking the stamping
-  predicates.
-- **Editing an ERRATA heading** without the same edit, verbatim, in
-  `traveller/erratum.go`.
-- **Rewording a rule name on one side of a marker pair.** The name is the
-  join key.
+The damage a maintainer without the theory is most likely to do is quiet
+damage. He might read a table cell from extracted text, write a predicate by
+looking at the stamping site, regenerate a golden without reading its diff,
+let a decider throw a die, settle a one-answer question inside a decider
+instead of at its site, or print the policy's choices as if they were the
+player's. Each of those leaves the gate green. The tree's defences against
+them are conventions written in CLAUDE.md and CODING_STANDARDS.md, held by
+review.
 
 ## Uncertainties
 
-Some of what I state above as intent is inferred from code, comments and
-issues. The rest is held by tests, and that half I trust.
-
-- **The stamping predicates key on step-name prefixes.** I read this as an
-  accepted cost of writing them from prose against the record a referee sees,
-  rather than against domain values. I did not find it argued anywhere. If it
-  was never chosen, a structured event field would hold the conditions more
-  firmly.
-- **The lift parses all of ERRATA.md on every load,** about 40 KB of prose
-  that only tests consume field by field, so the binary can refuse to start on
-  a malformed document. I take that as deliberate (the readings are part of
-  what the tool is), but it may be habit rather than decision.
-- **E012's normalization map has entries that never fire** on the shipped
-  data: `services.json` already types "Rifle" and "Submachine Gun", so `Rifl3`
-  and `SMG` are exercised only by a direct test. They may be kept as the
-  written-down font-trap knowledge ERRATA.md says the entry exists for, or
-  they may be leftovers. The entry's own text suggests the former.
-- **A withdrawn reading has no form the lift accepts.** The lift needs six
-  non-empty labelled fields, and the stamping harness needs a predicate. No
-  reading has been withdrawn yet, so the path is untested, and I cannot tell
-  whether "withdrawn" is meant to be a state or a deletion.
-- **Under `-regenerate`, goldens are written with a plain `os.WriteFile`**
-  while other tests in the package read `testdata/*.json` in parallel. By
-  reading I would expect those readers to see a half-written file now and
-  then and report a stale golden on the regenerating run. I have not seen it
-  happen.
+- **The withdrawn-reading form is untested against a real case.** I read it
+  as requiring a withdrawn reading's prose-derived predicate to fit no
+  golden. A replaced reading usually governs the same records as its
+  replacement, so I think the form refuses its own main use (#332). The
+  authors may instead intend a withdrawn reading's predicate to be rewritten
+  as never-true. Nothing written down says so.
+- **The guarantee that a withdrawn erratum is never stamped holds only over
+  the goldens.** At run time nothing in `chargen` checks `Withdrawn()`. I
+  infer that this is deliberate, since ADR 0004 assigns the guarantee to the
+  harness, but a random career that walks a path no fixture walks is not
+  covered.
+- **Whether `render` should own the readings' text is not decided anywhere I
+  found.** Putting it there follows "render is what a reader sees". It also
+  means a record is explained in the rendering build's words. ADR 0004 makes
+  that safe by forbidding a reworded decision, and that rule holds only from
+  `v1.0.0`. Records written before then, by betas, get rc.1's wording.
+- **The promise labels are a closed set of section names from a document
+  that no longer exists in the tree.** I treat them as a stable vocabulary.
+  The source does not say whether the authors see them as permanent or as
+  scaffolding left over from the PRD.
+- **E002 is stamped on every skill outcome, but its predicate is "a survival
+  throw passed".** These agree because every surviving term trains at least
+  one skill. That depends on the Basic Skill Eligibility box always granting
+  one or more per term, which is data in `rules`. I have not checked whether
+  a data change there would break the agreement silently or loudly.
+- **The rules I call "conventions held by review"** (predicates from prose,
+  golden diffs read before regenerating, marker placement) are ones I found
+  no mechanical check for. One may exist in a test I did not read closely.
+  The fixture and walk files, and most of `policy.go` past its strategy
+  types, I read only in part.
+- **I did not open the PDFs.** Every claim here about what a page prints
+  comes from the code's own quotations and the readings' prose, not from
+  the page.

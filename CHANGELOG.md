@@ -5,41 +5,68 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- ADR 0004: documents are for people, data is code, checks are tests. The
-  readings become Go values the tool can explain, an erratum names one
-  decision for good, a reading is withdrawn rather than deleted, and the
-  coverage map becomes a check (#321–#325). The glossary defines a withdrawn
-  reading and says an erratum's decision never changes.
+## 1.0.0-rc.1
+
+The first release candidate for `v1.0.0`. The record, its shape and the sheet
+are what beta.7 wrote, and every golden is unchanged. What changes is where
+the readings live and that the tool can now explain them: ADR 0004,
+"documents are for people, data is code, checks are tests", carried out in
+five steps (#321–#325). No markdown is parsed, generated or held to the code
+by the gate any more.
+
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.1
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### What a referee will notice
+
+- **The tool explains its readings.** A transcript names the reading beside
+  each outcome it governed, as an id like `E002`. `--readings` on
+  `new --history` and `render --history` ends the transcript with the full
+  text of each reading the record names: what the page says, the gap, the
+  reading and why. It is refused without `--history`, and without it every
+  transcript is what it was (#324).
+- **`ctchargen readings`** lists every reading with its status, or writes the
+  ones named in full; an id that names no reading is a usage error (#324).
+- A record written by beta.7 reads back, renders and validates as it did, and
+  `record` stays 1 (#96).
+
+### The readings
+
 - The readings are Go values in `rules`, one per erratum, so a reading
-  missing or one too many does not compile. A test held them to the readings
-  document byte for byte, and the stamping and coverage checks read them rather than
-  the document (#321). E007's rationale gains the comma "printed in, in the
-  UPP" needed, and nothing else in any reading changes.
-- A reading can be withdrawn. It keeps its erratum, says why, and names the
-  erratum that replaced it, if any. The stamping harness refuses any golden
-  that stamps a withdrawn reading or that its condition fits, and a
-  replacement that is no erratum, or the reading itself, is refused. No reading
-  is withdrawn (#322).
-- The readings document is gone: its file, its embed, its parser and the
-  test that held it to the values. The readings are the `Reading` values in
-  `rules`, which carry their provenance in their doc comment, and the eight
-  questions it recorded as settled by the page are doc comments on the
-  declarations that implement them. The erratum constants no longer repeat
-  their readings' titles (#323).
-- The tool explains its readings. `--readings` on `new --history` and
-  `render --history` ends the transcript with the full text of each reading
-  the record names, and is refused without `--history`. `ctchargen readings`
-  lists every reading with its status, or writes the ones named in full; an
-  id that names no reading is a usage error. Without `--readings`, every
-  transcript is what it was. The twelve links between readings, anchors into
-  the deleted document, are plain ids now, since a link out of an emitted
-  reading has nowhere to land (#324).
-- The coverage map is a check that writes nothing. The coverage document is gone,
-  and every `Implements:` marker drops its `in <Section>.` suffix, which only
-  placed its row in that document. Every check stays: each rule implemented
-  and held, and every cite valid. The map prints on demand as one table, in
-  page order, with `go test -run TestTheCoverageMapHolds -print` from
+  missing or one too many does not compile (#321). `ERRATA.md`, its embed and
+  its parser are gone (#323). The readings carry the document's provenance in
+  their doc comment, and the eight questions it recorded as settled by the
+  page are doc comments, verbatim, on the declarations that implement them.
+- An erratum names one decision for good: a reading may be reworded, but a
+  changed decision is a new erratum. A reading whose decision no longer holds
+  is withdrawn, not deleted. It keeps its erratum, says why, and names any
+  erratum that replaced it; the stamping harness refuses any golden that stamps a
+  withdrawn reading or that its condition fits. No reading is withdrawn
+  (#322).
+- Two rewordings, no decision changed: E007's rationale gains the comma
+  "printed in, in the UPP" needed (#321), and the twelve links between
+  readings, anchors into the deleted document, are plain ids (#324).
+
+### The coverage map
+
+- The coverage map is a check that writes nothing. `docs/COVERAGE.md` is gone,
+  and every `Implements:` marker drops its `in <Section>.` suffix. Every check
+  stays: each rule implemented and held, its implementations agreeing on its
+  page, and every cite valid. The map prints on demand as one table, in page
+  order, with `go test -run TestTheCoverageMapHolds -print` from
   `internal/coverage` (#325).
+
+### Notes
+
+- ADR 0004 records the course, and the glossary defines a withdrawn reading
+  and says an erratum's decision never changes (#326).
+- The `traveller.Erratum` constants no longer repeat their readings' titles;
+  a title lives once, in its reading (#323).
 
 ## 1.0.0-beta.7
 

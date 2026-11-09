@@ -1,6 +1,6 @@
 # Walkthrough
 
-> Release snapshot for `v1.0.0-beta.7`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-rc.1`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots"). `THEORY.md` explains why the system is shaped this way; this
 > document follows one character through the code.
@@ -11,37 +11,40 @@
 walking Book 1's procedure (pp. 4–25 of the 1977 text) and writes a JSON
 **record** of everything that happened: every die, every choice and what was
 offered, every consequence, and which recorded readings governed it. It has
-four subcommands:
+five subcommands:
 
 - `new`: one character, answered by the `--auto` policy or by a person at the
   terminal;
 - `batch`: many auto characters;
 - `render`: a record read back as a sheet or a transcript;
+- `readings`: the readings the records name, listed or written in full;
 - `version`.
 
-There are no dependencies beyond the standard library at run time. The rules
-tables and the readings document are embedded in the binary.
+There are no dependencies beyond the standard library at run time; the one
+module requirement, a JSON Schema validator, is imported only by tests. The
+rules tables are JSON embedded in the binary. The readings, the decisions
+taken where the page is silent, are Go values compiled into it (ADR 0004).
 
 ## Architecture
 
 ```text
 cmd/ctchargen/        the subcommands; stdout carries the record, stderr the conversation
 internal/traveller/   the domain: alphabets, values, sealed sums, events (imports nothing here)
-internal/rules/       every table of pp. 4–25 and ERRATA.md, embedded and lifted once
+internal/rules/       every table of pp. 4–25, embedded and lifted once, and the readings as values
 internal/dice/        an unseeded stream of dice
 internal/chargen/     the procedure, the Decider it asks, and the --auto Policy
-internal/render/      the record, and the sheet and transcript projected from it
+internal/render/      the record, the sheet and transcript projected from it, and the readings' text
 internal/scripted/    test support: the strict roller fixtures and walks play
-internal/coverage/    test code only: generates docs/COVERAGE.md from markers
+internal/coverage/    test code only: holds the Implements: and Holds: markers to each other
 internal/mutate/      a tool: runs a command against a scratch copy with one edit made
 ```
 
 The arrows point one way. `traveller` imports none of the others, `rules` and
-`chargen` import `traveller`, and `render` imports the record. Data flows in a
-line: flags become `chargen.Inputs` and a `Policy` (or a person), `chargen`
-walks the procedure against `rules` and a roller and produces a
-`*chargen.Character` carrying its event log, and `render` projects that into
-the record and the documents made from it.
+`chargen` import `traveller`, and `render` imports the record, and `rules` for
+the readings' prose. Data flows in a line: flags become `chargen.Inputs` and a
+`Policy` (or a person), `chargen` walks the procedure against `rules` and a
+roller and produces a `*chargen.Character` carrying its event log, and
+`render` projects that into the record and the documents made from it.
 
 ## 1. The command
 
@@ -75,6 +78,8 @@ one, `withDice`, supplies a scripted roller.
 		return batch(args[1:], out, asking, chosen.dice)
 	case "render":
 		return renderRecord(args[1:], out)
+	case "readings":
+		return readings(args[1:], out)
 	case "version":
 		return version(args[1:], out)
 ```
@@ -87,10 +92,28 @@ stderr after `ctchargen:`.
 `newCharacter` parses the flags, refuses a positional word (the flag package
 stops at the first one, so `new foo --auto` would leave `--auto` unparsed),
 and turns the strategy flags into a `chargen.Policy`. That is the one place
-strategies are parsed: past it, a `Career` is a `Career`. Without `--auto`, a
-strategy flag that was explicitly set is refused, because a person answers
-every choice it would have decided (`strategiesWithoutAuto`).
+strategies are parsed: past it, a `Career` is a `Career`. Then it refuses the
+flag combinations that cannot all be meant. Without `--auto`, a strategy flag
+that was explicitly set is refused, because a person answers every choice it
+would have decided (`strategiesWithoutAuto`). `--sheet` with `--history` is
+refused (`flagsThatContradict`). And `--readings`, which ends a transcript
+with the readings it names, is refused without `--history`, because on a
+sheet or a record it would add nothing and say nothing:
 
+`cmd/ctchargen/new.go` — `readingsWithoutHistory`
+
+```go
+func readingsWithoutHistory(readings, history bool) error {
+	if readings && !history {
+		return fmt.Errorf("%w: --readings ends a transcript, and needs --history", errUsage)
+	}
+
+	return nil
+}
+```
+
+`render` makes the same check through the same function. What the flags say
+to do with the character is gathered into one `newRendering`, and
 `writeCharacter` is the whole of `new` after parsing: generate, render, write.
 
 `cmd/ctchargen/new.go` — `writeCharacter`
@@ -101,7 +124,7 @@ every choice it would have decided (`strategiesWithoutAuto`).
 		return err
 	}
 
-	text, err := rendered(character, how.sheet, how.history)
+	text, err := rendered(character, how)
 	if err != nil {
 		return err
 	}
@@ -243,6 +266,23 @@ func (r *run) generate() error {
 
 	return r.assessTitle()
 }
+```
+
+A dead character does not muster out. That is not a reading: the doc comment
+above this method says the question was checked as a possible silence and
+found settled by p. 5. The same form of comment, "Settled by the page and not
+a reading", sits on each declaration whose question was checked that way, so
+it is answered beside the code that implements the answer and is not
+re-litigated. The 2D throw is one:
+
+`internal/chargen/roller.go` — `roll`
+
+```go
+// Settled by the page and not a reading: checked as a possible silence at
+// milestone 0, and kept so it is not re-litigated as one. Which throws are two
+// dice. P. 10: "All rolls except draft are two-die throws." The draft is one
+// die (p. 5); so are the skills-table roll (p. 11), each mustering-out roll
+// (p. 9) and the medical-crisis recovery months (p. 7).
 ```
 
 `rollProfile` throws six 2D rolls in p. 4's order. `enlist` chooses a service
@@ -503,15 +543,68 @@ func (l *log) outcomef(because int, errata []traveller.Erratum, format string, a
 ```
 
 `stamped` returns them in id order, and that list is the record's `errata`.
-Each reading's stamping condition is stated as prose in `ERRATA.md`, and
-`stamping_test.go` holds every golden's `errata` to a predicate written from
-that prose rather than from this code.
+An id is a `traveller.Erratum`, a closed set of constants `E001` to `E015`.
+The engine names a reading only by its constant; what the reading says lives
+in `rules`.
 
-## 7. The rules the engine reads
+## 7. The readings, as values
 
-`rules.Load` embeds every JSON table and `ERRATA.md` and lifts them once per
-process. Every caller gets the same `*Rules`, so every method that returns a
-slice returns a copy (#137).
+Each reading is a `rules.Reading`: the erratum it is named by, a title, and
+its argument in prose. That prose is kept verbatim, the page's own emphasis
+included as inline markdown, so whatever prints it prints the decided words.
+
+`internal/rules/readings.go` — `Reading`
+
+```go
+type Reading struct {
+	ID    traveller.Erratum
+	Title string
+	...
+	// StampedOn is the stamping condition: which records name the erratum.
+	StampedOn string
+
+	// Withdrawal is zero for a reading that stands.
+	Withdrawal Withdrawal
+}
+```
+
+Between the title and the stamping condition are the pages, what the page
+says, the gap, the reading and why. The readings are one array, the one at
+index `i` named by erratum `i+1`, and its size is the count check: the array
+is sized by its literal, and `Readings` returns it as an array sized by the
+errata, so a reading missing or one too many does not compile.
+
+`internal/rules/readings.go` — `Readings`
+
+```go
+func Readings() [len(traveller.Errata)]Reading { return readings }
+```
+
+`internal/rules/readings.go` — `ReadingOf`
+
+```go
+func ReadingOf(e traveller.Erratum) Reading { return readings[e-1] }
+```
+
+That each value sits in its own erratum's place is a test's, `TestTheReadings`,
+which also quotes E001's fields typed out by hand, so a field swapped with its
+neighbour fails. `ReadingNamed` finds a reading by the id a record spells
+(`"E004"`), and is what reads a record back to its readings.
+
+An erratum names one decision for good. A reading whose decision no longer
+holds is not deleted but withdrawn: its `Withdrawal` says why, and names the
+erratum that replaced it, if one did. It stays in the array, so a record
+already stamped with it still names a reading that exists. No reading is
+withdrawn at this tag, so every path that handles one (in rendering, in the
+listing and in the stamping harness) is exercised only by test-only readings
+built for the purpose (`TestAWithdrawalNamesARealReplacement`, and
+`internal/render/readings_test.go`).
+
+## 8. The rules the engine reads
+
+`rules.Load` embeds every JSON table and lifts them once per process. Every
+caller gets the same `*Rules`, so every method that returns a slice returns a
+copy (#137).
 
 `internal/rules/rules.go` — `Load`
 
@@ -523,9 +616,9 @@ var loaded = sync.OnceValues(load)
 
 `load` reads each file into a wire type that mirrors the JSON and nothing
 more, then runs the lifts in order. Lifting is the validation: a column out of
-p. 10's order, a Table 1 cell that is no benefit (the font trap's bare "4"),
-or a reading with no `traveller.Erratum` constant refuses the load, and with
-it the binary.
+p. 10's order, or a Table 1 cell that is no benefit (the font trap's bare
+"4"), refuses the load, and with it the binary. The readings are not among
+the lifts. They are not data to be parsed but values already typed.
 
 `internal/rules/lift.go` — `load`
 
@@ -540,7 +633,6 @@ it the binary.
 		func() error { return rules.liftWeapons(weapons) },
 		func() error { return rules.liftNobility(nobility) },
 		func() error { return rules.liftShips(ships) },
-		rules.liftReadings,
 	} {
 ```
 
@@ -566,10 +658,9 @@ are the same function.
 P. 12 makes skills "of three basic types: characteristic alterations …,
 weapon expertise …, and basic skill". Only a basic skill's name is open, an
 alphabet the code does not close, so the guards that matter sit in front of
-it. A cell that opens with a sign and did not
-parse as an alteration would otherwise lift as a skill whose name is the whole
-cell, and so would one that opens with an en dash, which looks like a minus
-and is not one:
+it. A cell that opens with a sign and did not parse as an alteration would
+otherwise lift as a skill whose name is the whole cell, and so would one that
+opens with an en dash, which looks like a minus and is not one:
 
 `internal/rules/parse.go` — `parseTableResult`
 
@@ -607,10 +698,8 @@ func Sign(glyph rune) (int, bool) {
 
 A data file broken two ways reports the same fault every run, so a lift that
 finds faults in a loop walks a slice in a fixed order rather than a map, whose
-order Go randomises (#53). The Prior Service Table's row counts and the skill
-tables were the last two to change (#286). The skill tables are read by name
-in sorted order and then lifted in `traveller.SkillTables` order, which is
-p. 11's:
+order Go randomises (#53). The skill tables are read by name in sorted order
+and then lifted in `traveller.SkillTables` order, which is p. 11's:
 
 `internal/rules/lift.go` — `liftSkillTables`
 
@@ -631,7 +720,7 @@ their own `_cite` and `_note` keys. So a misspelled key leaves its field at
 zero; of four keys tried, three lifted that zero, and only the second
 transcription noticed (#317).
 
-## 8. The record and what is rendered from it
+## 9. The record and what is rendered from it
 
 `render.JSON` projects the character into the record and marshals it. The
 sheet and the transcript are projected from that same record, never from the
@@ -693,13 +782,79 @@ func choiceLine(event eventJSON, answerer string) string {
 }
 ```
 
-On an auto record that reads `22. SkillTable: policy chose Advanced Education
+On an auto record that reads `28. SkillTable: policy chose Advanced Education
 Table from Personal Development Table, Service Skills Table, Advanced
 Education Table`.
 
-The sheet's headline explains a service the character did not ask for. It
-finds the service attempted (forced in `inputs`, or the Service choice) and
-says the policy picked it only on an auto record:
+`Transcript` and `TranscriptFrom` take a `readings` flag, which is
+`--readings`. With it, the transcript keeps its inline ids and, after the
+last event, writes a section of its own:
+
+`internal/render/transcript.go` — `transcriptOf`
+
+```go
+	out.WriteString("\n")
+
+	if readings {
+		writeReadings(&out, r.Errata)
+	}
+
+	endWithKeep(&out)
+```
+
+`writeReadings` reads the ids from the record's `errata`, so a record written
+earlier is explained by the build reading it. It sorts them, because a record
+written elsewhere need not list them in order, and it says so rather than
+failing when a record names an id this build has no reading for: the rest of
+the transcript is still the record's.
+
+`internal/render/readings.go` — `writeReadings`
+
+```go
+// Implements: A transcript with its readings ends with each reading its record
+// names, in full [CLI sketch].
+func writeReadings(out *strings.Builder, errata []string) {
+	...
+	for _, id := range slices.Sorted(slices.Values(errata)) {
+		r, ok := rules.ReadingNamed(id)
+		if !ok {
+			fmt.Fprintf(out, "### %s\n\nThe record names %s, and this build has no reading of that id.\n\n", id, id)
+
+			continue
+		}
+
+		out.WriteString(Reading(r) + "\n")
+	}
+```
+
+The `Implements:` line above the function is a marker; section 12 says what
+reads it. `render.Reading` writes one reading as markdown: a heading of id and
+title, then each labelled part in the order a referee argues it. A withdrawn
+reading says so before anything else:
+
+`internal/render/readings.go` — `Reading`
+
+```go
+	if r.Withdrawn() {
+		fmt.Fprintf(&out, "**Withdrawn.** %s", r.Withdrawal.Why)
+
+		if r.Withdrawal.ReplacedBy != 0 {
+			fmt.Fprintf(&out, " Replaced by %v.", r.Withdrawal.ReplacedBy)
+		}
+
+		out.WriteString("\n\n")
+	}
+```
+
+One fixture, `army-serve`, keeps its transcript a second time with its
+readings, as `army-serve.readings.transcript.md`; it names E002, whose prose
+carries the page's italic, so the golden shows that emphasis arriving
+unchanged.
+
+The sheet never carries the readings. Its headline explains a service the
+character did not ask for. It finds the service attempted (forced in
+`inputs`, or the Service choice) and says the policy picked it only on an
+auto record:
 
 `internal/render/sheet.go` — `serviceAttempted`
 
@@ -720,7 +875,65 @@ An event that will not read fails both renderings rather than being skipped.
 A record whose `policy` is a bare number (beta.5 and earlier) fails to decode,
 so an old auto record is never read as a guided one.
 
-## 9. `batch`
+## 10. `readings`
+
+`ctchargen readings` is how an id is read out without a transcript to hand.
+It has no flag set, as `version` has none: its words are ids. With none, it
+lists every reading; with some, it writes those in full, in the order asked.
+
+`cmd/ctchargen/readings.go` — `readings`
+
+```go
+	text := render.ReadingsIndex()
+
+	if len(args) > 0 {
+		var err error
+
+		text, err = render.ReadingsNamed(args)
+
+		switch {
+		case errors.Is(err, render.ErrNoReading):
+			return fmt.Errorf("%w: %s; %w; run `ctchargen readings` for the list", errUsage, readingsUsage, err)
+		case err != nil:
+			return fmt.Errorf("writing the readings: %w", err)
+		}
+	}
+```
+
+`ReadingsNamed` composes the whole text before returning any of it, so the
+first id that names no reading fails the call and nothing is written:
+
+`internal/render/readings.go` — `ReadingsNamed`
+
+```go
+	for i, id := range ids {
+		r, ok := rules.ReadingNamed(id)
+		if !ok {
+			return "", fmt.Errorf("%q %w", id, ErrNoReading)
+		}
+```
+
+A transcript of commands run while writing this, trimmed:
+
+```text
+$ ctchargen readings
+# Readings
+
+| Erratum | Title | Status |
+| --- | --- | --- |
+| E001 | The draft is _may_, not _must_ | in force |
+| E002 | The per-term order is the exposition's, not the example's | in force |
+...
+| E015 | A printed table governs over the worked example's stated result | in force |
+
+$ ctchargen readings E099
+ctchargen: usage: readings [E001 ...]; "E099" names no reading; run `ctchargen readings` for the list
+
+$ ctchargen new --auto --sheet --readings
+ctchargen: usage: --readings ends a transcript, and needs --history
+```
+
+## 11. `batch`
 
 `batch` requires `--auto`, because it has nobody to ask, and builds one
 `batchRun` value carrying the inputs, the policy, the count, `--survivors`,
@@ -767,7 +980,7 @@ member written is still exactly what its dice made. It gives up at a hundred
 attempts per character asked for, and when it does, that is a run-time error
 and not a usage error.
 
-## 10. How the tests drive it
+## 12. How the tests drive it
 
 A **fixture** in `internal/chargen` is a script (the dice and draws of one
 path, in the order the procedure asks for them) plus inputs and a policy, and
@@ -798,3 +1011,100 @@ says to regenerate. So the golden diff is read before it is regenerated (#289).
 The fixture is then re-scripted from a record that walks the new path, and the
 goldens are regenerated with `go test ./internal/chargen -regenerate`, which
 also writes the schema's two published examples.
+
+### The stamping harness
+
+`stamping_test.go` reads every checked-in golden and holds its `errata` to a
+predicate per reading. Each predicate is written by hand from the reading's
+`StampedOn` prose, never from the stamping code, and a failure quotes that
+prose as `rules` declares it. Whether a reading is withdrawn comes from
+`rules` too:
+
+`internal/chargen/stamping_test.go` — `conditions`
+
+```go
+	for i := range all {
+		all[i].withdrawn = rules.ReadingOf(all[i].id).Withdrawn()
+	}
+```
+
+`verdict` is what is wrong with how one record stamps one reading. A standing
+reading is stamped exactly where its condition holds, in both directions. A
+withdrawn one is stamped on no record, and its condition may fit none, since
+the goldens are new records and a condition that still fits one asks for a
+stamp nothing may make:
+
+`internal/chargen/stamping_test.go` — `verdict`
+
+```go
+	switch {
+	case r.withdrawn && got:
+		wrong = append(wrong, fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id))
+	case want && !got:
+		wrong = append(wrong, fmt.Sprintf("%s: satisfies %v but does not stamp it. Stamped on: %s",
+			rec.name, r.id, stampedOn(r.id)))
+	case got && !want:
+		wrong = append(wrong, fmt.Sprintf("%s: stamps %v but does not satisfy it. Stamped on: %s",
+			rec.name, r.id, stampedOn(r.id)))
+	}
+
+	if r.withdrawn && want {
+```
+
+A reading can be **parked**, naming the issue where its prose and its code
+disagree undecided: the harness counts its disagreements and asserts the
+count, rather than judging it, unless it is withdrawn.
+
+### The markers
+
+Every implemented rule carries an `Implements:` marker with its authority in
+brackets, and the test that holds it a `Holds:` marker naming the same rule.
+`internal/coverage` is test code only. It parses the tree's Go, the fixture
+roster and the schema's `$comment`s for markers, and fails when a rule is
+named by an implementation and held by no test, held by a test and named by no
+implementation, or cited to an authority that does not exist. A marker is one
+rule's name and one cite:
+
+`internal/coverage/coverage_test.go` — `implementsMarker`
+
+```go
+	implementsMarker = regexp.MustCompile(`^Implements: (.+) \[([^\]]+)\]\.$`)
+	holdsMarker      = regexp.MustCompile(`^Holds: (.+)\.$`)
+```
+
+A cite is a page in a closed shape (`1:4`, `1:9 (E006, E007)`), an ADR that
+exists in `docs/adr`, one of the v1 contract's promise labels, or a reading
+alone; and the readings it may name are read from the values, not typed into
+the check:
+
+`internal/coverage/coverage_test.go` — `readAuthorities`
+
+```go
+	for _, r := range rules.Readings() {
+		known.cites["("+r.ID.String()+")"] = true
+	}
+```
+
+The check writes nothing. The map from each rule to its page, implementation
+and test is what the markers already say, and `-print` writes it as a table
+on demand:
+
+`internal/coverage/coverage_test.go` — `TestTheCoverageMapHolds`
+
+```go
+	if *printTable {
+		_, err := os.Stdout.WriteString(strings.Join(table(rows), "\n") + "\n")
+```
+
+Run from `internal/coverage` while writing this, `go test -run
+TestTheCoverageMapHolds -print` began, trimmed to its first rows:
+
+```text
+| Rule | Authority | Implementation | Test |
+| --- | --- | --- | --- |
+| Die roll conventions: `N+`, `N−`, exact | 1:2–3 | `internal/traveller.Target` | `internal/traveller.TestParseTarget`, `internal/traveller.TestTargetSatisfied` |
+| All characters begin at 18 | 1:4 | `internal/chargen.startingAge` | `internal/chargen.TestGoldens` |
+```
+
+Each of these checks runs under `task`, the gate, with the rest of the suite;
+there is no CI (#149), so it holds when someone runs it.

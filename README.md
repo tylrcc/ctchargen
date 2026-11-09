@@ -1,18 +1,19 @@
 # ctchargen
 
-![Status: Beta](https://img.shields.io/badge/Status-Beta-yellow.svg)
+![Status: Release candidate](https://img.shields.io/badge/Status-Release%20candidate-orange.svg)
 
 A Go CLI that generates rules-accurate Classic Traveller characters.
 
 Ruleset baseline: **Books 1–3 only** — the FFE reprints of the © 1977 text.
 Character generation is Book 1 pp. 4–25; Books 2 and 3 are consulted only
 where Book 1 points at them. Every implemented rule carries its printed-page
-cite, and every place the text is silent or ambiguous has a recorded reading.
+cite, and every place the text is silent or ambiguous has a recorded reading,
+which the tool prints on request and names on every record it governs.
 
 ## Install
 
 ```sh
-go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-beta.7
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.1
 ```
 
 Go excludes prereleases from `@latest`, so a prerelease installs by name. That
@@ -35,7 +36,8 @@ All six services generate, the book's own worked character (pp. 23–25)
 is reproduced by the engine, the record has a schema, and characters can be
 written to files, generated in batches and read back. `new` without
 `--auto` walks the procedure a question at a time, showing each throw
-between the questions.
+between the questions, and a transcript can end with the full text of the
+readings its record names.
 
 Every command lists its own flags, which is where the current set lives:
 
@@ -74,6 +76,13 @@ as an id like `E002`. **`--readings`** on `new --history` or
 record names: what the page says, the gap, the reading and why. `ctchargen
 readings` lists them all, or writes the ones named in full. The sheet leaves
 the ids out, since it is the page a player keeps.
+
+**An id means one decision for good.** A reading may be reworded under its
+id, but a changed decision gets a new id, so a record names the same readings
+in every build that reads it. A reading whose decision no longer holds is
+withdrawn rather than deleted: it keeps its id, still explains the records
+already stamped with it, says why, and is stamped on no new one.
+`ctchargen readings` marks each as in force or withdrawn.
 
 **The dice are not seeded, and the record is the only way back to a
 character.** Every run rolls fresh dice; nothing brings a character back but
@@ -162,10 +171,14 @@ standard error after `ctchargen:`.
 
 ## The documents
 
-| File                                                     | What it holds                                                          |
-| -------------------------------------------------------- | ---------------------------------------------------------------------- |
-| [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it. |
-| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.        |
+| File                                                     | What it holds                                                                                                      |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| [docs/character.schema.json](docs/character.schema.json) | What the tool writes, with a minimal and a complete example beside it.                                             |
+| [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values. `ctchargen readings` prints them. |
+| [CHANGELOG.md](CHANGELOG.md)                             | What each release changed.                                                                                         |
+| [GLOSSARY.md](GLOSSARY.md)                               | The words a referee and the code share: record, reading, erratum, golden.                                          |
+| [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                                                        |
+| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                                                    |
 
 ## The gate
 
@@ -173,11 +186,20 @@ standard error after `ctchargen:`.
 task
 ```
 
-`go mod tidy -diff`, `go vet`, golangci-lint, NilAway, govulncheck, `go test -race`, and
-`bun fmt` over the non-Go files. The tests hold the two things `v1.0.0`
-freezes: every record against the schema, and each command's flags, defaults
-and exit status. There is no CI
-(#149); a change is checked when this is run, and not otherwise.
+`go mod tidy -diff`, `go vet`, golangci-lint, NilAway, govulncheck,
+`go test -race`, `bun fmt` over the non-Go files, and lychee over the
+documents' links. The tests hold the two things `v1.0.0` freezes: every record
+against the schema, and each command's flags, defaults and exit status. There
+is no CI (#149); a change is checked when this is run, and not otherwise.
+
+Every implemented rule carries an `Implements:` marker with its cite, and the
+test that holds it a `Holds:` marker; the tests refuse a rule with only one,
+and a cite that names nothing. The map they make is printed on demand and
+never committed:
+
+```sh
+cd internal/coverage && go test -run TestTheCoverageMapHolds -print
+```
 
 The toolchain is unpinned on purpose, and golangci-lint runs with
 `default: all`, so a linter added upstream arrives switched on. Formatting is
