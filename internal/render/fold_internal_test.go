@@ -26,11 +26,16 @@ import (
 func TestTheFlatShapeIsWhatWasWritten(t *testing.T) {
 	t.Parallel()
 
+	fivePlus, err := traveller.ParseTarget("5+")
+	if err != nil {
+		t.Fatalf("parsing a target: %v", err)
+	}
+
 	for name, event := range map[string]traveller.Event{
 		"step": traveller.StepEvent{Seq: 1, Step: "enlistment", Pages: "pp. 5, 10"},
 		"throw against a target": traveller.ThrowEvent{
 			Seq: 2, Step: "survival", Dice: []int{3, 4}, DM: 2,
-			Target: traveller.NewTarget(5, traveller.AtLeast), Succeeded: true,
+			Target: fivePlus, Succeeded: true,
 		},
 		"roll with nothing to meet": traveller.RollEvent{
 			Seq: 3, Step: "Table 2, Cash Allowances", Dice: []int{4}, DM: 1,

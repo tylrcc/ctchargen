@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Code only tests reached is gone: `traveller.NewTarget` and
+  `Target.Modality` (the modality is unexported, and tests build targets
+  with `ParseTarget`), `rules.ReadingOf` (tests read `rules.Readings`), the
+  skills policy's fallback for counts not parallel to the tables, which
+  the engine never passes, and a nil check its one caller had made (#370).
 - `chargen.Character` no longer carries its name, the ruleset or the
   policy's version: the record takes its name from the inputs, and the
   ruleset and the version from the build's constants. `AutoPolicy` is gone

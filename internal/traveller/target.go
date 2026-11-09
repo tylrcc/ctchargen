@@ -7,37 +7,39 @@ import (
 	"strings"
 )
 
-// Modality is how a Target is met — the die roll conventions of Book 1
+// modality is how a Target is met — the die roll conventions of Book 1
 // pp. 2-3: "A number followed by a plus (such as 8+) indicates that that
 // number or greater must be rolled. Similarly, a number followed by a minus
 // (such as 3-) indicates that that number or less must be rolled." And:
 // "throws are always followed by a sign unless the number must be thrown
 // exactly".
-type Modality int
+type modality int
 
 // The three modalities (pp. 2-3).
 //
-// Exactly is first, and deliberately: it makes the zero value of a Target
+// exactly is first, and deliberately: it makes the zero value of a Target
 // "0 exactly", which no throw of dice can meet. A Target that was never set
-// therefore fails closed. Were AtLeast the zero value, an unset target would
+// therefore fails closed. Were atLeast the zero value, an unset target would
 // read as "0+" and every throw in the procedure would succeed against it.
 const (
-	Exactly Modality = iota // N, with no sign
-	AtLeast                 // N+
-	AtMost                  // N-
+	exactly modality = iota // N, with no sign
+	atLeast                 // N+
+	atMost                  // N-
 )
 
-func (m Modality) String() string {
+// String is the sign the modality prints after the number, if any. Every
+// modality is a case, so the exhaustive linter names one that is added;
+// exactly, which prints none, is the return the switch falls to.
+func (m modality) String() string {
 	switch m {
-	case Exactly:
-		return ""
-	case AtLeast:
+	case atLeast:
 		return "+"
-	case AtMost:
+	case atMost:
 		return "-"
+	case exactly:
 	}
 
-	return fmt.Sprintf("Modality(%d)", int(m))
+	return ""
 }
 
 // errTarget reports a target that is not in the notation pp. 2-3 print.
@@ -51,12 +53,7 @@ var errTarget = errors.New("malformed target")
 // Implements: Die roll conventions: `N+`, `N−`, exact [1:2–3].
 type Target struct {
 	number   int
-	modality Modality
-}
-
-// NewTarget builds a target from a number and a modality.
-func NewTarget(number int, modality Modality) Target {
-	return Target{number: number, modality: modality}
+	modality modality
 }
 
 // Sign reads one glyph as the sign of a number: +1 for a plus, and -1 for
@@ -103,7 +100,7 @@ func ParseTarget(s string) (Target, error) {
 		return Target{}, fmt.Errorf("%w: it is empty", errTarget)
 	}
 
-	modality := Exactly
+	meets := exactly
 
 	sign, err := Sign(runes[len(runes)-1])
 	if err != nil {
@@ -115,9 +112,9 @@ func ParseTarget(s string) (Target, error) {
 			return Target{}, fmt.Errorf("%w %q: a sign with no number", errTarget, s)
 		}
 
-		modality = AtLeast
+		meets = atLeast
 		if sign < 0 {
-			modality = AtMost
+			meets = atMost
 		}
 
 		runes = runes[:len(runes)-1]
@@ -141,27 +138,25 @@ func ParseTarget(s string) (Target, error) {
 		return Target{}, fmt.Errorf("%w %q: %w", errTarget, s, err)
 	}
 
-	return Target{number: number, modality: modality}, nil
+	return Target{number: number, modality: meets}, nil
 }
 
-// Satisfied reports whether a throw of sum meets the target.
+// Satisfied reports whether a throw of sum meets the target. Exactly, the
+// zero value, is the return the switch falls to, so an unset target is met
+// only by a throw of 0, which two dice cannot make.
 func (t Target) Satisfied(sum int) bool {
 	switch t.modality {
-	case Exactly:
-		return sum == t.number
-	case AtLeast:
+	case atLeast:
 		return sum >= t.number
-	case AtMost:
+	case atMost:
 		return sum <= t.number
+	case exactly:
 	}
 
-	return false
+	return sum == t.number
 }
 
 // Number is the target's number, without its modality.
 func (t Target) Number() int { return t.number }
-
-// Modality is how the target is met.
-func (t Target) Modality() Modality { return t.modality }
 
 func (t Target) String() string { return fmt.Sprintf("%d%s", t.number, t.modality) }

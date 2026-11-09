@@ -233,7 +233,7 @@ func TestEveryReadingIsReachable(t *testing.T) {
 	unstamped := namesNoRecord()
 
 	for _, erratum := range traveller.Errata {
-		if rules.ReadingOf(erratum).Withdrawn() {
+		if rules.Readings()[erratum-1].Withdrawn() {
 			continue
 		}
 

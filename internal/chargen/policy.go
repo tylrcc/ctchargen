@@ -427,14 +427,9 @@ func (p Policy) SkillTable(
 }
 
 // thinnest is the offered tables the character has had fewest results off.
-//
-// A caller with no counts - a test constructing a policy directly - gets the
-// whole offered set back, so the ranking decides alone.
+// taken is parallel to from, one count per offered table, as the engine
+// passes it (#370).
 func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
-	if len(taken) != len(from) {
-		return from
-	}
-
 	fewest := slices.Min(taken)
 
 	thin := make([]traveller.SkillTable, 0, len(from))

@@ -238,7 +238,7 @@ func (p *player) choose(question string, options []string) (int, error) {
 		p.sayf("> ")
 
 		if p.wrote != nil {
-			return 0, p.wroteErr()
+			return 0, fmt.Errorf("asking the player: %w", p.wrote)
 		}
 
 		if !p.in.Scan() {
@@ -259,14 +259,6 @@ func (p *player) choose(question string, options []string) (int, error) {
 		p.sayf("  %q is not one of them; answer with a number from 1 to %d\n",
 			typed, len(options))
 	}
-}
-
-func (p *player) wroteErr() error {
-	if p.wrote == nil {
-		return nil
-	}
-
-	return fmt.Errorf("asking the player: %w", p.wrote)
 }
 
 // stopped reports why the answers ran out, and says what was lost.

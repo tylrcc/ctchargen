@@ -12,20 +12,22 @@ import (
 func TestParseTarget(t *testing.T) {
 	t.Parallel()
 
+	// The notation is how the modality is read back: the sign after the
+	// number, or none.
 	for _, tc := range []struct {
 		in       string
 		number   int
-		modality traveller.Modality
+		notation string
 	}{
-		{"8+", 8, traveller.AtLeast},
-		{"3+", 3, traveller.AtLeast},
-		{"10+", 10, traveller.AtLeast},
+		{"8+", 8, "8+"},
+		{"3+", 3, "3+"},
+		{"10+", 10, "10+"},
 		// A transcription is typed with an ASCII hyphen, and the minus the book
 		// prints may be typed as U+2212. Both must read as the same target.
-		{"3-", 3, traveller.AtMost},
-		{"3−", 3, traveller.AtMost},
-		{"12", 12, traveller.Exactly},
-		{"  8+  ", 8, traveller.AtLeast},
+		{"3-", 3, "3-"},
+		{"3−", 3, "3-"},
+		{"12", 12, "12"},
+		{"  8+  ", 8, "8+"},
 	} {
 		got, err := traveller.ParseTarget(tc.in)
 		if err != nil {
@@ -34,9 +36,9 @@ func TestParseTarget(t *testing.T) {
 			continue
 		}
 
-		if got.Number() != tc.number || got.Modality() != tc.modality {
-			t.Errorf("ParseTarget(%q) = %d%v, want %d%v",
-				tc.in, got.Number(), got.Modality(), tc.number, tc.modality)
+		if got.Number() != tc.number || got.String() != tc.notation {
+			t.Errorf("ParseTarget(%q) = %d, %v; want %d, %s",
+				tc.in, got.Number(), got, tc.number, tc.notation)
 		}
 	}
 }
@@ -103,9 +105,16 @@ func TestParseTargetRefusesAnEnDashByName(t *testing.T) {
 func TestTargetSatisfied(t *testing.T) {
 	t.Parallel()
 
-	atLeast := traveller.NewTarget(8, traveller.AtLeast)
-	atMost := traveller.NewTarget(3, traveller.AtMost)
-	exactly := traveller.NewTarget(12, traveller.Exactly)
+	parsed := func(s string) traveller.Target {
+		target, err := traveller.ParseTarget(s)
+		if err != nil {
+			t.Fatalf("ParseTarget(%q): %v", s, err)
+		}
+
+		return target
+	}
+
+	atLeast, atMost, exactly := parsed("8+"), parsed("3-"), parsed("12")
 
 	for _, tc := range []struct {
 		name   string
@@ -129,32 +138,13 @@ func TestTargetSatisfied(t *testing.T) {
 	}
 }
 
-func TestTargetRoundTripsItsNotation(t *testing.T) {
+// A Target nobody set must fail closed. Two dice cannot total 0, so a zero
+// Target satisfies nothing the procedure can throw. Outside this package
+// only ParseTarget builds one otherwise, so no other modality than the three
+// reaches a caller (#370).
+func TestAnUnsetTargetSatisfiesNothing(t *testing.T) {
 	t.Parallel()
 
-	for _, in := range []string{"8+", "3-", "12"} {
-		got, err := traveller.ParseTarget(in)
-		if err != nil {
-			t.Fatalf("ParseTarget(%q): %v", in, err)
-		}
-
-		if got.String() != in {
-			t.Errorf("ParseTarget(%q).String() = %q", in, got.String())
-		}
-	}
-}
-
-// A target built with a modality that does not exist satisfies nothing, and
-// neither does one nobody set.
-func TestAnUnknownModalitySatisfiesNothing(t *testing.T) {
-	t.Parallel()
-
-	if traveller.NewTarget(8, traveller.Modality(99)).Satisfied(9) {
-		t.Error("a target with an unknown modality was satisfied")
-	}
-
-	// A Target nobody set must fail closed. Two dice cannot total 0, so a
-	// zero Target satisfies nothing the procedure can throw.
 	unset := traveller.Target{}
 	for sum := 1; sum <= 12; sum++ {
 		if unset.Satisfied(sum) {

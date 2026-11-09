@@ -51,9 +51,6 @@ type Withdrawal struct {
 // Withdrawn is whether the reading's decision no longer governs new records.
 func (r Reading) Withdrawn() bool { return r.Withdrawal != Withdrawal{} }
 
-// ReadingOf is the reading an erratum names.
-func ReadingOf(e traveller.Erratum) Reading { return readings[e-1] }
-
 // ReadingNamed is the reading whose erratum is spelled id, as a record spells
 // it ("E002"), and whether there is one.
 func ReadingNamed(id string) (Reading, bool) {
@@ -66,7 +63,8 @@ func ReadingNamed(id string) (Reading, bool) {
 	return Reading{}, false
 }
 
-// Readings is every reading, in erratum order. Its result type is the count
+// Readings is every reading, in erratum order: the one at index i is named
+// by erratum i+1, so erratum e's is Readings()[e-1]. Its result type is the count
 // check: readings is sized by its literal, so a reading missing, or one past
 // the last entry of traveller.Errata, does not compile here. TestTheReadings holds each to its
 // place.

@@ -322,7 +322,7 @@ func unreached(t *testing.T, readings []reading, stamped map[traveller.Erratum]b
 // stampedOn is a reading's stamped-on prose as its reading states it, on one
 // line.
 func stampedOn(id traveller.Erratum) string {
-	return strings.Join(strings.Fields(rules.ReadingOf(id).StampedOn), " ")
+	return strings.Join(strings.Fields(rules.Readings()[id-1].StampedOn), " ")
 }
 
 // conditions is the readings' stamped-on prose as predicates over a finished
@@ -338,7 +338,7 @@ func conditions(tables *rules.Rules) []reading {
 	)
 
 	for i := range all {
-		all[i].withdrawn = rules.ReadingOf(all[i].id).Withdrawn()
+		all[i].withdrawn = rules.Readings()[all[i].id-1].Withdrawn()
 	}
 
 	return all

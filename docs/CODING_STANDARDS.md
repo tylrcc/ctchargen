@@ -33,7 +33,7 @@ Comments and documents quote Book 1 to 3 to show where a rule comes from. A
 quotation moved, rewrapped or retyped must match its source word for word,
 punctuation and emphasis included; compare it against the same quotation
 elsewhere in the tree. A reading's stamped-on prose is quoted from its value
-(`rules.ReadingOf`), never by a copy beside the predicate.
+(`rules.Readings`), never by a copy beside the predicate.
 
 ## A stamping predicate is written from the prose
 

@@ -21,7 +21,7 @@ func TestTheReadings(t *testing.T) {
 		t.Run(e.String(), func(t *testing.T) {
 			t.Parallel()
 
-			r := rules.ReadingOf(e)
+			r := rules.Readings()[e-1]
 			if r.ID != e {
 				t.Errorf("declared as %v", r.ID)
 			}
@@ -37,7 +37,7 @@ func TestTheReadings(t *testing.T) {
 		})
 	}
 
-	e001 := rules.ReadingOf(traveller.E001)
+	e001 := rules.Readings()[traveller.E001-1]
 
 	for field, tc := range map[string]struct{ got, prefix, suffix string }{
 		"title":   {e001.Title, "The draft is _may_", "not _must_"},
@@ -72,7 +72,7 @@ func TestAWithdrawalNamesARealReplacement(t *testing.T) {
 	}
 
 	withdrawn := func(w rules.Withdrawal) rules.Reading {
-		r := rules.ReadingOf(traveller.E004)
+		r := rules.Readings()[traveller.E004-1]
 
 		r.Withdrawal = w
 

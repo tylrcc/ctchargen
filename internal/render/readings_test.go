@@ -138,7 +138,7 @@ func TestTheIndexListsEveryReading(t *testing.T) {
 	want.WriteString("# Readings\n\n| Erratum | Title | Status |\n| --- | --- | --- |\n")
 
 	for _, e := range traveller.Errata {
-		want.WriteString("| " + e.String() + " | " + rules.ReadingOf(e).Title + " | in force |\n")
+		want.WriteString("| " + e.String() + " | " + rules.Readings()[e-1].Title + " | in force |\n")
 	}
 
 	if got := render.ReadingsIndex(); got != want.String() {
