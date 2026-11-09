@@ -22,7 +22,7 @@ credits: 16000
 pension: 0
 ---
 
-# (unnamed)
+# Other 196799
 
 Other, 7 terms, retired at 46. Known for Brawling-2 and Electronic-2. Musters out with CR 16000.
 

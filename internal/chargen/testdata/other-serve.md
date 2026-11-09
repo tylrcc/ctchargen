@@ -20,7 +20,7 @@ credits: 30000
 pension: 0
 ---
 
-# (unnamed)
+# Other 644776
 
 Other, 5 terms, retired at 38. Known for Gambling-2. Musters out with CR 30000.
 

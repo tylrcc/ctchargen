@@ -28,7 +28,7 @@ credits: 37000
 pension: 8000
 ---
 
-# (unnamed)
+# Marines Force Cmdr 3B8A89
 
 Marines Force Cmdr, 7 terms, retired at 46. Known for Mechanical-2. Musters out with CR 37000.
 

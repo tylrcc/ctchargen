@@ -21,7 +21,7 @@ pension: 0
 nobility: "baron/baroness"
 ---
 
-# (unnamed)
+# Other DBBCCC
 
 Other, 9 terms, retired at 54. Known for Medical-3, Streetwise-3 and Forgery-2. Musters out with CR 3000.
 

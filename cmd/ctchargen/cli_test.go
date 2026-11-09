@@ -37,10 +37,11 @@ var cliBaseline = map[string][]string{
 	// into a folder of its own and never removes anything, so --force had
 	// nothing left to do. So did "survivors bool false" (#421): a batch
 	// writes only the living, always, so there is nothing for the flag to
-	// switch on.
+	// switch on. And "name string " (#406): it gave every member one name,
+	// which a referee never wants; a batch member is named in the vault.
 	cmdBatch: {
 		"career string serve", "count int 0",
-		"muster string cash", "name string ", baseOutput,
+		"muster string cash", baseOutput,
 		"service string ", "skills string advanced",
 	},
 	// render, and new's --sheet and --history, were removed on purpose before

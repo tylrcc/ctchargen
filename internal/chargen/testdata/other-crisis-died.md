@@ -20,7 +20,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Other 205688
 
 Other, killed by a medical crisis in term 7, aged 46. Known for Electronic-2, Gambling-2 and Streetwise-2.
 

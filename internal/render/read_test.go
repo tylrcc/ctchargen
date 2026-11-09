@@ -23,8 +23,8 @@ func noteOf(change func(c *chargen.Character)) string {
 }
 
 // headlineOf is the line the sheet leads with, the one every headline case
-// is about. Searching the whole note is too loose: "(" would find the
-// "(unnamed)" title.
+// is about. Searching the whole note is too loose: "(" would find a
+// parenthesis anywhere in the note.
 func headlineOf(note string) string {
 	for line := range strings.Lines(note) {
 		if strings.HasPrefix(line, "UPP ") {
@@ -530,10 +530,12 @@ func TestANoteOpensWithASummary(t *testing.T) {
 	for name, tc := range summaryCases() {
 		note := noteOf(tc.change)
 
-		heading := "\n# (unnamed)\n\n"
-		if !strings.Contains(note, heading+tc.want+"\n\nUPP ") {
-			_, after, _ := strings.Cut(note, heading)
-			got, _, _ := strings.Cut(after, "\nUPP ")
+		// The summary is the paragraph between the heading line and the UPP
+		// line, whatever the heading is.
+		_, afterHeading, _ := strings.Cut(note, "\n# ")
+		_, body, _ := strings.Cut(afterHeading, "\n\n")
+
+		if got, _, _ := strings.Cut(body, "\n\nUPP "); got != tc.want {
 			t.Errorf("%s: the summary reads %q, want %q", name, got, tc.want)
 		}
 	}
@@ -607,5 +609,47 @@ func summaryCases() map[string]noteCase {
 			},
 			"Scouts, killed by the survival throw in term 3, aged 30.",
 		},
+	}
+}
+
+// A note is headed by its character's name, and an unnamed one by his title -
+// the words its batch file is named by, less the position - so an unnamed
+// note reads sensibly and is named in a vault by setting its name property
+// (#406).
+//
+// Holds: An unnamed note is headed by its title.
+func TestAnUnnamedNoteIsHeadedByItsTitle(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range map[string]noteCase{
+		"an unnamed officer": {
+			func(c *chargen.Character) {
+				c.Profile = profile(9, 3, 8, 7, 8, 8)
+				c.Enlistment = traveller.Enlisted{Service: traveller.Army}
+				c.RankName = captain
+				c.Departure = traveller.ForcedOut{}
+			},
+			"\n# Army Captain 938788\n",
+		},
+		"an unnamed civilian": {
+			func(c *chargen.Character) {
+				c.Profile = profile(8, 7, 6, 6, 5, 11)
+				c.Enlistment = traveller.DeclinedTheDraft{}
+			},
+			"\n# Civilian 87665B\n",
+		},
+		"a named one": {
+			func(c *chargen.Character) {
+				c.Inputs.Name = "Kira Vance"
+				c.Enlistment = traveller.DeclinedTheDraft{}
+			},
+			"\n# Kira Vance\n",
+		},
+	} {
+		note := noteOf(tc.change)
+		if !strings.Contains(note, tc.want) || strings.Contains(note, "(unnamed)") {
+			heading, _, _ := strings.Cut(note[strings.Index(note, "\n# ")+1:], "\n")
+			t.Errorf("%s is headed %q, want %q", name, heading, strings.TrimSpace(tc.want))
+		}
 	}
 }

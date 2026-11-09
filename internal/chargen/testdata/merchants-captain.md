@@ -28,7 +28,7 @@ pension: 8000
 nobility: "knight/dame"
 ---
 
-# (unnamed)
+# Merchants Captain 825A9B
 
 Merchants Captain, 7 terms, retired at 46. Known for Navigation-4, Dagger-2 and Mechanical-2. Musters out with CR 45000 and a Free Trader, Type A.
 

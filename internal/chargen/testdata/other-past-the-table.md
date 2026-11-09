@@ -20,7 +20,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Other FAABCC
 
 Other, killed by the survival throw in term 17, aged 86. Known for Medical-5, Forgery-4 and Streetwise-4.
 

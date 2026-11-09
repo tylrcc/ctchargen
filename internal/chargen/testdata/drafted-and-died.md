@@ -17,7 +17,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Other 8777A8
 
 Other, killed by the survival throw in term 1, aged 22.
 

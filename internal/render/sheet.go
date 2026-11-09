@@ -15,7 +15,7 @@ import (
 // Implements: The errata are on the generation record and not the sheet
 // [Generation record].
 func writeSheet(out *strings.Builder, r view) {
-	fmt.Fprintf(out, "# %s\n\n%s\n\n", nameOrBlank(r.Name), summary(r))
+	fmt.Fprintf(out, "# %s\n\n%s\n\n", heading(r), summary(r))
 	fmt.Fprintf(out, "%s\n\n", headline(r))
 
 	writeSection(out, "Skills", skillLines(r))
@@ -26,14 +26,6 @@ func writeSheet(out *strings.Builder, r view) {
 	// record below, where an id beside the outcome it governed is how a
 	// reading is checked against the page. On the sheet a player reads they
 	// are codes he cannot expand and does not need.
-}
-
-func nameOrBlank(name string) string {
-	if name == "" {
-		return "(unnamed)"
-	}
-
-	return name
 }
 
 // age reads as whole years, or years and months where a medical crisis
@@ -331,3 +323,16 @@ func skillText(name string, level int) string {
 // heldNotOwned is how a scout ship is held: in constructive possession, not
 // owned (p. 23).
 const heldNotOwned = "held in constructive possession"
+
+// heading is what a note is headed by: the character's name, or, where he
+// has none, his title, so an unnamed note reads sensibly and a referee names
+// him by setting the name and aliases properties (#406).
+//
+// Implements: An unnamed note is headed by its title [Sheet].
+func heading(r view) string {
+	if r.Name == "" {
+		return titleOf(r)
+	}
+
+	return r.Name
+}

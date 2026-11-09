@@ -24,7 +24,7 @@ pension: 0
 nobility: "baron/baroness"
 ---
 
-# (unnamed)
+# Scouts 865EBC
 
 Scouts, 7 terms, retired at 46. Known for Electronic-2. Musters out with a Scout ship, Type S, held in constructive possession.
 

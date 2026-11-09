@@ -21,7 +21,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Other 1A848A
 
 Other, killed by the survival throw in term 6, aged 42. Known for Brawling-2 and Electronic-2.
 

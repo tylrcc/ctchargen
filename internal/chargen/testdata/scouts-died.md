@@ -19,7 +19,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Scouts 7C8669
 
 Scouts, killed by the survival throw in term 2, aged 26. Known for Air/Raft-2.
 

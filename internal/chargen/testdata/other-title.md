@@ -20,7 +20,7 @@ pension: 0
 nobility: "baron/baroness"
 ---
 
-# (unnamed)
+# Other A68AAC
 
 Other, 1 term, forced out at 22. Musters out with CR 10000.
 

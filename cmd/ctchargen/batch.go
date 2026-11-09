@@ -107,7 +107,6 @@ func declareBatchFlags() batchFlagSet {
 	return batchFlagSet{
 		characterFlags: declareCharacterFlags(set, characterHelp{
 			service: "attempt every enlistment in this service: ",
-			name:    "the name to give every character",
 			career:  "the career `strategy`: ",
 			skills:  "the skills `strategy`: ",
 			muster:  "the mustering out `strategy`: ",

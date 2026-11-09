@@ -23,7 +23,7 @@ credits: 50000
 pension: 0
 ---
 
-# (unnamed)
+# Merchants 3rd Officer 754777
 
 Merchants 3rd Officer, 4 terms, forced out at 34. Known for Mechanical-2. Musters out with CR 50000.
 

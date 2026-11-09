@@ -25,7 +25,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Marines Lieutenant 671682
 
 Marines Lieutenant, killed by the survival throw in term 6, aged 42. Known for ATV-2 and Administration-2.
 

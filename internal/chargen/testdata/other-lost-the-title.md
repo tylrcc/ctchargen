@@ -21,7 +21,7 @@ credits: 16000
 pension: 0
 ---
 
-# (unnamed)
+# Other 556ACA
 
 Other, 4 terms, forced out at 34. Musters out with CR 16000.
 

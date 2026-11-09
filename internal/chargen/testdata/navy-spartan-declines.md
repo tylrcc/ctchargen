@@ -26,7 +26,7 @@ pension: 8000
 nobility: "count/countess"
 ---
 
-# (unnamed)
+# Navy Captain 766BDE
 
 Navy Captain, 7 terms, retired at 46. Known for Navigation-2, Ship's Boat-2 and Vacc Suit-2. Musters out with Travellers' Aid Society membership.
 

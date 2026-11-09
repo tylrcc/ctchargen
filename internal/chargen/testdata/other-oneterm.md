@@ -19,7 +19,7 @@ pension: 0
 nobility: "knight/dame"
 ---
 
-# (unnamed)
+# Other 64499B
 
 Other, 1 term, discharged at 22.
 

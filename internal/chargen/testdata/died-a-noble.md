@@ -21,7 +21,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Other 335C6C
 
 Other, killed by the survival throw in term 5, aged 38. Known for Brawling-2.
 

@@ -25,7 +25,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Merchants 1st Officer ACA469
 
 Merchants 1st Officer, killed by the survival throw in term 6, aged 42. Known for Electronic-2.
 

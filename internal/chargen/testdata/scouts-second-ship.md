@@ -26,7 +26,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Scouts 7868A9
 
 Scouts, 7 terms, retired at 46. Musters out with a Scout ship, Type S, held in constructive possession.
 

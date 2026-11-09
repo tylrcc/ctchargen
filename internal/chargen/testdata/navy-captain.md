@@ -26,7 +26,7 @@ pension: 8000
 nobility: "duke/duchess"
 ---
 
-# (unnamed)
+# Navy Captain 766BDF
 
 Navy Captain, 7 terms, retired at 46. Known for Navigation-2, Ship's Boat-2 and Vacc Suit-2. Musters out with CR 35000 and Travellers' Aid Society membership.
 

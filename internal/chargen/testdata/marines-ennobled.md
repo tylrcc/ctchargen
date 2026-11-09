@@ -29,7 +29,7 @@ pension: 8000
 nobility: "baron/baroness"
 ---
 
-# (unnamed)
+# Marines Colonel 73AB8C
 
 Marines Colonel, 7 terms, retired at 46. Known for Vacc Suit-3, Computer-2 and Revolver-2. Musters out with CR 35000 and Travellers' Aid Society membership.
 

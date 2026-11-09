@@ -25,13 +25,13 @@ import (
 // strings that can be transposed, and a transposed strategy is one the record
 // then reports as the one the operator asked for (#132).
 type characterFlags struct {
-	set                                   *flag.FlagSet
-	name, service, career, skills, muster *string
+	set                             *flag.FlagSet
+	service, career, skills, muster *string
 }
 
 // characterHelp is what one command says about each of its characterFlags.
 type characterHelp struct {
-	service, name, career, skills, muster string
+	service, career, skills, muster string
 }
 
 func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags {
@@ -40,7 +40,6 @@ func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags
 	return characterFlags{
 		set:     set,
 		service: set.String("service", "", help.service+serviceChoices()),
-		name:    set.String("name", "", help.name),
 		career:  set.String(careerFlag, defaults.Career.String(), help.career+chargen.CareerChoices()),
 		skills:  set.String(skillsFlag, defaults.Skills.String(), help.skills+chargen.SkillsChoices()),
 		muster:  set.String(musterFlag, defaults.Muster.String(), help.muster+chargen.MusterChoices()),
@@ -53,6 +52,7 @@ type newFlagSet struct {
 	characterFlags
 
 	auto, readings, force *bool
+	name                  *string
 	output                *string
 }
 
@@ -63,12 +63,12 @@ func declareNewFlags() newFlagSet {
 	return newFlagSet{
 		characterFlags: declareCharacterFlags(set, characterHelp{
 			service: "attempt enlistment in this service: ",
-			name:    "the character's name",
 			career:  "the --auto career `strategy`: ",
 			skills:  "the --auto skills `strategy`: ",
 			muster:  "the --auto mustering out `strategy`: ",
 		}),
 		auto:     set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
+		name:     set.String("name", "", "the character's name"),
 		readings: set.Bool("readings", false, readingsHelp),
 		output:   set.String("o", "", "write to this file rather than to standard output"),
 		force:    set.Bool("force", false, "replace the output file if it already exists"),
@@ -101,10 +101,17 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 		return err
 	}
 
+	err = checkName(*flags.name)
+	if err != nil {
+		return err
+	}
+
 	err = strategiesWithoutAuto(flags.set, *flags.auto)
 	if err != nil {
 		return err
 	}
+
+	inputs.Name = *flags.name
 
 	return writeCharacter(inputs, policy, newRendering{
 		auto: *flags.auto, readings: *flags.readings,
@@ -179,8 +186,8 @@ func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRenderi
 	return where.write(text)
 }
 
-// inputs is what the parsed flags say to generate, and the policy the
-// strategy flags name.
+// inputs is what the shared flags say to generate - all but the name, which
+// is new's alone (#406) - and the policy the strategy flags name.
 //
 // This is the boundary the strategies are parsed at, and the only one: past
 // here a Career is a Career, and no part of the engine asks again whether it
@@ -193,21 +200,7 @@ func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 		return chargen.Inputs{}, policy, fmt.Errorf("%w: %w", errUsage, err)
 	}
 
-	// A name is one line. The note prints it as markdown, as its heading,
-	// so a line break in it starts sections the character does not have
-	// (#128). Carriage return too: markdown ends a line at either.
-	if strings.ContainsAny(*f.name, "\n\r") {
-		return chargen.Inputs{}, policy, fmt.Errorf("%w: --name %q is more than one line", errUsage, *f.name)
-	}
-
-	// And it is text. The note writes it into its properties as a YAML
-	// string, which reads a byte that is not UTF-8 back as another letter, so
-	// the name a vault saw would not be the one typed.
-	if !utf8.ValidString(*f.name) {
-		return chargen.Inputs{}, policy, fmt.Errorf("%w: --name %q is not UTF-8 text", errUsage, *f.name)
-	}
-
-	in := chargen.Inputs{Name: *f.name}
+	var in chargen.Inputs
 
 	if *f.service == "" {
 		return in, policy, nil
@@ -251,4 +244,22 @@ func generate(inputs chargen.Inputs, policy chargen.Policy, auto bool,
 	}
 
 	return character, nil
+}
+
+// checkName refuses a --name the note cannot carry as typed (#128). A name is
+// one line: the note prints it as its heading, so a line break in it starts
+// sections the character does not have, and markdown ends a line at a
+// carriage return too. And it is text: the note writes it into its
+// properties as a YAML string, which reads a byte that is not UTF-8 back as
+// another letter, so the name a vault saw would not be the one typed.
+func checkName(name string) error {
+	if strings.ContainsAny(name, "\n\r") {
+		return fmt.Errorf("%w: --name %q is more than one line", errUsage, name)
+	}
+
+	if !utf8.ValidString(name) {
+		return fmt.Errorf("%w: --name %q is not UTF-8 text", errUsage, name)
+	}
+
+	return nil
 }

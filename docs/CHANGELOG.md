@@ -58,6 +58,11 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   alongside Authority, Documents and Generation record — rather than the
   section of the removed v1 contract it was first stated under (#391).
 
+- **Breaking: `batch` drops `--name` (#406).** It gave every member the same
+  name. A batch names nobody; a member is named in the vault by its note's
+  `name` and `aliases` properties. An unnamed note — a batch member, or `new`
+  without `--name` — is headed by its title, `# Army Captain 938788`, where
+  it was `# (unnamed)`.
 - A character with no enlistment, which only a generation defect could
   produce, now fails loudly in the renderer rather than reading as one who
   never served, as #377 decided for the engine (#393).

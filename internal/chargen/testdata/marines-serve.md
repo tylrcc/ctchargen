@@ -24,7 +24,7 @@ pension: 0
 nobility: "baron/baroness"
 ---
 
-# (unnamed)
+# Marines Captain A69ABC
 
 Marines Captain, 3 terms, forced out at 30. Known for ATV-2 and Tactics-2. Musters out with CR 70000.
 

@@ -28,7 +28,7 @@ pension: 8000
 nobility: "marquis/marchioness"
 ---
 
-# (unnamed)
+# Army General 965BCD
 
 Army General, 7 terms, retired at 46. Known for Tactics-3, ATV-2 and Electronic-2. Musters out with CR 30000.
 

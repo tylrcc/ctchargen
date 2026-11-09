@@ -106,8 +106,9 @@ so a batch never mixes with your notes and never removes anything. To run a
 batch again, remove its folder or name another. Each member's note is named
 for its position and the character in it — `01 Army Captain 938788.md`,
 `02 Civilian 87665B.md` — the position padded to the width of the batch.
-`--name` names the character, on its heading, and never the file: it gives
-every member the same name.
+A batch names nobody: each note is headed by its title, `# Army Captain
+938788`, and you name a member in your vault by setting the note's `name`
+and `aliases` properties, and its heading if you like.
 
 **`batch` with no `-o` writes the notes to standard output**, one after
 another, and it streams, so the first note arrives before the run finishes
@@ -168,7 +169,7 @@ note names no policy for them to belong to.
 is refused unless `--force` is given. A `batch` has no `--force`: it writes
 only into a folder of its own.
 
-**A name is one line.** `--name` is printed as the note's heading, so a name
+**A name is one line.** `new --name` is printed as the note's heading, so a name
 carrying a line break is refused rather than allowed to start sections the
 character does not have.
 

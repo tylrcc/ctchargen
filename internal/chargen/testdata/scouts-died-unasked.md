@@ -18,7 +18,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Scouts 673735
 
 Scouts, killed by the survival throw in term 1, aged 22.
 

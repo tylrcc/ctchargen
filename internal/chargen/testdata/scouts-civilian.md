@@ -15,7 +15,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Civilian 76B348
 
 A civilian who declined the draft at 18.
 

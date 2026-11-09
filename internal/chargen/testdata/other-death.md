@@ -22,7 +22,7 @@ credits: 0
 pension: 0
 ---
 
-# (unnamed)
+# Other 8346C5
 
 Other, killed by the survival throw in term 5, aged 38.
 

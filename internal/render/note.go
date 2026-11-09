@@ -74,15 +74,16 @@ func provenance(r view) string {
 		generated, r.Policy.Version, r.Policy.Career, r.Policy.Skills, r.Policy.Muster)
 }
 
-// Title is what a batch names a character's note by, whatever --name he was
-// given: his service and the rank he holds, as the headline says them, or
-// "Civilian", and his UPP (#400). A given name stays out of it: --name gives
-// every member of a batch the same one, which tells no file from another.
+// Title is what a batch names a character's note by: his service and the
+// rank he holds, as the headline says them, or "Civilian", and his UPP
+// (#400). A batch has no name to give him (#406); a referee names him in
+// the vault by his note's name and aliases properties.
 //
 // Implements: A batch member's note is named for its character [Command line].
-func Title(character *chargen.Character) string {
-	r := viewOf(character)
+func Title(character *chargen.Character) string { return titleOf(viewOf(character)) }
 
+// titleOf is a character's title, from the view.
+func titleOf(r view) string {
 	if r.Service == "" {
 		return "Civilian " + r.UPP
 	}
