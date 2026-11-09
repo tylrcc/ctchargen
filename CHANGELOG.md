@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- ADR 0005 records the decision that the transcription is the page's text, in
+  Go: the rules tables are to move from embedded JSON to Go literals of what
+  the page prints, with the lift kept, so that the last `//go:embed` goes
+  (#337–#339). The glossary defines a transcription and the lift.
+
 ## 1.0.0-rc.1
 
 The first release candidate for `v1.0.0`. The record, its shape and the sheet

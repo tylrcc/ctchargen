@@ -31,6 +31,18 @@ What a choice point puts in front of a decider: two or more legal
 alternatives, the decider's own to keep.
 _Avoid_: Options, menu, choices (for the set)
 
+**Transcription**:
+A printed table typed out by hand from a visual read of the page, twice and
+independently, so a misread cell cannot pass from one copy to the other: once
+as the page prints it, with its glyphs, abbreviations, notation and dashes,
+and once in the domain's own words.
+_Avoid_: Data file, table data, JSON
+
+**Lift**:
+Turning a transcription's printed text into the domain's values, and refusing
+what the page could not have printed.
+_Avoid_: Parse, decode
+
 **Reading**:
 A decision recorded where the page is silent or contradicts itself, with its
 page cite and the condition under which it governs a record.
