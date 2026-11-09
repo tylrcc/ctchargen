@@ -171,7 +171,7 @@ func (r *run) assessTitle() error {
 	// at 18 and still eligible is assessed the same way under either
 	// reading, so his record does not name a reading that did nothing to
 	// it (#92).
-	governed := eligible != eligibleAtEighteen || (r.dead && eligible)
+	governed := eligible != eligibleAtEighteen || (r.dead() && eligible)
 
 	errata := []traveller.Erratum(nil)
 	if governed {
@@ -196,7 +196,7 @@ func (r *run) assessTitle() error {
 
 	r.char.Nobility = Nobility{Eligible: true, Title: rank}
 
-	if r.dead {
+	if r.dead() {
 		r.log.outcomef(0, errata,
 			"held a social standing of %d at death, which is %v", social, rank)
 

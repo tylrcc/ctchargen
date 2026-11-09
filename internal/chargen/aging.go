@@ -52,7 +52,7 @@ func (r *run) agingRound(term traveller.Term) error {
 			return err
 		}
 
-		if r.dead {
+		if r.dead() {
 			return nil
 		}
 	}
@@ -128,7 +128,6 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 			term, characteristic)
 
 		r.char.Departure = traveller.KilledByMedicalCrisis{Characteristic: characteristic}
-		r.dead = true
 
 		return nil
 	}

@@ -21,7 +21,7 @@ import (
 // Implements: Commission: once per term until achieved [1:6, 10].
 func (r *run) commission(term traveller.Term) error {
 	throw, ok := r.service.Commission()
-	if !ok || r.char.Rank.Commissioned() || (r.drafted && term == 1) {
+	if !ok || r.char.Rank.Commissioned() || (r.drafted() && term == 1) {
 		return nil
 	}
 
@@ -67,7 +67,7 @@ func (r *run) promote(term traveller.Term) error {
 	if r.char.Rank >= r.service.MaxRank() {
 		r.log.outcomef(0, []traveller.Erratum{traveller.E013},
 			"already %s, the highest rank the %v print, so no promotion is thrown for in term %d",
-			r.rankName(), r.serviceName(), term)
+			r.rankName(), r.service.Name, term)
 
 		return nil
 	}
@@ -110,7 +110,7 @@ func (r *run) raise(seq int, to traveller.Rank, eligibility int, how string) err
 	// entry, which the page leaves unstated; a rank entry's moment is exact
 	// on p. 23 - "as soon as he becomes eligible" - and the worked example
 	// shows it, so this needed no reading.
-	for _, result := range r.tables.GrantsAtRank(r.serviceName(), to) {
+	for _, result := range r.tables.GrantsAtRank(r.service.Name, to) {
 		err := r.apply(result, seq, nil)
 		if err != nil {
 			return err

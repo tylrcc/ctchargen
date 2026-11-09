@@ -27,7 +27,7 @@ const (
 const forcedByTwelve = 12
 
 // reenlist makes the term's reenlistment throw and takes the character's
-// intent, reporting the intent and whether another term was forced.
+// intent. A 12 exactly forces another term, which is the intent Continue.
 //
 // The throw is made every term, whether or not the character means to stay
 // (p. 6). It is made before the intent is asked because a failed throw and a
@@ -36,7 +36,7 @@ const forcedByTwelve = 12
 // Implements: Reenlistment throw every term, no DMs [1:6].
 // Implements: A 12 exactly forces another term [1:6].
 // Implements: A 12 recurs past the seventh term [1:6–7, 21 (E003)].
-func (r *run) reenlist(term traveller.Term) (traveller.Intent, bool, error) {
+func (r *run) reenlist(term traveller.Term) (traveller.Intent, error) {
 	attempt := roll(r.roll, r.service.Reenlist, 0)
 	seq := r.log.throw("reenlistment", attempt)
 
@@ -54,13 +54,13 @@ func (r *run) reenlist(term traveller.Term) (traveller.Intent, bool, error) {
 
 		r.log.outcomef(seq, errata, "a 12 exactly: the service requires another term")
 
-		return traveller.Continue, true, nil
+		return traveller.Continue, nil
 	}
 
 	if !attempt.succeeded {
 		r.depart(seq, term, traveller.ForcedOut{}, "reenlistment denied")
 
-		return traveller.Discharge, false, nil
+		return traveller.Discharge, nil
 	}
 
 	return r.intent(seq, term)
@@ -68,23 +68,23 @@ func (r *run) reenlist(term traveller.Term) (traveller.Intent, bool, error) {
 
 // intent asks what the character means to do, when more than one answer is
 // legal.
-func (r *run) intent(seq int, term traveller.Term) (traveller.Intent, bool, error) {
+func (r *run) intent(seq int, term traveller.Term) (traveller.Intent, error) {
 	offered := r.offeredIntents(term)
 
 	if len(offered) == 1 {
 		r.settle(seq, term, offered[0])
 
-		return offered[0], false, nil
+		return offered[0], nil
 	}
 
 	chosen, err := r.decide.ReenlistIntent(offered)
 	if err != nil {
-		return chosen, false, fmt.Errorf("deciding whether to reenlist: %w", err)
+		return chosen, fmt.Errorf("deciding whether to reenlist: %w", err)
 	}
 
 	r.settle(seq, term, chosen)
 
-	return chosen, false, nil
+	return chosen, nil
 }
 
 // offeredIntents is what is legal at the end of a term.

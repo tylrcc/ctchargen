@@ -18,7 +18,6 @@ import (
 type log struct {
 	events []traveller.Event
 	errata map[traveller.Erratum]bool
-	seq    int
 
 	// watch is called with each event as it is appended, or nil when nobody
 	// is reading. It is how interactive mode shows the procedure between
@@ -31,11 +30,10 @@ func newLog() *log {
 	return &log{errata: make(map[traveller.Erratum]bool)}
 }
 
-func (l *log) next() int {
-	l.seq++
-
-	return l.seq
-}
+// next is the number the next event appended will carry: events are
+// numbered from 1 in the order they are appended, so it is read off the
+// count rather than kept beside it (#368).
+func (l *log) next() int { return len(l.events) + 1 }
 
 // add appends an event and shows it to whoever is watching.
 func (l *log) add(event traveller.Event) {

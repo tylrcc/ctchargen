@@ -118,15 +118,20 @@ func generate(in Inputs, decider Decider, policy *AutoPolicy, options []Option) 
 	return run.char, nil
 }
 
-// serviceName is the service this run is generating in.
-//
-// Every caller is past enlistment, so the "did he serve at all" half of
-// ServedIn is not in question here; a civilian run returns before any of
-// them. The name comes from the Enlistment rather than a field beside it.
-func (r *run) serviceName() traveller.ServiceName {
-	name, _ := r.char.ServedIn()
+// dead reports whether the character died, read off his departure rather
+// than kept beside it (#368).
+func (r *run) dead() bool { return traveller.Fatal(r.char.Departure) }
 
-	return name
+// drafted reports whether the draft is what entered the character in his
+// service, read off his enlistment by the fold ServedIn uses (#368). Every
+// caller is past enlistment.
+func (r *run) drafted() bool {
+	var codec serviceCodec
+
+	// A fold over a codec cannot fail: every case only assigns.
+	_ = r.char.Enlistment.Fold(&codec)
+
+	return codec.drafted
 }
 
 // run is one generation in progress.
@@ -138,8 +143,6 @@ type run struct {
 	char   *Character
 
 	service  rules.Service
-	drafted  bool
-	dead     bool
 	eligible int
 
 	// rolledSocial is the Social Standing of p. 4, before anything moved
@@ -180,7 +183,7 @@ func (r *run) generate() error {
 		return err
 	}
 
-	if !r.dead {
+	if !r.dead() {
 		err := r.musterOut()
 		if err != nil {
 			return err

@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The engine's run state no longer keeps copies of what the character
+  holds: whether he died is read off his departure, whether he was drafted
+  off his enlistment, the service's name off the service joined, and an
+  event's number off the count of events. A 12 on the reenlistment throw
+  is the intent to continue, with no flag beside it (#368).
 - The passage prices and the 90% resale rate of pp. 21-22 are no longer
   transcribed: they were lifted and checked, and nothing read them, since
   selling a passage is play after generation. Passages are still benefits a

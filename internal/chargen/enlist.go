@@ -70,8 +70,6 @@ func (r *run) draft() error {
 	seq := r.log.dice("draft", face)
 	r.log.outcomef(seq, []traveller.Erratum{traveller.E001}, "drafted into the %v", name)
 
-	r.drafted = true
-
 	return r.join(traveller.Drafted{Service: name})
 }
 
@@ -105,10 +103,16 @@ func (r *run) chooseService() (traveller.ServiceName, error) {
 //
 // The service is read back off the enlistment rather than passed beside it:
 // a name parameter would be a second copy of the fact the sum already
-// carries, and nothing would hold the two equal.
+// carries, and nothing would hold the two equal. Everything after it reads
+// the name as r.service.Name.
 func (r *run) join(how traveller.Enlistment) error {
 	r.char.Enlistment = how
-	r.service = r.tables.Service(r.serviceName())
+
+	// join is handed only an enlistment that entered a service, so ServedIn's
+	// second result is true here; a civilian never joins.
+	name, _ := r.char.ServedIn()
+
+	r.service = r.tables.Service(name)
 
 	return r.grantsOnEntering()
 }
@@ -120,7 +124,7 @@ func (r *run) join(how traveller.Enlistment) error {
 // Implements: Service-wide rank and service skills, granted once on entering
 // [1:23 (E005)].
 func (r *run) grantsOnEntering() error {
-	granted := r.tables.GrantsOnEntering(r.serviceName())
+	granted := r.tables.GrantsOnEntering(r.service.Name)
 	if len(granted) == 0 {
 		return nil
 	}

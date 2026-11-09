@@ -44,7 +44,6 @@ func (r *run) term(term traveller.Term) (bool, error) {
 		// The fatal term counts, and its four years with it (E004).
 		r.char.Age = r.char.Age.PlusYears(traveller.Years)
 		r.char.Departure = traveller.KilledBySurvivalThrow{}
-		r.dead = true
 
 		return true, nil
 	}
@@ -66,7 +65,7 @@ func (r *run) term(term traveller.Term) (bool, error) {
 		return false, err
 	}
 
-	intent, forced, err := r.reenlist(term)
+	intent, err := r.reenlist(term)
 	if err != nil {
 		return false, err
 	}
@@ -78,11 +77,11 @@ func (r *run) term(term traveller.Term) (bool, error) {
 		return false, err
 	}
 
-	if r.dead {
+	if r.dead() {
 		return true, nil
 	}
 
-	if forced || intent == traveller.Continue {
+	if intent == traveller.Continue {
 		return false, nil
 	}
 

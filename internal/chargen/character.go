@@ -146,10 +146,12 @@ func (f ForcedService) Service() (traveller.ServiceName, bool) {
 	return *f.service, true
 }
 
-// serviceCodec folds an enlistment into the service it entered.
+// serviceCodec folds an enlistment into the service it entered, and whether
+// the draft is what entered it.
 type serviceCodec struct {
 	service traveller.ServiceName
 	served  bool
+	drafted bool
 }
 
 func (s *serviceCodec) Enlisted(service traveller.ServiceName) error {
@@ -159,7 +161,7 @@ func (s *serviceCodec) Enlisted(service traveller.ServiceName) error {
 }
 
 func (s *serviceCodec) Drafted(service traveller.ServiceName) error {
-	s.service, s.served = service, true
+	s.service, s.served, s.drafted = service, true, true
 
 	return nil
 }
