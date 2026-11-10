@@ -5,99 +5,117 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- The generation record names each choice in the words of the page that poses
-  it, with that page — `attempt a commission (p. 6)` where it printed
-  `AttemptCommission` (#402).
-- The sheet's service record tells the career a term at a time, with the
-  grants on entering the service on the enlistment line and any medical crisis
-  survived (#401):
-  `Term 7: promoted Captain (Social Standing +1); Education +1, Engineer-1`.
-- **Breaking: the JSON record is gone (#398, ADR 0006).** `new` and `batch`
-  write one markdown note per character: the sheet, then the generation
-  record, then the ruleset, the build where the command wrote it, and who
-  answered. The note is the only way back to a character. `render`,
-  `new --sheet` and `new --history`, the schema and its examples, and
-  `batch`'s NDJSON stream are removed. `batch` writes one note per member into
-  a directory, or the notes one after another to standard output. Records
-  written by rc.3 and earlier can no longer be rendered;
-  `ctchargen readings <id>` still explains any reading id one names. The
-  note's shape is not frozen at `v1.0.0`; what the release freezes is the
-  command line, and the property names #399 added.
-- A batch names each note for its character as well as its position —
-  `01 Army Captain 938788.md` — so a vault lists a batch by who is in it (#400).
-- **Breaking: a batch writes only into a folder of its own (#426).** `-o`
-  names a folder that is new, or empty but for hidden files; anything else
-  refuses the batch before anyone is generated. `batch --force` is removed:
-  a batch never removes anything, so it can't touch a referee's own notes
-  (#408). An `-o` ending in `.md` is refused, where it made a folder of that
-  name (#416). A batch that stops partway says its folder holds what was
-  written.
+## 1.0.0-rc.4
 
-- **Breaking: a batch writes only the living (#421).** It passes over the
-  dead and generates another until it has the number asked for, as
-  `--survivors` did; `--survivors` is removed. The closing line ends with how
-  many were passed over, where any were, and no longer with "N died" or
-  "none died". Every batch now gives up, with an error, if it generates a
-  hundred characters per one asked for without finding them living (#410's
-  died count went with it).
+The fourth release candidate for `v1.0.0`, and the one that changes what
+the tool writes. The JSON record is gone: each character is one markdown
+note, a sheet a referee reads at the table and the generation record that
+says how it came to be, opening with properties a vault can query. A batch
+writes only the living, into a folder of its own, and the auto policy now
+draws the service, so a batch makes a crew rather than a squad of Army. The
+command line loses five flags and a subcommand, and what is left of it, with
+the note's property names, is what `v1.0.0` freezes (#398, #399).
 
-- The generation record sits under its one `## Generation record` heading,
-  each step a bold line (`**18. term 1 (pp. 5-7)**`) rather than a heading of
-  its own, so a note's outline shows the sheet's sections and one entry for
-  the record. The live view prints each step as a plain numbered line (#422).
+### Install
 
-- A note opens with properties a vault can query — the UPP, the six
-  characteristics, age, service, rank, terms, `status` (`alive` or `dead`),
-  departure, skills, credits, pension and nobility, with the name as an alias
-  — and under its heading a one-paragraph summary a referee can read aloud.
-  The property names freeze at `v1.0.0` (#399, #418, #425).
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.4
+```
 
-- The coverage map's promise labels name a promise's topic from a closed list,
-  in today's words — Command line, Sheet, Choices, Domain, Transcription,
-  alongside Authority, Documents and Generation record — rather than the
-  section of the removed v1 contract it was first stated under (#391).
+**No binaries are attached.** A release is a tag, installed with `go install`.
 
-- **Breaking: `batch` drops `--name` (#406).** It gave every member the same
-  name. A batch names nobody; a member is named in the vault by its note's
-  `name` and `aliases` properties. An unnamed note — a batch member, or `new`
-  without `--name` — is headed by its title, `# Army Captain 938788`, where
-  it was `# (unnamed)`.
-- `new -o` onto a file already there, without `--force`, onto a directory, or
-  into a folder that doesn't exist is refused before the first question, where
-  a guided session used to run to its end and lose every answer to the
-  refusal (#424).
-- A characteristic change the floor or the ceiling held is no longer `+0` on
-  the sheet: it says the table's change and where it stayed, as the
-  generation record does: `Strength +1 (held at 15)` (#409).
-- A `batch --count` near the top of an int generates instead of giving up at
-  once having generated nobody: its search bound overflowed (#423).
-- The service history and the service attempted are stated once, in the
-  generation record (#412, #397): they are read from typed facts in the log
-  rather than kept beside it. No note changes.
-- The characteristics and the skills are stated once, in the generation
-  record (#441): each initial roll and each expertise taken at mustering out
-  now carries a typed fact, and both are read from the log rather than kept
-  beside it. No note changes.
-- The benefits, the pension and the title are stated once, in the generation
-  record (#441): each outcome that delivers one carries a typed fact with the
-  value the engine reached, and all three are read from the log rather than
-  kept beside it. No note changes.
-- The career is stated once, in the generation record (#441): how he
-  entered, his rank, his terms, his age and how he left. The draft, the draft
-  declined, each reenlistment outcome and each death carry a typed fact with
-  the age and rank the engine reached, and the character keeps nothing beside
-  its log but what it was given and what stamped it. No note changes.
+### Breaking
+
+- **The JSON record is gone (#398, ADR 0006).** `new` and `batch` write one
+  markdown note per character: the sheet, then the generation record, then
+  the ruleset, the build where the command wrote it, and who answered. The
+  note is the only way back to a character. `render`, `new --sheet` and
+  `new --history`, the schema and its examples, and `batch`'s NDJSON stream
+  are removed. `batch` writes one note per member into a directory, or the
+  notes one after another to standard output. Records written by rc.3 and
+  earlier can no longer be rendered; `ctchargen readings <id>` still explains
+  any reading id one names. The note's shape is not frozen at `v1.0.0`; what
+  the release freezes is the command line, and the property names.
+- **A batch writes only into a folder of its own (#426).** `-o` names a
+  folder that is new, or empty but for hidden files; anything else refuses
+  the batch before anyone is generated. `batch --force` is removed: a batch
+  never removes anything, so it can't touch a referee's own notes (#408). An
+  `-o` ending in `.md` is refused, where it made a folder of that name
+  (#416). A batch that stops partway says its folder holds what was written.
+- **A batch writes only the living (#421).** It passes over the dead and
+  generates another until it has the number asked for, as `--survivors` did;
+  `--survivors` is removed. The closing line ends with how many were passed
+  over, where any were, and no longer with "N died" or "none died". Every
+  batch gives up, with an error, if it generates a hundred characters per one
+  asked for without finding them living (#410).
+- **`batch` drops `--name` (#406).** It gave every member the same name. A
+  batch names nobody; a member is named in the vault by its note's `name` and
+  `aliases` properties. An unnamed note — a batch member, or `new` without
+  `--name` — is headed by its title, `# Army Captain 938788`, where it was
+  `# (unnamed)`.
 - **The auto policy draws the service** (#420), uniformly among the six, with
   the run's own dice, where it took the likeliest enlistment every time and a
   batch came out nearly all Army. `PolicyVersion` is 4; `--career` no longer
   touches the service attempted.
-- State and branches no note reaches are gone (#444, #445, #446): the count of
-  lost scout ships nothing read, the summary's and sheet's handling of a served
-  character with no departure, the service record's history check, and the
-  readings section's "names no reading" line. No note changes.
-- A character with no enlistment, which only a generation defect could
-  produce, now fails loudly in the renderer rather than reading as one who
-  never served, as #377 decided for the engine (#393).
+
+### The note
+
+- **It opens with properties a vault can query** — the UPP, the six
+  characteristics, age, service, rank, terms, `status` (`alive` or `dead`),
+  departure, skills, credits, pension and nobility, with the name as an alias
+  — and under its heading a one-paragraph summary a referee can read aloud.
+  The property names freeze at `v1.0.0` (#399, #418, #425).
+- **The sheet's service record tells the career a term at a time**, with the
+  grants on entering the service on the enlistment line and any medical
+  crisis survived (#401):
+  `Term 7: promoted Captain (Social Standing +1); Education +1, Engineer-1`.
+- **A characteristic change the floor or the ceiling held** is no longer `+0`
+  on the sheet: it says the table's change and where it stayed, as the
+  generation record does: `Strength +1 (held at 15)` (#409).
+- **The generation record sits under its one `## Generation record`
+  heading**, each step a bold line (`**18. term 1 (pp. 5-7)**`) rather than a
+  heading of its own, so a note's outline shows the sheet's sections and one
+  entry for the record. The live view prints each step as a plain numbered
+  line (#422).
+- **The generation record names each choice in the words of the page that
+  poses it**, with that page — `attempt a commission (p. 6)` where it printed
+  `AttemptCommission` (#402).
+- **A batch names each note for its character** as well as its position —
+  `01 Army Captain 938788.md` — so a vault lists a batch by who is in it
+  (#400).
+
+### Fixed
+
+- **`new -o` onto a file already there**, without `--force`, onto a
+  directory, or into a folder that doesn't exist is refused before the first
+  question, where a guided session used to run to its end and lose every
+  answer to the refusal (#424).
+- **A `batch --count` near the top of an int generates** instead of giving
+  up at once having generated nobody: its search bound overflowed (#423).
+- **A generation defect fails loudly.** A character with no enlistment, or a
+  served one with no departure or no enlistment throw, now panics in the
+  renderer rather than reading as one who never served, as #377 decided for
+  the engine (#393, #445, #454).
+
+### Inside
+
+No note changes from any of these.
+
+- **The event log is the one store** (#412, #397, #441, ADR 0006). Every
+  outcome a sheet reads carries a typed fact with the value the engine
+  reached — the characteristics, the skills, the benefits, the pension, the
+  title, and the career: how he entered, his rank, his terms, his age and how
+  he left. The character keeps nothing beside its log but what it was given
+  and what stamped it.
+- **State and branches no note reaches are gone** (#444, #445, #446): the
+  count of lost scout ships nothing read, the service record's history check,
+  and the readings section's "names no reading" line.
+- **The coverage map's promise labels** name a promise's topic from a closed
+  list, in today's words — Command line, Sheet, Choices, Domain,
+  Transcription, alongside Authority, Documents and Generation record —
+  rather than the section of the removed v1 contract it was first stated
+  under (#391).
+- Comments that still told the old story were reworded (#447, #453).
 
 ## 1.0.0-rc.3
 

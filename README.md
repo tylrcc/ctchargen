@@ -13,7 +13,7 @@ which the tool prints on request and names on every note it governs.
 ## Install
 
 ```sh
-go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.3
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.4
 ```
 
 Go excludes prereleases from `@latest`, so a prerelease installs by name. That

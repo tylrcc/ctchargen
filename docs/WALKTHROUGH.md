@@ -1,6 +1,6 @@
 # Walkthrough
 
-> Release snapshot for `v1.0.0-rc.3`. It describes that tag, not `main`.
+> Release snapshot for `v1.0.0-rc.4`. It describes that tag, not `main`.
 > Between releases nothing reads, sweeps or updates it (CLAUDE.md, "Release
 > snapshots"). `THEORY.md` explains why the system is shaped this way; this
 > document follows one character through the code.
@@ -8,33 +8,42 @@
 ## Overview
 
 `ctchargen` is a Go command that generates Classic Traveller characters by
-walking Book 1's procedure (pp. 4–25 of the 1977 text) and writes a JSON
-**record** of everything that happened: every die, every choice and what was
-offered, every consequence, and which recorded readings governed it. It has
-five subcommands:
+walking Book 1's procedure (pp. 4–25 of the 1977 text) and writes each one as
+a markdown **note** (ADR 0006): properties a vault can query, a heading and a
+summary a referee can read aloud, the sheet, the **generation record** of
+every die thrown and every choice made, and closing lines naming what wrote
+it. The note is the only way back to a character; nothing reads one back. It
+has four subcommands:
 
-- `new`: one character, answered by the `--auto` policy or by a person at the
-  terminal;
-- `batch`: many auto characters;
-- `render`: a record read back as a sheet or a transcript;
-- `readings`: the readings the records name, listed or written in full;
+- `new`: one character, answered by the `--auto` policy (an **auto run**) or
+  by a person at the terminal (a **guided run**);
+- `batch`: many auto runs, each written as its own note into a folder of the
+  batch's own, or one after another to standard output;
+- `readings`: the readings a record's ids name, listed or written in full;
 - `version`.
 
-There are no dependencies beyond the standard library at run time; the one
-module requirement, a JSON Schema validator, is imported only by tests. The
-rules tables are Go literals typed as the page prints them, lifted into the
-domain's values once per process (ADR 0005). The readings, the decisions taken
-where the page is silent, are Go values compiled in beside them (ADR 0004).
+There are no dependencies beyond the standard library. The rules tables are
+Go literals typed as the page prints them and **lifted** into the domain's
+values once per process (ADR 0005). The readings, the decisions taken where
+the page is silent, are Go values compiled in beside them (ADR 0004).
+
+The one idea to hold through everything below: the generation record is the
+character. Every outcome a sheet reads carries a typed `traveller.Fact`, and
+everything the note says about the character — the UPP, the skills, the
+possessions, the service record, the age, how the service ended — is folded
+out of those facts. The engine keeps its own working copy of the character
+while it runs, because every DM reads it, but the finished `Character` holds
+only its log and what it was given.
 
 ## Architecture
 
 ```text
-cmd/ctchargen/        the subcommands; stdout carries the record, stderr the conversation
-internal/traveller/   the domain: alphabets, values, sealed sums, events (imports nothing here)
+cmd/ctchargen/        the subcommands; stdout carries the note, stderr the conversation
+internal/traveller/   the domain: alphabets, values, the sums, events and facts (imports nothing here)
 internal/rules/       every table of pp. 4–25, transcribed in Go and lifted once, and the readings as values
 internal/dice/        an unseeded stream of dice
-internal/chargen/     the procedure, the Decider it asks, and the auto run's Policy
-internal/render/      the record, the sheet and transcript rendered from its bytes, and the readings' text
+internal/chargen/     the procedure, the Decider it asks, the auto run's Policy, and the folds that read the log
+internal/render/      the note: properties, summary, sheet, generation record; and the readings' text
 internal/scripted/    test support: the strict roller fixtures and walks play
 internal/coverage/    test code only: holds the Implements: and Holds: markers to each other
 internal/mutate/      a tool: runs a command against a scratch copy with one edit made
@@ -42,18 +51,24 @@ internal/mutate/      a tool: runs a command against a scratch copy with one edi
 
 The arrows point one way. `traveller` imports none of the others; `rules` and
 `chargen` import `traveller`, and `chargen` reads `rules` and rolls `dice`;
-`render` imports `chargen` for the character it projects, `traveller` for its
-values, and `rules` for the readings' prose. Data flows in a line: flags
-become `chargen.Inputs` and a `Policy` (or a person), `chargen` walks the
-procedure against `rules` and a roller and produces a `*chargen.Character`
-carrying its event log, and `render` projects that into the record, then
-renders the sheet and the transcript from the record's bytes.
+`render` imports `chargen` for the character, `traveller` for its values, and
+`rules` for the readings' prose. Data flows in a line: flags become
+`chargen.Inputs` and a `Policy` (or a person), `chargen` walks the procedure
+against `rules` and a roller and hands back a `*chargen.Character` whose log
+is the whole of it, and `render` folds that log into the note.
+
+The character followed here is the golden
+`internal/chargen/testdata/drafted-then-commissioned.md`: the run
+`ctchargen new --auto --service navy` makes under the default policy, played
+from a scripted roller. The Navy rejects him, the draft puts him in the
+Merchants, he is commissioned and promoted in his second term, the
+reenlistment throw forces him out after his fourth, and he musters out with
+cash and two Low Passages.
 
 ## 1. The command
 
-`main` hands everything to `run`, which takes the two output channels apart.
-`out` is the data channel and `asking` is where the tool talks to a person,
-so `ctchargen new | jq` pipes a record and not a conversation.
+`main` hands everything to `run`, and maps the result to the exit status the
+README promises: 0 or 1.
 
 `cmd/ctchargen/main.go` — `main`
 
@@ -68,103 +83,110 @@ func main() {
 }
 ```
 
-`run` answers help first and then dispatches on the subcommand. Its `options`
-exist for tests: the only one, `withDice`, supplies a scripted roller.
+`run` takes the two output channels apart. `out` carries the note and
+`asking` is where the tool talks to a person, so `ctchargen new > kira.md`
+saves a note and not a conversation. After answering help, it dispatches on
+the subcommand.
 
 `cmd/ctchargen/main.go` — `run`
 
 ```go
-	if args[0] == "help" || isHelpFlag(args[0]) {
-		if len(args) > 1 {
-			return fmt.Errorf("%w: %s; run `ctchargen <command> --help` for one command's flags",
-				errUsage, helpTakesNoArguments(args[1]))
-		}
-
-		return writeTopLevelHelp(out)
-	}
-
 	switch args[0] {
 	case "new":
 		return newCharacter(args[1:], in, out, asking, chosen.dice)
 	case "batch":
 		return batch(args[1:], out, asking, chosen.dice)
-	case "render":
-		return renderRecord(args[1:], out)
 	case "readings":
 		return readings(args[1:], out)
 	case "version":
 		return version(args[1:], out)
+	default:
+		return fmt.Errorf("%w: unknown command %q; want %s; run `ctchargen --help`",
+			errUsage, args[0], commandList)
+	}
 ```
 
-Help asked for is not a misuse: it leaves by `out` and exits 0. A word after
-a help flag is refused rather than dropped, at the top level and on every
-subcommand, and every one of those refusals is worded by
-`helpTakesNoArguments`. The exit status is 0 or 1, whatever the failure
-(#121), and the reason goes to stderr after `ctchargen:`.
+`chosen.dice` is a `source`: nil in a real run, where the engine rolls its own
+unseeded stream, and a scripted roller only when a test passes `withDice`.
+Every generation the command makes takes the same options, so the build name
+has one place to come from (ADR 0002).
+
+`cmd/ctchargen/main.go` — `source.options`
+
+```go
+func (s source) options() []chargen.Option {
+	options := []chargen.Option{chargen.WithBuild(build())}
+
+	if s != nil {
+		options = append(options, chargen.WithRoller(s()))
+	}
+
+	return options
+}
+```
 
 ## 2. `new`: from flags to a generation
 
-`new` and `batch` declare the flags a character is generated from in one
-place. The strategies' defaults are read from `chargen.DefaultPolicy`, so the
-help prints the default an auto run applies and cannot disagree with it
-(#367):
+`new` and `batch` share the flags a character is generated from —
+`--service` and the three strategies — declared once in
+`declareCharacterFlags`, whose strategy defaults are read from
+`chargen.DefaultPolicy` so the help cannot disagree with what an auto run
+applies. `new` adds `--auto`, `--name`, `--readings`, `-o` and `--force`.
 
-`cmd/ctchargen/new.go` — `declareCharacterFlags`
+The strategies are parsed at this boundary and nowhere else. A `--service`
+word becomes a `chargen.ForcedService`, one value that is either a service or
+nothing, so no zero `ServiceName` (which is Navy) can stand in for "none".
+
+`cmd/ctchargen/new.go` — `characterFlags.inputs`
 
 ```go
-func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags {
-	defaults := chargen.DefaultPolicy()
-
-	return characterFlags{
-		set:     set,
-		service: set.String("service", "", help.service+serviceChoices()),
-		name:    set.String("name", "", help.name),
-		career:  set.String(careerFlag, defaults.Career.String(), help.career+chargen.CareerChoices()),
-		skills:  set.String(skillsFlag, defaults.Skills.String(), help.skills+chargen.SkillsChoices()),
-		muster:  set.String(musterFlag, defaults.Muster.String(), help.muster+chargen.MusterChoices()),
+func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
+	policy, err := chargen.ParsePolicy(*f.career, *f.skills, *f.muster)
+	if err != nil {
+		return chargen.Inputs{}, policy, fmt.Errorf("%w: %w", errUsage, err)
 	}
+
+	var in chargen.Inputs
+
+	if *f.service == "" {
+		return in, policy, nil
+	}
+
+	for _, known := range traveller.ServiceNames {
+		if strings.EqualFold(known.String(), *f.service) {
+			in.Forced = chargen.ForceService(known)
+
+			return in, policy, nil
+		}
+	}
+
+	return in, policy, fmt.Errorf("%w: no service is called %q", errUsage, *f.service)
 }
 ```
 
-`newCharacter` parses the flags, refuses a positional word (the flag package
-stops at the first one, so `new foo --auto` would leave `--auto` unparsed),
-and turns the strategy flags into a `chargen.Policy`. That is the one place
-strategies are parsed: past it, a `Career` is a `Career`. Then it refuses the
-flag combinations that cannot all be meant. Without `--auto`, a strategy flag
-that was explicitly set is refused, because a person answers every choice it
-would have decided (`strategiesWithoutAuto`). `--sheet` with `--history` is
-refused (`flagsThatContradict`). And `--readings`, which ends a transcript
-with the readings it names, is refused without `--history`, because on a
-sheet or a record it would add nothing and say nothing:
-
-`cmd/ctchargen/new.go` — `readingsWithoutHistory`
-
-```go
-func readingsWithoutHistory(readings, history bool) error {
-	if readings && !history {
-		return fmt.Errorf("%w: --readings ends a transcript, and needs --history", errUsage)
-	}
-
-	return nil
-}
-```
-
-`render` makes the same check through the same function. What the flags say
-to do with the character is gathered into one `newRendering`, and
-`writeCharacter` is the whole of `new` after parsing: generate, render, write.
+`newCharacter` then refuses what it can refuse before anyone is asked
+anything: a stray positional word, a `--name` that is not one line of UTF-8
+(the note writes it as a heading and as a YAML string), and a strategy flag
+without `--auto`, which would decide nothing on a guided run. What is left is
+four steps.
 
 `cmd/ctchargen/new.go` — `writeCharacter`
 
 ```go
+func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRendering,
+	in io.Reader, out, asking io.Writer, dice source,
+) error {
+	err := refusedBefore(how.output, how.force)
+	if err != nil {
+		return err
+	}
+
 	character, err := generate(inputs, policy, how.auto, in, asking, dice)
 	if err != nil {
 		return err
 	}
 
-	text, err := rendered(character, how)
-	if err != nil {
-		return err
-	}
+	text := render.Note(character, how.readings)
 
 	where, err := openDestination(out, how.output, how.force)
 	if err != nil {
@@ -172,34 +194,57 @@ to do with the character is gathered into one `newRendering`, and
 	}
 
 	return where.write(text)
-```
-
-`rendered` always encodes the record first. A sheet or a transcript is then
-rendered from those bytes by `renderText`, the function `render` calls on a
-file it has read, so a character just generated and one written long ago take
-one route to the page (#363):
-
-`cmd/ctchargen/new.go` — `rendered`
-
-```go
-func rendered(character *chargen.Character, how newRendering) (string, error) {
-	encoded, err := render.JSON(character)
-	if err != nil {
-		return "", fmt.Errorf("rendering: %w", err)
-	}
-
-	if !how.sheet && !how.history {
-		return string(encoded), nil
-	}
-
-	return renderText(encoded, how.history, how.readings)
 }
 ```
 
-`generate` picks the way in. `--auto` is an **auto run** under the policy. A
-run without it is a **guided run**, answered by a `player` that reads stdin and
-watches the record as it is written, so each throw reaches the person between
-questions.
+`refusedBefore` is new since rc.3 (#424). A guided session used to run to its
+end and only then find that `-o` named a file already there, losing every
+answer. Now the path is checked first: its folder must exist, and the path
+itself must be absent unless `--force` is given, and never a directory.
+
+`cmd/ctchargen/new.go` — `refusedBefore`
+
+```go
+func refusedBefore(path string, force bool) error {
+	if path == "" {
+		return nil
+	}
+
+	folder := filepath.Dir(path)
+	if !isDirectory(folder) {
+		return fmt.Errorf("%w: %s is not a folder that exists, so -o %s cannot be written",
+			errUsage, folder, path)
+	}
+
+	_, err := os.Lstat(path)
+	if err == nil && (!force || isDirectory(path)) {
+		// inTheWay names a directory as one, with no --force advice (#254).
+		return inTheWay(path)
+	}
+
+	return nil
+}
+```
+
+A transcript of commands run against a build of this tree, from a scratch
+folder (nothing re-runs it):
+
+```text
+$ ctchargen new --auto -o crew/x/y.md
+ctchargen: usage: crew/x is not a folder that exists, so -o crew/x/y.md cannot be written
+$ touch kira.md; ctchargen new -o kira.md
+ctchargen: usage: kira.md already exists; pass --force to replace it
+```
+
+The second is a guided run refused before its first question. The check is
+not the last word: without `--force`, the note is still written through an
+exclusive open, which refuses a file that appeared during the session, and
+with `--force` it is staged beside the path and renamed over it only once the
+whole note is written (`replacing`).
+
+`generate` is the fork between the two ways in. An auto run hands the policy
+to the engine; a guided run builds a `player` and also watches the record as
+it is written, so the throws reach the person between questions.
 
 `cmd/ctchargen/new.go` — `generate`
 
@@ -219,64 +264,47 @@ questions.
 		chargen.WithObserver(asked.watch))...)
 ```
 
-Both branches take `dice.options()`. It is the one call every generation the
-command makes, which is why the build name travels in it:
-
-`cmd/ctchargen/main.go` — `options`
-
-```go
-func (s source) options() []chargen.Option {
-	options := []chargen.Option{chargen.WithBuild(build())}
-
-	if s != nil {
-		options = append(options, chargen.WithRoller(s()))
-	}
-
-	return options
-}
-```
-
-In production `s` is nil, so a generation rolls dice of its own. A test
-passes a scripted source. `ctchargen version` prints the same `build()`, so
-the build a record names is the line `version` writes.
-
 ## 3. The engine's two ways in
 
-`Auto` and `Guided` differ in one argument to the shared `generate`. An auto
-run passes a pointer to its policy, which becomes `Character.Policy`; a guided
-run passes nil, and that absence is what says a person answered.
+`chargen` has two exported entry points, and which one was called is fixed
+before anything is asked. The `*Policy` is the whole of what marks an auto
+run: `Guided` passes nil, so the note can never name a policy that did not
+answer.
 
-`internal/chargen/generate.go` — `Auto, Guided`
+`internal/chargen/generate.go` — `Auto`
 
 ```go
 func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
 	// The pointer is what marks an auto run: Guided passes nil.
 	return generate(in, policy, &policy, options)
 }
-...
+```
+
+`internal/chargen/generate.go` — `Guided`
+
+```go
 func Guided(in Inputs, decider Decider, options ...Option) (*Character, error) {
 	return generate(in, decider, nil, options)
 }
 ```
 
-The version the policy answered as is not carried on the character. It is
-this build's `PolicyVersion`, and the record writes it beside the strategies
-(#369, section 9).
-
-`generate` loads the rules, builds a `run`, applies the options (a roller, an
-observer, the build), wraps the decider in the `logging` gate, and walks; then
-it sorts the skills and takes the events and the stamped errata off the log.
+`generate` loads the rules, builds a `run`, applies the options, wraps the
+decider in the `logging` gate (section 6), and walks the procedure. When the
+walk ends, the character is handed its events and its stamped errata, and
+nothing else: there is no step that copies a profile, a skill list or a
+career onto it.
 
 `internal/chargen/generate.go` — `generate`
 
 ```go
+	record := newLog()
+
 	run := &run{
 		tables: tables,
 		roll:   dice.New(),
 		log:    record,
-		char: &Character{
-			Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy,
-		},
+		char:   &Character{Inputs: in, Policy: policy},
+		atAge:  traveller.NewAge(traveller.StartingAge),
 	}
 
 	for _, option := range options {
@@ -286,41 +314,70 @@ it sorts the skills and takes the events and the stamped errata off the log.
 	run.decide = logging{to: decider, log: record}
 
 	err = run.generate()
-	...
+	if err != nil {
+		return nil, err
+	}
+
 	run.char.Events = record.events
 	run.char.Errata = record.stamped()
+
+	return run.char, nil
 ```
 
-The character keeps no copy of its name or of the ruleset: the name is
-`Inputs.Name`, and the ruleset is the constant `chargen.Ruleset`, which the
-record writes (#386). The character is created before the options are
-applied, so `WithBuild` can set `Character.Build` on it. It begins at
-`traveller.StartingAge`, p. 4's 18, which is the domain's constant and not the
-engine's because the Aging Table's lift reads it too (section 8). The decider
-is only ever reached through `logging`, which is the subject of section 5.
+The `run` is where the character lives while he is being made. Its fields
+are working state, and their comments say so: each change to them is logged
+as a fact carrying the value it left, and the finished character is read from
+those facts (#441).
 
-## 4. The procedure
+`internal/chargen/generate.go` — `run`
 
-`run.generate` is the page order of Book 1, top to bottom.
+```go
+	// profile and skills are the character as the procedure has him so far,
+	// which every DM and the gambling modifier read mid-run. They are the
+	// engine's working state and not the record: each change to them is
+	// logged as a fact carrying the value it left, and the finished
+	// Character's Profile and Skills are read from those facts (#441).
+	profile traveller.Profile
+	skills  []traveller.Skill
+...
+	enlistment traveller.Enlistment
+	terms      int
+	rank       traveller.Rank
+	atAge      traveller.Age
+	departure  traveller.Departure
+```
 
-`internal/chargen/generate.go` — `generate`
+`run.generate` is the procedure's outline: roll the six, enlist, and either
+stop (a civilian, assessed for a title) or serve, muster out if alive, take
+the pension, and assess the title.
+
+`internal/chargen/generate.go` — `run.generate`
 
 ```go
 func (r *run) generate() error {
 	r.rollProfile()
 
 	err := r.enlist()
-	...
-	_, served := r.char.ServedIn()
+	if err != nil {
+		return err
+	}
+
+	_, served := servedIn(r.enlistment)
 	if !served {
 		return r.assessTitle()
 	}
 
 	err = r.serve()
-	...
+	if err != nil {
+		return err
+	}
+
 	if !r.dead() {
 		err := r.musterOut()
-		...
+		if err != nil {
+			return err
+		}
+
 		r.pension()
 	}
 
@@ -328,458 +385,836 @@ func (r *run) generate() error {
 }
 ```
 
-A dead character does not muster out. Whether he died is read off his
-departure, `dead()`, rather than kept in a flag beside it; `drafted()`, which
-the commission rule of p. 5 asks, is read off his enlistment the same way
-(#368). That a dead character does not muster out is not a reading: the doc
-comment above this method says the question was checked as a possible silence
-and found settled by p. 5. The same form of comment, "Settled by the page and
-not a reading", sits on each declaration whose question was checked that way,
-so it is answered beside the code that implements the answer and is not
-re-litigated. The 2D throw is one:
+## 4. The record as it is written
 
-`internal/chargen/roller.go` — `twoDice`
+The `log` is an append-only list of `traveller.Event`, a sealed sum of five
+kinds: a step entered, a throw against a target, a roll with nothing to meet,
+a choice, and an outcome. Each is numbered by its place in the list, and each
+is shown to a watcher, if there is one, as it is appended.
+
+An outcome is where a fact rides. `log.fact` writes an `OutcomeEvent` whose
+prose is the fact's own `String`, so the line a referee reads and the value a
+fold reads cannot say different things (#412).
+
+`internal/chargen/log.go` — `log.fact`
 
 ```go
-// Settled by the page and not a reading: checked as a possible silence at
-// milestone 0, and kept so it is not re-litigated as one. Which throws are two
-// dice. P. 10: "All rolls except draft are two-die throws." The draft is one
-// die (p. 5), and so are the other one-die throws Roller's Die lists.
-//
-// It is the one place a 2D throw is made of dice, so every roller throws one
-// the same way, and the order a fixture's script states is the order the
-// dice are drawn in.
-...
-func twoDice(r Roller) (first, second int) {
-	first = r.Die()
-	second = r.Die()
+func (l *log) fact(because int, errata []traveller.Erratum, fact traveller.Fact) {
+	for _, e := range errata {
+		l.errata[e] = true
+	}
 
-	return first, second
+	l.add(traveller.OutcomeEvent{
+		Seq: l.next(), Because: because, Description: fact.String(), Errata: errata, Fact: fact,
+	})
 }
 ```
 
-The 2D throw is the engine's, not the roller's. A `Roller` has two methods,
-`Die` and `Among`, and nothing that throws two dice, so the unseeded stream
-and a scripted roller make a 2D throw the same way, first die then second
-(#376). `Roller`'s doc on `Die` is the one list of the one-die throws.
+Its sibling `log.outcomef` writes an outcome with prose and no fact. It is
+kept for outcomes nothing is read from: "survived term 1", "not promoted this
+term", an aging throw that holds, a second Travellers' Aid wasted, a second
+scout ship lost, a dash row. Both stamp the errata they are handed, and
+`stamped` later returns every erratum any outcome named, in id order.
 
-`rollProfile` throws six 2D rolls in p. 4's order. `enlist` chooses a service
-(unless `--service` forced one), throws against its enlistment target, and on
-failure goes to the draft, which can land anywhere. A forced service forces
-the attempt only: the throw is still made.
+`traveller.Fact` is a sealed sum like the others: a `Fold` over a
+`FactCases` interface with one method per kind, so a new kind of fact stops
+every fold compiling until it is handled.
 
-`internal/chargen/enlist.go` — `enlist`
+`internal/traveller/fact.go` — `FactCases`
 
 ```go
-	throw := roll(r.roll, service.Enlistment.Target, service.Enlistment.Modifier(r.char.Profile))
+type FactCases interface {
+	Applied(f AppliedFact) error
+	WeaponPicked(f WeaponPickedFact) error
+	Raised(f RaisedFact) error
+	Aged(f AgedFact) error
+	Recovered(f RecoveredFact) error
+	Enlisted(f EnlistedFact) error
+	Rolled(f RolledFact) error
+...
+	Started(f StartedFact) error
+	Drafted(f DraftedFact) error
+	Declined(f DeclinedFact) error
+	Died(f DiedFact) error
+	DiedOfCrisis(f DiedOfCrisisFact) error
+	Retained(f RetainedFact) error
+	Reenlisted(f ReenlistedFact) error
+	Retired(f RetiredFact) error
+	ForcedOut(f ForcedOutFact) error
+	Discharged(f DischargedFact) error
+}
+```
+
+There are twenty-six. The pattern for each is the same: the fact carries the
+value the engine reached, not the change that reached it, so a fold only
+assigns. A skill fact carries the level it reached, a cash fact the running
+total, a reenlistment fact the age the term left him at.
+
+## 5. The procedure, one character through it
+
+### The six rolls
+
+`rollProfile` throws two dice per characteristic in p. 4's order. Each roll
+is a `RollEvent` and a `RolledFact`; after the six, a `StartedFact` writes the
+rolled UPP and the age every character starts at.
+
+`internal/chargen/generate.go` — `run.rollProfile`
+
+```go
+func (r *run) rollProfile() {
+	r.log.step("characteristics", "p. 4")
+
+	for _, c := range traveller.Characteristics {
+		first, second := twoDice(r.roll)
+
+		r.profile[c] = first + second
+
+		if c == traveller.SocialStanding {
+			r.rolledSocial = r.profile[c]
+		}
+
+		seq := r.log.dice(c.String(), first, second)
+		r.log.fact(seq, nil, traveller.RolledFact{Characteristic: c, Value: r.profile[c]})
+	}
+
+	r.log.fact(0, nil, traveller.StartedFact{Profile: r.profile, Age: r.atAge})
+}
+```
+
+In the note, each outcome names the event that caused it, `(from N)`:
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `characteristics`
+
+```markdown
+**1. characteristics (p. 4)**
+
+  2. Strength: rolled 6+1
+  3. Strength 7 (from 2)
+  4. Dexterity: rolled 5+1
+  5. Dexterity 6 (from 4)
+  6. Endurance: rolled 2+2
+  7. Endurance 4 (from 6)
+  8. Intelligence: rolled 5+2
+  9. Intelligence 7 (from 8)
+ 10. Education: rolled 3+4
+ 11. Education 7 (from 10)
+ 12. Social Standing: rolled 4+3
+ 13. Social Standing 7 (from 12)
+ 14. UPP 764777 at age 18
+```
+
+`rolledSocial` is kept beside the profile because E011, the title reading,
+turns on whether the Social Standing at the end differs from the one rolled.
+
+### Enlistment and the draft
+
+`--service navy` forced the attempt, so `chooseService` returns the Navy
+without asking. Unforced, it would build one `EnlistmentOffer` per service
+and ask the decider, which on an auto run now draws the service (#420,
+section 6). The throw is made either way, and its verdict is an
+`EnlistedFact`, accepted or not: that fact is where the service attempted is
+read from afterwards (#397).
+
+`internal/chargen/enlist.go` — `run.enlist`
+
+```go
+	throw := roll(r.roll, service.Enlistment.Target, service.Enlistment.Modifier(r.profile))
 	seq := r.log.throw("enlistment, "+name.String(), throw)
 
 	if throw.succeeded {
-		r.log.outcomef(seq, nil, "enlisted in the %v", name)
+		r.log.fact(seq, nil, traveller.EnlistedFact{Service: name, Accepted: true})
 
 		return r.join(traveller.Enlisted{Service: name})
 	}
 
-	r.log.outcomef(seq, nil, "the %v rejected him", name)
+	r.log.fact(seq, nil, traveller.EnlistedFact{Service: name})
 
 	return r.draft()
 ```
 
-Every throw is logged as it is made, and every consequence names the event
-that caused it (`seq`). That is what lets a transcript be walked against the
-page.
+A 5 against the Navy's 8+ misses. P. 5 prints the draft both ways, "may" and
+"must"; E001 reads "may", so the draft is a question.
+
+`internal/chargen/enlist.go` — `run.draft`
+
+```go
+	submit, err := r.decide.SubmitToDraft()
+	if err != nil {
+		return fmt.Errorf("submitting to the draft: %w", err)
+	}
+
+	if !submit {
+		r.enlistment = traveller.DeclinedTheDraft{}
+		r.log.fact(0, []traveller.Erratum{traveller.E001}, traveller.DeclinedFact{})
+
+		return nil
+	}
+
+	face := r.roll.Die()
+
+	name, err := r.tables.Draft(face)
+	if err != nil {
+		return fmt.Errorf("the draft: %w", err)
+	}
+
+	seq := r.log.dice("draft", face)
+	r.log.fact(seq, []traveller.Erratum{traveller.E001}, traveller.DraftedFact{Service: name})
+
+	return r.join(traveller.Drafted{Service: name})
+```
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `enlistment`
+
+```markdown
+**15. enlistment (pp. 5, 10)**
+
+ 16. enlistment, Navy: rolled 2+3 = 5 against 8+, missed
+ 17. the Navy rejected him (from 16)
+ 18. submit to the draft (p. 5): policy chose yes from yes, no
+ 19. draft: rolled 5
+ 20. drafted into the Merchants (from 19) [E001]
+```
+
+`join` enters the service and takes what p. 23's Rank and Service Skills box
+grants on entering it, once (E005), each grant applied as an `AppliedFact`
+whose source is `OnEntering`. The box prints nothing for the Merchants, so no
+step appears here; a Marine would get Cutlass-1 under a "rank and service
+skills" step.
 
 ### A term
 
-`serve` runs terms until one ends the service. A term follows the order of
-the exposition, not the worked example's (E002): survival, commission,
-promotion, skills, reenlistment, then the aging round at the end of the term
-(E006). Commission, promotion and the term's skill eligibilities sit in the
-first elided stretch here.
+`serve` runs terms until one ends the service. `term` is the exposition's
+order (E002): survival, commission, promotion, skills, reenlistment, then the
+aging round (E006). It opens with `log.opens`, a step that carries the term's
+number in `StepEvent.Opens`; that field is how the finished character counts
+his terms, the fatal one included.
 
-`internal/chargen/serve.go` — `term`
+`internal/chargen/serve.go` — `run.term`
 
 ```go
-	if !r.survive(term) {
-		// The fatal term counts, and its four years with it (E004).
-		r.char.Age = r.char.Age.PlusYears(traveller.Years)
-		r.char.Departure = traveller.KilledBySurvivalThrow{}
+func (r *run) term(term traveller.Term) (bool, error) {
+	r.log.opens(term, "pp. 5-7")
 
+	r.terms = int(term)
+
+	if !r.survive(term) {
 		return true, nil
 	}
-	...
+
+	err := r.commission(term)
+	if err != nil {
+		return false, err
+	}
+
+	err = r.promote(term)
+	if err != nil {
+		return false, err
+	}
+
+	r.grantEligibility(term)
+
 	err = r.trainSkills()
-	...
+	if err != nil {
+		return false, err
+	}
+
+	// The term's four years are counted before the reenlistment throw, whose
+	// outcome carries the age the term left him at.
+	r.atAge = r.atAge.PlusYears(traveller.Years)
+
 	intent, err := r.reenlist(term)
-	...
-	r.char.Age = r.char.Age.PlusYears(traveller.Years)
+	if err != nil {
+		return false, err
+	}
 
 	err = r.agingRound(term)
-	...
+	if err != nil {
+		return false, err
+	}
+
 	if r.dead() {
 		return true, nil
 	}
-```
 
-A death sets the departure, and that is all the run needs to know of it. A
-failed survival throw ends the term at once. The aging round can kill too,
-through a medical crisis, so the term asks `dead()` after it. `reenlist`
-returns the intent the term ends on, and an error. A 12 exactly is the intent
-`Continue`, with no flag beside it saying the term was forced, and the service
-goes on to another term only on `Continue`.
-
-Survival failure is death (p. 5), with no "injured instead". The outcome is
-stamped with E004, the reading of how a dead character's age is recorded:
-
-`internal/chargen/serve.go` — `survive`
-
-```go
-	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.char.Profile))
-	seq := r.log.throw("survival", throw)
-
-	if throw.succeeded {
-		r.log.outcomef(seq, nil, "survived term %d", term)
-
-		return true
-	}
-	...
-	r.log.outcomef(seq, []traveller.Erratum{traveller.E004},
-		"died in term %d, aged %v", term, r.char.Age.PlusYears(traveller.Years))
-```
-
-Here is that path in full. It is the checked-in golden transcript of the
-fixture `scouts-died-unasked`, a scout killed by his first survival throw
-before anything was asked:
-
-`internal/chargen/testdata/scouts-died-unasked.transcript.md` — `enlistment to term 1`
-
-```markdown
-## 15. enlistment (pp. 5, 10)
-
- 16. enlistment, Scouts: rolled 5+2 +1 = 8 against 7+, made
- 17. enlisted in the Scouts (from 16)
-
-## 18. rank and service skills (p. 23)
-
- 19. Pilot-1 [E005]
-
-## 20. term 1 (pp. 5-7)
-
- 21. survival: rolled 1+3 = 4 against 7+, missed
- 22. died in term 1, aged 22 (from 21) [E004]
-```
-
-### A skill roll
-
-Each eligibility earned this term is one roll. The decider designates the
-table, the roller throws one die, and the service's table answers.
-
-`internal/chargen/serve.go` — `trainOnce`
-
-```go
-	offered := r.offeredTables()
-
-	taken := make([]int, len(offered))
-	for i, table := range offered {
-		taken[i] = r.trained[table]
+	if intent == traveller.Continue {
+		return false, nil
 	}
 
+	return true, nil
+}
+```
+
+A failed survival throw is death (p. 5). The fatal term's four years are
+counted (E004), and the `DiedFact` carries both the term and the age.
+
+`internal/chargen/serve.go` — `run.survive`
+
+```go
+	r.atAge = r.atAge.PlusYears(traveller.Years)
+	r.departure = traveller.KilledBySurvivalThrow{}
+	r.log.fact(seq, []traveller.Erratum{traveller.E004}, traveller.DiedFact{Term: term, Age: r.atAge})
+```
+
+Our draftee survives. In term 1 `commission` asks nothing: p. 5 bars a
+draftee from a commission in his first term only, and `r.drafted()` reads
+that off the enlistment.
+
+`internal/chargen/rank.go` — `run.commission`
+
+```go
+	throw, ok := r.service.Commission()
+	if !ok || r.rank.Commissioned() || (r.drafted() && term == 1) {
+		return nil
+	}
+```
+
+In term 2 he is asked, makes the throw, and is commissioned; the same term he
+is promoted (p. 6 allows both). `raise` sets the working rank, adds the
+eligibility the rank carries, logs a `RaisedFact` with the rank's number and
+its name, and applies any rank-keyed grants, each sourced `AtRank`.
+
+`internal/chargen/rank.go` — `run.raise`
+
+```go
+func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how traveller.Advancement) error {
+	r.rank = conferred
+
+	r.eligible += eligibility
+
+	r.log.fact(seq, nil, traveller.RaisedFact{How: how, Rank: conferred, Name: r.rankName()})
+```
+
+At the top of a service's rank column no promotion throw is made at all
+(E013); the outcome says so and the decider is not asked.
+
+### Skills
+
+`grantEligibility` adds two eligibilities for the first term and one after;
+each commission and promotion has already added one. `trainSkills` spends
+them one at a time, and `trainOnce` asks for the table before the die, as
+p. 11 requires, handing the decider how many results the character has
+already had off each table.
+
+`internal/chargen/serve.go` — `run.trainOnce`
+
+```go
 	table, err := r.decide.SkillTable(offered, taken)
-	...
+	if err != nil {
+		return fmt.Errorf("designating a skills table: %w", err)
+	}
+
+	if r.trained == nil {
+		r.trained = make(map[traveller.SkillTable]int)
+	}
+
+	r.trained[table]++
+
 	face := r.roll.Die()
 
 	result, err := r.service.Result(table, face)
-	...
+	if err != nil {
+		return fmt.Errorf("consulting %v: %w", table, err)
+	}
+
 	seq := r.log.dice(table.String(), face)
 
-	return r.apply(result, seq, []traveller.Erratum{traveller.E002})
+	return r.apply(result, seq, []traveller.Erratum{traveller.E002}, traveller.InTerm)
 ```
 
-`offeredTables` closes the Advanced Education Table below Education 8 (p. 11),
-so the page decides what may be chosen. `taken` is a decision aid, how often
-each table has been trained on, one count per offered table, and it is not
-part of the record.
+`apply` folds the `TableResult` sum — p. 12's three kinds — through
+`applyResult`. A skill raises the working list and logs the level it reached;
+a characteristic change logs both ends and the table's own delta, so a change
+the floor or ceiling held is not read as one of nothing (#409).
 
-The auto policy's answer depends on `--skills`. Each strategy ranks the
-tables, and `thinnest` keeps the tables trained on least before the ranking
-breaks the tie (policy version 3, #34). It takes the counts as parallel to the
-tables, which is how the engine passes them (#370):
-
-`internal/chargen/policy.go` — `SkillTable`
+`internal/chargen/enlist.go` — `applyResult.Skill`
 
 ```go
-	switch p.Skills {
-	case SkillsAdvanced:
-		ranked = []traveller.SkillTable{
-			traveller.AdvancedEducationEight, traveller.AdvancedEducation,
-			traveller.ServiceSkills, traveller.PersonalDevelopment,
-		}
-	...
-	return prefer(thinnest(from, taken), ranked), nil
-```
-
-The rest of the procedure has the same shape:
-
-- **reenlistment** throws, and a 12 exactly compels another term (p. 6);
-- **the aging round** throws a saving throw per characteristic the table names
-  for this term, and resolves a medical crisis inline when one reaches zero;
-- **mustering out** spends the earned rolls, designating each one's table
-  before its die, with at most three on Table 2.
-
-`internal/chargen/aging.go` — `agingRound`
-
-```go
-	for _, effect := range effects {
-		throw := roll(r.roll, effect.Saving, 0)
-		seq := r.log.throw("aging, "+effect.Characteristic.String(), throw)
-
-		if throw.succeeded {
-			r.log.outcomef(seq, r.agingErrata(term), "%v holds", effect.Characteristic)
-
-			continue
-		}
-
-		err := r.age(seq, term, effect.Characteristic, effect.Reduction)
-```
-
-## 5. A question, through the gate
-
-Every `r.decide` call above lands on `logging`, which implements every
-Decider method. Here is the skill-table question:
-
-`internal/chargen/logging.go` — `SkillTable`
-
-```go
-	offer := names(from, traveller.SkillTable.String)
-
-	err := asked(traveller.ChoiceSkillTable, offer)
-	if err != nil {
-		return 0, err
-	}
-
-	chosen, err := l.to.SkillTable(own(from), own(taken))
-	if err != nil {
-		return chosen, err
-	}
-
-	return chosen, l.record(traveller.ChoiceSkillTable, offer, chosen.String())
-```
-
-The order matters:
-
-1. **The offer is rendered to names first**, so a decider that writes into its
-   slice cannot slip its own answer in.
-2. **`asked` refuses a question with only one answer.** The Decider contract
-   is that a method is called only when more than one answer is legal, so a
-   question with one is the engine's bug, and it fails rather than reaching the
-   record as a choice.
-3. **The decider gets its own copies (`own`)**, so a write to them changes
-   nothing the engine offers later.
-4. **`record` refuses an answer outside the offer**, then logs the choice.
-
-`internal/chargen/logging.go` — `asked`
-
-```go
-func asked(point traveller.ChoicePoint, alternatives []string) error {
-	if len(alternatives) < aChoice {
-		return fmt.Errorf("%w: %v offered only %v; the engine asks only when more than one answer is legal",
-			errOneAnswer, point, alternatives)
-	}
+func (a *applyResult) Skill(name traveller.SkillName) error {
+	level := a.run.addSkill(name)
+	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
+		Gain: traveller.SkillGain{Skill: traveller.Skill{Name: name, Level: level}}, Source: a.source,
+	})
 
 	return nil
 }
 ```
 
-`internal/chargen/logging.go` — `record`
+A Blade Cbt or Gun Cbt result names a weapon at once. The list is the page's,
+and the decider is handed a `Vary` to draw from — the run's own dice and
+nothing more — because the page gives no basis to choose.
+
+`internal/chargen/enlist.go` — `applyResult.WeaponPick`
 
 ```go
+	chosen, err := a.run.decide.Weapon(category, list, varyOnly{a.run.roll})
+	if err != nil {
+		return fmt.Errorf("choosing a weapon: %w", err)
+	}
+
+	level := a.run.addSkill(traveller.SkillName(chosen))
+	a.run.log.fact(a.because, a.errata, traveller.WeaponPickedFact{
+		Category: category, Skill: traveller.Skill{Name: traveller.SkillName(chosen), Level: level}, Source: a.source,
+	})
+```
+
+Term 2 of our character, in the note:
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `term 2`
+
+```markdown
+**34. term 2 (pp. 5-7)**
+
+ 35. survival: rolled 4+3 +2 = 9 against 5+, made
+ 36. survived term 2 (from 35)
+ 37. attempt a commission (p. 6): policy chose yes from yes, no
+ 38. commission: rolled 2+5 +1 = 8 against 4+, made
+ 39. commissioned: 4th Officer (from 38)
+ 40. attempt promotion (p. 6): policy chose yes from yes, no
+ 41. promotion: rolled 5+6 = 11 against 10+, made
+ 42. promoted: 3rd Officer (from 41)
+
+**43. skills and training (pp. 6, 11)**
+
+ 44. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 45. Personal Development Table: rolled 1
+ 46. Strength +1, 7 to 8 (from 45) [E002]
+ 47. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+ 48. Advanced Education Table: rolled 2
+ 49. Mechanical-2 (from 48) [E002]
+```
+
+His Education is 7, so the fourth table (Education 8+) is not offered:
+`offeredTables` tests the current value at each designation.
+
+### Reenlistment and leaving
+
+The reenlistment throw is made every term, before the intent is asked,
+because a 12 and a failure both settle the question and a question with one
+answer is not asked. A 12 exactly is a `RetainedFact`; a failure departs; a
+success asks the intent, where more than one is legal.
+
+`internal/chargen/reenlist.go` — `run.reenlist`
+
+```go
+	attempt := roll(r.roll, r.service.Reenlist, 0)
+	seq := r.log.throw("reenlistment", attempt)
+
+	if attempt.dice[0]+attempt.dice[1] == forcedByTwelve {
+...
+		r.log.fact(seq, errata, traveller.RetainedFact{Age: r.atAge})
+
+		return traveller.Continue, nil
+	}
+
+	if !attempt.succeeded {
+		r.depart(seq, term, true)
+
+		return traveller.Discharge, nil
+	}
+
+	return r.intent(seq, term)
+```
+
+`depart` decides the departure by the term count, as p. 21 does: at or past
+the fifth term it is a retirement whatever brought it on; below it, forced
+out if the throw refused him and discharged if he chose to go. Every one of
+the five reenlistment facts carries the age the term left him at, which is
+how the finished character's age is read.
+
+`internal/chargen/reenlist.go` — `run.depart`
+
+```go
+	switch {
+	case term >= firstRetiringTerm:
+		r.departure = traveller.Retired{}
+		r.log.fact(seq, nil, traveller.RetiredFact{After: term, Age: r.atAge, Denied: denied})
+	case denied:
+		r.departure = traveller.ForcedOut{}
+		r.log.fact(seq, nil, traveller.ForcedOutFact{After: term, Age: r.atAge})
+	default:
+		r.departure = traveller.Discharged{}
+		r.log.fact(seq, nil, traveller.DischargedFact{After: term, Age: r.atAge})
+	}
+```
+
+### Aging
+
+From the fourth term, the aging round closes the term (E006), its saving
+throws made in the table's row order (E007). A failed throw logs an
+`AgedFact` with both ends and the table's reduction; a characteristic reduced
+to zero — possible only because E010 opens p. 4's floor to 0 under aging —
+goes straight to a medical crisis, whose survival logs a `RecoveredFact`
+carrying the months of recovery and the age they left him at.
+
+`internal/chargen/aging.go` — `run.age`
+
+```go
+	before := r.profile[characteristic]
+
+	r.profile = r.profile.AgeReduce(characteristic, reduction)
+
+	after := r.profile[characteristic]
+
+	errata := r.agingErrata(term)
+	if before-reduction < traveller.MinCharacteristic {
+		// Below 1 is where the two readings of p. 4's floor diverge: the
+		// ordinary floor would have stopped here and no crisis would
+		// follow, and E010 is what carries it to 0 instead.
+		errata = append(errata, traveller.E010)
+	}
+
+	r.log.fact(seq, errata, traveller.AgedFact{
+		Change: traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: -reduction},
+	})
+```
+
+Our character's fourth term ends both ways at once: the reenlistment throw
+fails, and he is old enough for a round.
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `term 4`
+
+```markdown
+ 80. reenlistment: rolled 1+2 = 3 against 4+, missed
+ 81. left the service after term 4: reenlistment denied (from 80)
+
+**82. aging, end of term 4 (pp. 7-9)**
+
+ 83. aging, Strength: rolled 5+1 = 6 against 8+, missed
+ 84. Strength -1, 8 to 7 (from 83) [E006 E007]
+ 85. aging, Dexterity: rolled 4+1 = 5 against 7+, missed
+ 86. Dexterity -1, 6 to 5 (from 85) [E006 E007]
+ 87. aging, Endurance: rolled 3+6 = 9 against 8+, made
+ 88. Endurance holds (from 87) [E006 E007]
+```
+
+### Mustering out, the pension and the title
+
+`musterOut` reads the number of rolls off the terms and rank, and for each
+asks for a table — unless three have already gone on Table 2, when p. 9
+leaves only Table 1 and nothing is asked.
+
+`internal/chargen/muster.go` — `run.chooseMusterTable`
+
+```go
+func (r *run) chooseMusterTable(onTableTwo int) (traveller.MusterTable, error) {
+	if onTableTwo >= maxRollsOnTableTwo {
+		return traveller.TableOne, nil
+	}
+```
+
+`benefit` offers the +1 a table allows where it is earned, rolls one die, and
+reads the row. Table 2 is cash, and the `CashFact` carries the running total;
+Table 1 is folded through `applyBenefit`, whose cases log a `PassageFact`, a
+`TravellersAidFact`, a `WeaponReceivedFact` or `ExpertiseFact`, or a ship.
+
+`internal/chargen/muster.go` — `run.benefit`
+
+```go
+	if table == traveller.TableTwo {
+		r.benefits.Cash += cash
+		r.log.fact(seq, nil, traveller.CashFact{Cash: cash, Total: r.benefits.Cash})
+
+		return nil
+	}
+
+	applied := &applyBenefit{run: r, because: seq}
+
+	err = benefit.Fold(applied)
+```
+
+A repeat is the fact's to say, not a fold's. `receiveShip` logs a
+`ShipReceivedFact` for a first ship of its kind; a second Free Trader is a
+`FreeTraderAgainFact` carrying the ship as it now stands, aged ten years and
+paid down; a second scout ship is lost and carries no fact.
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `mustering out`
+
+```markdown
+**89. mustering out, 5 rolls (pp. 7, 9, 21-23)**
+
+ 90. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 91. Table 2, Cash Allowances: rolled 4
+ 92. CR 20000, bringing the total to CR 20000 (from 91)
+ 93. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 94. Table 2, Cash Allowances: rolled 4
+ 95. CR 20000, bringing the total to CR 40000 (from 94)
+ 96. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
+ 97. Table 2, Cash Allowances: rolled 3
+ 98. CR 10000, bringing the total to CR 50000 (from 97)
+ 99. Table 1, Material Benefits: rolled 6
+100. a Low Passage (from 99)
+101. Table 1, Material Benefits: rolled 6
+102. a Low Passage (from 101)
+```
+
+The fourth and fifth rolls ask nothing: the cash strategy put three on
+Table 2, so Table 1 is all that is left. He left after four terms, so
+`pension` finds no row in p. 21's table and logs nothing. His final Social
+Standing is 7, as rolled, so `assessTitle` neither offers a title nor stamps
+E011, and the record ends there. A character eligible at the end and alive is
+asked `AssumeTitle`, and the answer is a `TitledFact`; a dead one is assessed
+and not asked (E011).
+
+## 6. A question, through the gate
+
+Every question reaches the decider through `logging`, which `generate` wraps
+around whatever decider it was given. It implements every method of
+`Decider`, one per choice point, so a choice point cannot reach the engine
+without reaching the log. Each method names the offer, refuses a question
+with one legal answer, hands the decider its own copy of what it is offered,
+and records the answer only if it was offered.
+
+`internal/chargen/logging.go` — `logging.Service`
+
+```go
+func (l logging) Service(from []traveller.EnlistmentOffer, vary Vary) (traveller.ServiceName, error) {
+	offer := names(from, func(o traveller.EnlistmentOffer) string { return o.Service.String() })
+
+	err := asked(traveller.ChoiceService, offer)
+	if err != nil {
+		return 0, err
+	}
+
+	chosen, err := l.to.Service(own(from), vary)
+	if err != nil {
+		return chosen, err
+	}
+
+	return chosen, l.record(traveller.ChoiceService, offer, chosen.String())
+}
+```
+
+`internal/chargen/logging.go` — `logging.record`
+
+```go
+func (l logging) record(point traveller.ChoicePoint, from []string, chosen string) error {
 	if !slices.Contains(from, chosen) {
 		return fmt.Errorf("%w: %v offered %v, and was answered %q",
 			errNotOffered, point, from, chosen)
 	}
 
 	l.log.choice(point, from, chosen)
-```
 
-The comparison is by rendered name, which is sound only because every
-alphabet's `String()` is injective. `traveller`'s spelling tests hold that.
-The choice event records the point, the alternatives and the answer, but not
-who answered: one run has one answerer, and the record says it once, in
-`policy`.
-
-The five yes-or-no points share one method, `yesOrNo`, which asks the decider
-and records its answer against `offered()`, which builds the "yes" and "no"
-offer fresh for each question, so a write through one record's slice cannot
-change what a later question is offered (#230). A yes-or-no point offers two answers by
-construction, so it does not go through `asked`.
-
-The one choice point that may vary its answer, which weapon a combat result
-names, is handed a `Vary` rather than the roller: a value that can draw among
-alternatives and do nothing else.
-
-`internal/chargen/roller.go` — `Vary, varyOnly`
-
-```go
-type Vary interface{ Among(n int) int }
-...
-type varyOnly struct{ roller Roller }
-
-func (v varyOnly) Among(n int) int { return v.roller.Among(n) }
-```
-
-`varyOnly` is a struct and not the roller passed as an interface, because a
-type assertion would hand the dice back (#136). A die a decider threw would
-reach no event, and the record would stop carrying every die.
-
-## 6. The log and the readings it stamps
-
-Every event goes through the log, numbered from 1 in the order it is
-appended: `next` is the count of events plus one, read off the events rather
-than kept beside them (#368). A consequence can name readings, and the log
-keeps the union of them.
-
-`internal/chargen/log.go` — `outcomef`
-
-```go
-func (l *log) outcomef(because int, errata []traveller.Erratum, format string, args ...any) {
-	for _, e := range errata {
-		l.errata[e] = true
-	}
-
-	l.add(traveller.OutcomeEvent{
-		Seq:         l.next(),
-		Because:     because,
-		Description: fmt.Sprintf(format, args...),
-		Errata:      errata,
-	})
+	return nil
 }
 ```
 
-`internal/chargen/log.go` — `stamped`
+On an auto run the decider is a `chargen.Policy`: three strategies, each over
+a group of choice points, and `PolicyVersion`, which moves only when an
+answer does. Version 4 (#420) draws the service where version 3 took the
+likeliest enlistment, which had made a referee's batch nearly all Army.
+
+`internal/chargen/policy.go` — `Policy.Service`
 
 ```go
-	for _, e := range traveller.Errata {
-		if l.errata[e] {
-			stamped = append(stamped, e)
+func (p Policy) Service(from []traveller.EnlistmentOffer, vary Vary) (traveller.ServiceName, error) {
+	return from[vary.Among(len(from))].Service, nil
+}
+```
+
+`Vary` is a `Roller` with everything but `Among` taken off it, wrapped in a
+value (`varyOnly`) so no type assertion can hand the decider the dice back:
+a die thrown by a decider would reach no event, and the record must carry
+every die. The other draw is `Weapon`; every other answer is a ranking over
+what is offered, or a fixed yes or no. Our character's `--service navy`
+suppressed `Service`, and his one draw was the weapon at event 65.
+
+On a guided run the decider is the command's `player`. It asks only what
+the engine asked, with exactly the alternatives offered, and asks again
+rather than guessing at an answer it cannot read.
+
+`cmd/ctchargen/interactive.go` — `player.choose`
+
+```go
+		typed := strings.TrimSpace(p.in.Text())
+
+		chosen, err := strconv.Atoi(typed)
+		if err == nil && chosen >= 1 && chosen <= len(options) {
+			p.sayf("\n")
+
+			p.given = append(p.given, chosen)
+
+			return chosen - 1, nil
+		}
+
+		p.sayf("  %q is not one of them; answer with a number from 1 to %d\n",
+			typed, len(options))
+```
+
+If the input ends mid-session, the player says what was answered and that
+nothing was written, and the run fails: a character finished by an answer
+nobody gave is not the one asked for (ADR 0001, ADR 0003).
+
+## 7. Reading the character back
+
+This is what changed most since rc.3 (#412, #397, #441). `Character` keeps
+five fields, and none of them is a fact about the character.
+
+`internal/chargen/character.go` — `Character`
+
+```go
+type Character struct {
+	Inputs Inputs
+
+	// Policy is what answered an auto run. It is nil on a guided run, where a
+	// person answered and no policy decided anything. The version it
+	// answered as is this build's PolicyVersion, which the record writes
+	// beside it (#369).
+	Policy *Policy
+
+	Events []traveller.Event
+	Errata []traveller.Erratum
+...
+	Build string
+}
+```
+
+Everything else is a method that folds the log. `fold` walks the outcomes and
+hands each fact to the cases given; `sheetFold` is the cases that read the
+sheet.
+
+`internal/chargen/character.go` — `Character.fold`
+
+```go
+func (c *Character) fold(cases traveller.FactCases) {
+	for _, event := range c.Events {
+		outcome, isOutcome := event.(traveller.OutcomeEvent)
+		if !isOutcome || outcome.Fact == nil {
+			continue
+		}
+
+		// An error from cases is dropped, so every FactCases handed here must
+		// be one whose cases only assign and cannot fail.
+		_ = outcome.Fact.Fold(cases)
+	}
+}
+```
+
+`internal/chargen/character.go` — `Character.Profile`
+
+```go
+func (c *Character) Profile() traveller.Profile {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.profile
+}
+```
+
+Each case only assigns, because each fact already carries the value the
+engine reached. A characteristic starts at its `RolledFact` and takes the
+`To` of every change after it; a skill takes the level its last fact
+reached; the age and the departure take the last fact that moves them.
+
+`internal/chargen/character.go` — `sheetFold.Rolled`
+
+```go
+func (s *sheetFold) Rolled(f traveller.RolledFact) error {
+	s.profile[f.Characteristic] = f.Value
+
+	return nil
+}
+```
+
+`internal/chargen/character.go` — `sheetFold.Aged`
+
+```go
+func (s *sheetFold) Aged(f traveller.AgedFact) error {
+	s.profile[f.Change.Characteristic] = f.Change.To
+
+	return nil
+}
+```
+
+`internal/chargen/character.go` — `sheetFold.ForcedOut`
+
+```go
+func (s *sheetFold) ForcedOut(f traveller.ForcedOutFact) error {
+	s.age, s.departure = f.Age, traveller.ForcedOut{}
+
+	return nil
+}
+```
+
+So for our character: Strength is rolled 7, raised to 8 at event 46, and aged
+to 7 at event 84; the profile reads 7. Dexterity is rolled 6 and aged to 5.
+The age is the `ForcedOutFact`'s 34. The UPP the sheet heads with, 754777,
+is not the 764777 event 14 wrote: that line is the profile as rolled, and the
+sheet's is folded to the end.
+
+`Terms` is the one fact not read from an outcome. It is the number the last
+term-opening step carries, which counts the fatal term too (E004).
+
+`internal/chargen/character.go` — `Character.Terms`
+
+```go
+func (c *Character) Terms() int {
+	terms := 0
+
+	for _, event := range c.Events {
+		if step, isStep := event.(traveller.StepEvent); isStep && step.Opens > 0 {
+			terms = int(step.Opens)
 		}
 	}
-```
 
-`stamped` returns them in id order, and that list is the record's `errata`.
-An id is a `traveller.Erratum`, a closed set of constants `E001` to `E015`,
-and `traveller.Errata` lists them; a const block cannot count itself, so a
-test that reads `erratum.go` holds the list to the constants (#333). The
-engine names a reading only by its constant; what the reading says lives
-in `rules`.
-
-## 7. The readings, as values
-
-Each reading is a `rules.Reading`: the erratum it is named by, a title, and
-its argument in prose. That prose is kept verbatim, the page's own emphasis
-included as inline markdown, so whatever prints it prints the decided words.
-
-`internal/rules/readings.go` — `Reading`
-
-```go
-type Reading struct {
-	ID    traveller.Erratum
-	Title string
-	...
-	// StampedOn is the stamping condition: which records name the erratum.
-	StampedOn string
-
-	// Withdrawal is zero for a reading that stands.
-	Withdrawal Withdrawal
+	return terms
 }
 ```
 
-Between the title and the stamping condition are the pages, what the page
-says, the gap, the reading and why. The readings are one array, and its size
-is the count check: the array is sized by its literal, and `Readings` returns
-it as an array sized by the errata, so a reading missing or one too many does
-not compile.
+`History` folds the whole event list, not only the facts, through
+`historyFold`: a step that opens a term starts a `TermServed`, and each fact
+is filed by its source — on entering, at a rank (after the raise that
+conferred it), or in the term. Mustering out's results and the possessions
+are the sheet's, and the history leaves them out.
 
-`internal/rules/readings.go` — `Readings`
+`internal/chargen/history.go` — `historyFold.gained`
 
 ```go
-// Readings is every reading, in erratum order: the one at index i is named
-// by erratum i+1, so erratum e's is Readings()[e-1]. Its result type is the count
-// check: readings is sized by its literal, so a reading missing, or one past
-// the last entry of traveller.Errata, does not compile here. TestTheReadings holds each to its
-// place.
-func Readings() [len(traveller.Errata)]Reading { return readings }
+func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {
+	switch source {
+	case traveller.OnEntering:
+		h.out.OnEntering = append(h.out.OnEntering, gain)
+	case traveller.AtRank:
+		// A grant at a rank follows the raise that conferred it, in the same
+		// term, so the term has one.
+		raised := h.serving().Raised
+
+		latest := &raised[len(raised)-1]
+
+		latest.Grants = append(latest.Grants, gain)
+	case traveller.InTerm:
+		h.serving().Gained = append(h.serving().Gained, gain)
+	case traveller.AtMusteringOut:
+	}
+}
 ```
 
-`Readings()[e-1]` is how the tests reach erratum `e`'s reading; there is no
-lookup by constant beside it. `TestTheReadings` holds each value to its own
-erratum's place, and quotes E001's fields typed out by hand, so a field
-swapped with its neighbour fails. `ReadingNamed` finds a reading by the
-id a record spells (`"E004"`), and is what reads a record back to its
-readings.
+`Attempted` reads the service the enlistment throw was made against from its
+`EnlistedFact`, and whether the policy named it from the run's inputs: an
+unforced auto run is the policy's choice, a `--service` or a guided answer is
+not (#397).
 
-An erratum names one decision for good. A reading whose decision no longer
-holds is not deleted but withdrawn: its `Withdrawal` says why, and names the
-erratum that replaced it, if one did. It stays in the array, so a record
-already stamped with it still names a reading that exists. No reading is
-withdrawn at this tag, so every path that handles one is exercised by a stand-in.
-In rendering and the listing, the stand-ins are test-only readings built for
-the purpose (`TestAWithdrawalNamesARealReplacement`, and
-`internal/render/readings_test.go`); in the stamping harness, E001 under its
-real predicate, treated as withdrawn (section 12).
+`internal/chargen/attempt.go` — `Character.Attempted`
+
+```go
+		if enlisted, ok := outcome.Fact.(traveller.EnlistedFact); ok {
+			_, forced := c.Inputs.Forced.Service()
+
+			return Attempt{Service: enlisted.Service, ByPolicy: !forced && c.Policy != nil}, true
+		}
+```
+
+The engine itself never calls these methods. Mid-run it reads its working
+state (`r.profile`, `r.rank`, `r.terms`), and the golden notes hold the two
+to each other: a fact that carried a value the working state did not reach
+would change a note.
 
 ## 8. The rules the engine reads
 
-The tables are a **transcription**: Go literals in one file,
-`internal/rules/transcription.go`, each cell typed as the page prints it, with
-its glyphs, its abbreviations, its notation and its dashes (ADR 0005). The
-structure comes from the domain and the cells from the page. The service
-tables keep the page's rows as rows, the six services across in
-`traveller.ServiceNames` order, the Table of Ranks among them (#358), and a DM
-row keeps the heading p. 10 prints over it, so the amount is read off the row
-the way the page states it:
-
-`internal/rules/transcription.go` — `transcribedServices`
-
-```go
-	enlistment: printedThrows{
-		targets: perService{"8+", "9+", "5+", "7+", "7+", "3+"},
-		dms: []printedDMRow{
-			{
-				heading:    "DM of +1 if",
-				conditions: perService{"Intel 8+", "Intel 8+", "Dext 6+", "Intel 6+", "Stren 7+", "—"},
-			},
-```
-
-So a table the types do not name, a table given twice or a cell too many does
-not compile. Two cells swapped within a row still compile, as any two printed
-cells would, and catching that is the second transcription's work (the end of
-this section).
-
-`rules.Load` lifts the transcription once per process. Every caller gets the
-same `*Rules`, so every method that returns a slice returns a copy (#137).
-
-`internal/rules/rules.go` — `Load`
-
-```go
-// Load returns the lifted rules, loading and validating them once.
-//
-// Every caller in a process gets the same Rules, so nothing on it hands out a
-// way to write to it: the tables are reached through methods, and a method
-// that returns a slice returns a copy (#137).
-func Load() (*Rules, error) { return loaded() }
-
-var loaded = sync.OnceValues(load)
-```
-
-`load` runs the lifts in order, each reading one transcribed table. Lifting
-is the validation, and where the page's text becomes the domain's values: each
-judgement about the text, a normalization or what a dash means, is written
-down there rather than made in the transcriber's head. A Table 1 cell that is
-no benefit (the font trap's bare "4") refuses the load, and with it the binary.
-The grants are lifted after the Prior Service Table because p. 23's box labels
-name a rank by its title, which is read off the Table of Ranks. The readings
-are not among the lifts. They are not text to be parsed but values already
-typed.
+Every number above came from `rules.Load`, which lifts every table once per
+process and hands each caller the same `*Rules`. A table that will not lift
+fails at first use, not on some path that reaches it.
 
 `internal/rules/lift.go` — `load`
 
@@ -797,413 +1232,336 @@ typed.
 	} {
 ```
 
-The Prior Service Table's lift reads each DM row's heading to its amount once,
-before any service's column is read, so a bad heading is refused as the row's
-and named by the throw it heads (#371). Each service's column is then read
-out of those rows:
-
-`internal/rules/lift.go` — `readHeadings`
-
-```go
-func readHeadings(label string, rows printedThrows) (throwRows, error) {
-	read := throwRows{label: label, targets: rows.targets}
-
-	for _, row := range rows.dms {
-		amount, err := parseDMHeading(row.heading)
-		if err != nil {
-			return throwRows{}, fmt.Errorf("prior service table, %s: %w", label, err)
-		}
-
-		read.dms = append(read.dms, dmRow{amount: amount, conditions: row.conditions})
-	}
-
-	return read, nil
-}
-```
-
-Every name a cell prints is parsed against `traveller`'s own alphabet, through
-an index built from each value's `String()`:
-
-`internal/rules/parse.go` — `named`
-
-```go
-func named[T fmt.Stringer](values []T) map[string]T {
-	index := make(map[string]T, len(values))
-	for _, v := range values {
-		index[v.String()] = v
-	}
-
-	return index
-}
-```
-
-So the spelling a record prints and the spelling the transcription is checked
-against are the same function. A characteristic may also arrive abbreviated,
-as the narrower tables print it ("Intel 8+", "+1 Stren"). Each abbreviation
-opens exactly one of p. 4's six names, so `parseCharacteristic` reads it as a
-question settled by the page and not a reading.
-
-P. 12 makes skills "of three basic types: characteristic alterations …,
-weapon expertise …, and basic skill". Only a basic skill's name is open, an
-alphabet the code does not close, so the guards that matter sit in front of
-it. A cell that opens with a sign and did not parse as an alteration would
-otherwise lift as a skill whose name is the whole cell, and so would one that
-opens with an en dash, which looks like a minus and is not one:
-
-`internal/rules/parse.go` — `parseTableResult`
-
-```go
-	if isAlteration {
-		return traveller.AlterationResult{Characteristic: characteristic, Delta: size}, nil
-	}
-
-	signed, err := startsWithSign(cell)
-	if err != nil {
-		return nil, err
-	}
-
-	if signed {
-		return nil, fmt.Errorf("%w: %q begins with a sign but is not a characteristic alteration", errMalformed, cell)
-	}
-```
-
-`parseAlteration` and `startsWithSign` both ask `traveller.Sign` about the
-cell's first glyph, and an en dash is refused by whichever reads it first,
-with `traveller.ErrEnDash`. Which glyphs are a sign, and that an en dash is
-none, is answered in one place, in `traveller`. A target, a DM heading, an
-alteration, an aging cell, a skill cell's first glyph and a lone dash all read
-the same function, so none of them can disagree with another (#297, #378):
-
-`internal/traveller/target.go` — `Sign`
-
-```go
-func Sign(glyph rune) (int, error) {
-	switch glyph {
-	case '+':
-		return 1, nil
-	case '-', '\u2212':
-		return -1, nil
-	case EnDash:
-		return 0, ErrEnDash
-	default:
-		return 0, nil
-	}
-}
-```
-
-Three dashes look alike on screen, and the page prints only one of them where
-a cell means nothing: the em dash, which the lift reads as no benefit, no
-rank, no DM or no throw. A lone hyphen or en dash in that place is refused by
-name. A Go array short of a cell is padded with `""` in silence, so an empty
-cell is refused too, as a cell nobody read off the page:
-
-`internal/rules/parse.go` — `refuseEmpty`
-
-```go
-func refuseEmpty(cell string) error {
-	if strings.TrimSpace(cell) == "" {
-		return fmt.Errorf("%w: an empty cell; the page prints a dash where it means nothing", errMalformed)
-	}
-
-	return nil
-}
-```
-
-The Aging Table is typed with both of p. 9's header rows and each row's cells
-as the spans their dotted leaders run across. The lift takes the bands from
-where the cells begin, and holds the headers to the procedure. Each age must
-be the age its term ends at, which is why the starting age is `traveller`'s,
-and the header row carries the plus on 74+ that E014 rests on. The lift
-refuses a plus anywhere else, or none on the last age, and holds only that
-fact, not the reading:
-
-`internal/rules/lift.go` — `liftAgingHeaders`
-
-```go
-		age, open := strings.CutSuffix(ages[i], "+")
-
-		switch last := i == len(ages)-1; {
-		case open && !last:
-			return 0, 0, fmt.Errorf("%w: aging table: age %q carries a plus before the last column", errMalformed, ages[i])
-		case !open && last:
-			return 0, 0, fmt.Errorf("%w: aging table: the last age, %q, carries no plus; "+
-				"E014 reads that plus as the open column", errMalformed, ages[i])
-		}
-
-		if age != strconv.Itoa(traveller.StartingAge+traveller.Years*term) {
-			return 0, 0, fmt.Errorf("%w: aging table: age %q is not the age term %d ends at", errMalformed, ages[i], term)
-		}
-```
-
-A transcription broken two ways reports the same fault every run, so a lift
-that finds faults in a loop walks the page's order rather than a map, whose
-order Go randomises (#53). The skill tables are lifted in
-`traveller.SkillTables` order, which is p. 11's, and each row's cells in the
-order of services:
-
-`internal/rules/lift.go` — `liftSkills`
-
-```go
-	for _, table := range traveller.SkillTables {
-		for die, row := range t.tables[table] {
-			for i, cell := range row {
-				service := traveller.ServiceNames[i]
-
-				result, err := parseTableResult(cell, r.normalize)
-				if err != nil {
-					return fmt.Errorf("acquired skills, %v, row %d, %v: %w", table, die+1, service, err)
-				}
-```
-
-The names a table abbreviates are expanded by E012's normalizations, which
-the transcription carries beside the tables they govern. They include the one
-glyph the font broke in the page image itself: p. 23's box is typed as
-printed, `Rifl3-1` among its grants, and no skill or weapon named `Rifl3`
-exists in the three books, so the normalization reads it as Rifle.
+The **transcription** is the page's text as a Go literal: its glyphs,
+abbreviations and dashes, with the services across a row in
+`traveller.ServiceNames` order. The Navy's 8+ that our character missed is
+the first cell here.
 
 `internal/rules/transcription.go` — `transcribedServices`
 
 ```go
-	grants: []printedGrant{
-		{label: "Navy Captain", grant: "+1 Social"},
-		{label: "Navy Admiral", grant: "+1 Social"},
-		{label: "Marine", grant: "Cutlass-1"},
-		{label: "Marine Lieutenant", grant: "Revolver-1"},
-		{label: "Army", grant: "Rifl3-1"},
-		{label: "Army Lieutenant", grant: "SMG-1"},
-		{label: "Merchant 1st Officer", grant: "Pilot-1"},
-		{label: "Scout", grant: "Pilot-1"},
+	enlistment: printedThrows{
+		targets: perService{"8+", "9+", "5+", "7+", "7+", "3+"},
+		dms: []printedDMRow{
+			{
+				heading:    "DM of +1 if",
+				conditions: perService{"Intel 8+", "Intel 8+", "Dext 6+", "Intel 6+", "Stren 7+", "—"},
+			},
+			{
+				heading:    "DM of +2 if",
+				conditions: perService{"Educ 9+", "Stren 8+", "Endur 5+", "Stren 8+", "Intel 6+", "—"},
+			},
+		},
 	},
 ```
 
-What the lift checks is the shape of a cell and the alphabet of a name, not
-that a value is the one the page prints. That is the second transcription's
-work, in this package's tests, laid out apart from the page's grid and written
-in the normalized vocabulary, so it is independent of the first in shape and
-in words. A field misnamed in a literal does not compile, so the slip #317
-found, a misspelled field lifting as zero, cannot reach the lift.
+Even the reprint's broken glyphs stay as printed: p. 23's box grants the Army
+`"Rifl3-1"`, and E012's normalization map turns `Rifl3` into `Rifle` in the
+lift, where the judgement is named. The second transcription, in the `rules`
+tests, is typed separately and in the domain's words, so a misread cell
+cannot pass from one copy to the other.
 
-## 9. The record and what is rendered from it
+Lifted, a throw is a `rules.Throw`: a target and its DMs, summed where the
+profile earns them.
 
-`render.JSON` projects the character into the record and encodes it,
-indented. `render.JSONLine`, which `batch` streams, is the same encoder with
-no indent, so the two cannot come to write different records (#382):
-
-`internal/render/json.go` — `encoded`
+`internal/rules/rules.go` — `Throw.Modifier`
 
 ```go
-func encoded(character *chargen.Character, indent string) ([]byte, error) {
-	projected, err := project(character)
-	if err != nil {
-		return nil, err
-	}
+func (t Throw) Modifier(p traveller.Profile) int {
+	total := 0
 
-	var out bytes.Buffer
-
-	encoder := json.NewEncoder(&out)
-	encoder.SetIndent("", indent)
-
-	err = encoder.Encode(projected)
-	if err != nil {
-		return nil, fmt.Errorf("marshalling the character: %w", err)
-	}
-
-	return out.Bytes(), nil
-}
-```
-
-`project` writes the name from `Inputs.Name` and the ruleset from
-`chargen.Ruleset`. The `policy` object is present exactly when the character
-came from `Auto`, and the version it carries is this build's:
-
-`internal/render/json.go` — `projectPolicy`
-
-```go
-func projectPolicy(answered *chargen.Policy) *policyRecord {
-	if answered == nil {
-		return nil
-	}
-
-	return &policyRecord{
-		Version: chargen.PolicyVersion,
-		Career:  answered.Career.String(),
-		Skills:  answered.Skills.String(),
-		Muster:  answered.Muster.String(),
-	}
-}
-```
-
-The sheet and the transcript are rendered from the record's bytes and nothing
-else, never from the domain types. `rendered` hands them what `JSON` just
-wrote (section 2), and `render` hands them a file read from disk:
-
-`internal/render/sheet.go` — `Sheet`
-
-```go
-func Sheet(text []byte) (string, error) {
-	projected, events, err := decode(text)
-	if err != nil {
-		return "", err
-	}
-
-	return sheetOf(projected, events), nil
-}
-```
-
-`decode` reads the record, and then every event, once, before anything is
-rendered. An event that will not read refuses the record, so a sheet never
-ends by telling the referee to keep a record that could not be read to its
-end. Reading is the only thing that can fail; what is rendered from what was
-read cannot (#362):
-
-`internal/render/decode.go` — `decode`
-
-```go
-	events := make([]eventJSON, 0, len(decoded.Events))
-
-	for _, raw := range decoded.Events {
-		var event eventJSON
-
-		err := json.Unmarshal(raw, &event)
-		if err != nil {
-			return record{}, nil, fmt.Errorf("%w: an event will not read: %w", errNotARecord, err)
+	for _, dm := range t.DMs {
+		if dm.Threshold.Satisfied(p[dm.Characteristic]) {
+			total += dm.Amount
 		}
-
-		events = append(events, event)
 	}
 
-	return decoded, events, nil
-```
-
-Nothing is rebuilt into a domain type on the way back: the sheet is a
-projection of the record, as the record is of the character. A record whose
-`policy` is a bare number (beta.5 and earlier) fails to decode, so an old auto
-record is never read as a guided one.
-
-`Transcript` decodes the same way, and walks the events in order. A choice's
-line names who answered, which comes from the record, not the event:
-
-`internal/render/transcript.go` — `transcriptOf`
-
-```go
-		if event.Kind == kindChoice {
-			fmt.Fprintln(&out, choiceLine(event, r.answerer()))
-
-			continue
-		}
-
-		writeEvent(&out, event)
-```
-
-`internal/render/transcript.go` — `choiceLine`
-
-```go
-func choiceLine(event eventJSON, answerer string) string {
-	return fmt.Sprintf("%3d. %s: %s chose %s from %s",
-		event.Seq, event.Point, answerer, event.Chosen,
-		strings.Join(event.Alternatives, ", "))
+	return total
 }
 ```
 
-On an auto record that reads `28. SkillTable: policy chose Advanced Education
-Table from Personal Development Table, Service Skills Table, Advanced
-Education Table`.
+The readings live beside the tables as `rules.Reading` values, one per
+erratum, in an array whose length is `len(traveller.Errata)`, so a reading
+missing or one too many does not compile. Each carries its pages, what the
+page says, the gap, the reading, why, and the condition it is stamped on.
 
-`Transcript` takes a `readings` argument, which is `--readings`. With it, the
-transcript keeps its inline ids and, after the last event, writes a section of
-its own:
+## 9. Writing the note
 
-`internal/render/transcript.go` — `transcriptOf`
+`render.Note` writes the character in one pass from one `view`.
+
+`internal/render/note.go` — `Note`
 
 ```go
-	out.WriteString("\n")
+func Note(character *chargen.Character, readings bool) string {
+	r := viewOf(character)
+
+	var out strings.Builder
+
+	writeProperties(&out, r)
+	writeSheet(&out, r)
+	writeGenerationRecord(&out, r)
 
 	if readings {
 		writeReadings(&out, r.Errata)
 	}
 
-	endWithKeep(&out)
+	fmt.Fprintf(&out, "---\n\n%s\n\n%s\n", provenance(r), keepTheNote)
+
+	return out.String()
+}
 ```
 
-`writeReadings` reads the ids from the record's `errata`, so a record written
-earlier is explained by the build reading it. It sorts them, because a record
-written elsewhere need not list them in order, and it says so rather than
-failing when a record names an id this build has no reading for: the rest of
-the transcript is still the record's.
+Within `render`, `viewOf` is the only place the character's methods are
+called, so the sheet and the generation record cannot read him two ways. It turns domain values
+into the words the note prints.
 
-`internal/render/readings.go` — `writeReadings`
+`internal/render/view.go` — `viewOf`
 
 ```go
-// Implements: A transcript with its readings ends with each reading its record
-// names, in full [CLI sketch].
-func writeReadings(out *strings.Builder, errata []string) {
-	...
-	for _, id := range slices.Sorted(slices.Values(errata)) {
-		r, ok := rules.ReadingNamed(id)
-		if !ok {
-			fmt.Fprintf(out, "### %s\n\nThe record names %s, and this build has no reading of that id.\n\n", id, id)
+	profile, skills, age := character.Profile(), character.Skills(), character.Age()
 
+	out := view{
+		Name:       character.Inputs.Name,
+		UPP:        profile.UPP(),
+		Profile:    profile,
+		Age:        ageView{Years: age.Years(), Months: age.Months()},
+		Terms:      character.Terms(),
+		Enlistment: foldEnlistment(character.Enlistment()),
+		RankName:   character.RankName(),
+		Skills:     make([]skillView, 0, len(skills)),
+		Benefits:   projectBenefits(character.Benefits()),
+		Pension:    int64(character.Pension()),
+		Errata:     character.Errata,
+		Ruleset:    chargen.Ruleset,
+		Policy:     projectPolicy(character.Policy),
+		Events:     entries(character.Events),
+		Build:      character.Build,
+	}
+```
+
+### Properties
+
+The note opens with YAML properties (#399). Their names and meanings freeze
+at `v1.0.0`; the meanings are stated on `writeProperties`. Every text value
+is quoted, so nothing a later build writes can change a property's type.
+
+`internal/render/properties.go` — `writeProperties`
+
+```go
+	fmt.Fprintf(out, "upp: %s\n", strconv.Quote(r.UPP))
+
+	for _, c := range traveller.Characteristics {
+		fmt.Fprintf(out, "%s: %d\n", characteristicKeys[c], r.Profile[c])
+	}
+
+	fmt.Fprintf(out, "age: %d\n", r.Age.Years)
+	property(out, "service", r.Service)
+	property(out, "rank", r.RankName)
+	fmt.Fprintf(out, "terms: %d\nstatus: %s\n", r.Terms, strconv.Quote(status(r)))
+```
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `properties`
+
+```markdown
+---
+name:
+upp: "754777"
+strength: 7
+dexterity: 5
+endurance: 4
+intelligence: 7
+education: 7
+social: 7
+age: 34
+service: "Merchants"
+rank: "3rd Officer"
+terms: 4
+status: "alive"
+departure: "forced out"
+```
+
+`name` is empty: `new` was given no `--name`, and a batch names nobody
+(#406). A referee names a character in the vault by setting `name` and
+`aliases`.
+
+### Heading, summary and headline
+
+An unnamed note is headed by its title, the service and rank and the UPP,
+which is also what a batch names the file by (`render.Title`). Under it,
+`summary` writes a paragraph a referee can read aloud (#425): who he is, how
+long and how he left, his skills at level 2 or above, and the possessions
+that matter.
+
+`internal/render/summary.go` — `summary`
+
+```go
+	switch {
+	case r.Departure.Fatal:
+		sentences = append(sentences, fmt.Sprintf("%s, %s in term %d, aged %d.",
+			serving(r), r.Departure.How, r.Terms, r.Age.Years))
+	default:
+		sentences = append(sentences, fmt.Sprintf("%s, %s, %s at %d.",
+			serving(r), terms(r.Terms), r.Departure.How, r.Age.Years))
+	}
+```
+
+The headline that follows is the line p. 25 leads Jamison with. Where the
+service on it is not the one attempted, `whoseService` says so — the case
+our draftee is.
+
+`internal/render/sheet.go` — `whoseService`
+
+```go
+	switch {
+	case attempted != r.Service:
+		return fmt.Sprintf(" (%s after the %s refused him)", r.Enlistment.How, attempted)
+	case byPolicy:
+		return " (service chosen by the policy)"
+	default:
+		// He asked for this service and is in it. He knows.
+		return ""
+	}
+```
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `heading`
+
+```markdown
+# Merchants 3rd Officer 754777
+
+Merchants 3rd Officer, 4 terms, forced out at 34. Known for Mechanical-2. Musters out with CR 50000.
+
+UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 4 terms, forced out
+```
+
+### The service record
+
+`serviceLines` tells the service history a term at a time: how he entered
+and what entering granted, each term with something to tell, and how the
+service ended. `termText` joins a term's raises (with their grants in
+parentheses), its gains, its aging and any recovery.
+
+`internal/render/sheet.go` — `serviceLines`
+
+```go
+	entered := fmt.Sprintf("%s, %s", r.Enlistment.Service, r.Enlistment.How)
+
+	entered = joinNonEmpty("; ", entered, strings.Join(r.History.OnEntering, ", "))
+
+	terms := r.History.Terms
+
+	lines := []string{entered}
+
+	for _, term := range terms {
+		told := termText(term)
+		if told == "" {
 			continue
 		}
 
-		out.WriteString(Reading(r) + "\n")
+		lines = append(lines, fmt.Sprintf("Term %d: %s", term.Term, told))
 	}
 ```
 
-The `Implements:` line above the function is a marker; section 12 says what
-reads it. `render.Reading` writes one reading as markdown: a heading of id and
-title, then each labelled part in the order a referee argues it. A withdrawn
-reading says so before anything else:
+A change is written as the table gave it, and where a floor or ceiling held
+it, where (#409): `Strength +1 (held at 15)`.
 
-`internal/render/readings.go` — `Reading`
+`internal/render/history.go` — `changeWords`
 
 ```go
-	if r.Withdrawn() {
-		fmt.Fprintf(&out, "**Withdrawn.** %s", r.Withdrawal.Why)
-
-		if r.Withdrawal.ReplacedBy != 0 {
-			fmt.Fprintf(&out, " Replaced by %v.", r.Withdrawal.ReplacedBy)
-		}
-
-		out.WriteString("\n\n")
+func changeWords(change traveller.Change) string {
+	words := fmt.Sprintf("%v %+d", change.Characteristic, change.Delta)
+	if change.To-change.From != change.Delta {
+		words += fmt.Sprintf(" (held at %d)", change.To)
 	}
+
+	return words
+}
 ```
 
-One fixture, `army-serve`, keeps its transcript a second time with its
-readings, as `army-serve.readings.transcript.md`; it names E002, whose prose
-carries the page's italic, so the golden shows that emphasis arriving
-unchanged.
+`internal/chargen/testdata/drafted-then-commissioned.md` — `Service record`
 
-The sheet never carries the readings. Its headline explains a service the
-character did not ask for. It finds the service attempted (forced in
-`inputs`, or the Service choice among the events) and says the policy picked
-it only on an auto record:
+```markdown
+## Service record
 
-`internal/render/sheet.go` — `serviceAttempted`
+- Merchants, drafted
+- Term 1: Mechanical-1, Jack of all Trades-1
+- Term 2: commissioned 4th Officer and promoted 3rd Officer; Strength +1, Mechanical-2, Electronic-1
+- Term 3: Cudgel-1
+- Term 4: Medical-1; aging Strength -1, Dexterity -1
+- forced out after term 4
+```
+
+### The generation record and the closing lines
+
+`writeGenerationRecord` writes every event under one `## Generation record`
+heading (#422), each step a bold line, and every other event a numbered line
+from the same `entry` the live view prints for a guided run.
+
+`internal/render/record.go` — `writeEvent`
 
 ```go
-	if r.Inputs.Service != "" {
-		return r.Inputs.Service, false
+	switch event.Kind {
+	case kindStep:
+		fmt.Fprintf(out, "\n**%s**\n\n", stepLine(event))
+	case kindThrow, kindRoll:
+		// One line for both: a roll is a throw whose target is empty, which
+		// is exactly what throwLine already prints.
+		fmt.Fprintln(out, throwLine(event))
+	case kindChoice:
+		fmt.Fprintln(out, choiceLine(event, answerer))
+	case kindOutcome:
+		fmt.Fprintln(out, outcomeLine(event))
 	}
-
-	choice, asked := choiceAt(events, traveller.ChoiceService.String())
-	if !asked {
-		return "", false
-	}
-
-	return choice.Chosen, r.Policy != nil
 ```
 
-Every event has been read by the time this runs, so finding the choice cannot
-fail.
+An outcome line is its prose — the fact's `String` where it carries one —
+then the event that caused it and the errata it was stamped with.
+
+`internal/render/record.go` — `outcomeLine`
+
+```go
+func outcomeLine(event entry) string {
+	line := fmt.Sprintf("%3d. %s", event.Seq, event.Description)
+
+	if event.Because != 0 {
+		line += fmt.Sprintf(" (from %d)", event.Because)
+	}
+
+	if len(event.Errata) > 0 {
+		line += " [" + strings.Join(event.Errata, " ") + "]"
+	}
+
+	return line
+}
+```
+
+With `--readings` the full text of each reading the record names follows.
+Then `provenance` names the ruleset, the build (only the command passes one,
+so a golden names none), and who answered.
+
+`internal/render/note.go` — `provenance`
+
+```go
+	if r.Policy == nil {
+		return generated + "; every choice answered by the player."
+	}
+
+	return fmt.Sprintf("%s; every choice answered by the policy, version %d: career %s, skills %s, muster %s.",
+		generated, r.Policy.Version, r.Policy.Career, r.Policy.Skills, r.Policy.Muster)
+```
+
+`internal/chargen/testdata/drafted-then-commissioned.md` — `closing lines`
+
+```markdown
+Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 4: career serve, skills advanced, muster cash.
+
+Keep this note whole: its generation record is the only way back to this character.
+```
 
 ## 10. `readings`
 
-`ctchargen readings` is how an id is read out without a transcript to hand.
-It has no flag set, as `version` has none: its words are ids. `answerHelp`
-answers `--help` for both, and refuses a word after it as every other help
-path does. With no ids, `readings` lists every reading; with some, it writes
-those in full, in the order asked.
+A record names readings by id. `ctchargen readings` lists every one as its
+erratum, title and status; with ids, it writes those in full, in the order
+asked, and an id that names none is a usage error with nothing written.
 
 `cmd/ctchargen/readings.go` — `readings`
 
@@ -1224,107 +1582,130 @@ those in full, in the order asked.
 	}
 ```
 
-`ReadingsNamed` composes the whole text before returning any of it, so the
-first id that names no reading fails the call and nothing is written:
-
-`internal/render/readings.go` — `ReadingsNamed`
-
-```go
-	for i, id := range ids {
-		r, ok := rules.ReadingNamed(id)
-		if !ok {
-			return "", fmt.Errorf("%q %w", id, ErrNoReading)
-		}
-```
-
-A transcript of commands run while writing this, trimmed:
-
-```text
-$ ctchargen readings
-# Readings
-
-| Erratum | Title | Status |
-| --- | --- | --- |
-| E001 | The draft is _may_, not _must_ | in force |
-| E002 | The per-term order is the exposition's, not the example's | in force |
-...
-| E015 | A printed table governs over the worked example's stated result | in force |
-
-$ ctchargen readings E099
-ctchargen: usage: readings [E001 ...]; "E099" names no reading; run `ctchargen readings` for the list
-
-$ ctchargen new --auto --sheet --readings
-ctchargen: usage: --readings ends a transcript, and needs --history
-```
+`render.Reading` writes one reading's labelled parts verbatim, its page
+emphasis included, and a withdrawn reading says so first.
 
 ## 11. `batch`
 
-A batch is always an auto run. It has nobody to ask, so it declares no
-`--auto`, and a command line passing one is refused by the flag package as a
-flag `batch` does not have, not accepted and ignored (#336). Run while writing
-this:
+A batch is always an auto run, and since rc.3 it writes only the living
+(#421) and only into a folder of its own (#426). `-o` must name a folder that
+is new, or empty but for hidden entries; `ownFolder` checks that before
+anyone is generated, and an `-o` ending in `.md` is refused outright.
 
-```text
-$ ctchargen batch --count 1 --auto
-ctchargen: usage: flag provided but not defined: -auto; run `ctchargen batch --help`
+`cmd/ctchargen/batch.go` — `ownFolder`
+
+```go
+	for _, entry := range entries {
+		if !strings.HasPrefix(entry.Name(), ".") {
+			return fmt.Errorf("%w: %s is not empty; a batch writes into a folder of its own, a new or empty one",
+				errUsage, dir)
+		}
+	}
 ```
 
-`batch` builds one `batchRun` value carrying the inputs, the policy, the
-count, `--survivors`, the search bound and the dice. `write` picks the
-destination:
+`each` generates until it has the number asked for, passing over the dead,
+and gives up with an error after a hundred characters per member asked for.
+The bound is checked by division, so a count near the top of an int cannot
+overflow it (#423).
 
-- a directory takes one file per member, named by position, each written by
-  `render.JSON`;
-- standard output streams JSONL a record at a time, each written by
-  `render.JSONLine`;
-- a file is buffered, so a failed run opens nothing.
-
-Collisions are checked from the planned paths before anyone is generated.
-
-The member loop is shared by all three:
-
-`cmd/ctchargen/batch.go` — `each`
+`cmd/ctchargen/batch.go` — `batchRun.each`
 
 ```go
 	for i := 0; done.written < b.count; i++ {
-		if b.survivors && i >= b.count*b.attempts {
-			...
-			return done, fmt.Errorf(
-				"%w: --survivors generated %d characters for %d living and found %d",
-				errSearch, i, b.count, done.written,
-			)
+		// Divided, not multiplied: count*attempts overflows an int for a
+		// count near its top, and the batch gave up having drawn nobody (#423).
+		if i/b.attempts >= b.count {
+...
 		}
 
 		character, err := b.member(i)
-		...
-		if traveller.Fatal(character.Departure) {
-			if b.survivors {
-				done.passed++
-
-				continue
-			}
-
-			done.died++
+		if err != nil {
+			return done, err
 		}
+
+		if traveller.Fatal(character.Departure()) {
+			done.passed++
+
+			continue
+		}
+
+		err = take(done.written+1, character)
+		if err != nil {
+			return done, err
+		}
+
+		done.written++
+	}
 ```
 
-`--survivors` passes over a dead character and generates another, so every
-member written is still exactly what its dice made. It gives up at a hundred
-attempts per character asked for, and when it does, that is a run-time error
-and not a usage error. `traveller.Fatal` is the same test of a departure the
-engine's `dead()` makes.
+Into a folder, each member is written as `NN Title.md`: its position,
+zero-padded to the width of the count, and the same title an unnamed note is
+headed by (#400).
+
+`cmd/ctchargen/batch.go` — `batchRun.intoDirectory`
+
+```go
+	return b.each(
+		func(index int, character *chargen.Character) error {
+			where, err := openDestination(nil,
+				memberPath(dir, position(index, b.count), render.Title(character)), false)
+			if err != nil {
+				return err
+			}
+
+			return where.write(render.Note(character, false))
+		},
+	)
+```
+
+A transcript of a batch run against a build of this tree; the dice are the
+engine's own, so another run makes another crew. The closing line goes to
+standard error.
+
+```text
+$ ctchargen batch --count 4 -o crew
+4 written, 1 passed over for dying
+$ ls crew
+1 Other 4B4BCA.md
+2 Scouts 997787.md
+3 Army Major 789885.md
+4 Merchants 3rd Officer 4869A9.md
+$ ctchargen batch --count 1 -o crew
+ctchargen: usage: crew is not empty; a batch writes into a folder of its own, a new or empty one
+```
+
+Four services in four members is the version 4 policy at work. Without `-o`
+the notes go to standard output one after another, each written as it is
+generated, so a large batch holds one character at a time.
 
 ## 12. How the tests drive it
 
-A **fixture** in `internal/chargen` is a script (the dice and draws of one
-path, in the order the procedure asks for them) plus inputs and a policy, and
-its record is checked in as a golden. A **walk** in `cmd/ctchargen` is the
-same idea for the command's tests, with no golden. Both play their script
-through `internal/scripted`, whose roller fails the test when asked past the
-end of the script, and whose `Finished` fails it when any of the script was
-left unread.
+### Fixtures and goldens
 
-`internal/scripted/scripted.go` — `Die`
+A **fixture** names a path and states its **script**: every die and every
+draw, in the order the procedure asks for them. Our character is this entry
+of the roster.
+
+`internal/chargen/fixtures_test.go` — `fixtures`
+
+```go
+	{
+		name: "drafted-then-commissioned", forced: chargen.ForceService(traveller.Navy), policy: chargen.DefaultPolicy(),
+		dice: []int{
+			6, 1, 5, 1, 2, 2, 5, 2, 3, 4, 4, 3, 2, 3, 5, 3, 4, 2, 6, 6,
+			1, 4, 3, 2, 5, 5, 6, 1, 2, 5, 4, 6, 5, 1, 3, 4, 5, 4, 2, 5,
+			2, 4, 1, 6, 1, 2, 5, 1, 4, 1, 3, 6, 4, 4, 3, 6, 6,
+		},
+		among: []int{9},
+	},
+```
+
+The one draw, index 9, is Cudgel from the blades list at event 65. The
+scripted roller is strict both ways: a die asked for past the end fails the
+test, and `Finished` reports one left unread, so a change to the order the
+procedure consumes dice fails the fixture that felt it.
+
+`internal/scripted/scripted.go` — `Roller.Die`
 
 ```go
 func (r *Roller) Die() int {
@@ -1334,172 +1715,61 @@ func (r *Roller) Die() int {
 		r.t.Fatalf("%s: the procedure asked for die %d, and the script holds %d",
 			r.name, r.die+1, len(r.dice))
 	}
+
+	face := r.dice[r.die]
+	r.die++
+
+	return face
+}
 ```
 
-A change to the order dice are consumed in changes which path a fixture walks.
-No failure names the throw that moved. The roller names only an index, when a
-script runs out or is left unread; a reorder usually re-paths a fixture and
-changes its count, so it fails there and wherever the new path diverges; and a
-change that moves no path at all fails nothing but a golden, whose message
-says to regenerate. So the golden diff is read before it is regenerated (#289).
-The fixture is then re-scripted from a record that walks the new path, and the
-goldens are regenerated with `go test ./internal/chargen -regenerate`, which
-also writes the schema's two published examples.
+`TestGoldens` renders every fixture's note and compares it to its golden
+under `internal/chargen/testdata/`; `-regenerate` rewrites them, and the
+diff is read before it is kept. Because every fact the note reads is folded
+from the log, the goldens are also what hold the folds to the engine: #441
+moved every sheet fact into the log and no golden changed.
+
+`internal/chargen/golden_test.go` — `TestGoldens`
+
+```go
+	for _, fixture := range fixtures {
+		character := fixture.generate(t)
+
+		golden(t, fixture.name+".md", []byte(render.Note(character, false)))
+```
+
+The command's own tests drive `run` with `withDice` and a scripted source —
+**walks**, extracted from a record the tool wrote — so a guided session is
+tested through the command, stderr questions and all (ADR 0003).
 
 ### The stamping harness
 
-`stamping_test.go` reads the record each fixture writes, generated fresh from
-the engine as it is now, and `TestGoldens` holds those records to the
-checked-in goldens (#373). It holds each record's `errata` to a predicate per
-reading. Each predicate is written by hand from the reading's `StampedOn`
-prose, never from the stamping code, and a failure quotes that prose as
-`rules` declares it. Whether a reading is withdrawn comes from `rules` too:
-
-`internal/chargen/stamping_test.go` — `conditions`
-
-```go
-func conditions(tables *rules.Rules) []reading {
-	all := slices.Concat(
-		enlistmentAndService(),
-		agingAndCrisis(),
-		rankAndTitle(tables),
-	)
-
-	for i := range all {
-		all[i].withdrawn = rules.Readings()[all[i].id-1].Withdrawn()
-	}
-
-	return all
-}
-```
-
-`verdict` is what is wrong with how one record stamps one reading. A
-withdrawn reading is held only to being stamped on no record: the fixtures'
-records are new records, and no new record may carry one. Its condition is not
-judged, since a reading replaced by another still describes records the
-replacement now governs (#332). A standing reading is stamped exactly where
-its condition holds, in both directions:
-
-`internal/chargen/stamping_test.go` — `verdict`
-
-```go
-	got := slices.Contains(rec.Errata, r.id.String())
-
-	if r.withdrawn {
-		if got {
-			return []string{fmt.Sprintf("%s: stamps %v, which is withdrawn", rec.name, r.id)}
-		}
-
-		return nil
-	}
-
-	want := r.holds(rec)
-
-	switch {
-	case want && !got:
-```
-
-Every record agrees with every reading, so the main stamping test never feeds
-`verdict` a disagreement. Two tests do, from copies of the records with E001's
-stamp flipped. `TestAStandingReadingRefusesADisagreement` strikes it from
-records its condition fits and adds it to the rest, and expects each refused.
-`TestAWithdrawnReadingOnAGoldenIsRefused` treats E001 as withdrawn, under its
-real predicate: every record stamping it is refused, and each with the stamp
-struck passes, though E001's prose still describes it.
-
-A reading can be **parked**, naming the issue where its prose and its code
-disagree undecided: the harness counts its disagreements and asserts the
-count, rather than judging it, unless it is withdrawn.
+`internal/chargen/stamping_test.go` holds every reading to its stamping
+condition, record by record and in both directions: an erratum stamped where
+its condition does not hold is as much a defect as one missing. Each
+condition is a predicate written by hand from the reading's stamped-on
+prose, never from the stamping code, and a failure quotes the prose from
+`rules.Readings`.
 
 ### The markers
 
-Every implemented rule carries an `Implements:` marker with its authority in
-brackets, and the test that holds it a `Holds:` marker naming the same rule.
-`internal/coverage` is test code only. It parses the tree's Go, the fixture
-roster and the schema's `$comment`s for markers, and fails when a rule is
-named by an implementation and held by no test, held by a test and named by no
-implementation, or cited to an authority that does not exist. A marker is one
-rule's name and one cite, and a page cite names its books and readings:
+Every rule an implementation carries is marked beside it, with its cite, and
+every test that holds one says so; `internal/coverage` joins the two by the
+rule's name and fails on either half missing. The map is printed on demand
+and never committed.
 
-`internal/coverage/coverage_test.go` — `implementsMarker`
+`internal/coverage/coverage_test.go` — `coverage_test`
 
 ```go
-var (
-	implementsMarker = regexp.MustCompile(`^Implements: (.+) \[([^\]]+)\]\.$`)
-	holdsMarker      = regexp.MustCompile(`^Holds: (.+)\.$`)
-
-	// pageCite is a page cite's leading book and page, "1:4" or "3:22".
-	pageCite = regexp.MustCompile(`^(\d+):(\d+)`)
-
-	// citedBook is every book a page cite names, "1:5; 3:22" naming 1 and 3,
-	// and citedReading every reading it names, "(E006, E007)" naming two.
-	citedBook    = regexp.MustCompile(`(\d+):\d+`)
-	citedReading = regexp.MustCompile(`E\d{3}`)
+//	// Implements: Six 2D rolls, in order [1:4].
+//
+// A test that holds a rule carries one line naming it:
+//
+//	// Holds: Six 2D rolls, in order.
 ```
 
-A cite is a page in a closed shape (`1:4`, `1:9 (E006, E007)`), an ADR that
-exists in `docs/adr`, one of the v1 contract's promise labels, or a reading
-alone; and the readings it may name are read from the values, not typed into
-the check:
-
-`internal/coverage/coverage_test.go` — `readAuthorities`
-
-```go
-func readAuthorities(dir string) (authorities, error) {
-	known := authorities{cites: make(map[string]bool)}
-
-	for _, label := range promises {
-		known.cites[label] = true
-	}
-
-	err := known.readADRs(dir)
-	if err != nil {
-		return authorities{}, err
-	}
-
-	for _, r := range rules.Readings() {
-		known.cites["("+r.ID.String()+")"] = true
-	}
-
-	return known, nil
-}
-```
-
-The check writes nothing. The map from each rule to its page, implementation
-and test is what the markers already say, and `-print` writes it as a table
-on demand, once the check has passed:
-
-`internal/coverage/coverage_test.go` — `TestTheCoverageMapHolds`
-
-```go
-	err = known.check(found)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	rows, err := mapped(found)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if *printTable {
-		_, err := os.Stdout.WriteString(strings.Join(table(rows), "\n") + "\n")
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-```
-
-Run from `internal/coverage` while writing this, `go test -run
-TestTheCoverageMapHolds -print` began, trimmed to its first rows:
-
-```text
-| Rule | Authority | Implementation | Test |
-| --- | --- | --- | --- |
-| Die roll conventions: `N+`, `N−`, exact | 1:2–3 | `internal/traveller.Target` | `internal/traveller.TestParseTarget`, `internal/traveller.TestTargetSatisfied` |
-| All characters begin at 18 | 1:4 | `internal/traveller.StartingAge` | `internal/chargen.TestGoldens` |
-| Floor of 0 for an aging reduction | 1:4, 7–9 (E010) | `internal/traveller.Profile.AgeReduce` | `internal/traveller.TestAgeReduceFloorsAtZero` |
-```
-
-Each of these checks runs under `task`, the gate, with the rest of the suite;
-there is no CI (#149), so it holds when someone runs it.
+The fixture above carries its own: `// Holds: Draftees are not eligible for
+commission in the first term only.`, which the `Implements:` marker on
+`run.commission` names. And a new invariant is not done until
+`go run ./internal/mutate` has shown a deliberate edit to it killed, in a
+scratch copy of the tree.
