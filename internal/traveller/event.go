@@ -100,8 +100,7 @@ type ChoiceEvent struct {
 }
 
 // OutcomeEvent records a consequence — a skill gained, a characteristic
-// changed, years elapsed, a death — and the throw, roll or choice that caused
-// it.
+// changed, a benefit, a death — and the throw, roll or choice that caused it.
 //
 // Because is the sequence number of the causing event, or zero where the
 // consequence follows from the procedure itself rather than from an event.
@@ -111,10 +110,10 @@ type OutcomeEvent struct {
 	Description string
 	Errata      []Erratum
 
-	// Fact is what the outcome did, typed: the service attempted, the service
-	// history's entries, and a result applied at mustering out, which nothing
-	// reads (the service history leaves it out). Its Description is then its
-	// String (#412).
+	// Fact is what the outcome did, typed, wherever a fact about the character
+	// comes from it: Character's folds read every one (#441), the service
+	// history leaving out what mustering out applied. Its Description is then
+	// its String (#412).
 	Fact Fact
 }
 

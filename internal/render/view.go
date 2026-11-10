@@ -74,8 +74,8 @@ type nobilityView struct {
 }
 
 // attemptView is the service enlistment was attempted in, as chargen reads it
-// from the log, and whether the policy named it (#397). Service is empty for
-// a character who attempted none.
+// from the log, and whether the policy named it (#397). Only a served
+// character's is projected (#454); a civilian's is the zero value, never read.
 type attemptView struct {
 	Service  string
 	ByPolicy bool
@@ -134,7 +134,6 @@ func viewOf(character *chargen.Character) view {
 		Skills:     make([]skillView, 0, len(skills)),
 		Benefits:   projectBenefits(character.Benefits()),
 		Pension:    int64(character.Pension()),
-		Attempt:    projectAttempt(character),
 		Errata:     character.Errata,
 		Ruleset:    chargen.Ruleset,
 		Policy:     projectPolicy(character.Policy),
@@ -152,6 +151,7 @@ func viewOf(character *chargen.Character) view {
 		// departure is the zero value, which writes no property and reads as
 		// alive.
 		out.Departure = foldDeparture(character.Departure())
+		out.Attempt = projectAttempt(character)
 	}
 
 	for _, skill := range skills {
@@ -165,10 +165,15 @@ func viewOf(character *chargen.Character) view {
 	return out
 }
 
+// projectAttempt is the service a served character attempted. Every
+// generation makes the enlistment throw, so one who served always has one; a
+// served character without is a generation defect, and fails here rather than
+// reading as one who asked for his service and got it (#454), as #393 and
+// #445 decided for the enlistment and the departure.
 func projectAttempt(character *chargen.Character) attemptView {
 	attempt, attempted := character.Attempted()
 	if !attempted {
-		return attemptView{}
+		panic("render: a served character with no enlistment throw in his log")
 	}
 
 	return attemptView{

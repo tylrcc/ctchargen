@@ -91,8 +91,6 @@ func whoseService(r view) string {
 	attempted, byPolicy := r.Attempt.Service, r.Attempt.ByPolicy
 
 	switch {
-	case attempted == "":
-		return ""
 	case attempted != r.Service:
 		return fmt.Sprintf(" (%s after the %s refused him)", r.Enlistment.How, attempted)
 	case byPolicy:

@@ -388,8 +388,8 @@ func (s *sheetFold) WeaponReceived(f traveller.WeaponReceivedFact) error {
 	return nil
 }
 
-// ShipReceived holds a ship as the fact says it stands, in place of the one
-// of its kind already held.
+// ShipReceived appends a ship received for the first time; a repeat Free
+// Trader is FreeTraderAgain's, and a second scout ship carries no fact.
 func (s *sheetFold) ShipReceived(f traveller.ShipReceivedFact) error {
 	s.benefits.Ships = append(s.benefits.Ships, f.Ship)
 
