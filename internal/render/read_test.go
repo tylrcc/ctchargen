@@ -220,7 +220,7 @@ func TestAChoiceIsNamedInThePagesWords(t *testing.T) {
 			}, aDischargedSailor())
 		})
 
-		line := "  4. " + want + ": policy chose a from a, b"
+		line := "\n4. " + want + ": policy chose a from a, b"
 		if !strings.Contains(note, line) {
 			t.Errorf("%v is not named %q:\n%s", point, line, note)
 		}
@@ -429,8 +429,8 @@ func TestARollClaimsNothingMet(t *testing.T) {
 	})
 
 	for _, want := range []string{
-		"  1. Table 2, Cash Allowances: rolled 4 +1 = 5\n",
-		"  2. survival: rolled 3+4 = 7 against 5+, made\n",
+		"\n1. Table 2, Cash Allowances: rolled 4 +1 = 5\n",
+		"\n2. survival: rolled 3+4 = 7 against 5+, made\n",
 	} {
 		if !strings.Contains(note, want) {
 			t.Errorf("the note does not read %q:\n%s", want, note)
@@ -466,7 +466,7 @@ func TestTheGenerationRecordIsOneHeading(t *testing.T) {
 
 	for _, want := range []string{
 		"\n**1. characteristics (p. 4)**\n\n",
-		"  2. UPP 777777 at age 18\n",
+		"\n2. UPP 777777 at age 18\n",
 		"\n**3. enlistment (pp. 5, 10)**\n\n",
 	} {
 		if !strings.Contains(record, want) {

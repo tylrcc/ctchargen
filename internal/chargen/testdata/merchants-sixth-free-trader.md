@@ -72,125 +72,125 @@ UPP 825AAB, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 **1. characteristics (p. 4)**
 
-  2. Strength: rolled 6+2
-  3. Strength 8 (from step 2)
-  4. Dexterity: rolled 3+1
-  5. Dexterity 4 (from step 4)
-  6. Endurance: rolled 5+1
-  7. Endurance 6 (from step 6)
-  8. Intelligence: rolled 3+6
-  9. Intelligence 9 (from step 8)
- 10. Education: rolled 6+3
- 11. Education 9 (from step 10)
- 12. Social Standing: rolled 6+5
- 13. Social Standing 11 (from step 12)
- 14. UPP 84699B at age 18
+2. Strength: rolled 6+2
+3. Strength 8 (from step 2)
+4. Dexterity: rolled 3+1
+5. Dexterity 4 (from step 4)
+6. Endurance: rolled 5+1
+7. Endurance 6 (from step 6)
+8. Intelligence: rolled 3+6
+9. Intelligence 9 (from step 8)
+10. Education: rolled 6+3
+11. Education 9 (from step 10)
+12. Social Standing: rolled 6+5
+13. Social Standing 11 (from step 12)
+14. UPP 84699B at age 18
 
 **15. enlistment (pp. 5, 10)**
 
- 16. enlistment, Merchants: rolled 3+4 +3 (Strength 7+, Intelligence 6+) = 10 against 7+, made
- 17. enlisted in the Merchants (from step 16)
+16. enlistment, Merchants: rolled 3+4 +3 (Strength 7+, Intelligence 6+) = 10 against 7+, made
+17. enlisted in the Merchants (from step 16)
 
 **18. term 1 (pp. 5-7)**
 
- 19. survival: rolled 2+4 +2 (Intelligence 7+) = 8 against 5+, made
- 20. survived term 1 (from step 19)
- 21. attempt a commission (p. 6): policy chose yes from yes, no
- 22. commission: rolled 5+6 +1 (Intelligence 6+) = 12 against 4+, made
- 23. commissioned: 4th Officer (from step 22)
- 24. attempt promotion (p. 6): policy chose yes from yes, no
- 25. promotion: rolled 5+3 +1 (Intelligence 9+) = 9 against 10+, missed
- 26. not promoted this term (from step 25)
+19. survival: rolled 2+4 +2 (Intelligence 7+) = 8 against 5+, made
+20. survived term 1 (from step 19)
+21. attempt a commission (p. 6): policy chose yes from yes, no
+22. commission: rolled 5+6 +1 (Intelligence 6+) = 12 against 4+, made
+23. commissioned: 4th Officer (from step 22)
+24. attempt promotion (p. 6): policy chose yes from yes, no
+25. promotion: rolled 5+3 +1 (Intelligence 9+) = 9 against 10+, missed
+26. not promoted this term (from step 25)
 
 **27. skills and training (pp. 6, 11)**
 
- 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 29. Advanced Education Table (education 8+): rolled 3
- 30. Engineer-1 (from step 29)
- 31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 32. Advanced Education Table: rolled 4
- 33. Navigation-1 (from step 32)
- 34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 35. Service Skills Table: rolled 2
- 36. Vacc Suit-1 (from step 35)
- 37. reenlistment: rolled 2+3 = 5 against 4+, made
- 38. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
- 39. reenlisted for term 2 (from step 37)
+28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+29. Advanced Education Table (education 8+): rolled 3
+30. Engineer-1 (from step 29)
+31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+32. Advanced Education Table: rolled 4
+33. Navigation-1 (from step 32)
+34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+35. Service Skills Table: rolled 2
+36. Vacc Suit-1 (from step 35)
+37. reenlistment: rolled 2+3 = 5 against 4+, made
+38. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
+39. reenlisted for term 2 (from step 37)
 
 **40. term 2 (pp. 5-7)**
 
- 41. survival: rolled 3+1 +2 (Intelligence 7+) = 6 against 5+, made
- 42. survived term 2 (from step 41)
- 43. attempt promotion (p. 6): policy chose yes from yes, no
- 44. promotion: rolled 2+4 +1 (Intelligence 9+) = 7 against 10+, missed
- 45. not promoted this term (from step 44)
+41. survival: rolled 3+1 +2 (Intelligence 7+) = 6 against 5+, made
+42. survived term 2 (from step 41)
+43. attempt promotion (p. 6): policy chose yes from yes, no
+44. promotion: rolled 2+4 +1 (Intelligence 9+) = 7 against 10+, missed
+45. not promoted this term (from step 44)
 
 **46. skills and training (pp. 6, 11)**
 
- 47. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 48. Personal Development Table: rolled 1
- 49. Strength +1, 8 to 9 (from step 48)
- 50. reenlistment: rolled 3+2 = 5 against 4+, made
- 51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
- 52. reenlisted for term 3 (from step 50)
+47. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+48. Personal Development Table: rolled 1
+49. Strength +1, 8 to 9 (from step 48)
+50. reenlistment: rolled 3+2 = 5 against 4+, made
+51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
+52. reenlisted for term 3 (from step 50)
 
 **53. term 3 (pp. 5-7)**
 
- 54. survival: rolled 4+3 +2 (Intelligence 7+) = 9 against 5+, made
- 55. survived term 3 (from step 54)
- 56. attempt promotion (p. 6): policy chose yes from yes, no
- 57. promotion: rolled 6+3 +1 (Intelligence 9+) = 10 against 10+, made
- 58. promoted: 3rd Officer (from step 57)
+54. survival: rolled 4+3 +2 (Intelligence 7+) = 9 against 5+, made
+55. survived term 3 (from step 54)
+56. attempt promotion (p. 6): policy chose yes from yes, no
+57. promotion: rolled 6+3 +1 (Intelligence 9+) = 10 against 10+, made
+58. promoted: 3rd Officer (from step 57)
 
 **59. skills and training (pp. 6, 11)**
 
- 60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 61. Advanced Education Table (education 8+): rolled 2
- 62. Navigation-2 (from step 61)
- 63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 64. Advanced Education Table: rolled 2
- 65. Mechanical-1 (from step 64)
- 66. reenlistment: rolled 1+4 = 5 against 4+, made
- 67. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
- 68. reenlisted for term 4 (from step 66)
+60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+61. Advanced Education Table (education 8+): rolled 2
+62. Navigation-2 (from step 61)
+63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+64. Advanced Education Table: rolled 2
+65. Mechanical-1 (from step 64)
+66. reenlistment: rolled 1+4 = 5 against 4+, made
+67. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
+68. reenlisted for term 4 (from step 66)
 
 **69. term 4 (pp. 5-7)**
 
- 70. survival: rolled 4+1 +2 (Intelligence 7+) = 7 against 5+, made
- 71. survived term 4 (from step 70)
- 72. attempt promotion (p. 6): policy chose yes from yes, no
- 73. promotion: rolled 6+3 +1 (Intelligence 9+) = 10 against 10+, made
- 74. promoted: 2nd Officer (from step 73)
+70. survival: rolled 4+1 +2 (Intelligence 7+) = 7 against 5+, made
+71. survived term 4 (from step 70)
+72. attempt promotion (p. 6): policy chose yes from yes, no
+73. promotion: rolled 6+3 +1 (Intelligence 9+) = 10 against 10+, made
+74. promoted: 2nd Officer (from step 73)
 
 **75. skills and training (pp. 6, 11)**
 
- 76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 77. Service Skills Table: rolled 4
- 78. weapon of expertise, specified immediately (p. 11): policy chose Laser Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 79. Gun Combat: Laser Carbine-1 (from step 77)
- 80. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
- 81. Personal Development Table: rolled 6
- 82. Bribery-1 (from step 81)
- 83. reenlistment: rolled 4+2 = 6 against 4+, made
- 84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
- 85. reenlisted for term 5 (from step 83)
+76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+77. Service Skills Table: rolled 4
+78. weapon of expertise, specified immediately (p. 11): policy chose Laser Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+79. Gun Combat: Laser Carbine-1 (from step 77)
+80. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+81. Personal Development Table: rolled 6
+82. Bribery-1 (from step 81)
+83. reenlistment: rolled 4+2 = 6 against 4+, made
+84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
+85. reenlisted for term 5 (from step 83)
 
 **86. aging, end of term 4 (pp. 7-9)**
 
- 87. aging, Strength: rolled 1+6 = 7 against 8+, missed
- 88. Strength -1, 9 to 8 (from step 87)
- 89. aging, Dexterity: rolled 1+1 = 2 against 7+, missed
- 90. Dexterity -1, 4 to 3 (from step 89)
- 91. aging, Endurance: rolled 5+4 = 9 against 8+, made
- 92. Endurance holds (from step 91)
+87. aging, Strength: rolled 1+6 = 7 against 8+, missed
+88. Strength -1, 9 to 8 (from step 87)
+89. aging, Dexterity: rolled 1+1 = 2 against 7+, missed
+90. Dexterity -1, 4 to 3 (from step 89)
+91. aging, Endurance: rolled 5+4 = 9 against 8+, made
+92. Endurance holds (from step 91)
 
 **93. term 5 (pp. 5-7)**
 
- 94. survival: rolled 3+1 +2 (Intelligence 7+) = 6 against 5+, made
- 95. survived term 5 (from step 94)
- 96. attempt promotion (p. 6): policy chose yes from yes, no
- 97. promotion: rolled 1+4 +1 (Intelligence 9+) = 6 against 10+, missed
- 98. not promoted this term (from step 97)
+94. survival: rolled 3+1 +2 (Intelligence 7+) = 6 against 5+, made
+95. survived term 5 (from step 94)
+96. attempt promotion (p. 6): policy chose yes from yes, no
+97. promotion: rolled 1+4 +1 (Intelligence 9+) = 6 against 10+, missed
+98. not promoted this term (from step 97)
 
 **99. skills and training (pp. 6, 11)**
 

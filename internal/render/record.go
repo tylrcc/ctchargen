@@ -54,7 +54,7 @@ func writeEvent(out *strings.Builder, event entry, answerer string) {
 // say and not the event's; the live view, which is watched by the person
 // answering, prints its own.
 func choiceLine(event entry, answerer string) string {
-	return fmt.Sprintf("%3d. %s: %s chose %s from %s",
+	return fmt.Sprintf("%d. %s: %s chose %s from %s",
 		event.Seq, choiceWords(event.Point), answerer, event.Chosen,
 		strings.Join(event.Alternatives, ", "))
 }
@@ -107,7 +107,7 @@ func throwLine(event entry) string {
 		dice = append(dice, strconv.Itoa(die))
 	}
 
-	line := fmt.Sprintf("%3d. %s: rolled %s", event.Seq, event.Step, strings.Join(dice, "+"))
+	line := fmt.Sprintf("%d. %s: rolled %s", event.Seq, event.Step, strings.Join(dice, "+"))
 
 	if event.DM != 0 {
 		line += fmt.Sprintf(" %+d", event.DM)
@@ -142,7 +142,7 @@ func met(succeeded bool) string {
 }
 
 func outcomeLine(event entry) string {
-	line := fmt.Sprintf("%3d. %s", event.Seq, event.Description)
+	line := fmt.Sprintf("%d. %s", event.Seq, event.Description)
 
 	if event.Because != 0 {
 		line += fmt.Sprintf(" (from step %d)", event.Because)

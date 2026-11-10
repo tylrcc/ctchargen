@@ -1,0 +1,22 @@
+# bun's own config. `bun fmt` is the formatter for every non-Go file (see
+# Taskfile.yml's docs task).
+
+[fmt]
+# Goldens move only by regeneration, never by a formatter, and are compared
+# byte for byte. render writes notes the formatter keeps as written, except
+# where a step's numbered lines cross from 99 to 100: the formatter's list
+# alignment there depends on where that list starts, which a note cannot
+# follow without copying the formatter's internals. These are the goldens
+# that cross; any other golden is held to `bun fmt --check` like every file.
+ignorePatterns = [
+  "internal/chargen/testdata/drafted-over-the-policys-pick.md",
+  "internal/chargen/testdata/drafted-then-commissioned.md",
+  "internal/chargen/testdata/marines-armed.md",
+  "internal/chargen/testdata/navy-aged-past-the-floor.md",
+  "internal/chargen/testdata/other-crisis-died.md",
+  "internal/chargen/testdata/other-crisis-survived.md",
+  "internal/chargen/testdata/other-serve.md",
+  "internal/chargen/testdata/scouts-diversified.md",
+  "internal/chargen/testdata/scouts-expertise.md",
+  "internal/chargen/testdata/scouts-second-ship.md",
+]

@@ -232,8 +232,8 @@ func TestTheRosterReachesItsPaths(t *testing.T) {
 }
 
 // numbered is the sequence number a generation record line opens with: an event line
-// ("  2. Strength: rolled 5+5") or a step line ("**17. term 3 (pp. 5-7)**").
-var numbered = regexp.MustCompile(`(?m)^(?:\*\*| *)(\d+)\. `)
+// ("2. Strength: rolled 5+5") or a step line ("**17. term 3 (pp. 5-7)**").
+var numbered = regexp.MustCompile(`(?m)^(?:\*\*)?(\d+)\. `)
 
 // No golden's generation record skips a number (#249).
 //

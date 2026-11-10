@@ -33,7 +33,7 @@ func EventLine(event traveller.Event) string {
 	// names the point, the decider and the alternatives, all of which the
 	// person who just typed the answer can see above.
 	if lined.Kind == kindChoice {
-		return fmt.Sprintf("%3d. you chose %s\n", lined.Seq, lined.Chosen)
+		return fmt.Sprintf("%d. you chose %s\n", lined.Seq, lined.Chosen)
 	}
 
 	// A step is a plain numbered line here: the note marks it bold, and a

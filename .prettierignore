@@ -1,5 +1,0 @@
-# Golden fixtures move only by regeneration, never by hand -- and a
-# formatter is "by hand" in effect. They are compared byte for byte, so
-# reformatting one breaks the gate with a diff that looks like the dice
-# stream moved when it has not.
-**/testdata/

@@ -5,12 +5,18 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- Comments and config the rc.5 snapshots found still describing the tree
-  before this release now say what holds: the policy's strategies and
-  versions, the service history's mustering out, the answerer on each
-  choice's line, the build, a DM's sources by name with p. 10's threshold,
-  and `.prettierignore` without the JSON files #405 removed (#537, #538,
-  #539, #540).
+- Comments the rc.5 snapshots found still describing the tree before this
+  release now say what holds: the policy's strategies and versions, the
+  service history's mustering out, the answerer on each choice's line, the
+  build, and a DM's sources by name with p. 10's threshold (#537, #538,
+  #539).
+- A note's record lines no longer pad their numbers (`17.`, not ` 17.`), so a
+  note is Markdown the formatter keeps as written, and a referee's formatter
+  leaves it alone. The one exception is a step whose numbered lines cross
+  from 99 to 100, where the formatter aligns the list by where it starts;
+  `bunfig.toml` ignores the goldens that do, by name, and holds every other
+  golden to `bun fmt --check`. It replaces `.prettierignore`, which ignored
+  every golden and still named JSON files #405 removed (#540).
 - `task setup` installs every tool the gate runs, from the repository alone:
   the Brewfile now lists each Homebrew tool the gate uses, and the task
   installs NilAway with `go install`, since Homebrew has no formula for it.
