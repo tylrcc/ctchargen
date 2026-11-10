@@ -5,6 +5,8 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `CLAUDE.md` no longer lists the packages one by one: each package's doc
+  comment says what the list said, and the section already sends readers there.
 - `CLAUDE.md` names the branch the release snapshots are written on: the
   release plan's `prep_branch`, which the tag step finds the prep merge by.
 - The 21 `//nolint:gochecknoglobals` directives are gone: the config turns

@@ -174,28 +174,6 @@ Every package but the command is under `internal/`: there is no Go library,
 so nothing outside the module can import one and no exported name is a
 promise (#199).
 
-- `traveller`: the domain. Alphabets, values, and the sums that say "exactly
-  one of".
-- `rules`: every table of pp. 4–25, transcribed and lifted once, and the
-  readings, declared as values. The lift validates the tables' cells and
-  names; their values are the second transcription's.
-- `dice`: an unseeded stream. The note is the only way back (ADR 0001, ADR 0006).
-- `chargen`: the procedure, the `Decider` it asks, and the auto run's `Policy`,
-  which describes itself. Its tests hold the readings and the choice points to
-  the goldens.
-- `render`: the note — its properties, summary, sheet and generation record,
-  from one view of the character — and the readings written out, in full or as an index.
-- `internal/coverage`: test code only. Holds the `Implements:` and `Holds:`
-  markers to each other and their cites to what exists, writing nothing;
-  `-print` shows the map.
-- `internal/mutate`: a tool, not part of the CLI. Builds a scratch copy of
-  the tree with one exact edit made, runs a command against it, and says
-  whether the edit was killed.
-- `internal/scripted`: test support, imported only by test files. The strict
-  roller that fixtures and walks both drive their runs through.
-- `cmd/ctchargen`: the subcommands. The note goes to stdout and the
-  conversation to stderr, so `ctchargen new > kira.md` saves a note.
-
 ## Commands
 
 `task` is the gate and the default. `task --list` carries the current set;
