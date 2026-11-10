@@ -109,95 +109,26 @@ func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 	}
 }
 
-// A write that fails is reported as the write, and abandons what it opened
-// rather than leaving the descriptor held or finishing a partial note.
-func TestAFailedWriteIsReportedAndAbandoned(t *testing.T) {
+// A write that fails is reported as the write, and closes what it opened
+// rather than leaving the descriptor held.
+func TestAFailedWriteIsReportedAndClosed(t *testing.T) {
 	t.Parallel()
 
-	finished, abandoned := false, false
-
-	where := destination{
-		out: &failsAfter{},
-		close: func() error {
-			finished = true
-
-			return nil
-		},
-		abandon: func() { abandoned = true },
-	}
-
-	err := where.write("anything")
-	if !errors.Is(err, errWriteFailed) {
-		t.Errorf("a failed write was reported as %v, want the write's own error", err)
-	}
-
-	if finished {
-		t.Error("a failed write finished the destination as though it went through")
-	}
-
-	if !abandoned {
-		t.Error("a failed write left the destination open")
-	}
-}
-
-// oldRecord is what a --force test plants before replacing it.
-const oldRecord = "last week's\n"
-
-// --force leaves the note it replaces whole until the new one is (#191).
-// Opening with a truncating flag emptied the old note before the first byte
-// of the new one, so a write that failed left neither.
-func TestForceKeepsTheOldRecordUntilTheNewOneIsWhole(t *testing.T) {
-	t.Parallel()
-
-	dir := t.TempDir()
-	path := filepath.Join(dir, "sheet.txt")
-
-	err := os.WriteFile(path, []byte(oldRecord), noteFileMode)
+	where, err := openDestination(nil, filepath.Join(t.TempDir(), "kira.md"), false)
 	if err != nil {
-		t.Fatalf("planting the old note: %v", err)
-	}
-
-	where, err := openDestination(nil, path, true)
-	if err != nil {
-		t.Fatalf("opening with --force: %v", err)
-	}
-
-	if got := mustRead(t, path); got != oldRecord {
-		t.Errorf("opening with --force left the old note as %q", got)
+		t.Fatal(err)
 	}
 
 	where.out = &failsAfter{}
 
-	err = where.write("this week's\n")
+	err = where.write("anything")
 	if !errors.Is(err, errWriteFailed) {
-		t.Fatalf("a failed write was reported as %v, want the write's own error", err)
+		t.Errorf("a failed write was reported as %v, want the write's own error", err)
 	}
 
-	if got := mustRead(t, path); got != oldRecord {
-		t.Errorf("a failed --force write left the old note as %q", got)
-	}
-
-	where, err = openDestination(nil, path, true)
-	if err != nil {
-		t.Fatalf("reopening with --force: %v", err)
-	}
-
-	err = where.write("this week's\n")
-	if err != nil {
-		t.Fatalf("writing with --force: %v", err)
-	}
-
-	if got := mustRead(t, path); got != "this week's\n" {
-		t.Errorf("a whole --force write left %q", got)
-	}
-
-	entries, err := os.ReadDir(dir)
-	if err != nil {
-		t.Fatalf("listing the directory: %v", err)
-	}
-
-	if len(entries) != 1 {
-		t.Errorf("--force left %d files beside the note, want none", len(entries)-1)
+	_, err = where.file.Write([]byte("more"))
+	if !errors.Is(err, os.ErrClosed) {
+		t.Errorf("a failed write left the file open: a write after it said %v", err)
 	}
 }
 
@@ -210,38 +141,6 @@ func mustRead(t *testing.T, path string) string {
 	}
 
 	return string(data)
-}
-
-// Where the note cannot be staged, --force says so and leaves the old one.
-func TestForceThatCannotStageLeavesTheOldRecord(t *testing.T) {
-	t.Parallel()
-
-	dir := t.TempDir()
-	path := filepath.Join(dir, "sheet.txt")
-
-	err := os.WriteFile(path, []byte(oldRecord), noteFileMode)
-	if err != nil {
-		t.Fatalf("planting the old note: %v", err)
-	}
-
-	err = os.Chmod(dir, 0o400)
-	if err != nil {
-		t.Fatalf("closing the directory: %v", err)
-	}
-
-	_, err = openDestination(nil, path, true)
-	if err == nil || !strings.Contains(err.Error(), "staging") {
-		t.Errorf("--force into a closed directory said %v, want the staging failure", err)
-	}
-
-	err = os.Chmod(dir, noteDirMode)
-	if err != nil {
-		t.Fatalf("reopening the directory: %v", err)
-	}
-
-	if got := mustRead(t, path); got != oldRecord {
-		t.Errorf("a --force that could not stage left the old note as %q", got)
-	}
 }
 
 // Members are named first by their one-based position, zero-padded to the

@@ -73,7 +73,7 @@ func declareNewFlags() newFlagSet {
 		name:     set.String("name", "", "the character's name"),
 		readings: set.Bool("readings", false, readingsHelp),
 		output:   set.String("o", "", "write to this file rather than to standard output"),
-		force:    set.Bool("force", false, "replace the output file if it already exists"),
+		force:    set.Bool("force", false, "overwrite the output file in place if it already exists"),
 	}
 }
 
@@ -86,7 +86,7 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 	case errors.Is(err, flag.ErrHelp):
 		return writeHelp(out, newUsage, flags.set)
 	case err != nil:
-		return fmt.Errorf("%w: %w; run `ctchargen new --help`", errUsage, err)
+		return fmt.Errorf("%w: %s; run `ctchargen new --help`", errUsage, flagMistake(err))
 	}
 
 	// `new` takes no positional argument, and a stray word is a typo that
@@ -271,12 +271,18 @@ func checkName(name string) error {
 	return nil
 }
 
+// errNoFolder reports an -o whose folder is missing, or is not a folder.
+var errNoFolder = errors.New("is not a folder that exists")
+
 // refusedBefore refuses an -o the note could never be written to, before
 // anyone is generated (#424): a path whose folder is missing or is not a
 // folder, a path already there without --force, and a directory, which
-// --force cannot replace either. Refused only at the end, a guided session
+// --force cannot overwrite either. Refused only at the end, a guided session
 // lost every answer the player had given. Without --force, the exclusive open
 // that writes the note still refuses a file that appears during the session.
+//
+// None of these is a usage error: the command line was well formed, and what
+// stands in the way is on disk (#472).
 //
 // Implements: A guided session onto an existing -o is refused before it asks
 // [Command line].
@@ -287,8 +293,7 @@ func refusedBefore(path string, force bool) error {
 
 	folder := filepath.Dir(path)
 	if !isDirectory(folder) {
-		return fmt.Errorf("%w: %s is not a folder that exists, so -o %s cannot be written",
-			errUsage, folder, path)
+		return fmt.Errorf("%s %w, so -o %s cannot be written", folder, errNoFolder, path)
 	}
 
 	_, err := os.Lstat(path)

@@ -810,9 +810,9 @@ func TestAGuidedSessionOntoAnExistingPathIsRefusedFirst(t *testing.T) {
 	}
 }
 
-// With --force a session onto a file runs and replaces it, as before; onto a
-// directory it is still refused before it asks, since --force cannot replace
-// a directory either (#424).
+// With --force a session onto a file runs and overwrites it; onto a
+// directory it is still refused before it asks, since --force cannot
+// overwrite a directory either (#424).
 func TestForceRunsTheSessionUnlessADirectoryIsInTheWay(t *testing.T) {
 	t.Parallel()
 

@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"regexp"
 	"strings"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -184,6 +185,31 @@ func dashed(name string) string {
 	}
 
 	return "--" + name
+}
+
+// flagNamed finds the flag in the flag package's errors: what precedes the
+// one dash it writes every flag with, and the name after it.
+var flagNamed = regexp.MustCompile(
+	`^(flag provided but not defined: |flag needs an argument: |` +
+		`invalid (?:boolean )?value "(?:[^"\\]|\\.)*" for (?:flag )?)-([^\s:=]+)`,
+)
+
+// flagMistake is the flag package's error, as text, with its flag written as
+// the help writes it (#472): `--count`, `--output`, `-o`. The package writes
+// every flag with one dash, whichever the operator typed, so its errors named
+// a flag the way the help, the README and the other errors never write it.
+//
+// Implements: A flag in an error is written as the help writes it
+// [Command line].
+func flagMistake(err error) string {
+	message := err.Error()
+
+	named := flagNamed.FindStringSubmatchIndex(message)
+	if named == nil {
+		return message
+	}
+
+	return message[:named[3]] + dashed(message[named[4]:named[5]]) + message[named[5]:]
 }
 
 // zeroDefault reports a default not worth printing. The flag package's own

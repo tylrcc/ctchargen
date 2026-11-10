@@ -42,7 +42,7 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 	case errors.Is(err, flag.ErrHelp):
 		return writeHelp(out, batchUsage, flags.set)
 	case err != nil:
-		return fmt.Errorf("%w: %w; run `ctchargen batch --help`", errUsage, err)
+		return fmt.Errorf("%w: %s; run `ctchargen batch --help`", errUsage, flagMistake(err))
 	}
 
 	// batch takes no positional argument either, for the reason `new` does
@@ -306,8 +306,7 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 //
 // A stream is read as it arrives, so `batch --count 50000 | less` shows the
 // first note at once and the run holds one character in memory rather than
-// all of them (#44). There is no file to leave half-written or to clobber on
-// standard output, so nothing is staged (#64).
+// all of them (#44).
 func (b batchRun) streamed(out io.Writer) (tally, error) {
 	return b.each(writingTo(out))
 }
@@ -344,8 +343,9 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 // 938788.md" (#400).
 //
 // A batch writes only into a folder that is new, or empty but for hidden
-// entries (#426), so nothing in the folder can be anyone's but this run's
-// and nothing is ever removed. The check reads the folder once, before
+// entries (#426), so nothing in the folder can be anyone's but this run's.
+// The only file it removes is a member's note whose write failed, which this
+// run created (#468). The check reads the folder once, before
 // anyone is generated (#99). One character is held at a time.
 //
 // A batch that fails partway leaves what it has written, and says so: the
@@ -357,7 +357,7 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 func (b batchRun) intoDirectory(dir string) (tally, error) {
 	err := os.MkdirAll(dir, noteDirMode)
 	if err != nil {
-		return tally{}, fmt.Errorf("creating %s: %w", dir, err)
+		return tally{}, fmt.Errorf("creating %s: %w", dir, withoutPath(dir, err))
 	}
 
 	err = ownFolder(dir)
@@ -378,12 +378,17 @@ func (b batchRun) intoDirectory(dir string) (tally, error) {
 	)
 }
 
+// errFolderInUse reports a batch's folder that holds something already.
+var errFolderInUse = errors.New("is not empty")
+
 // ownFolder refuses a folder holding anything a person would see in a
 // listing: a note, another file, a subfolder. Hidden entries, such as the
 // .DS_Store Finder leaves, do not count.
 //
 // It takes a folder and nothing that could generate, so the check costs a
-// listing and never a character (#99).
+// listing and never a character (#99). A folder in use is not a usage error:
+// the command line was well formed, and what is in the folder is on disk
+// (#472).
 //
 // Implements: A batch writes only into a folder of its own [Command line].
 //
@@ -392,13 +397,13 @@ func (b batchRun) intoDirectory(dir string) (tally, error) {
 func ownFolder(dir string) error {
 	entries, err := os.ReadDir(dir)
 	if err != nil {
-		return fmt.Errorf("reading %s: %w", dir, err)
+		return fmt.Errorf("reading %s: %w", dir, withoutPath(dir, err))
 	}
 
 	for _, entry := range entries {
 		if !strings.HasPrefix(entry.Name(), ".") {
-			return fmt.Errorf("%w: %s is not empty; a batch writes into a folder of its own, a new or empty one",
-				errUsage, dir)
+			return fmt.Errorf("%s %w; a batch writes into a folder of its own, a new or empty one",
+				dir, errFolderInUse)
 		}
 	}
 

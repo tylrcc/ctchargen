@@ -167,8 +167,12 @@ note names no policy for them to belong to.
 | `--muster` | `cash` (default) · `goods` · `spartan`        |
 
 **Nothing is overwritten without `--force`.** `new -o` onto an existing file
-is refused unless `--force` is given. A `batch` has no `--force`: it writes
-only into a folder of its own.
+is refused unless `--force` is given, and a write without it that fails
+leaves no note. `--force` overwrites the file in place, as the shell's `>`
+does, so the file keeps its mode and its links, and a symlink is followed to
+the note it names; a write that fails partway has already lost the old note. A
+`batch` has no `--force`: it writes only into a folder of its own. Notes and
+folders are created with the mode your umask gives them.
 
 **A name is one line.** `new --name` is printed as the note's heading, so a name
 carrying a line break is refused rather than allowed to start sections the

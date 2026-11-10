@@ -58,7 +58,7 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		"a name that is not UTF-8": {[]string{cmdNew, flagAuto, flagName, "Jami\xffson"}, "not UTF-8"},
 		// A batch has no name to give its members (#406): every one would get
 		// the same, so the flag is refused as one batch does not have.
-		"a batch name": {[]string{cmdBatch, flagCount, "1", flagName, "Kira Vance"}, "flag provided but not defined: -name"},
+		"a batch name": {[]string{cmdBatch, flagCount, "1", flagName, "Kira Vance"}, "flag provided but not defined: --name"},
 		// All three, because each is now parsed by its own function at the
 		// boundary rather than by one loop over a map. A test of one used
 		// to reach the branch the other two take; it no longer does, and a

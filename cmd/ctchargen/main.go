@@ -12,7 +12,11 @@ import (
 	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
-// errUsage reports a command line the tool cannot act on.
+// errUsage reports a mistake in the command line: an unknown flag, a value
+// a flag cannot take, a word where none belongs. Nothing else is one (#472,
+// #508). A file in the way, a folder that is missing or in use, a write that
+// fails and a build with nothing embedded are found at run time, and a reader
+// told "usage" goes looking for a flag he typed wrong.
 var errUsage = errors.New("usage")
 
 // errSearch reports a run that was asked for correctly and could not deliver
@@ -139,9 +143,17 @@ func version(args []string, out io.Writer) error {
 			errUsage, versionUsage, args[0])
 	}
 
-	stamp := build()
+	return writeVersion(build(), out)
+}
+
+// errNoBuild reports a build with no build information embedded.
+var errNoBuild = errors.New("no build information is embedded")
+
+// writeVersion writes the build stamp, refusing an empty one. A build with
+// nothing embedded is not a usage error: the command line was right (#508).
+func writeVersion(stamp string, out io.Writer) error {
 	if stamp == "" {
-		return fmt.Errorf("%w: no build information is embedded", errUsage)
+		return errNoBuild
 	}
 
 	_, err := fmt.Fprintln(out, stamp)

@@ -50,6 +50,27 @@ release turns out to be.
   question says which roll of how many and what gave the term that many,
   shows each table's six results, and names each table as the note does
   (#486).
+- A failed write without `--force` leaves no note behind (#468). The note is
+  still opened exclusively and written in place; a write that fails now
+  removes it, where it was left truncated under its name and the rerun was
+  refused. An interrupt is the operating system's, and can leave a partial
+  note, as it can for `cp`. The refusal of an existing file now says
+  `pass --force to overwrite it`.
+- `--force` overwrites the file in place, as the shell's `>` does (#469),
+  where since #191 it wrote a new file beside it and renamed it over. The
+  file is opened once, created or truncated: it keeps its mode and its hard
+  links, and a symlink is followed to the note it names, even one not yet
+  there, and kept. The trade: a `--force` write that fails partway has lost
+  the old note, and the partial one stays. `--force`'s help says it
+  overwrites in place.
+- Notes and folders take the umask (#469): a note is created `0666` and a
+  batch's folder `0777`, less the umask, where they were `0600` and `0700`
+  whatever it said.
+- Error messages name flags and files as the operator typed them (#472,
+  #508). A flag is written as the help writes it (`--count`, `-o`), not with
+  the flag package's one dash, and a path appears once in a message. `usage:`
+  labels only a mistake in the command line: a file in the way, a missing or
+  non-empty folder and a build with nothing embedded no longer carry it.
 
 ## 1.0.0-rc.4
 
