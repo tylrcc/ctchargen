@@ -75,7 +75,7 @@ func pick[T any](p *player, question string, from []T, name func(T) string) (T, 
 	return from[chosen], nil
 }
 
-func (p *player) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
+func (p *player) Service(from []traveller.EnlistmentOffer, _ chargen.Vary) (traveller.ServiceName, error) {
 	offer, err := pick(p, "Which service will you try to enlist in? (p. 10)", from,
 		func(o traveller.EnlistmentOffer) string {
 			return fmt.Sprintf("%v (enlistment %v, and you earn %+d)", o.Service, o.Target, o.DM)

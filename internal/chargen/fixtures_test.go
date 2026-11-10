@@ -401,7 +401,7 @@ var fixtures = []fixture{
 			1, 5, 3, 1, 3, 1, 4, 5, 6, 3, 6, 6, 5, 4, 3, 4, 6, 3, 4, 6,
 			1,
 		},
-		among: nil,
+		among: []int{5}, // the service drawn: Other, sixth in book order
 	},
 	// Unforced AND drafted, which nothing else in this roster is. The policy
 	// picked Other, the throw failed, and the draft put him in the Marines -
@@ -417,7 +417,7 @@ var fixtures = []fixture{
 			1, 6, 1, 4, 4, 1, 2, 2, 2, 5, 1, 6, 3, 2, 5, 4, 4, 6, 5, 4,
 			4, 1, 2, 2, 1, 3,
 		},
-		among: []int{8, 4},
+		among: []int{5, 8, 4},
 	},
 	// Names a weapon, four times, from both lists. Until #34 no fixture on
 	// this roster reached the Weapon choice point at all - eleven of the

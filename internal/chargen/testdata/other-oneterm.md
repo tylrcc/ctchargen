@@ -93,6 +93,6 @@ UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, d
 
 ---
 
-Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 3: career oneterm, skills personal, muster goods.
+Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 4: career oneterm, skills personal, muster goods.
 
 Keep this note whole: its generation record is the only way back to this character.

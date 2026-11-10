@@ -182,6 +182,6 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 
 
 ---
 
-Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 3: career serve, skills advanced, muster cash.
+Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 4: career serve, skills advanced, muster cash.
 
 Keep this note whole: its generation record is the only way back to this character.

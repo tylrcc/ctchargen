@@ -20,8 +20,8 @@ type scribbling struct {
 	chargen.Policy
 }
 
-func (s scribbling) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
-	chosen, err := s.Policy.Service(from)
+func (s scribbling) Service(from []traveller.EnlistmentOffer, vary chargen.Vary) (traveller.ServiceName, error) {
+	chosen, err := s.Policy.Service(from, vary)
 	for i := range from {
 		from[i] = traveller.EnlistmentOffer{Service: chosen}
 	}

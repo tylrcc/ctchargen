@@ -87,6 +87,6 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 
 ---
 
-Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 3: career retire, skills service, muster spartan.
+Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 4: career retire, skills service, muster spartan.
 
 Keep this note whole: its generation record is the only way back to this character.

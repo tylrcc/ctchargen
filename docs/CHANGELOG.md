@@ -75,6 +75,10 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
 - The service history and the service attempted are stated once, in the
   generation record (#412, #397): they are read from typed facts in the log
   rather than kept beside it. No note changes.
+- **The auto policy draws the service** (#420), uniformly among the six, with
+  the run's own dice, where it took the likeliest enlistment every time and a
+  batch came out nearly all Army. `PolicyVersion` is 4; `--career` no longer
+  touches the service attempted.
 - A character with no enlistment, which only a generation defect could
   produce, now fails loudly in the renderer rather than reading as one who
   never served, as #377 decided for the engine (#393).

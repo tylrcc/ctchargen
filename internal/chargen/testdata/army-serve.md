@@ -314,6 +314,6 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 ---
 
-Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 3: career serve, skills advanced, muster cash.
+Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text); every choice answered by the policy, version 4: career serve, skills advanced, muster cash.
 
 Keep this note whole: its generation record is the only way back to this character.

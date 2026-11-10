@@ -29,7 +29,7 @@ import "github.com/philoserf/ctchargen/internal/traveller"
 //nolint:interfacebloat // one method per choice point closes the set
 type Decider interface {
 	// Service chooses which service to attempt enlistment in (pp. 5, 10).
-	Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error)
+	Service(from []traveller.EnlistmentOffer, vary Vary) (traveller.ServiceName, error)
 
 	// SubmitToDraft asks whether to submit to the draft (p. 5; E001).
 	SubmitToDraft() (bool, error)

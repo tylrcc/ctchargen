@@ -68,7 +68,7 @@ func offered() []string {
 	return []string{"yes", "no"}
 }
 
-func (l logging) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
+func (l logging) Service(from []traveller.EnlistmentOffer, vary Vary) (traveller.ServiceName, error) {
 	offer := names(from, func(o traveller.EnlistmentOffer) string { return o.Service.String() })
 
 	err := asked(traveller.ChoiceService, offer)
@@ -76,7 +76,7 @@ func (l logging) Service(from []traveller.EnlistmentOffer) (traveller.ServiceNam
 		return 0, err
 	}
 
-	chosen, err := l.to.Service(own(from))
+	chosen, err := l.to.Service(own(from), vary)
 	if err != nil {
 		return chosen, err
 	}

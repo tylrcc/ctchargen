@@ -338,7 +338,7 @@ func TestANoteEndsWithWhatWroteItAndWhatToKeep(t *testing.T) {
 		},
 		"an auto run, built": {
 			func(c *chargen.Character) { c.Policy, c.Build = &policy, "v1.2.3" },
-			ruleset + " by ctchargen v1.2.3; every choice answered by the policy, version 3: " +
+			ruleset + " by ctchargen v1.2.3; every choice answered by the policy, version 4: " +
 				"career serve, skills advanced, muster cash." + keep,
 		},
 	} {

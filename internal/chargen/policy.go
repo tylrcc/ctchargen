@@ -10,16 +10,19 @@ import (
 
 // Policy is the auto run's decider (new --auto, and every batch): it answers
 // every question the procedure asks,
-// under three named strategies, each over one group of choice points. Career
-// (--career) answers Service, SubmitToDraft, AttemptCommission,
-// AttemptPromotion, ReenlistIntent and AssumeTitle; Skills (--skills) answers
+// under three named strategies, each over one group of choice points, and
+// draws the service under all three (#420). Career (--career) answers
+// SubmitToDraft, AttemptCommission, AttemptPromotion, ReenlistIntent and
+// AssumeTitle; Skills (--skills) answers
 // SkillTable and Weapon; Muster (--muster) answers MusterTable,
 // MusterTable1DM, MusterTable2DM and MusterWeapon. Each method's doc says when
 // the engine asks it and what each strategy answers, and those are the whole
 // of what --auto decides.
 //
-// It is total - it answers every method of Decider - and deterministic. Every
-// strategy is a pure function of what it is handed. Where a strategy needs to
+// It is total - it answers every method of Decider - and every strategy is a
+// pure function of what it is handed. Two answers draw - the service and the
+// weapon - and they draw only through the Vary they are handed, which is the
+// run's own dice, so a run is determined by its dice and nothing else. Where a strategy needs to
 // know that an option is legal, the engine supplies that by what it puts in
 // the offered set, never by the strategy reaching into the character.
 //
@@ -63,8 +66,9 @@ type Policy struct {
 // character --auto makes. A new choice point is not: no record was answered
 // differently before it, because the question was never asked. Version 2
 // draws the weapon rather than taking the first name; version 3 designates
-// the skills table he has trained on least (#34).
-const PolicyVersion = 3
+// the skills table he has trained on least (#34); version 4 draws the service
+// rather than taking the likeliest enlistment (#420).
+const PolicyVersion = 4
 
 // Career is the --auto career strategy: continue, retire, or take one term.
 //
@@ -255,40 +259,17 @@ func prefer[T comparable](offered, ranked []T) T {
 // printed enlistment target and the cumulative DM this character earns
 // against it.
 //
-// serve, retire and oneterm all take the offer whose throw is likeliest to
-// succeed: the 2D probability of meeting its target after its DM. Ties go to
-// the first listed, which is the Prior Service Table's column order and
-// nothing else.
-func (p Policy) Service(from []traveller.EnlistmentOffer) (traveller.ServiceName, error) {
-	best := from[0]
-	bestOdds := odds(best)
-
-	for _, offer := range from[1:] {
-		if o := odds(offer); o > bestOdds {
-			best, bestOdds = offer, o
-		}
-	}
-
-	return best.Service, nil
-}
-
-// odds is the chance of meeting an offer's target on two dice after its
-// modifier. It is computed from the printed target and the printed DM; it is
-// not a table of its own and it is not a rule.
-func odds(offer traveller.EnlistmentOffer) float64 {
-	ways := 0
-
-	const faces = 6
-
-	for first := 1; first <= faces; first++ {
-		for second := 1; second <= faces; second++ {
-			if offer.Target.Satisfied(first + second + offer.DM) {
-				ways++
-			}
-		}
-	}
-
-	return float64(ways) / float64(faces*faces)
+// All three strategies draw the service from the offer, uniformly, with the
+// run's own dice, as Weapon draws a weapon (#420). Version 3 took the
+// likeliest enlistment every time, and a referee's 120-member batch came out
+// 109 Army: an auto run could not make a ship's crew without --service. The
+// page gives no basis for preferring one service, and the draft that follows
+// a failed throw is itself a uniform draw over the six (pp. 5, 10), so drawing the
+// attempt covers every service the procedure can reach.
+//
+// Implements: The service is drawn, so every service is reachable [1:5, 10].
+func (p Policy) Service(from []traveller.EnlistmentOffer, vary Vary) (traveller.ServiceName, error) {
+	return from[vary.Among(len(from))].Service, nil
 }
 
 // SubmitToDraft is asked when the enlistment throw failed. The question

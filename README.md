@@ -145,14 +145,15 @@ Answered 1, 2, 1; the session is lost and nothing was written.
 ```
 
 **Without `--service` the tool picks one**, and on an auto run (`new --auto`,
-or any batch) that pick is the policy's rather than yours. The sheet says so
+or any batch) the policy draws one of the six at random, so a batch mixes
+them rather than filling with whichever is easiest to join. The sheet says so
 on its headline. Naming a service does not guarantee you get it either: a
 failed enlistment throw sends the character to the draft, which may put him
 somewhere else entirely — the sheet says that too.
 
 **Three flags steer the policy** where the procedure offers a choice, on
-`new --auto` and on `batch`. `--career` governs enlistment, the draft,
-commission and promotion attempts, reenlistment and the title; `--skills` the skills table
+`new --auto` and on `batch`. `--career` governs the draft, commission and
+promotion attempts, reenlistment and the title; `--skills` the skills table
 and the weapon a combat result names; `--muster` the mustering-out table, its
 two DMs and repeated weapons. What each strategy answers at each choice is in
 the doc comment of the `chargen.Policy` method that asks it. On `new` without

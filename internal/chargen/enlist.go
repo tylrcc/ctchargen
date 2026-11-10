@@ -91,7 +91,7 @@ func (r *run) chooseService() (traveller.ServiceName, error) {
 		})
 	}
 
-	name, err := r.decide.Service(offers)
+	name, err := r.decide.Service(offers, varyOnly{r.roll})
 	if err != nil {
 		return name, fmt.Errorf("choosing a service: %w", err)
 	}

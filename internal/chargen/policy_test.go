@@ -185,40 +185,6 @@ func TestMusterWeaponStrategies(t *testing.T) {
 	}
 }
 
-// Service ranks by the odds of the throw, ties to book order (p. 10).
-func TestServicePicksTheLikeliestEnlistment(t *testing.T) {
-	t.Parallel()
-
-	target := func(s string) traveller.Target {
-		parsed, err := traveller.ParseTarget(s)
-		if err != nil {
-			t.Fatalf("parsing %q: %v", s, err)
-		}
-
-		return parsed
-	}
-
-	policy := chargen.DefaultPolicy()
-
-	chosen, err := policy.Service([]traveller.EnlistmentOffer{
-		{Service: traveller.Navy, Target: target("8+")},
-		{Service: traveller.Other, Target: target("3+")},
-		{Service: traveller.Army, Target: target("5+")},
-	})
-	if err != nil || chosen != traveller.Other {
-		t.Errorf("chose %v (%v), want Other, whose 3+ is the likeliest", chosen, err)
-	}
-
-	// A modifier is part of the odds.
-	chosen, err = policy.Service([]traveller.EnlistmentOffer{
-		{Service: traveller.Navy, Target: target("8+"), DM: 6},
-		{Service: traveller.Other, Target: target("3+")},
-	})
-	if err != nil || chosen != traveller.Navy {
-		t.Errorf("chose %v (%v), want Navy, whose 8+ with a +6 is certain", chosen, err)
-	}
-}
-
 // A word that names no strategy never becomes one.
 //
 // This is the whole of what Policy.Validate and the engine's validate() used
@@ -303,5 +269,47 @@ func TestTheRejectionNamesTheValuesAndNoDocument(t *testing.T) {
 
 	if strings.Contains(err.Error(), ".md") {
 		t.Errorf("the rejection %q names a file the reader may not have", err)
+	}
+}
+
+// drawn is a Vary that answers each draw from a script.
+type drawn struct{ draws []int }
+
+func (d *drawn) Among(int) int {
+	next := d.draws[0]
+
+	d.draws = d.draws[1:]
+
+	return next
+}
+
+// Service draws the service from the offer, uniformly, with the run's own
+// dice: every one of the six is reachable, each by its place in book order
+// (p. 10), whatever its odds (#420). The best-odds rule made an army.
+//
+// Holds: The service is drawn, so every service is reachable.
+func TestServiceIsDrawnFromEveryService(t *testing.T) {
+	t.Parallel()
+
+	offers := make([]traveller.EnlistmentOffer, 0, len(traveller.ServiceNames))
+	for _, service := range traveller.ServiceNames {
+		offers = append(offers, traveller.EnlistmentOffer{Service: service})
+	}
+
+	want := []traveller.ServiceName{
+		traveller.Navy, traveller.Marines, traveller.Army,
+		traveller.Scouts, traveller.Merchants, traveller.Other,
+	}
+
+	for draw, service := range want {
+		for _, policy := range []chargen.Policy{
+			chargen.DefaultPolicy(),
+			{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
+		} {
+			chosen, err := policy.Service(offers, &drawn{[]int{draw}})
+			if err != nil || chosen != service {
+				t.Errorf("%v drew %d and chose %v (%v), want %v", policy, draw, chosen, err, service)
+			}
+		}
 	}
 }

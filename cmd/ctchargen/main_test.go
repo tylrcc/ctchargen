@@ -148,7 +148,7 @@ func TestAnAutoRunNamingNoStrategyAppliesTheDefault(t *testing.T) {
 
 	note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other}, nil)
 
-	const want = "answered by the policy, version 3: career serve, skills advanced, muster cash."
+	const want = "answered by the policy, version 4: career serve, skills advanced, muster cash."
 
 	if !strings.Contains(note, want) {
 		t.Errorf("an auto run naming no strategy does not say %q:\n%s", want, note)

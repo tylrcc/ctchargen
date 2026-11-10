@@ -118,7 +118,7 @@ type decisions struct {
 	muster  []traveller.MusterTable
 }
 
-func (d *decisions) Service([]traveller.EnlistmentOffer) (traveller.ServiceName, error) {
+func (d *decisions) Service([]traveller.EnlistmentOffer, chargen.Vary) (traveller.ServiceName, error) {
 	d.t.Fatal("the service was forced; the example does not choose one")
 
 	return 0, nil
