@@ -52,13 +52,13 @@ func (r *run) reenlist(term traveller.Term) (traveller.Intent, error) {
 			errata = append(errata, traveller.E003)
 		}
 
-		r.log.outcomef(seq, errata, "a 12 exactly: the service requires another term")
+		r.log.fact(seq, errata, traveller.RetainedFact{Age: r.atAge})
 
 		return traveller.Continue, nil
 	}
 
 	if !attempt.succeeded {
-		r.depart(seq, term, traveller.ForcedOut{}, "reenlistment denied")
+		r.depart(seq, term, true)
 
 		return traveller.Discharge, nil
 	}
@@ -106,42 +106,41 @@ func (r *run) offeredIntents(term traveller.Term) []traveller.Intent {
 
 func (r *run) settle(seq int, term traveller.Term, intent traveller.Intent) {
 	if intent == traveller.Continue {
-		r.log.outcomef(seq, nil, "reenlisted for term %d", term+1)
+		r.log.fact(seq, nil, traveller.ReenlistedFact{For: term + 1, Age: r.atAge})
 
 		return
 	}
 
-	// Discharged and not Retired: offeredIntents never offers Discharge at
-	// or past the retiring term, and depart makes a departure at or past it
-	// a retirement regardless.
-	r.depart(seq, term, traveller.Discharged{}, intent.String())
+	// Leaving by choice: offeredIntents never offers Discharge at or past the
+	// retiring term, and depart makes a departure at or past it a retirement
+	// regardless.
+	r.depart(seq, term, false)
 }
 
 // depart ends the service. P. 21 decides which departure it is by the term
 // count rather than by how it came about, so a departure at or past the
 // retiring term is a retirement whatever brought it on.
 //
-// earlyDeparture is what it is below that term, and it is passed in rather
-// than inferred from why (#45): why is also the sentence the log prints, so
-// choosing by comparing it against a literal would let a change of wording
-// change the domain outcome. The type carries that invariant.
+// Below that term, denied - the reenlistment throw refused him - makes it
+// forced out, and otherwise discharged. It is passed in rather than inferred
+// from the words the log prints (#45), so a change of wording cannot change
+// the domain outcome; the words are the fact's.
 //
 // Implements: Leaving at the end of term 5 or later is retirement [1:21].
 // Implements: A departure below term 5 is forced out if the service refused
 // him, discharged if he chose to go [1:6, 21].
-func (r *run) depart(
-	seq int, term traveller.Term, earlyDeparture traveller.Departure, why string,
-) {
-	if term >= firstRetiringTerm {
-		r.char.Departure = traveller.Retired{}
-		r.log.outcomef(seq, nil, "left the service after term %d and is retired: %s", term, why)
-
-		return
+func (r *run) depart(seq int, term traveller.Term, denied bool) {
+	switch {
+	case term >= firstRetiringTerm:
+		r.departure = traveller.Retired{}
+		r.log.fact(seq, nil, traveller.RetiredFact{After: term, Age: r.atAge, Denied: denied})
+	case denied:
+		r.departure = traveller.ForcedOut{}
+		r.log.fact(seq, nil, traveller.ForcedOutFact{After: term, Age: r.atAge})
+	default:
+		r.departure = traveller.Discharged{}
+		r.log.fact(seq, nil, traveller.DischargedFact{After: term, Age: r.atAge})
 	}
-
-	r.char.Departure = earlyDeparture
-
-	r.log.outcomef(seq, nil, "left the service after term %d: %s", term, why)
 }
 
 // pension records the annual retirement pay, for a departure at the end of
@@ -168,7 +167,7 @@ func (r *run) pension() {
 	// reach restated - and a restated precondition is one that can come to
 	// disagree with the thing it restates (#52). Pay says whether p. 21
 	// prints a pension for a term at all.
-	pay, tabled := r.tables.Retirement().Pay(r.char.Terms)
+	pay, tabled := r.tables.Retirement().Pay(r.terms)
 	if !tabled {
 		return
 	}

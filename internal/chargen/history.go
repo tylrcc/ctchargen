@@ -105,7 +105,7 @@ func (h *historyFold) WeaponPicked(f traveller.WeaponPickedFact) error {
 }
 
 func (h *historyFold) Raised(f traveller.RaisedFact) error {
-	h.serving().Raised = append(h.serving().Raised, Raise{How: f.How, Rank: f.Rank})
+	h.serving().Raised = append(h.serving().Raised, Raise{How: f.How, Rank: f.Name})
 
 	return nil
 }
@@ -140,6 +140,19 @@ func (*historyFold) ShipReceived(traveller.ShipReceivedFact) error       { retur
 func (*historyFold) FreeTraderAgain(traveller.FreeTraderAgainFact) error { return nil }
 func (*historyFold) Pension(traveller.PensionFact) error                 { return nil }
 func (*historyFold) Titled(traveller.TitledFact) error                   { return nil }
+
+// How the character entered, the age each term left him at and how he left
+// are the sheet's to tell; a term is read from the step that opens it.
+func (*historyFold) Started(traveller.StartedFact) error           { return nil }
+func (*historyFold) Drafted(traveller.DraftedFact) error           { return nil }
+func (*historyFold) Declined(traveller.DeclinedFact) error         { return nil }
+func (*historyFold) Died(traveller.DiedFact) error                 { return nil }
+func (*historyFold) DiedOfCrisis(traveller.DiedOfCrisisFact) error { return nil }
+func (*historyFold) Retained(traveller.RetainedFact) error         { return nil }
+func (*historyFold) Reenlisted(traveller.ReenlistedFact) error     { return nil }
+func (*historyFold) Retired(traveller.RetiredFact) error           { return nil }
+func (*historyFold) ForcedOut(traveller.ForcedOutFact) error       { return nil }
+func (*historyFold) Discharged(traveller.DischargedFact) error     { return nil }
 
 // gained files a gain where its source says the sheet tells it. A benefit
 // is on the sheet's possessions and characteristics, not its service record.

@@ -25,9 +25,9 @@ func TestACareerPastTheTablesLastColumn(t *testing.T) {
 
 	const pastTheTable = 15
 
-	if character.Terms < pastTheTable {
+	if character.Terms() < pastTheTable {
 		t.Fatalf("served %d terms; the Aging Table's last printed term is 14, so this reaches nothing new",
-			character.Terms)
+			character.Terms())
 	}
 
 	stamped := make(map[traveller.Erratum]bool)
@@ -37,7 +37,7 @@ func TestACareerPastTheTablesLastColumn(t *testing.T) {
 
 	for _, want := range []traveller.Erratum{traveller.E003, traveller.E014} {
 		if !stamped[want] {
-			t.Errorf("a career of %d terms did not stamp %v", character.Terms, want)
+			t.Errorf("a career of %d terms did not stamp %v", character.Terms(), want)
 		}
 	}
 
@@ -46,8 +46,8 @@ func TestACareerPastTheTablesLastColumn(t *testing.T) {
 	// go on top (pp. 7-8, E004).
 	const startingAge = 18
 
-	if want := startingAge + traveller.Years*character.Terms; character.Age.Years() != want {
-		t.Errorf("age %v after %d terms, want %d", character.Age, character.Terms, want)
+	if want := startingAge + traveller.Years*character.Terms(); character.Age().Years() != want {
+		t.Errorf("age %v after %d terms, want %d", character.Age(), character.Terms(), want)
 	}
 }
 
@@ -74,12 +74,12 @@ func TestVoluntaryServiceStopsAtSeven(t *testing.T) {
 
 	const voluntaryCap = 7
 
-	if character.Terms != voluntaryCap {
-		t.Errorf("served %d terms voluntarily, want %d", character.Terms, voluntaryCap)
+	if character.Terms() != voluntaryCap {
+		t.Errorf("served %d terms voluntarily, want %d", character.Terms(), voluntaryCap)
 	}
 
-	if _, retired := character.Departure.(traveller.Retired); !retired {
-		t.Errorf("left after seven terms as %T; p. 21 makes that retirement", character.Departure)
+	if _, retired := character.Departure().(traveller.Retired); !retired {
+		t.Errorf("left after seven terms as %T; p. 21 makes that retirement", character.Departure())
 	}
 }
 

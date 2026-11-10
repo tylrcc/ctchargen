@@ -96,9 +96,8 @@ func generate(in Inputs, decider Decider, policy *Policy, options []Option) (*Ch
 		tables: tables,
 		roll:   dice.New(),
 		log:    record,
-		char: &Character{
-			Age: traveller.NewAge(traveller.StartingAge), Inputs: in, Policy: policy,
-		},
+		char:   &Character{Inputs: in, Policy: policy},
+		atAge:  traveller.NewAge(traveller.StartingAge),
 	}
 
 	for _, option := range options {
@@ -120,7 +119,7 @@ func generate(in Inputs, decider Decider, policy *Policy, options []Option) (*Ch
 
 // dead reports whether the character died, read off his departure rather
 // than kept beside it (#368).
-func (r *run) dead() bool { return traveller.Fatal(r.char.Departure) }
+func (r *run) dead() bool { return traveller.Fatal(r.departure) }
 
 // drafted reports whether the draft is what entered the character in his
 // service, read off his enlistment by the fold ServedIn uses (#368). Every
@@ -129,7 +128,7 @@ func (r *run) drafted() bool {
 	var codec serviceCodec
 
 	// A fold over a codec cannot fail: every case only assigns.
-	_ = r.char.Enlistment.Fold(&codec)
+	_ = r.enlistment.Fold(&codec)
 
 	return codec.drafted
 }
@@ -168,6 +167,19 @@ type run struct {
 	// Benefits are read from those facts (#441).
 	benefits Benefits
 
+	// enlistment, terms, rank, atAge and departure are the career so far,
+	// which the commission and promotion throws, mustering out, the pension
+	// and the check for death read mid-run, and from which each age is
+	// advanced. They are working state, as profile is: each change to them is
+	// logged as a fact carrying the value it left, or for terms as the step
+	// that opens one, and the finished Character's are read from the log
+	// (#441).
+	enlistment traveller.Enlistment
+	terms      int
+	rank       traveller.Rank
+	atAge      traveller.Age
+	departure  traveller.Departure
+
 	// trained counts the results taken off each skills table, which the
 	// decider is handed so it can see where the character is thin. It is
 	// not on the Character: it is a decision aid, not part of the record.
@@ -190,7 +202,7 @@ func (r *run) generate() error {
 		return err
 	}
 
-	_, served := r.char.ServedIn()
+	_, served := servedIn(r.enlistment)
 	if !served {
 		return r.assessTitle()
 	}
@@ -231,7 +243,7 @@ func (r *run) rollProfile() {
 		r.log.fact(seq, nil, traveller.RolledFact{Characteristic: c, Value: r.profile[c]})
 	}
 
-	r.log.outcomef(0, nil, "UPP %s at age %v", r.profile.UPP(), r.char.Age)
+	r.log.fact(0, nil, traveller.StartedFact{Profile: r.profile, Age: r.atAge})
 }
 
 // addSkill records a skill, raising its level if it is already held, and

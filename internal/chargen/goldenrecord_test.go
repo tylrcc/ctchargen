@@ -55,8 +55,8 @@ type event struct {
 func recordOf(name string, character *chargen.Character) record {
 	rec := record{
 		name:            name,
-		Terms:           character.Terms,
-		Rank:            int(character.Rank),
+		Terms:           character.Terms(),
+		Rank:            int(character.Rank()),
 		Characteristics: map[string]int{},
 	}
 
@@ -73,11 +73,11 @@ func recordOf(name string, character *chargen.Character) record {
 		rec.Errata = append(rec.Errata, erratum.String())
 	}
 
-	if character.Departure != nil {
+	if character.Departure() != nil {
 		rec.Departure = &struct {
 			How   string
 			Fatal bool
-		}{How: departureWords(character.Departure), Fatal: traveller.Fatal(character.Departure)}
+		}{How: departureWords(character.Departure()), Fatal: traveller.Fatal(character.Departure())}
 	}
 
 	for _, e := range character.Events {

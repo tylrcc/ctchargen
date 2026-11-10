@@ -52,10 +52,8 @@ func (r *run) draft() error {
 	}
 
 	if !submit {
-		r.log.outcomef(0, []traveller.Erratum{traveller.E001},
-			"declined the draft, and remains a civilian")
-
-		r.char.Enlistment = traveller.DeclinedTheDraft{}
+		r.enlistment = traveller.DeclinedTheDraft{}
+		r.log.fact(0, []traveller.Erratum{traveller.E001}, traveller.DeclinedFact{})
 
 		return nil
 	}
@@ -68,7 +66,7 @@ func (r *run) draft() error {
 	}
 
 	seq := r.log.dice("draft", face)
-	r.log.outcomef(seq, []traveller.Erratum{traveller.E001}, "drafted into the %v", name)
+	r.log.fact(seq, []traveller.Erratum{traveller.E001}, traveller.DraftedFact{Service: name})
 
 	return r.join(traveller.Drafted{Service: name})
 }
@@ -106,11 +104,11 @@ func (r *run) chooseService() (traveller.ServiceName, error) {
 // carries, and nothing would hold the two equal. Everything after it reads
 // the name as r.service.Name.
 func (r *run) join(how traveller.Enlistment) error {
-	r.char.Enlistment = how
+	r.enlistment = how
 
-	// join is handed only an enlistment that entered a service, so ServedIn's
+	// join is handed only an enlistment that entered a service, so servedIn's
 	// second result is true here; a civilian never joins.
-	name, _ := r.char.ServedIn()
+	name, _ := servedIn(r.enlistment)
 
 	r.service = r.tables.Service(name)
 

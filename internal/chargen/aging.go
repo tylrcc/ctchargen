@@ -130,10 +130,8 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 	seq := r.log.throw("medical crisis, "+characteristic.String()+" at zero", throw)
 
 	if !throw.succeeded {
-		r.log.outcomef(seq, errata, "died of a medical crisis in term %d, %v having reached zero",
-			term, characteristic)
-
-		r.char.Departure = traveller.KilledByMedicalCrisis{Characteristic: characteristic}
+		r.departure = traveller.KilledByMedicalCrisis{Characteristic: characteristic}
+		r.log.fact(seq, errata, traveller.DiedOfCrisisFact{Term: term, Characteristic: characteristic})
 
 		return nil
 	}
@@ -153,11 +151,11 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 		months += face
 	}
 
-	r.char.Age = r.char.Age.PlusMonths(months)
+	r.atAge = r.atAge.PlusMonths(months)
 
 	monthSeq := r.log.dice("months of recovery", faces...)
 	r.log.fact(monthSeq, errata, traveller.RecoveredFact{
-		Characteristic: characteristic, To: crisis.RecoversTo, Months: months, Age: r.char.Age,
+		Characteristic: characteristic, To: crisis.RecoversTo, Months: months, Age: r.atAge,
 	})
 
 	return nil

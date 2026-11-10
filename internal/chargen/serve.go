@@ -34,18 +34,14 @@ func (r *run) serve() error {
 // the end of the term (E006). It reports whether the service ended.
 //
 // Implements: Per-term order is the exposition's [1:5–6 (E002)].
-// Implements: The dead character's age and term [1:5, 9 (E004)].
 // Implements: The example's per-term order is not followed [1:24 (E002)].
+// Implements: The dead character's age and term [1:5, 9 (E004)].
 func (r *run) term(term traveller.Term) (bool, error) {
 	r.log.opens(term, "pp. 5-7")
 
-	r.char.Terms = int(term)
+	r.terms = int(term)
 
 	if !r.survive(term) {
-		// The fatal term counts, and its four years with it (E004).
-		r.char.Age = r.char.Age.PlusYears(traveller.Years)
-		r.char.Departure = traveller.KilledBySurvivalThrow{}
-
 		return true, nil
 	}
 
@@ -66,12 +62,14 @@ func (r *run) term(term traveller.Term) (bool, error) {
 		return false, err
 	}
 
+	// The term's four years are counted before the reenlistment throw, whose
+	// outcome carries the age the term left him at.
+	r.atAge = r.atAge.PlusYears(traveller.Years)
+
 	intent, err := r.reenlist(term)
 	if err != nil {
 		return false, err
 	}
-
-	r.char.Age = r.char.Age.PlusYears(traveller.Years)
 
 	err = r.agingRound(term)
 	if err != nil {
@@ -90,9 +88,11 @@ func (r *run) term(term traveller.Term) (bool, error) {
 }
 
 // survive makes the term's survival throw. P. 5: "Failure to successfully
-// achieve the survival throw results in death."
+// achieve the survival throw results in death." The fatal term's four years
+// are added here (E004); term counts the term itself.
 //
 // Implements: Survival throw; failure is death [1:5].
+// Implements: The dead character's age and term [1:5, 9 (E004)].
 func (r *run) survive(term traveller.Term) bool {
 	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.profile))
 	seq := r.log.throw("survival", throw)
@@ -106,8 +106,9 @@ func (r *run) survive(term traveller.Term) bool {
 	// The age is the character's own, advanced by the fatal term's four years
 	// (E004), rather than recomputed from the term count: a medical crisis
 	// survived in an earlier term put months on it that arithmetic drops.
-	r.log.outcomef(seq, []traveller.Erratum{traveller.E004},
-		"died in term %d, aged %v", term, r.char.Age.PlusYears(traveller.Years))
+	r.atAge = r.atAge.PlusYears(traveller.Years)
+	r.departure = traveller.KilledBySurvivalThrow{}
+	r.log.fact(seq, []traveller.Erratum{traveller.E004}, traveller.DiedFact{Term: term, Age: r.atAge})
 
 	return false
 }

@@ -82,6 +82,11 @@ release turns out to be.
   record (#441): each outcome that delivers one carries a typed fact with the
   value the engine reached, and all three are read from the log rather than
   kept beside it. No note changes.
+- The career is stated once, in the generation record (#441): how he
+  entered, his rank, his terms, his age and how he left. The draft, the draft
+  declined, each reenlistment outcome and each death carry a typed fact with
+  the age and rank the engine reached, and the character keeps nothing beside
+  its log but what it was given and what stamped it. No note changes.
 - **The auto policy draws the service** (#420), uniformly among the six, with
   the run's own dice, where it took the likeliest enlistment every time and a
   batch came out nearly all Army. `PolicyVersion` is 4; `--career` no longer

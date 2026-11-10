@@ -59,3 +59,17 @@ row the table prints as a dash, a title the end took away - carries none.
 The engine keeps its benefits so far as working state, since a repeat and the
 cash total read them. Enlistment, rank, terms, age and departure are still
 kept on the character beside the record's prose.
+
+Finished on 2026-11-09 (#441): the career is read from the log too, so the
+character keeps no fact about him beside it. The draft, the draft declined,
+each reenlistment outcome, each death and the line that writes the rolled UPP
+now carry a typed fact, and a commission or promotion's fact carries the rank
+it conferred beside its name. Each carries the value the engine reached: the
+age he started at, the age a term, the fatal term or a crisis's recovery left
+him at, and how he left. The terms are read from the steps that open them. The engine
+keeps its career so far as working state, since the commission and promotion
+throws, mustering out and the pension read it. What the character still
+holds beside its log is not a fact about him: its Inputs and its Policy,
+which are what the generation was given, its Build, which names what wrote
+it, and its Errata, the stamp of every reading that governed it, gathered
+from the ids its outcomes name.

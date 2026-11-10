@@ -89,13 +89,16 @@ func TestANoteWithItsReadingsEndsWithThem(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
 
+			started := traveller.StartedFact{Age: traveller.NewAge(18)}
 			character := &chargen.Character{
-				Age:        traveller.NewAge(18),
-				Enlistment: traveller.DeclinedTheDraft{},
-				Errata:     tc.errata,
-				Events: []traveller.Event{traveller.OutcomeEvent{
-					Seq: 1, Description: "drafted", Errata: []traveller.Erratum{traveller.E001},
-				}},
+				Errata: tc.errata,
+				Events: []traveller.Event{
+					traveller.OutcomeEvent{Seq: 1, Description: started.String(), Fact: started},
+					traveller.OutcomeEvent{
+						Seq: 2, Description: traveller.DeclinedFact{}.String(),
+						Errata: []traveller.Erratum{traveller.E001}, Fact: traveller.DeclinedFact{},
+					},
+				},
 			}
 
 			plain := render.Note(character, false)

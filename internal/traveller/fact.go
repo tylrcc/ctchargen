@@ -4,12 +4,13 @@ import "fmt"
 
 // Fact is what an outcome did to the character, typed, so that what a sheet
 // tells - the service attempted (#397), what the service gave and took
-// (#412), the characteristics and the skills, the benefits, the pension and
-// the title (#441) - is read from the generation record rather than kept
-// beside it. An outcome's prose is its fact's String, so the two cannot say
-// different things. A result applied at mustering out carries one too, naming
-// its source, and the service history leaves it out; an outcome nothing is
-// read from - a year elapsed, a benefit wasted or lost - carries none.
+// (#412), the characteristics and the skills, the benefits, the pension, the
+// title, and the career's enlistment, rank, age and departure (#441) - is
+// read from the generation record rather than kept beside it. An outcome's
+// prose is its fact's String, so the two cannot say different things. A
+// result applied at mustering out carries one too, naming its source, and the
+// service history leaves it out; an outcome nothing is read from - a year
+// elapsed, a benefit wasted or lost - carries none.
 type Fact interface {
 	Fold(cases FactCases) error
 	String() string
@@ -36,6 +37,16 @@ type FactCases interface {
 	FreeTraderAgain(f FreeTraderAgainFact) error
 	Pension(f PensionFact) error
 	Titled(f TitledFact) error
+	Started(f StartedFact) error
+	Drafted(f DraftedFact) error
+	Declined(f DeclinedFact) error
+	Died(f DiedFact) error
+	DiedOfCrisis(f DiedOfCrisisFact) error
+	Retained(f RetainedFact) error
+	Reenlisted(f ReenlistedFact) error
+	Retired(f RetiredFact) error
+	ForcedOut(f ForcedOutFact) error
+	Discharged(f DischargedFact) error
 }
 
 // Source is where an applied result came from, which is where a sheet tells
@@ -66,10 +77,12 @@ type WeaponPickedFact struct {
 	Source   Source
 }
 
-// RaisedFact is a commission or promotion and the rank it conferred (p. 6).
+// RaisedFact is a commission or promotion and the rank it conferred (p. 6):
+// its place in the Table of Ranks and what the table calls it (p. 10).
 type RaisedFact struct {
 	How  Advancement
-	Rank string
+	Rank Rank
+	Name string
 }
 
 // AgedFact is what an aging round took from one characteristic (pp. 7-9).
@@ -96,7 +109,7 @@ func (f WeaponPickedFact) String() string {
 	return fmt.Sprintf("%v: %s-%d", f.Category, f.Skill.Name, f.Skill.Level)
 }
 
-func (f RaisedFact) String() string { return fmt.Sprintf("%v: %s", f.How, f.Rank) }
+func (f RaisedFact) String() string { return fmt.Sprintf("%v: %s", f.How, f.Name) }
 
 func (f AgedFact) String() string {
 	c := f.Change
@@ -229,6 +242,105 @@ func (f TitledFact) String() string {
 	return fmt.Sprintf("social standing %d confers %v, %s assumed", f.SocialStanding, f.Title, assumed)
 }
 
+// StartedFact is the six characteristics as p. 4 rolled them, written as a
+// UPP, and the age every character starts at. Each characteristic is read
+// from its own RolledFact; this is where the age starts.
+type StartedFact struct {
+	Profile Profile
+	Age     Age
+}
+
+func (f StartedFact) String() string { return fmt.Sprintf("UPP %s at age %v", f.Profile.UPP(), f.Age) }
+
+// DraftedFact is the service the draft put the character in (p. 5).
+type DraftedFact struct{ Service ServiceName }
+
+func (f DraftedFact) String() string { return fmt.Sprintf("drafted into the %v", f.Service) }
+
+// DeclinedFact is the draft declined, which leaves a civilian (p. 5, E001).
+type DeclinedFact struct{}
+
+func (DeclinedFact) String() string { return "declined the draft, and remains a civilian" }
+
+// DiedFact is a failed survival throw (p. 5): the term it ended and the age
+// it left him at, its four years counted (E004).
+type DiedFact struct {
+	Term Term
+	Age  Age
+}
+
+func (f DiedFact) String() string { return fmt.Sprintf("died in term %d, aged %v", f.Term, f.Age) }
+
+// DiedOfCrisisFact is a failed medical crisis throw (pp. 7-8, E008): the term
+// and the characteristic that reached zero.
+type DiedOfCrisisFact struct {
+	Term           Term
+	Characteristic Characteristic
+}
+
+func (f DiedOfCrisisFact) String() string {
+	return fmt.Sprintf("died of a medical crisis in term %d, %v having reached zero", f.Term, f.Characteristic)
+}
+
+// The reenlistment throw's five facts below each carry the age the term left
+// the character at, its four years counted (p. 5).
+
+// RetainedFact is a reenlistment throw of 12 exactly, which keeps the
+// character for another term whatever he meant to do (p. 6).
+type RetainedFact struct{ Age Age }
+
+func (RetainedFact) String() string { return "a 12 exactly: the service requires another term" }
+
+// ReenlistedFact is the character staying on for the term named.
+type ReenlistedFact struct {
+	For Term
+	Age Age
+}
+
+func (f ReenlistedFact) String() string { return fmt.Sprintf("reenlisted for term %d", f.For) }
+
+// denied is why a character left whom the reenlistment throw refused.
+const denied = "reenlistment denied"
+
+// RetiredFact is leaving at the end of the fifth term or later, which p. 21
+// makes retirement whether he chose to go or the throw refused him; Denied
+// says which.
+type RetiredFact struct {
+	After  Term
+	Age    Age
+	Denied bool
+}
+
+func (f RetiredFact) String() string {
+	why := Retire.String()
+	if f.Denied {
+		why = denied
+	}
+
+	return fmt.Sprintf("left the service after term %d and is retired: %s", f.After, why)
+}
+
+// ForcedOutFact is a failed reenlistment throw before the fifth term ends
+// (p. 6).
+type ForcedOutFact struct {
+	After Term
+	Age   Age
+}
+
+func (f ForcedOutFact) String() string {
+	return fmt.Sprintf("left the service after term %d: %s", f.After, denied)
+}
+
+// DischargedFact is leaving by choice before the fifth term ends (pp. 6-7).
+type DischargedFact struct {
+	After Term
+	Age   Age
+}
+
+func (f DischargedFact) String() string {
+	return fmt.Sprintf("left the service after term %d: %v", f.After, Discharge)
+}
+
 // gainText writes a gain as the record says it.
 type gainText struct{ out *string }
 
@@ -260,6 +372,26 @@ func (f ShipReceivedFact) Fold(c FactCases) error    { return c.ShipReceived(f) 
 func (f FreeTraderAgainFact) Fold(c FactCases) error { return c.FreeTraderAgain(f) }
 func (f PensionFact) Fold(c FactCases) error         { return c.Pension(f) }
 func (f TitledFact) Fold(c FactCases) error          { return c.Titled(f) }
+func (f StartedFact) Fold(c FactCases) error         { return c.Started(f) }
+func (f DraftedFact) Fold(c FactCases) error         { return c.Drafted(f) }
+func (f DeclinedFact) Fold(c FactCases) error        { return c.Declined(f) }
+func (f DiedFact) Fold(c FactCases) error            { return c.Died(f) }
+func (f DiedOfCrisisFact) Fold(c FactCases) error    { return c.DiedOfCrisis(f) }
+func (f RetainedFact) Fold(c FactCases) error        { return c.Retained(f) }
+func (f ReenlistedFact) Fold(c FactCases) error      { return c.Reenlisted(f) }
+func (f RetiredFact) Fold(c FactCases) error         { return c.Retired(f) }
+func (f ForcedOutFact) Fold(c FactCases) error       { return c.ForcedOut(f) }
+func (f DischargedFact) Fold(c FactCases) error      { return c.Discharged(f) }
+func (StartedFact) sealedFact()                      {}
+func (DraftedFact) sealedFact()                      {}
+func (DeclinedFact) sealedFact()                     {}
+func (DiedFact) sealedFact()                         {}
+func (DiedOfCrisisFact) sealedFact()                 {}
+func (RetainedFact) sealedFact()                     {}
+func (ReenlistedFact) sealedFact()                   {}
+func (RetiredFact) sealedFact()                      {}
+func (ForcedOutFact) sealedFact()                    {}
+func (DischargedFact) sealedFact()                   {}
 func (CashFact) sealedFact()                         {}
 func (PassageFact) sealedFact()                      {}
 func (TravellersAidFact) sealedFact()                {}

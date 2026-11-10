@@ -61,7 +61,7 @@ func departedByTheBook(
 
 	var how string
 
-	switch character.Departure.(type) {
+	switch character.Departure().(type) {
 	case traveller.Retired:
 		how = retired
 	case traveller.ForcedOut:
@@ -76,9 +76,9 @@ func departedByTheBook(
 
 	seen[how] = true
 
-	if (how == retired) != (character.Terms >= firstRetiringTerm) {
+	if (how == retired) != (character.Terms() >= firstRetiringTerm) {
 		t.Errorf("%s: %s after %d terms; p. 21 makes a living departure at or past "+
-			"the 5th a retirement, and one below it never one", name, how, character.Terms)
+			"the 5th a retirement, and one below it never one", name, how, character.Terms())
 	}
 
 	if how == retired {
@@ -146,7 +146,7 @@ func TestACivilianEnteredNoService(t *testing.T) {
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		_, declined := character.Enlistment.(traveller.DeclinedTheDraft)
+		_, declined := character.Enlistment().(traveller.DeclinedTheDraft)
 		if !declined {
 			continue
 		}

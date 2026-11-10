@@ -284,7 +284,7 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 			return done, err
 		}
 
-		if traveller.Fatal(character.Departure) {
+		if traveller.Fatal(character.Departure()) {
 			done.passed++
 
 			continue

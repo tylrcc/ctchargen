@@ -21,7 +21,7 @@ import (
 // Implements: Commission: once per term until achieved [1:6, 10].
 func (r *run) commission(term traveller.Term) error {
 	throw, ok := r.service.Commission()
-	if !ok || r.char.Rank.Commissioned() || (r.drafted() && term == 1) {
+	if !ok || r.rank.Commissioned() || (r.drafted() && term == 1) {
 		return nil
 	}
 
@@ -60,11 +60,11 @@ func (r *run) commission(term traveller.Term) error {
 // Implements: No promotion at the top of the ranks table [1:6, 10 (E013)].
 func (r *run) promote(term traveller.Term) error {
 	throw, ok := r.service.Promotion()
-	if !ok || !r.char.Rank.Commissioned() {
+	if !ok || !r.rank.Commissioned() {
 		return nil
 	}
 
-	if r.char.Rank >= r.service.MaxRank() {
+	if r.rank >= r.service.MaxRank() {
 		r.log.outcomef(0, []traveller.Erratum{traveller.E013},
 			"already %s, the highest rank the %v print, so no promotion is thrown for in term %d",
 			r.rankName(), r.service.Name, term)
@@ -90,7 +90,7 @@ func (r *run) promote(term traveller.Term) error {
 		return nil
 	}
 
-	return r.raise(seq, r.char.Rank+1, r.tables.Eligibility().OnPromotion, traveller.Promoted)
+	return r.raise(seq, r.rank+1, r.tables.Eligibility().OnPromotion, traveller.Promoted)
 }
 
 // raise confers a rank, the skill eligibility that comes with it (p. 6), and
@@ -99,12 +99,11 @@ func (r *run) promote(term traveller.Term) error {
 // Implements: A commission or promotion confers one skill eligibility [1:6].
 // Implements: Rank-keyed grants, at the moment the rank is conferred [1:23].
 func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how traveller.Advancement) error {
-	r.char.Rank = conferred
-	r.char.RankName = r.rankName()
+	r.rank = conferred
 
 	r.eligible += eligibility
 
-	r.log.fact(seq, nil, traveller.RaisedFact{How: how, Rank: r.rankName()})
+	r.log.fact(seq, nil, traveller.RaisedFact{How: how, Rank: conferred, Name: r.rankName()})
 
 	// No erratum is stamped here. E005 reads the timing of a service-wide
 	// entry, which the page leaves unstated; a rank entry's moment is exact
@@ -123,7 +122,7 @@ func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how trav
 // rankName is what the Table of Ranks calls the character's rank (p. 10),
 // or "uncommissioned" where he holds none.
 func (r *run) rankName() string {
-	name, ok := r.service.RankName(r.char.Rank)
+	name, ok := r.service.RankName(r.rank)
 	if !ok {
 		return "uncommissioned"
 	}

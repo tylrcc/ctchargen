@@ -14,23 +14,13 @@ import (
 // birthdate rules, so the record carries an age and a count of terms, not a
 // date. That is the books, not an omission.
 //
-// Its characteristics, skills, benefits, pension and title are not kept on it
-// but read from its log (#441): Profile, Skills, Benefits, Pension and
-// Nobility fold the facts the outcomes carry.
+// Nothing it says of the character is kept on it beside its log (#441):
+// Profile, Skills, Benefits, Pension, Nobility, Enlistment, Rank, RankName,
+// Age and Departure fold the facts the outcomes carry, and Terms reads the
+// number of the last term the log opens. What it keeps besides the log is
+// what the generation was given and what stamped it: its Inputs, its
+// Policy, its Errata and its Build.
 type Character struct {
-	Age   traveller.Age
-	Terms int
-
-	// Enlistment is how the character entered a service, or that he
-	// declined the draft and never did (p. 5).
-	Enlistment traveller.Enlistment
-	Rank       traveller.Rank
-	RankName   string
-
-	// Departure is how the service ended. It is nil for a civilian, who
-	// never joined one.
-	Departure traveller.Departure
-
 	Inputs Inputs
 
 	// Policy is what answered an auto run. It is nil on a guided run, where a
@@ -143,12 +133,92 @@ func (s *serviceCodec) DeclinedTheDraft() error { return nil }
 // Implements: A civilian entered no service, and the record names none [1:5
 // (E001)].
 func (c *Character) ServedIn() (traveller.ServiceName, bool) {
+	return servedIn(c.Enlistment())
+}
+
+// servedIn is the service an enlistment entered, and whether it entered one.
+// Only generation sets an Enlistment, and it always does: a nil one panics
+// here rather than reading as no service (#377).
+func servedIn(enlistment traveller.Enlistment) (traveller.ServiceName, bool) {
 	var codec serviceCodec
 
 	// A fold over a codec cannot fail: every case only assigns.
-	_ = c.Enlistment.Fold(&codec)
+	_ = enlistment.Fold(&codec)
 
 	return codec.service, codec.served
+}
+
+// Enlistment is how the character entered a service, or that he declined the
+// draft and never did (p. 5), read from the log (#441): an enlistment throw
+// he made, the service the draft put him in, or the draft declined. Nil for
+// a log that holds none of the three.
+func (c *Character) Enlistment() traveller.Enlistment {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.enlistment
+}
+
+// Terms is how many terms the character began, read from the log (#441): the
+// number of the last term a step opened, the fatal one included (E004).
+func (c *Character) Terms() int {
+	terms := 0
+
+	for _, event := range c.Events {
+		if step, isStep := event.(traveller.StepEvent); isStep && step.Opens > 0 {
+			terms = int(step.Opens)
+		}
+	}
+
+	return terms
+}
+
+// Rank is the character's place in his service's Table of Ranks (p. 10),
+// read from the log (#441): the rank the last commission or promotion
+// conferred, which the fact carries, or zero if none did.
+func (c *Character) Rank() traveller.Rank {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.rank
+}
+
+// RankName is what the Table of Ranks calls that rank (p. 10), read from the
+// last commission or promotion's fact (#441), or empty if none was conferred.
+func (c *Character) RankName() string {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.rankName
+}
+
+// Age is the age generation left the character at, read from the log
+// (#441). The UPP rolled at the start carries the age he began at, and every
+// fact that moves it carries the age it left him at - the reenlistment
+// throw's outcome at the end of each term, the fatal term's death, a crisis's
+// months of recovery - so the last is his age, and the fold adds nothing to
+// it.
+func (c *Character) Age() traveller.Age {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.age
+}
+
+// Departure is how the service ended, read from the log (#441): the last
+// fact that ends it, since a crisis can kill a character the term's
+// reenlistment throw has already retired. It is nil for a civilian, who
+// never joined a service.
+func (c *Character) Departure() traveller.Departure {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.departure
 }
 
 // Profile is the six characteristics as generation left them, read from the
@@ -229,13 +299,20 @@ func (c *Character) fold(cases traveller.FactCases) {
 }
 
 // sheetFold reads the sheet's facts out of the log: the characteristics, the
-// skills, the benefits, the pension and the title.
+// skills, the benefits, the pension, the title, and the career - how he
+// entered, his rank, his age and how he left.
 type sheetFold struct {
 	profile  traveller.Profile
 	skills   []traveller.Skill
 	benefits Benefits
 	pension  traveller.Credits
 	nobility Nobility
+
+	enlistment traveller.Enlistment
+	rank       traveller.Rank
+	rankName   string
+	age        traveller.Age
+	departure  traveller.Departure
 }
 
 func (s *sheetFold) Rolled(f traveller.RolledFact) error {
@@ -282,7 +359,7 @@ func (s *sheetFold) Aged(f traveller.AgedFact) error {
 }
 
 func (s *sheetFold) Recovered(f traveller.RecoveredFact) error {
-	s.profile[f.Characteristic] = f.To
+	s.profile[f.Characteristic], s.age = f.To, f.Age
 
 	return nil
 }
@@ -344,8 +421,83 @@ func (s *sheetFold) Titled(f traveller.TitledFact) error {
 	return nil
 }
 
-func (*sheetFold) Raised(traveller.RaisedFact) error     { return nil }
-func (*sheetFold) Enlisted(traveller.EnlistedFact) error { return nil }
+func (s *sheetFold) Raised(f traveller.RaisedFact) error {
+	s.rank, s.rankName = f.Rank, f.Name
+
+	return nil
+}
+
+// Enlisted enters the service the throw was made against when it accepted
+// him. A rejection enters nothing: the draft's fact, or its refusal's, says
+// what followed.
+func (s *sheetFold) Enlisted(f traveller.EnlistedFact) error {
+	if f.Accepted {
+		s.enlistment = traveller.Enlisted{Service: f.Service}
+	}
+
+	return nil
+}
+
+func (s *sheetFold) Drafted(f traveller.DraftedFact) error {
+	// A conversion, so a field added to either type stops this compiling.
+	s.enlistment = traveller.Drafted(f)
+
+	return nil
+}
+
+func (s *sheetFold) Declined(traveller.DeclinedFact) error {
+	s.enlistment = traveller.DeclinedTheDraft{}
+
+	return nil
+}
+
+func (s *sheetFold) Started(f traveller.StartedFact) error {
+	s.age = f.Age
+
+	return nil
+}
+
+func (s *sheetFold) Died(f traveller.DiedFact) error {
+	s.age, s.departure = f.Age, traveller.KilledBySurvivalThrow{}
+
+	return nil
+}
+
+func (s *sheetFold) DiedOfCrisis(f traveller.DiedOfCrisisFact) error {
+	s.departure = traveller.KilledByMedicalCrisis{Characteristic: f.Characteristic}
+
+	return nil
+}
+
+func (s *sheetFold) Retained(f traveller.RetainedFact) error {
+	s.age = f.Age
+
+	return nil
+}
+
+func (s *sheetFold) Reenlisted(f traveller.ReenlistedFact) error {
+	s.age = f.Age
+
+	return nil
+}
+
+func (s *sheetFold) Retired(f traveller.RetiredFact) error {
+	s.age, s.departure = f.Age, traveller.Retired{}
+
+	return nil
+}
+
+func (s *sheetFold) ForcedOut(f traveller.ForcedOutFact) error {
+	s.age, s.departure = f.Age, traveller.ForcedOut{}
+
+	return nil
+}
+
+func (s *sheetFold) Discharged(f traveller.DischargedFact) error {
+	s.age, s.departure = f.Age, traveller.Discharged{}
+
+	return nil
+}
 
 // skill holds a skill at the level a fact says it reached.
 func (s *sheetFold) skill(skill traveller.Skill) {

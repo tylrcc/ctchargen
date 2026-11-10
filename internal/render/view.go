@@ -121,16 +121,16 @@ func (r view) answerer() string {
 
 // viewOf is the character as the note reads it.
 func viewOf(character *chargen.Character) view {
-	profile, skills := character.Profile(), character.Skills()
+	profile, skills, age := character.Profile(), character.Skills(), character.Age()
 
 	out := view{
 		Name:       character.Inputs.Name,
 		UPP:        profile.UPP(),
 		Profile:    profile,
-		Age:        ageView{Years: character.Age.Years(), Months: character.Age.Months()},
-		Terms:      character.Terms,
-		Enlistment: foldEnlistment(character.Enlistment),
-		RankName:   character.RankName,
+		Age:        ageView{Years: age.Years(), Months: age.Months()},
+		Terms:      character.Terms(),
+		Enlistment: foldEnlistment(character.Enlistment()),
+		RankName:   character.RankName(),
 		Skills:     make([]skillView, 0, len(skills)),
 		Benefits:   projectBenefits(character.Benefits()),
 		Pension:    int64(character.Pension()),
@@ -151,7 +151,7 @@ func viewOf(character *chargen.Character) view {
 		// nil enlistment does (#393, #445). A civilian departed nothing: his
 		// departure is the zero value, which writes no property and reads as
 		// alive.
-		out.Departure = foldDeparture(character.Departure)
+		out.Departure = foldDeparture(character.Departure())
 	}
 
 	for _, skill := range skills {

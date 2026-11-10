@@ -21,7 +21,7 @@ const (
 //
 // Implements: Its ship, cash and pension [1:25].
 func (r *run) musterOut() error {
-	rolls := r.tables.Muster().Rolls(r.char.Terms, r.char.Rank)
+	rolls := r.tables.Muster().Rolls(r.terms, r.rank)
 	if rolls == 0 {
 		return nil
 	}
@@ -115,7 +115,7 @@ func (r *run) musterModifier(table traveller.MusterTable) (int, error) {
 		// P. 9: "Characters with rank 5 or 6 may add +1 to their rolls on
 		// this table." The rank bounds the procedure and indexes no printed
 		// table, so it is the constant declared at the top of this file.
-		if int(r.char.Rank) < minRankForTable1Modifier {
+		if int(r.rank) < minRankForTable1Modifier {
 			return 0, nil
 		}
 

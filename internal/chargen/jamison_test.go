@@ -267,32 +267,32 @@ func TestTheWorkedExampleReproduces(t *testing.T) {
 		t.Errorf("UPP %s, want 779C99", got)
 	}
 
-	if got := jamison.Age.Years(); got != 38 {
-		t.Errorf("aged %v, want 38", jamison.Age)
+	if got := jamison.Age().Years(); got != 38 {
+		t.Errorf("aged %v, want 38", jamison.Age())
 	}
 
-	if jamison.Age.Months() != 0 {
-		t.Errorf("aged %v; no medical crisis occurs, so there are no months", jamison.Age)
+	if jamison.Age().Months() != 0 {
+		t.Errorf("aged %v; no medical crisis occurs, so there are no months", jamison.Age())
 	}
 
-	if jamison.Terms != 5 {
-		t.Errorf("served %d terms, want 5", jamison.Terms)
+	if jamison.Terms() != 5 {
+		t.Errorf("served %d terms, want 5", jamison.Terms())
 	}
 
 	service, served := jamison.ServedIn()
-	if !served || service != traveller.Merchants || jamison.RankName != "Captain" {
-		t.Errorf("%v %s (served %v), want Merchants Captain", service, jamison.RankName, served)
+	if !served || service != traveller.Merchants || jamison.RankName() != "Captain" {
+		t.Errorf("%v %s (served %v), want Merchants Captain", service, jamison.RankName(), served)
 	}
 
 	// "of rank 5 on the scale of ranks".
-	if jamison.Rank != 5 {
-		t.Errorf("rank %d, want 5", jamison.Rank)
+	if jamison.Rank() != 5 {
+		t.Errorf("rank %d, want 5", jamison.Rank())
 	}
 
 	// The service dismissed him, but p. 21 makes leaving at the end of the
 	// fifth term or later retirement however it came about.
-	if _, retired := jamison.Departure.(traveller.Retired); !retired {
-		t.Errorf("departed as %T, want retired", jamison.Departure)
+	if _, retired := jamison.Departure().(traveller.Retired); !retired {
+		t.Errorf("departed as %T, want retired", jamison.Departure())
 	}
 }
 
