@@ -11,10 +11,11 @@ import (
 )
 
 // The stamping predicates, and the checks that the roster reaches every
-// choice point. They read the record each fixture writes, the bytes a
-// referee would be handed, as the engine writes them now: TestGoldens holds
-// those to the checked-in goldens, and reading them fresh lets an engine
-// change be named here by what it did (#373).
+// choice point. They read the character each fixture generates, as the
+// engine makes it now - its log and its stamped errata. The note is written
+// from the same character, and TestGoldens holds the note to the checked-in
+// goldens; the two are siblings, so reading the character fresh lets an
+// engine change be named here by what it did (#373).
 
 // nobility is the Social Standing at which Book 3 p. 22 confers a title, as
 // E011's reading states it: "final Social Standing is 11 or

@@ -131,9 +131,9 @@ func (l *log) stamped() []traveller.Erratum {
 	return stamped
 }
 
-// fact records an outcome that is part of the service history: its prose is
-// the fact's own String, so the record and the history read from it cannot
-// disagree (#412).
+// fact records an outcome that carries a typed fact: its prose is the fact's
+// own String, so the record and what is read from the fact cannot disagree
+// (#412).
 func (l *log) fact(because int, errata []traveller.Erratum, fact traveller.Fact) {
 	for _, e := range errata {
 		l.errata[e] = true

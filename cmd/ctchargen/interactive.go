@@ -208,8 +208,8 @@ func (p *player) sayf(format string, args ...any) {
 // watch shows the player the procedure between his questions.
 //
 // Every event renders to something, so nothing is skipped here and the
-// numbering has no holes - writeEvent's own default writes a line even for a
-// kind this build does not know.
+// numbering has no holes: writeEvent has a case for every kind, which the
+// exhaustive linter holds.
 func (p *player) watch(event traveller.Event) {
 	p.sayf("%s", render.EventLine(event))
 }

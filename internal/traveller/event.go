@@ -111,8 +111,9 @@ type OutcomeEvent struct {
 	Description string
 	Errata      []Erratum
 
-	// Fact is what the outcome did, typed, where it is part of the service
-	// history; its Description is then its String (#412).
+	// Fact is what the outcome did, typed, where a sheet reads it: the service
+	// attempted, the service history, and a result applied at mustering out,
+	// which the history leaves out. Its Description is then its String (#412).
 	Fact Fact
 }
 

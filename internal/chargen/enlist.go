@@ -203,8 +203,8 @@ func (a *applyResult) Skill(name traveller.SkillName) error {
 func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 	list := a.run.tables.Weapons(category)
 
-	// The run's own dice are the only variation a decider gets, and only
-	// here: pp. 12-13 print a list and no basis for picking from it.
+	// The run's own dice are a decider's only variation, here and for the
+	// service (#420): pp. 12-13 print a list and no basis for picking from it.
 	chosen, err := a.run.decide.Weapon(category, list, varyOnly{a.run.roll})
 	if err != nil {
 		return fmt.Errorf("choosing a weapon: %w", err)

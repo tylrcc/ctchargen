@@ -4,7 +4,7 @@ import "fmt"
 
 // ServiceName is one of the six services of the Prior Service Table
 // (Book 1 p. 10), in the order that table prints them — which is also
-// display order and the auto policy's tie-break.
+// display order and the order a service draw indexes.
 //
 // The spelling is p. 5's, where the six are listed together: "Navy, Marines,
 // Army, Scouts, Merchants, or Other". The tables spell them three other ways
@@ -21,7 +21,7 @@ const (
 	Other
 )
 
-// ServiceNames is the six in book order, for iteration and tie-breaking.
+// ServiceNames is the six in book order, for iteration and display.
 var ServiceNames = [...]ServiceName{Navy, Marines, Army, Scouts, Merchants, Other}
 
 func (s ServiceName) String() string {

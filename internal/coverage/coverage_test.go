@@ -33,7 +33,7 @@
 // holds and no implementation names, fails the check naming the rule; so do
 // two implementations that disagree on the rule's page.
 //
-// A marker is read from four kinds of place, and from nowhere else — one found
+// A marker is read from three kinds of place, and from nowhere else — one found
 // anywhere else fails the check rather than being silently dropped:
 //
 //   - the doc comment of a function, method, type, constant or variable, which

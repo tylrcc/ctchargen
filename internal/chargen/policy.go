@@ -28,9 +28,9 @@ import (
 //
 // Ranked preferences are written best-first. A strategy takes the first of its
 // ranking that is on offer; where its ranking is silent, the tie-break is
-// first-listed order in Book 1 - the Prior Service Table's column order for
-// services (p. 10), the Acquired Skills Table's block order for skill tables
-// (p. 11) - which is the order the engine builds an offered set in.
+// first-listed order in Book 1 - the Acquired Skills Table's block order for
+// skill tables (p. 11) - which is the order the engine builds an offered set
+// in. No strategy ranks services: the service is drawn (#420).
 //
 // It never returns an error. An offered set it cannot answer from would mean
 // the engine offered something the rules do not contain, which is an engine
@@ -430,7 +430,7 @@ func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
 //
 // All three strategies draw a name from the list, uniformly. The draw comes
 // from the run's own dice, so a fixture that scripts its draws still walks the
-// same path; it is the only variation any strategy takes.
+// same path. It and the service are the two draws any strategy takes (#420).
 //
 // It draws rather than ranks because the book names no basis. Where p. 11
 // makes the player designate a table, or p. 21 decides a departure by the

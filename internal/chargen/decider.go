@@ -53,10 +53,10 @@ type Decider interface {
 	// Weapon names the specific weapon for a Blade Combat or Gun Combat
 	// result (pp. 11-13).
 	//
-	// It is the one method handed a Vary, because it is the one choice the
-	// book leaves to a player and gives no basis for: the lists of pp. 12-13
-	// are printed in an order, and the order is not a preference. A decider
-	// that wants the first name may ignore it (#34).
+	// It is handed a Vary, as Service is, because the book leaves the choice
+	// to a player and gives no basis for it: the lists of pp. 12-13 are
+	// printed in an order, and the order is not a preference. A decider that
+	// wants the first name may ignore it (#34).
 	Weapon(
 		category traveller.WeaponCategory,
 		from []traveller.WeaponName,
