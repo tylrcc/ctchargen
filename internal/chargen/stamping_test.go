@@ -34,6 +34,7 @@ const (
 	agingThrow      = "aging,"
 	crisisThrow     = "medical crisis"
 	socialThrow     = "Social Standing"
+	benefitsRoll    = "Table 1, Material Benefits"
 	termStep        = "term "
 )
 
@@ -155,6 +156,7 @@ func TestEveryStepTheConditionsReadIsFound(t *testing.T) {
 		agingThrow:      aThrow,
 		crisisThrow:     aThrow,
 		socialThrow:     aRoll,
+		benefitsRoll:    aRoll,
 	} {
 		found := false
 
@@ -210,8 +212,8 @@ func TestEveryStepTheConditionsReadIsFound(t *testing.T) {
 // This was a comparison of lengths, which is not the same claim and does not
 // hold it: giving one reading another's id leaves the count right, compares
 // that id twice against agreeing predicates, and drops the other reading
-// entirely - and the check stayed green. Adding a sixteenth erratum and
-// copying a block without changing its id is the way that happens for real.
+// entirely - and the check stayed green. Adding an erratum and copying a
+// block without changing its id is the way that happens for real.
 func oneConditionEach(t *testing.T, readings []reading) {
 	t.Helper()
 
@@ -329,6 +331,7 @@ func conditions(tables *rules.Rules) []reading {
 		enlistmentAndService(),
 		agingAndCrisis(),
 		rankAndTitle(tables),
+		musteringOut(tables),
 	)
 }
 
@@ -502,6 +505,67 @@ func reachedTheTopAndServedOn(r record, tables *rules.Rules) bool {
 	}
 
 	return false
+}
+
+func musteringOut(tables *rules.Rules) []reading {
+	return []reading{
+		{
+			// P. 23's note makes five receipts the ones that leave the ship
+			// free and clear.
+			id: traveller.E016,
+			holds: func(r record) bool {
+				const freeAndClear = 5
+
+				return freeTradersReceived(r, tables) > freeAndClear
+			},
+		},
+	}
+}
+
+// freeTradersReceived counts the Table 1 rolls whose row, in the
+// character's own column, prints a Free Trader. That is p. 9's table, lifted,
+// and not the stamping code's count of the ships it handed out.
+func freeTradersReceived(r record, tables *rules.Rules) int {
+	service, named := serviceNamed(r.Service)
+	if !named {
+		return 0
+	}
+
+	column := tables.Service(service)
+	received := 0
+
+	for _, e := range r.rolls(benefitsRoll) {
+		// A Table 1 roll is one die and at most +1, so its total is a row
+		// the table prints. One that is not is a broken record, and
+		// counting it as no ship would hide that.
+		row, _, err := column.Row(e.Total)
+		if err != nil {
+			panic(fmt.Sprintf("%s: a Table 1 roll of %d: %v", r.name, e.Total, err))
+		}
+
+		var ship isFreeTrader
+
+		if row.Fold(&ship) == nil && ship.is {
+			received++
+		}
+	}
+
+	return received
+}
+
+// isFreeTrader reads a Table 1 row as whether it is the Free Trader.
+type isFreeTrader struct{ is bool }
+
+func (*isFreeTrader) Passage(traveller.PassageClass) error           { return nil }
+func (*isFreeTrader) Alteration(traveller.Characteristic, int) error { return nil }
+func (*isFreeTrader) WeaponPick(traveller.WeaponCategory) error      { return nil }
+func (*isFreeTrader) TravellersAid() error                           { return nil }
+func (*isFreeTrader) Nothing() error                                 { return nil }
+
+func (f *isFreeTrader) Ship(kind traveller.ShipKind) error {
+	f.is = kind == traveller.FreeTrader
+
+	return nil
 }
 
 func serviceNamed(printed string) (traveller.ServiceName, bool) {

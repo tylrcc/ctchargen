@@ -49,9 +49,10 @@ func Readings() [len(traveller.Errata)]Reading { return readings }
 // citation. CLAUDE.md's Authority rule 5 forbids both: "Never applied
 // silently".
 //
-// All of them were decided against a visual read of the held PDFs on
+// E001 to E015 were decided against a visual read of the held PDFs on
 // 2026-09-02, at Book 1 PDF pages 8–31 (printed 2–25) and Book 3 PDF page 27
-// (printed 22). Printed page N is PDF page N+6 in Book 1, N+5 in Books 2 and
+// (printed 22); E016 on 2026-11-10, at Book 1 PDF pages 28–29 (printed
+// 22–23). Printed page N is PDF page N+6 in Book 1, N+5 in Books 2 and
 // 3. Nothing here is inherited from the implementation removed at 41a213a. A
 // gap found later may consult that tree's errata as a last resort — the page
 // ranks first, these readings second, the old errata third (CLAUDE.md,
@@ -618,5 +619,36 @@ var readings = [...]Reading{
 			"six rolls yield the same +1 Education and the same four merchant ships, and\n" +
 			"differ in exactly one benefit — a **Low** Passage where p. 25 claims a\n" +
 			"Middle one.",
+	},
+	{
+		ID:    traveller.E016,
+		Title: "A Free Trader received past the fifth time stays paid off",
+		Pages: "Book 1 pp. 22–23 (Free Traders).",
+		PageSays: "P. 22: the ship is received \"liable for the monthly payments (which\n" +
+			"amount to about 150,000 credits) for the next forty years\". Then, running\n" +
+			"onto p. 23: \"If the ship benefit is received more than once, each\n" +
+			"additional receipt is considered to represent actual possession of the ship\n" +
+			"for a ten-year period. The ship is 10 years older, and the total payment term\n" +
+			"is reduced by ten years. (Note that this makes it possible to own a ship, free\n" +
+			"and clear, by successively rolling the ship benefit 5 times, one to obtain it\n" +
+			"and four times to pay off 4 ten year sequences of payments. The ship is also\n" +
+			"40 years old).\"",
+		Gap: "The page counts receipts up to the fifth, which leaves the ship 40\n" +
+			"years old and free and clear, and says nothing of a sixth. \"Each additional\n" +
+			"receipt\" still covers one, but a payment term already at zero cannot be\n" +
+			"reduced by ten years more.",
+		Reading: "Each receipt past the fifth is applied as pp. 22–23 state it:\n" +
+			"the ship is 10 years older. Its payment term stays at zero: a ship owned free and\n" +
+			"clear owes nothing, and a term is never less than nothing.",
+		Why: "\"Each additional receipt\" is unqualified, so a sixth is still a\n" +
+			"receipt and still ages the ship ten years; p. 23's note says what five\n" +
+			"receipts make possible and sets no limit. A payment term is the years still\n" +
+			"to pay, and the note calls the ship at zero \"free and clear\": nothing is left\n" +
+			"to reduce, and a term below zero would be payments owed to the owner, which\n" +
+			"nothing on the page describes. Nor is a receipt past the fifth lost: p. 23\n" +
+			"says that only of scout ships (\"throws resulting in additional scout ships\n" +
+			"are lost\"), and nothing of Free Traders.",
+		StampedOn: "Records in which a Free Trader was received more than five\n" +
+			"times.",
 	},
 }

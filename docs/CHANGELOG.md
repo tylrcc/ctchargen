@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A Free Trader received more than five times is decided by a reading, E016:
+  each receipt past the fifth ages the ship ten years as pp. 22–23 say, and its
+  payment term stays at zero. The engine stamps E016 on such a character, and
+  two new fixtures hold the boundary: five receipts, free and clear with no
+  stamp, and six, stamped. `muster.go` also quotes p. 23's scout-ship rule
+  whole (#464).
 - E001 introduces The Draft as the paragraph after the one it quotes, where it
   said "two paragraphs later", and its Pages and Why name the last paragraph
   under Enlistment and the first under The Draft, where they said "the

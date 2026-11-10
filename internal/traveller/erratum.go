@@ -37,6 +37,7 @@ const (
 	E013
 	E014
 	E015
+	E016
 )
 
 // Errata is every recorded reading, in id order, for iteration and for the
@@ -45,7 +46,7 @@ const (
 // Implements: Every erratum constant is in Errata, in order [Domain].
 var Errata = [...]Erratum{
 	E001, E002, E003, E004, E005, E006, E007,
-	E008, E009, E010, E011, E012, E013, E014, E015,
+	E008, E009, E010, E011, E012, E013, E014, E015, E016,
 }
 
 // String is the erratum's id: E001.

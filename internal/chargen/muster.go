@@ -365,9 +365,15 @@ func (r *run) receiveShip(because int, kind traveller.ShipKind) error {
 // receiveShipAgain applies a duplicate. A Free Trader's repeats pay the ship
 // off ten years at a time and age it by as much; a Scout ship's are lost -
 // p. 23: "Only one scout ship may be acquired by a character, and throws
-// resulting in additional ships are lost."
+// resulting in additional scout ships are lost, gaining the character
+// nothing."
+//
+// A Free Trader received past the fifth time finds its payment term already
+// at zero. It still ages ten years, and the term stays at zero (E016).
 //
 // Implements: Free Trader: 40 years of payments, 10 off per repeat [1:22–23].
+// Implements: A Free Trader past its fifth receipt stays paid off [1:22–23
+// (E016)].
 // Implements: Scout ship: duplicates lost [1:23].
 func (r *run) receiveShipAgain(because, at int) error {
 	ship := &r.benefits.Ships[at]
@@ -378,11 +384,17 @@ func (r *run) receiveShipAgain(because, at int) error {
 		return nil
 	}
 
+	var errata []traveller.Erratum
+
+	if ship.PaymentYears == 0 {
+		errata = []traveller.Erratum{traveller.E016}
+	}
+
 	ship.Years += freeTraderYearsPerRoll
 
 	ship.PaymentYears = max(0, ship.PaymentYears-freeTraderYearsPerRoll)
 
-	r.record.fact(because, nil, traveller.FreeTraderAgainFact{Ship: *ship})
+	r.record.fact(because, errata, traveller.FreeTraderAgainFact{Ship: *ship})
 
 	return nil
 }
