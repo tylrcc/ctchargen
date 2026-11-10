@@ -4,6 +4,8 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/philoserf/ctchargen/internal/dice"
+	"github.com/philoserf/ctchargen/internal/rules"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
@@ -54,5 +56,18 @@ func TestEveryThrowIsTheNextTwoDice(t *testing.T) {
 
 	if drafts == 0 {
 		t.Error("no fixture is drafted, so the draft's one die is checked nowhere")
+	}
+}
+
+// dice.Faces and rules.Faces say a die's six faces twice, for the reason
+// each one's comment gives (#514). chargen imports both, so its test holds
+// them equal.
+//
+// Holds: The dice and the tables agree on a die's faces.
+func TestTheDiceAndTheTablesAgreeOnADiesFaces(t *testing.T) {
+	t.Parallel()
+
+	if dice.Faces != rules.Faces {
+		t.Errorf("dice rolls %d faces, and rules sizes its tables for %d", dice.Faces, rules.Faces)
 	}
 }

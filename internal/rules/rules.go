@@ -40,6 +40,12 @@ import (
 const (
 	// Faces is a die's faces, and so the rows of an Acquired Skills table
 	// (p. 11).
+	//
+	// dice.Faces says it again, for the dice it rolls. There are two because
+	// dice depends on nothing, and this package may not import it (depguard);
+	// chargen, which imports both, holds them equal in a test (#514).
+	//
+	// Implements: The dice and the tables agree on a die's faces [Domain].
 	Faces = 6
 
 	// MusterRows is the rows of a Mustering Out table (p. 9). Seven, not

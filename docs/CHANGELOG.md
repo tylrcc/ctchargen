@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A die's six faces are still said twice, in `dice` and in `rules`, since
+  `dice` depends on nothing and `rules` does not import it. Each constant now
+  names the other, and a test in `chargen`, which imports both, holds them
+  equal (#514).
 - A note ends with its generation record. The closing line naming the
   ruleset, the build and who answered is gone: the build is the `ctchargen`
   property, each choice's line says whether the policy or the player made it,

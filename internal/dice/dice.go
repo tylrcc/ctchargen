@@ -17,8 +17,14 @@ package dice
 
 import "math/rand/v2"
 
-// faces is a die's faces. Book 1 throws six-sided dice and nothing else.
-const faces = 6
+// Faces is a die's faces. Book 1 throws six-sided dice and nothing else.
+//
+// rules.Faces says it again, to size the tables a die indexes. There are two
+// because this package depends on nothing, and rules may not import it
+// (depguard); chargen, which imports both, holds them equal in a test (#514).
+//
+// Implements: The dice and the tables agree on a die's faces [Domain].
+const Faces = 6
 
 // Stream is a source of dice. The zero value is not usable; call New.
 type Stream struct {
@@ -33,7 +39,7 @@ func New() *Stream {
 // Die returns one six-sided die: 1 through 6. Which throws are one die is
 // listed once, on chargen's Roller.
 func (s *Stream) Die() int {
-	return s.r.IntN(faces) + 1
+	return s.r.IntN(Faces) + 1
 }
 
 // Among returns an index into a set of n alternatives: 0 through n-1.
