@@ -5,6 +5,8 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The fixtures that walk career serve, skills advanced and muster goods name
+  that policy once, `servesMustersGoods`, where each spelled it out (#531).
 - A die's six faces are still said twice, in `dice` and in `rules`, since
   `dice` depends on nothing and `rules` does not import it. Each constant now
   names the other, and a test in `chargen`, which imports both, holds them

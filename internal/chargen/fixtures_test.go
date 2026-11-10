@@ -177,7 +177,7 @@ var fixtures = []fixture{
 	// receipt finds the payment term already at zero (E016).
 	{
 		name: "merchants-sixth-free-trader", forced: chargen.ForceService(traveller.Merchants),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
+		policy: servesMustersGoods,
 		dice:   slices.Concat(merchantsCaptainCareer, []int{1, 2, 5, 6, 6, 6, 6, 6, 6}),
 		among:  []int{5, 4},
 	},
@@ -187,7 +187,7 @@ var fixtures = []fixture{
 	// trader is one past.
 	{
 		name: "merchants-fifth-free-trader", forced: chargen.ForceService(traveller.Merchants),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
+		policy: servesMustersGoods,
 		dice:   slices.Concat(merchantsCaptainCareer, []int{1, 2, 5, 6, 6, 6, 6, 6, 1}),
 		among:  []int{5, 4},
 	},
@@ -211,7 +211,7 @@ var fixtures = []fixture{
 	// Holds: The +1 at rank 5 or 6 on Table 1.
 	{
 		name: "merchants-table1-modifier", forced: chargen.ForceService(traveller.Merchants),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
+		policy: servesMustersGoods,
 		dice: []int{
 			4, 6, 6, 6, 6, 3, 3, 1, 3, 3, 6, 3, 3, 3, 1, 6, 3, 6, 4, 1,
 			2, 3, 3, 6, 5, 2, 6, 4, 2, 6, 3, 4, 2, 4, 4, 6, 2, 4, 5, 5,
@@ -351,7 +351,7 @@ var fixtures = []fixture{
 	// Holds: Scout ship: duplicates lost.
 	{
 		name: "scouts-second-ship", forced: chargen.ForceService(traveller.Scouts),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
+		policy: servesMustersGoods,
 		dice: []int{
 			5, 3, 5, 5, 5, 4, 4, 4, 4, 4, 5, 4, 4, 4, 2, 6, 1, 2, 6, 6,
 			3, 2, 6, 6, 4, 2, 3, 4, 4, 6, 4, 4, 2, 4, 4, 4, 3, 5, 2, 5,
@@ -386,7 +386,7 @@ var fixtures = []fixture{
 	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
 		name: "scouts-expertise", forced: chargen.ForceService(traveller.Scouts),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods},
+		policy: servesMustersGoods,
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
 			3, 5, 4, 6, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 4, 3,
@@ -546,6 +546,15 @@ var fixtures = []fixture{
 		},
 		among: nil,
 	},
+}
+
+// servesMustersGoods is the policy several fixtures walk: career serve,
+// skills advanced and muster goods, so every benefit roll goes to Table 1. It
+// is spelled out rather than built from chargen.DefaultPolicy, since each
+// fixture's script depends on this policy and not on whatever the default
+// becomes (#531).
+var servesMustersGoods = chargen.Policy{
+	Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterGoods,
 }
 
 // merchantsCaptainCareer is every die of the merchants-captain path up to
