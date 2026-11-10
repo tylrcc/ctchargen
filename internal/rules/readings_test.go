@@ -1,9 +1,6 @@
 package rules_test
 
 import (
-	"errors"
-	"fmt"
-	"slices"
 	"strings"
 	"testing"
 
@@ -50,109 +47,6 @@ func TestTheReadings(t *testing.T) {
 	} {
 		if !strings.HasPrefix(tc.got, tc.prefix) || !strings.HasSuffix(tc.got, tc.suffix) {
 			t.Errorf("E001 %s is %q, want it to run from %q to %q", field, tc.got, tc.prefix, tc.suffix)
-		}
-	}
-}
-
-// A withdrawal says why, and names as its replacement only an erratum that
-// exists and is not its own. No real reading is withdrawn yet, so the cases
-// that must be refused are test-only readings, each one real reading with its
-// withdrawal broken one way; every real reading is held to the same check.
-//
-// Holds: A withdrawal says why, and its replacement is another erratum that
-// exists.
-func TestAWithdrawalNamesARealReplacement(t *testing.T) {
-	t.Parallel()
-
-	for _, r := range rules.Readings() {
-		err := refusedWithdrawal(r)
-		if err != nil {
-			t.Errorf("%v: %v", r.ID, err)
-		}
-	}
-
-	withdrawn := func(w rules.Withdrawal) rules.Reading {
-		r := rules.Readings()[traveller.E004-1]
-
-		r.Withdrawal = w
-
-		return r
-	}
-
-	const why = "A later decision replaced it."
-
-	for name, w := range map[string]rules.Withdrawal{
-		"with no reason, replaced":  {ReplacedBy: traveller.E005},
-		"replaced by itself":        {Why: why, ReplacedBy: traveller.E004},
-		"replaced by no erratum":    {Why: why, ReplacedBy: traveller.Erratum(len(traveller.Errata) + 1)},
-		"replaced by a negative id": {Why: why, ReplacedBy: -1},
-		"with a reason of spaces":   {Why: " \n "},
-	} {
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
-			if refusedWithdrawal(withdrawn(w)) == nil {
-				t.Errorf("withdrawal %+v was accepted", w)
-			}
-		})
-	}
-
-	for name, w := range map[string]rules.Withdrawal{
-		"with no replacement": {Why: "The page settles it after all."},
-		"replaced":            {Why: why, ReplacedBy: traveller.E005},
-	} {
-		t.Run(name, func(t *testing.T) {
-			t.Parallel()
-
-			r := withdrawn(w)
-
-			err := refusedWithdrawal(r)
-			if err != nil || !r.Withdrawn() {
-				t.Errorf("withdrawal %+v: withdrawn %v, refused with %v", w, r.Withdrawn(), err)
-			}
-		})
-	}
-}
-
-// errWithdrawal is a withdrawal that does not say why, or names a replacement
-// that is no other erratum.
-var errWithdrawal = errors.New("malformed withdrawal")
-
-// refusedWithdrawal is why a reading's withdrawal is malformed, or nil.
-//
-// Implements: A withdrawal says why, and its replacement is another erratum
-// that exists [Documents].
-func refusedWithdrawal(r rules.Reading) error {
-	w := r.Withdrawal
-
-	switch {
-	case !r.Withdrawn():
-		return nil
-	case strings.TrimSpace(w.Why) == "":
-		return fmt.Errorf("%w: %v is withdrawn and does not say why", errWithdrawal, r.ID)
-	case w.ReplacedBy == r.ID:
-		return fmt.Errorf("%w: %v is replaced by itself", errWithdrawal, r.ID)
-	case w.ReplacedBy != 0 && !slices.Contains(traveller.Errata[:], w.ReplacedBy):
-		return fmt.Errorf("%w: %v is replaced by %v, which is no erratum", errWithdrawal, r.ID, w.ReplacedBy)
-	}
-
-	return nil
-}
-
-// A reading is found by the id a record spells it with, and only by that.
-func TestAReadingIsNamedByItsID(t *testing.T) {
-	t.Parallel()
-
-	for _, e := range traveller.Errata {
-		got, ok := rules.ReadingNamed(e.String())
-		if !ok || got.ID != e {
-			t.Errorf("%v: found %v, %v", e, got.ID, ok)
-		}
-	}
-
-	for _, id := range []string{"", "E000", "E016", "e002", "E02", "E0002", "2", " E002"} {
-		if _, ok := rules.ReadingNamed(id); ok {
-			t.Errorf("%q names a reading", id)
 		}
 	}
 }

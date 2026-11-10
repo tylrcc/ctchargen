@@ -77,10 +77,10 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 4
- 24. Computer-1 (from 23) [E002]
+ 24. Computer-1 (from 23)
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 6
- 27. Forgery-1 (from 26) [E002]
+ 27. Forgery-1 (from 26)
  28. reenlistment: rolled 5+2 = 7 against 5+, made
  29. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  30. reenlisted for term 2 (from 28)
@@ -94,7 +94,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 
  35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  36. Service Skills Table: rolled 3
- 37. Brawling-1 (from 36) [E002]
+ 37. Brawling-1 (from 36)
  38. reenlistment: rolled 4+5 = 9 against 5+, made
  39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  40. reenlisted for term 3 (from 38)
@@ -109,7 +109,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
  45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  46. Personal Development Table: rolled 4
  47. weapon of expertise, specified immediately (p. 11): policy chose Cutlass from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 48. Blade Combat: Cutlass-1 (from 46) [E002]
+ 48. Blade Combat: Cutlass-1 (from 46)
  49. reenlistment: rolled 5+2 = 7 against 5+, made
  50. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  51. reenlisted for term 4 (from 49)
@@ -123,7 +123,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 
  56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  57. Advanced Education Table (education 8+): rolled 1
- 58. Medical-1 (from 57) [E002]
+ 58. Medical-1 (from 57)
  59. reenlistment: rolled 3+5 = 8 against 5+, made
  60. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  61. reenlisted for term 5 (from 59)
@@ -131,16 +131,16 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 **62. aging, end of term 4 (pp. 7-9)**
 
  63. aging, Strength: rolled 2+5 = 7 against 8+, missed
- 64. Strength -1, 9 to 8 (from 63) [E006 E007]
+ 64. Strength -1, 9 to 8 (from 63)
  65. aging, Dexterity: rolled 5+5 = 10 against 7+, made
- 66. Dexterity holds (from 65) [E006 E007]
+ 66. Dexterity holds (from 65)
  67. aging, Endurance: rolled 5+3 = 8 against 8+, made
- 68. Endurance holds (from 67) [E006 E007]
+ 68. Endurance holds (from 67)
 
 **69. term 5 (pp. 5-7)**
 
  70. survival: rolled 1+2 = 3 against 5+, missed
- 71. died in term 5, aged 38 (from 70) [E004]
+ 71. died in term 5, aged 38 (from 70)
 
 ---
 

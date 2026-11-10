@@ -92,7 +92,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
 **18. rank and service skills (p. 23)**
 
- 19. Cutlass-1 [E005]
+ 19. Cutlass-1
 
 **20. term 1 (pp. 5-7)**
 
@@ -106,10 +106,10 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
  27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  28. Advanced Education Table (education 8+): rolled 4
- 29. Computer-1 (from 28) [E002]
+ 29. Computer-1 (from 28)
  30. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  31. Advanced Education Table: rolled 4
- 32. Tactics-1 (from 31) [E002]
+ 32. Tactics-1 (from 31)
  33. reenlistment: rolled 4+5 = 9 against 6+, made
  34. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  35. reenlisted for term 2 (from 33)
@@ -130,14 +130,14 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
  47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  48. Service Skills Table: rolled 2
- 49. Vacc Suit-1 (from 48) [E002]
+ 49. Vacc Suit-1 (from 48)
  50. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  51. Personal Development Table: rolled 6
  52. weapon of expertise, specified immediately (p. 11): policy chose Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 53. Blade Combat: Cudgel-1 (from 51) [E002]
+ 53. Blade Combat: Cudgel-1 (from 51)
  54. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  55. Advanced Education Table (education 8+): rolled 5
- 56. Leader-1 (from 55) [E002]
+ 56. Leader-1 (from 55)
  57. reenlistment: rolled 6+5 = 11 against 6+, made
  58. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  59. reenlisted for term 3 (from 57)
@@ -154,10 +154,10 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
  67. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  68. Advanced Education Table: rolled 3
- 69. Electronic-1 (from 68) [E002]
+ 69. Electronic-1 (from 68)
  70. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  71. Service Skills Table: rolled 2
- 72. Vacc Suit-2 (from 71) [E002]
+ 72. Vacc Suit-2 (from 71)
  73. reenlistment: rolled 6+2 = 8 against 6+, made
  74. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  75. reenlisted for term 4 (from 73)
@@ -174,10 +174,10 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
  83. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  84. Personal Development Table: rolled 2
- 85. Dexterity +1, 4 to 5 (from 84) [E002]
+ 85. Dexterity +1, 4 to 5 (from 84)
  86. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  87. Advanced Education Table (education 8+): rolled 4
- 88. Computer-2 (from 87) [E002]
+ 88. Computer-2 (from 87)
  89. reenlistment: rolled 5+4 = 9 against 6+, made
  90. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  91. reenlisted for term 5 (from 89)
@@ -185,11 +185,11 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 **92. aging, end of term 4 (pp. 7-9)**
 
  93. aging, Strength: rolled 4+2 = 6 against 8+, missed
- 94. Strength -1, 8 to 7 (from 93) [E006 E007]
+ 94. Strength -1, 8 to 7 (from 93)
  95. aging, Dexterity: rolled 4+5 = 9 against 7+, made
- 96. Dexterity holds (from 95) [E006 E007]
+ 96. Dexterity holds (from 95)
  97. aging, Endurance: rolled 1+4 = 5 against 8+, missed
- 98. Endurance -1, 12 to 11 (from 97) [E006 E007]
+ 98. Endurance -1, 12 to 11 (from 97)
 
 **99. term 5 (pp. 5-7)**
 
@@ -204,10 +204,10 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 106. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 107. Advanced Education Table: rolled 6
 108. weapon of expertise, specified immediately (p. 11): policy chose Revolver from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
-109. Gun Combat: Revolver-2 (from 107) [E002]
+109. Gun Combat: Revolver-2 (from 107)
 110. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 111. Service Skills Table: rolled 2
-112. Vacc Suit-3 (from 111) [E002]
+112. Vacc Suit-3 (from 111)
 113. reenlistment: rolled 3+6 = 9 against 6+, made
 114. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 115. reenlisted for term 6 (from 113)
@@ -215,11 +215,11 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 **116. aging, end of term 5 (pp. 7-9)**
 
 117. aging, Strength: rolled 5+6 = 11 against 8+, made
-118. Strength holds (from 117) [E006 E007]
+118. Strength holds (from 117)
 119. aging, Dexterity: rolled 1+5 = 6 against 7+, missed
-120. Dexterity -1, 5 to 4 (from 119) [E006 E007]
+120. Dexterity -1, 5 to 4 (from 119)
 121. aging, Endurance: rolled 6+1 = 7 against 8+, missed
-122. Endurance -1, 11 to 10 (from 121) [E006 E007]
+122. Endurance -1, 11 to 10 (from 121)
 
 **123. term 6 (pp. 5-7)**
 
@@ -233,7 +233,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
 130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 4
-132. Gambling-1 (from 131) [E002]
+132. Gambling-1 (from 131)
 133. reenlistment: rolled 4+4 = 8 against 6+, made
 134. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 135. reenlisted for term 7 (from 133)
@@ -241,11 +241,11 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 **136. aging, end of term 6 (pp. 7-9)**
 
 137. aging, Strength: rolled 5+4 = 9 against 8+, made
-138. Strength holds (from 137) [E006 E007]
+138. Strength holds (from 137)
 139. aging, Dexterity: rolled 6+6 = 12 against 7+, made
-140. Dexterity holds (from 139) [E006 E007]
+140. Dexterity holds (from 139)
 141. aging, Endurance: rolled 4+4 = 8 against 8+, made
-142. Endurance holds (from 141) [E006 E007]
+142. Endurance holds (from 141)
 
 **143. term 7 (pp. 5-7)**
 
@@ -259,18 +259,18 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
 150. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 151. Advanced Education Table (education 8+): rolled 1
-152. Medical-1 (from 151) [E002]
+152. Medical-1 (from 151)
 153. reenlistment: rolled 1+2 = 3 against 6+, missed
 154. left the service after term 7 and is retired: reenlistment denied (from 153)
 
 **155. aging, end of term 7 (pp. 7-9)**
 
 156. aging, Strength: rolled 4+4 = 8 against 8+, made
-157. Strength holds (from 156) [E006 E007]
+157. Strength holds (from 156)
 158. aging, Dexterity: rolled 4+1 = 5 against 7+, missed
-159. Dexterity -1, 4 to 3 (from 158) [E006 E007]
+159. Dexterity -1, 4 to 3 (from 158)
 160. aging, Endurance: rolled 3+6 = 9 against 8+, made
-161. Endurance holds (from 160) [E006 E007]
+161. Endurance holds (from 160)
 
 **162. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 
@@ -309,7 +309,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 **194. titles (p. 5; Book 3 p. 22)**
 
 195. assume the hereditary title (p. 5): policy chose yes from yes, no
-196. social standing 12 confers baron/baroness, and it is assumed [E011]
+196. social standing 12 confers baron/baroness, and it is assumed
 
 ---
 

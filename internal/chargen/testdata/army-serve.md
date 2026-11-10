@@ -92,7 +92,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 **18. rank and service skills (p. 23)**
 
- 19. Rifle-1 [E005]
+ 19. Rifle-1
 
 **20. term 1 (pp. 5-7)**
 
@@ -110,15 +110,15 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
  31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  32. Advanced Education Table (education 8+): rolled 3
- 33. Tactics-1 (from 32) [E002]
+ 33. Tactics-1 (from 32)
  34. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Advanced Education Table: rolled 5
  36. weapon of expertise, specified immediately (p. 11): policy chose Halberd from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 37. Blade Combat: Halberd-1 (from 35) [E002]
+ 37. Blade Combat: Halberd-1 (from 35)
  38. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  39. Service Skills Table: rolled 6
  40. weapon of expertise, specified immediately (p. 11): policy chose Submachine Gun from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 41. Gun Combat: Submachine Gun-2 (from 39) [E002]
+ 41. Gun Combat: Submachine Gun-2 (from 39)
  42. reenlistment: rolled 6+3 = 9 against 7+, made
  43. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  44. reenlisted for term 2 (from 42)
@@ -135,10 +135,10 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
  52. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  53. Personal Development Table: rolled 4
- 54. Gambling-1 (from 53) [E002]
+ 54. Gambling-1 (from 53)
  55. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  56. Advanced Education Table (education 8+): rolled 6
- 57. Administration-1 (from 56) [E002]
+ 57. Administration-1 (from 56)
  58. reenlistment: rolled 3+5 = 8 against 7+, made
  59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  60. reenlisted for term 3 (from 58)
@@ -155,10 +155,10 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
  68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Advanced Education Table: rolled 3
- 70. Electronic-1 (from 69) [E002]
+ 70. Electronic-1 (from 69)
  71. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  72. Service Skills Table: rolled 1
- 73. ATV-1 (from 72) [E002]
+ 73. ATV-1 (from 72)
  74. reenlistment: rolled 4+6 = 10 against 7+, made
  75. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  76. reenlisted for term 4 (from 74)
@@ -175,10 +175,10 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
  84. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  85. Personal Development Table: rolled 6
- 86. Education +1, 10 to 11 (from 85) [E002]
+ 86. Education +1, 10 to 11 (from 85)
  87. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  88. Advanced Education Table (education 8+): rolled 2
- 89. Tactics-2 (from 88) [E002]
+ 89. Tactics-2 (from 88)
  90. reenlistment: rolled 5+4 = 9 against 7+, made
  91. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  92. reenlisted for term 5 (from 90)
@@ -186,11 +186,11 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 **93. aging, end of term 4 (pp. 7-9)**
 
  94. aging, Strength: rolled 6+4 = 10 against 8+, made
- 95. Strength holds (from 94) [E006 E007]
+ 95. Strength holds (from 94)
  96. aging, Dexterity: rolled 3+5 = 8 against 7+, made
- 97. Dexterity holds (from 96) [E006 E007]
+ 97. Dexterity holds (from 96)
  98. aging, Endurance: rolled 2+5 = 7 against 8+, missed
- 99. Endurance -1, 8 to 7 (from 98) [E006 E007]
+ 99. Endurance -1, 8 to 7 (from 98)
 
 **100. term 5 (pp. 5-7)**
 
@@ -204,10 +204,10 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 107. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 108. Advanced Education Table: rolled 3
-109. Electronic-2 (from 108) [E002]
+109. Electronic-2 (from 108)
 110. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 111. Service Skills Table: rolled 1
-112. ATV-2 (from 111) [E002]
+112. ATV-2 (from 111)
 113. reenlistment: rolled 2+6 = 8 against 7+, made
 114. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 115. reenlisted for term 6 (from 113)
@@ -215,11 +215,11 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 **116. aging, end of term 5 (pp. 7-9)**
 
 117. aging, Strength: rolled 6+3 = 9 against 8+, made
-118. Strength holds (from 117) [E006 E007]
+118. Strength holds (from 117)
 119. aging, Dexterity: rolled 5+2 = 7 against 7+, made
-120. Dexterity holds (from 119) [E006 E007]
+120. Dexterity holds (from 119)
 121. aging, Endurance: rolled 5+1 = 6 against 8+, missed
-122. Endurance -1, 7 to 6 (from 121) [E006 E007]
+122. Endurance -1, 7 to 6 (from 121)
 
 **123. term 6 (pp. 5-7)**
 
@@ -233,10 +233,10 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 6
-132. Education +1, 11 to 12 (from 131) [E002]
+132. Education +1, 11 to 12 (from 131)
 133. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 134. Advanced Education Table (education 8+): rolled 2
-135. Tactics-3 (from 134) [E002]
+135. Tactics-3 (from 134)
 136. reenlistment: rolled 5+4 = 9 against 7+, made
 137. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 138. reenlisted for term 7 (from 136)
@@ -244,34 +244,34 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 **139. aging, end of term 6 (pp. 7-9)**
 
 140. aging, Strength: rolled 4+1 = 5 against 8+, missed
-141. Strength -1, 10 to 9 (from 140) [E006 E007]
+141. Strength -1, 10 to 9 (from 140)
 142. aging, Dexterity: rolled 4+6 = 10 against 7+, made
-143. Dexterity holds (from 142) [E006 E007]
+143. Dexterity holds (from 142)
 144. aging, Endurance: rolled 6+5 = 11 against 8+, made
-145. Endurance holds (from 144) [E006 E007]
+145. Endurance holds (from 144)
 
 **146. term 7 (pp. 5-7)**
 
 147. survival: rolled 6+3 +2 = 11 against 5+, made
 148. survived term 7 (from 147)
-149. already General, the highest rank the Army print, so no promotion is thrown for in term 7 [E013]
+149. already General, the highest rank the Army print, so no promotion is thrown for in term 7
 
 **150. skills and training (pp. 6, 11)**
 
 151. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 152. Advanced Education Table: rolled 2
-153. Mechanical-1 (from 152) [E002]
+153. Mechanical-1 (from 152)
 154. reenlistment: rolled 2+2 = 4 against 7+, missed
 155. left the service after term 7 and is retired: reenlistment denied (from 154)
 
 **156. aging, end of term 7 (pp. 7-9)**
 
 157. aging, Strength: rolled 4+6 = 10 against 8+, made
-158. Strength holds (from 157) [E006 E007]
+158. Strength holds (from 157)
 159. aging, Dexterity: rolled 4+4 = 8 against 7+, made
-160. Dexterity holds (from 159) [E006 E007]
+160. Dexterity holds (from 159)
 161. aging, Endurance: rolled 2+5 = 7 against 8+, missed
-162. Endurance -1, 6 to 5 (from 161) [E006 E007]
+162. Endurance -1, 6 to 5 (from 161)
 
 **163. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 

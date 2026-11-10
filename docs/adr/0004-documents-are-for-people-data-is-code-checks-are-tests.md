@@ -50,3 +50,11 @@ Reworded on 2026-11-09 (#413): this ADR spoke of a JSON record that builds
 render, and of a transcript. #405 removed both (ADR 0006): what a reading's
 erratum is stamped on is a note, and `ctchargen readings` explains it. The
 decisions are unchanged.
+
+Superseded in part on 2026-11-10 by ADR 0007 (#460): the readings are the
+authority's record, not the referee's. The paragraphs beginning "From
+`v1.0.0`, an erratum names one decision for good" and "The tool explains its
+readings" no longer hold. No note names an erratum, so an erratum's number is
+no longer a promise and no reading is withdrawn; and the tool no longer
+explains its readings, since `--readings` and `ctchargen readings` are
+removed. The rest stands.

@@ -61,7 +61,7 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 
 **18. rank and service skills (p. 23)**
 
- 19. Pilot-1 [E005]
+ 19. Pilot-1
 
 **20. term 1 (pp. 5-7)**
 
@@ -72,10 +72,10 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 
  24. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  25. Service Skills Table: rolled 1
- 26. Air/Raft-1 (from 25) [E002]
+ 26. Air/Raft-1 (from 25)
  27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  28. Advanced Education Table: rolled 1
- 29. Air/Raft-2 (from 28) [E002]
+ 29. Air/Raft-2 (from 28)
  30. reenlistment: rolled 3+2 = 5 against 3+, made
  31. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  32. reenlisted for term 2 (from 30)
@@ -83,7 +83,7 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 **33. term 2 (pp. 5-7)**
 
  34. survival: rolled 2+4 = 6 against 7+, missed
- 35. died in term 2, aged 26 (from 34) [E004]
+ 35. died in term 2, aged 26 (from 34)
 
 ---
 

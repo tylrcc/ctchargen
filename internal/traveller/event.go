@@ -108,7 +108,6 @@ type OutcomeEvent struct {
 	Seq         int
 	Because     int
 	Description string
-	Errata      []Erratum
 
 	// Fact is what the outcome did, typed, wherever a fact about the character
 	// comes from it: Character's folds read every one (#441), the service

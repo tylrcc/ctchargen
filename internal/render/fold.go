@@ -121,7 +121,6 @@ type entry struct {
 	Chosen       string
 	Because      int
 	Description  string
-	Errata       []string
 }
 
 // entryOf folds a domain event into its entry.
@@ -176,10 +175,6 @@ func (e *entryFold) Choice(from traveller.ChoiceEvent) error {
 
 func (e *entryFold) Outcome(from traveller.OutcomeEvent) error {
 	e.out = entry{Seq: from.Seq, Kind: kindOutcome, Because: from.Because, Description: from.Description}
-
-	for _, erratum := range from.Errata {
-		e.out.Errata = append(e.out.Errata, erratum.String())
-	}
 
 	return nil
 }

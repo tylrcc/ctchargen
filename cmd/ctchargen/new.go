@@ -53,9 +53,9 @@ func declareCharacterFlags(set *flag.FlagSet, help characterHelp) characterFlags
 type newFlagSet struct {
 	characterFlags
 
-	auto, readings, force *bool
-	name                  *string
-	output                *string
+	auto, force *bool
+	name        *string
+	output      *string
 }
 
 func declareNewFlags() newFlagSet {
@@ -69,11 +69,10 @@ func declareNewFlags() newFlagSet {
 			skills:  "the --auto skills `strategy`: ",
 			muster:  "the --auto mustering out `strategy`: ",
 		}),
-		auto:     set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
-		name:     set.String("name", "", "the character's name"),
-		readings: set.Bool("readings", false, readingsHelp),
-		output:   set.String("o", "", "write to this file rather than to standard output"),
-		force:    set.Bool("force", false, "overwrite the output file in place if it already exists"),
+		auto:   set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
+		name:   set.String("name", "", "the character's name"),
+		output: set.String("o", "", "write to this file rather than to standard output"),
+		force:  set.Bool("force", false, "overwrite the output file in place if it already exists"),
 	}
 }
 
@@ -116,7 +115,7 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 	inputs.Name = *flags.name
 
 	return writeCharacter(inputs, policy, newRendering{
-		auto: *flags.auto, readings: *flags.readings,
+		auto:   *flags.auto,
 		output: *flags.output, force: *flags.force,
 	}, in, out, asking, dice)
 }
@@ -159,15 +158,12 @@ func isOrAre(n int) string {
 	return "are"
 }
 
-// readingsHelp is --readings' description.
-const readingsHelp = "end the note with the full text of each reading its generation record names"
-
 // newRendering is what the flags say to do with the character once it exists,
 // gathered so that newCharacter reads as the four steps it takes rather than
 // as its whole flag set threaded through them.
 type newRendering struct {
-	auto, readings, force bool
-	output                string
+	auto, force bool
+	output      string
 }
 
 func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRendering,
@@ -183,7 +179,7 @@ func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRenderi
 		return err
 	}
 
-	text := render.Note(character, how.readings)
+	text := render.Note(character)
 
 	where, err := openDestination(out, how.output, how.force)
 	if err != nil {

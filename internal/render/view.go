@@ -25,7 +25,6 @@ type view struct {
 	Departure  departureView
 	Nobility   *nobilityView
 	Attempt    attemptView
-	Errata     []traveller.Erratum
 	Ruleset    string
 	Policy     *policyView
 	Events     []entry
@@ -134,7 +133,6 @@ func viewOf(character *chargen.Character) view {
 		Skills:     make([]skillView, 0, len(skills)),
 		Benefits:   projectBenefits(character.Benefits()),
 		Pension:    int64(character.Pension()),
-		Errata:     character.Errata,
 		Ruleset:    chargen.Ruleset,
 		Policy:     projectPolicy(character.Policy),
 		Events:     entries(character.Events),

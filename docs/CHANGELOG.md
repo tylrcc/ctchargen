@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The readings are the authority's record, not the referee's (ADR 0007):
+  the `readings` subcommand and `new --readings` are removed, a note names no
+  erratum, and a reading can no longer be withdrawn. The readings, their
+  stamping on the character and the checks that hold them are unchanged
+  (#460, #458, #488, #502).
 - `CLAUDE.md` no longer lists the packages one by one: each package's doc
   comment says what the list said, and the section already sends readers there.
 - `CLAUDE.md` names the branch the release snapshots are written on: the

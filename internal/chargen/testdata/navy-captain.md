@@ -96,10 +96,10 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table (education 8+): rolled 2
- 27. Navigation-1 (from 26) [E002]
+ 27. Navigation-1 (from 26)
  28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  29. Advanced Education Table: rolled 1
- 30. Vacc Suit-1 (from 29) [E002]
+ 30. Vacc Suit-1 (from 29)
  31. reenlistment: rolled 3+5 = 8 against 6+, made
  32. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
@@ -119,10 +119,10 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
  44. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  45. Service Skills Table: rolled 1
- 46. Ship's Boat-1 (from 45) [E002]
+ 46. Ship's Boat-1 (from 45)
  47. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  48. Personal Development Table: rolled 3
- 49. Endurance +1, 8 to 9 (from 48) [E002]
+ 49. Endurance +1, 8 to 9 (from 48)
  50. reenlistment: rolled 5+4 = 9 against 6+, made
  51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  52. reenlisted for term 3 (from 50)
@@ -139,10 +139,10 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
  60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  61. Advanced Education Table (education 8+): rolled 2
- 62. Navigation-2 (from 61) [E002]
+ 62. Navigation-2 (from 61)
  63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  64. Advanced Education Table: rolled 6
- 65. Jack of all Trades-1 (from 64) [E002]
+ 65. Jack of all Trades-1 (from 64)
  66. reenlistment: rolled 4+3 = 7 against 6+, made
  67. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  68. reenlisted for term 4 (from 66)
@@ -159,10 +159,10 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
  76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  77. Service Skills Table: rolled 3
- 78. Forward Observer-1 (from 77) [E002]
+ 78. Forward Observer-1 (from 77)
  79. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  80. Personal Development Table: rolled 4
- 81. Social Standing +1, 12 to 13 (from 80) [E002]
+ 81. Social Standing +1, 12 to 13 (from 80)
  82. reenlistment: rolled 5+6 = 11 against 6+, made
  83. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  84. reenlisted for term 5 (from 82)
@@ -170,11 +170,11 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 **85. aging, end of term 4 (pp. 7-9)**
 
  86. aging, Strength: rolled 2+5 = 7 against 8+, missed
- 87. Strength -1, 10 to 9 (from 86) [E006 E007]
+ 87. Strength -1, 10 to 9 (from 86)
  88. aging, Dexterity: rolled 4+6 = 10 against 7+, made
- 89. Dexterity holds (from 88) [E006 E007]
+ 89. Dexterity holds (from 88)
  90. aging, Endurance: rolled 4+3 = 7 against 8+, missed
- 91. Endurance -1, 9 to 8 (from 90) [E006 E007]
+ 91. Endurance -1, 9 to 8 (from 90)
 
 **92. term 5 (pp. 5-7)**
 
@@ -188,10 +188,10 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
  99. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 100. Advanced Education Table (education 8+): rolled 5
-101. Pilot-1 (from 100) [E002]
+101. Pilot-1 (from 100)
 102. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 103. Advanced Education Table: rolled 1
-104. Vacc Suit-2 (from 103) [E002]
+104. Vacc Suit-2 (from 103)
 105. reenlistment: rolled 6+3 = 9 against 6+, made
 106. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 107. reenlisted for term 6 (from 105)
@@ -199,11 +199,11 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 **108. aging, end of term 5 (pp. 7-9)**
 
 109. aging, Strength: rolled 1+2 = 3 against 8+, missed
-110. Strength -1, 9 to 8 (from 109) [E006 E007]
+110. Strength -1, 9 to 8 (from 109)
 111. aging, Dexterity: rolled 6+6 = 12 against 7+, made
-112. Dexterity holds (from 111) [E006 E007]
+112. Dexterity holds (from 111)
 113. aging, Endurance: rolled 3+5 = 8 against 8+, made
-114. Endurance holds (from 113) [E006 E007]
+114. Endurance holds (from 113)
 
 **115. term 6 (pp. 5-7)**
 
@@ -217,7 +217,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
 122. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 123. Service Skills Table: rolled 1
-124. Ship's Boat-2 (from 123) [E002]
+124. Ship's Boat-2 (from 123)
 125. reenlistment: rolled 4+2 = 6 against 6+, made
 126. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 127. reenlisted for term 7 (from 125)
@@ -225,11 +225,11 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 **128. aging, end of term 6 (pp. 7-9)**
 
 129. aging, Strength: rolled 6+2 = 8 against 8+, made
-130. Strength holds (from 129) [E006 E007]
+130. Strength holds (from 129)
 131. aging, Dexterity: rolled 5+4 = 9 against 7+, made
-132. Dexterity holds (from 131) [E006 E007]
+132. Dexterity holds (from 131)
 133. aging, Endurance: rolled 4+1 = 5 against 8+, missed
-134. Endurance -1, 8 to 7 (from 133) [E006 E007]
+134. Endurance -1, 8 to 7 (from 133)
 
 **135. term 7 (pp. 5-7)**
 
@@ -244,21 +244,21 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 
 143. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 144. Personal Development Table: rolled 6
-145. Education +1, 10 to 11 (from 144) [E002]
+145. Education +1, 10 to 11 (from 144)
 146. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 147. Advanced Education Table (education 8+): rolled 3
-148. Engineer-1 (from 147) [E002]
+148. Engineer-1 (from 147)
 149. reenlistment: rolled 2+2 = 4 against 6+, missed
 150. left the service after term 7 and is retired: reenlistment denied (from 149)
 
 **151. aging, end of term 7 (pp. 7-9)**
 
 152. aging, Strength: rolled 2+4 = 6 against 8+, missed
-153. Strength -1, 8 to 7 (from 152) [E006 E007]
+153. Strength -1, 8 to 7 (from 152)
 154. aging, Dexterity: rolled 6+4 = 10 against 7+, made
-155. Dexterity holds (from 154) [E006 E007]
+155. Dexterity holds (from 154)
 156. aging, Endurance: rolled 4+2 = 6 against 8+, missed
-157. Endurance -1, 7 to 6 (from 156) [E006 E007]
+157. Endurance -1, 7 to 6 (from 156)
 
 **158. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 

@@ -75,20 +75,14 @@ page cite and the condition under which it governs a record.
 _Avoid_: Erratum (for the decision), ruling, interpretation
 
 **Erratum**:
-The id a record carries to say which readings governed it. An erratum names
-one decision for good: its reading may be reworded, but a changed decision is
-a new erratum.
+A reading's id inside the tree, and the mark a character carries to say which
+readings governed it. No note names one: the readings are the authority's
+record, not the referee's (ADR 0007).
 _Avoid_: Reading (for the id), flag, tag
 
-**Withdrawn reading**:
-A reading whose decision no longer governs new records. It keeps its erratum,
-is still explained on records it was stamped on, says why, and names the
-erratum that replaced it, if any.
-_Avoid_: Retired, superseded
-
 **Stamping**:
-Marking a record with an erratum because its reading's condition holds for
-that record.
+Marking a character with an erratum because its reading's condition holds for
+that character.
 _Avoid_: Tagging, applying, flagging
 
 **Script**:

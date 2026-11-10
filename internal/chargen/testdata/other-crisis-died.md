@@ -76,10 +76,10 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 3
- 24. Electronic-1 (from 23) [E002]
+ 24. Electronic-1 (from 23)
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 1
- 27. Streetwise-1 (from 26) [E002]
+ 27. Streetwise-1 (from 26)
  28. reenlistment: rolled 6+2 = 8 against 5+, made
  29. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  30. reenlisted for term 2 (from 28)
@@ -93,7 +93,7 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
  35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  36. Service Skills Table: rolled 2
- 37. Gambling-1 (from 36) [E002]
+ 37. Gambling-1 (from 36)
  38. reenlistment: rolled 5+5 = 10 against 5+, made
  39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  40. reenlisted for term 3 (from 38)
@@ -107,7 +107,7 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
  45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  46. Personal Development Table: rolled 1
- 47. Strength +1, 2 to 3 (from 46) [E002]
+ 47. Strength +1, 2 to 3 (from 46)
  48. reenlistment: rolled 1+4 = 5 against 5+, made
  49. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  50. reenlisted for term 4 (from 48)
@@ -121,7 +121,7 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
  55. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  56. Advanced Education Table (education 8+): rolled 3
- 57. Electronic-2 (from 56) [E002]
+ 57. Electronic-2 (from 56)
  58. reenlistment: rolled 5+5 = 10 against 5+, made
  59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  60. reenlisted for term 5 (from 58)
@@ -129,11 +129,11 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 **61. aging, end of term 4 (pp. 7-9)**
 
  62. aging, Strength: rolled 1+2 = 3 against 8+, missed
- 63. Strength -1, 3 to 2 (from 62) [E006 E007]
+ 63. Strength -1, 3 to 2 (from 62)
  64. aging, Dexterity: rolled 5+5 = 10 against 7+, made
- 65. Dexterity holds (from 64) [E006 E007]
+ 65. Dexterity holds (from 64)
  66. aging, Endurance: rolled 3+5 = 8 against 8+, made
- 67. Endurance holds (from 66) [E006 E007]
+ 67. Endurance holds (from 66)
 
 **68. term 5 (pp. 5-7)**
 
@@ -144,7 +144,7 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
  72. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  73. Advanced Education Table: rolled 1
- 74. Streetwise-2 (from 73) [E002]
+ 74. Streetwise-2 (from 73)
  75. reenlistment: rolled 5+1 = 6 against 5+, made
  76. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  77. reenlisted for term 6 (from 75)
@@ -152,11 +152,11 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 **78. aging, end of term 5 (pp. 7-9)**
 
  79. aging, Strength: rolled 2+6 = 8 against 8+, made
- 80. Strength holds (from 79) [E006 E007]
+ 80. Strength holds (from 79)
  81. aging, Dexterity: rolled 3+3 = 6 against 7+, missed
- 82. Dexterity -1, 3 to 2 (from 81) [E006 E007]
+ 82. Dexterity -1, 3 to 2 (from 81)
  83. aging, Endurance: rolled 5+3 = 8 against 8+, made
- 84. Endurance holds (from 83) [E006 E007]
+ 84. Endurance holds (from 83)
 
 **85. term 6 (pp. 5-7)**
 
@@ -167,7 +167,7 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
  89. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  90. Service Skills Table: rolled 2
- 91. Gambling-2 (from 90) [E002]
+ 91. Gambling-2 (from 90)
  92. reenlistment: rolled 3+4 = 7 against 5+, made
  93. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  94. reenlisted for term 7 (from 92)
@@ -175,11 +175,11 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 **95. aging, end of term 6 (pp. 7-9)**
 
  96. aging, Strength: rolled 2+6 = 8 against 8+, made
- 97. Strength holds (from 96) [E006 E007]
+ 97. Strength holds (from 96)
  98. aging, Dexterity: rolled 1+3 = 4 against 7+, missed
- 99. Dexterity -1, 2 to 1 (from 98) [E006 E007]
+ 99. Dexterity -1, 2 to 1 (from 98)
 100. aging, Endurance: rolled 4+4 = 8 against 8+, made
-101. Endurance holds (from 100) [E006 E007]
+101. Endurance holds (from 100)
 
 **102. term 7 (pp. 5-7)**
 
@@ -190,18 +190,18 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 
 106. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 107. Personal Development Table: rolled 3
-108. Endurance +1, 4 to 5 (from 107) [E002]
+108. Endurance +1, 4 to 5 (from 107)
 109. reenlistment: rolled 4+1 = 5 against 5+, made
 110. left the service after term 7 and is retired: retire (from 109)
 
 **111. aging, end of term 7 (pp. 7-9)**
 
 112. aging, Strength: rolled 6+2 = 8 against 8+, made
-113. Strength holds (from 112) [E006 E007]
+113. Strength holds (from 112)
 114. aging, Dexterity: rolled 3+1 = 4 against 7+, missed
-115. Dexterity -1, 1 to 0 (from 114) [E006 E007 E010]
+115. Dexterity -1, 1 to 0 (from 114)
 116. medical crisis, Dexterity at zero: rolled 3+4 = 7 against 8+, missed
-117. died of a medical crisis in term 7, Dexterity having reached zero (from 116) [E008 E009]
+117. died of a medical crisis in term 7, Dexterity having reached zero (from 116)
 
 ---
 

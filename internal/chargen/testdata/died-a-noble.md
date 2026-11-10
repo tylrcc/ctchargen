@@ -67,7 +67,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
  17. the Navy rejected him (from 16)
  18. submit to the draft (p. 5): policy chose yes from yes, no
  19. draft: rolled 6
- 20. drafted into the Other (from 19) [E001]
+ 20. drafted into the Other (from 19)
 
 **21. term 1 (pp. 5-7)**
 
@@ -78,10 +78,10 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
 
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Advanced Education Table: rolled 5
- 27. Brawling-1 (from 26) [E002]
+ 27. Brawling-1 (from 26)
  28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Service Skills Table: rolled 2
- 30. Gambling-1 (from 29) [E002]
+ 30. Gambling-1 (from 29)
  31. reenlistment: rolled 1+6 = 7 against 5+, made
  32. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
@@ -95,7 +95,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
 
  38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  39. Personal Development Table: rolled 5
- 40. Brawling-2 (from 39) [E002]
+ 40. Brawling-2 (from 39)
  41. reenlistment: rolled 6+3 = 9 against 5+, made
  42. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  43. reenlisted for term 3 (from 41)
@@ -109,7 +109,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
 
  48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  49. Advanced Education Table: rolled 6
- 50. Forgery-1 (from 49) [E002]
+ 50. Forgery-1 (from 49)
  51. reenlistment: rolled 6+2 = 8 against 5+, made
  52. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  53. reenlisted for term 4 (from 51)
@@ -123,7 +123,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
 
  58. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  59. Service Skills Table: rolled 6
- 60. Bribery-1 (from 59) [E002]
+ 60. Bribery-1 (from 59)
  61. reenlistment: rolled 3+6 = 9 against 5+, made
  62. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  63. reenlisted for term 5 (from 61)
@@ -131,20 +131,20 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused him), 5 terms, killed 
 **64. aging, end of term 4 (pp. 7-9)**
 
  65. aging, Strength: rolled 2+2 = 4 against 8+, missed
- 66. Strength -1, 4 to 3 (from 65) [E006 E007]
+ 66. Strength -1, 4 to 3 (from 65)
  67. aging, Dexterity: rolled 1+3 = 4 against 7+, missed
- 68. Dexterity -1, 4 to 3 (from 67) [E006 E007]
+ 68. Dexterity -1, 4 to 3 (from 67)
  69. aging, Endurance: rolled 2+6 = 8 against 8+, made
- 70. Endurance holds (from 69) [E006 E007]
+ 70. Endurance holds (from 69)
 
 **71. term 5 (pp. 5-7)**
 
  72. survival: rolled 1+1 +2 = 4 against 5+, missed
- 73. died in term 5, aged 38 (from 72) [E004]
+ 73. died in term 5, aged 38 (from 72)
 
 **74. titles (p. 5; Book 3 p. 22)**
 
- 75. held a social standing of 12 at death, which is baron/baroness [E011]
+ 75. held a social standing of 12 at death, which is baron/baroness
 
 ---
 

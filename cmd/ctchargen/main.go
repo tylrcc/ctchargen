@@ -117,8 +117,6 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 		return newCharacter(args[1:], in, out, asking, chosen.dice)
 	case "batch":
 		return batch(args[1:], out, asking, chosen.dice)
-	case "readings":
-		return readings(args[1:], out)
 	case "version":
 		return version(args[1:], out)
 	default:
@@ -129,21 +127,25 @@ func run(args []string, in io.Reader, out, asking io.Writer, options ...option) 
 
 // version writes the build.
 //
-// It takes no flags, so --help is answered by answerHelp rather than by a
-// flag set: the top-level help promises that every command answers --help,
-// and version is one of those it lists. Anything else is refused rather than ignored,
-// which is what the others do with a word they were not expecting.
+// It takes no flags, so it answers --help itself rather than through a flag
+// set: the top-level help promises that every command answers --help, and
+// version is one of those it lists. writeHelp would print the usage line, a
+// blank line, and then nothing at all. A word after the help flag is refused
+// rather than dropped with the help (#84), and any other word is refused
+// rather than ignored, which is what the others do with a word they were not
+// expecting.
 func version(args []string, out io.Writer) error {
-	if asked, err := answerHelp(args, out, versionUsage); asked {
-		return err
-	}
-
-	if len(args) > 0 {
+	switch {
+	case len(args) == 0:
+		return writeVersion(build(), out)
+	case !isHelpFlag(args[0]):
 		return fmt.Errorf("%w: %s; it takes no arguments, and was given %q",
 			errUsage, versionUsage, args[0])
+	case len(args) > 1:
+		return fmt.Errorf("%w: %s; %s", errUsage, versionUsage, helpTakesNoArguments(args[1]))
+	default:
+		return writeUsageText(out, "usage: ctchargen "+versionUsage+"\n")
 	}
-
-	return writeVersion(build(), out)
 }
 
 // errNoBuild reports a build with no build information embedded.
@@ -184,8 +186,7 @@ func buildVersion(info *debug.BuildInfo) string {
 }
 
 // isHelpFlag reports the spellings of --help the flag package itself answers,
-// for what has no flag set to answer them: the top level, version and
-// readings.
+// for what has no flag set to answer them: the top level and version.
 func isHelpFlag(arg string) bool {
 	return arg == "-h" || arg == "-help" || arg == "--help"
 }

@@ -6,9 +6,9 @@ import "github.com/philoserf/ctchargen/internal/traveller"
 // itself, with its page cite and the condition under which it governs a
 // record.
 //
-// Every string field is prose, the withdrawal's reason included, kept
-// verbatim with the page's own emphasis as inline Markdown, so a renderer or
-// a test can quote it without a second transcription of it.
+// Every string field is prose, kept verbatim with the page's own emphasis as
+// inline Markdown, so a test can quote it without a second transcription of
+// it.
 type Reading struct {
 	ID    traveller.Erratum
 	Title string
@@ -28,39 +28,9 @@ type Reading struct {
 	// Why is the rationale for that reading over another.
 	Why string
 
-	// StampedOn is the stamping condition: which records name the erratum.
+	// StampedOn is the stamping condition: which characters are stamped with
+	// the erratum.
 	StampedOn string
-
-	// Withdrawal is zero for a reading that stands.
-	Withdrawal Withdrawal
-}
-
-// Withdrawal is why a reading's decision no longer governs new records, and
-// what replaced it. A withdrawn reading keeps its erratum, which is never
-// reused, and stays among the readings, so a record already stamped with it
-// still names one that exists; it is never stamped on a new one.
-type Withdrawal struct {
-	// Why is the reason, in prose. A withdrawal is one that says why.
-	Why string
-
-	// ReplacedBy is the erratum whose reading took this one's place, or zero
-	// where none did.
-	ReplacedBy traveller.Erratum
-}
-
-// Withdrawn is whether the reading's decision no longer governs new records.
-func (r Reading) Withdrawn() bool { return r.Withdrawal != Withdrawal{} }
-
-// ReadingNamed is the reading whose erratum is spelled id, as a record spells
-// it ("E002"), and whether there is one.
-func ReadingNamed(id string) (Reading, bool) {
-	for _, r := range readings {
-		if r.ID.String() == id {
-			return r, true
-		}
-	}
-
-	return Reading{}, false
 }
 
 // Readings is every reading, in erratum order: the one at index i is named
@@ -88,9 +58,9 @@ func Readings() [len(traveller.Errata)]Reading { return readings }
 // A rationale that cites "PRD" cites the delivered v1 contract, removed from
 // the tree after ec7289f; it is docs/PRD.md at that commit.
 //
-// An erratum names one decision for good (ADR 0004): it is never reused or
-// renumbered, and a reading whose decision no longer holds is withdrawn
-// rather than deleted.
+// An erratum names a reading inside the tree, and no note carries it (ADR
+// 0007). A reading whose decision no longer holds is changed or removed like
+// any other code, and the stamping conditions are held to what it says then.
 var readings = [...]Reading{
 	{
 		ID:    traveller.E001,

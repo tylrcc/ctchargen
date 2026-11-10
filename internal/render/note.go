@@ -1,10 +1,11 @@
 // Package render writes a generated character as the note a referee keeps:
-// its properties, its heading and summary, the sheet, the generation record,
-// and, when asked for, the readings the record names, in markdown (ADR 0006).
+// its properties, its heading and summary, the sheet and the generation
+// record, in markdown (ADR 0006).
 //
-// It also writes the readings on their own: one in full (Reading), every one
-// as an index (ReadingsIndex), and those an id names (ReadingsNamed). That is
-// why it imports rules, where the readings are declared, and the only reason.
+// It names no erratum. The readings are the authority's record, not the
+// referee's (ADR 0007), so it does not import rules, where they are declared.
+//
+// Implements: A note names no erratum [Generation record].
 //
 // The domain types are the interface, and the note is written from them
 // through one view, built once (viewOf), so the sheet and the generation
@@ -20,14 +21,12 @@ import (
 
 // Note is the character as a referee keeps it: its properties, its heading
 // and summary and the sheet, then the generation record, which is every die thrown and every choice made and the
-// only way back to the character (ADR 0006). With readings, the full text of
-// each reading the record names comes after it, so the ids beside the
-// outcomes can be read without the tool to hand.
+// only way back to the character (ADR 0006).
 //
 // It ends by saying what wrote it and what to keep. That is last because it
 // is not the character: a referee reads the headline and the possessions
 // first, and thinks about keeping the note only once he wants this one.
-func Note(character *chargen.Character, readings bool) string {
+func Note(character *chargen.Character) string {
 	r := viewOf(character)
 
 	var out strings.Builder
@@ -35,10 +34,6 @@ func Note(character *chargen.Character, readings bool) string {
 	writeProperties(&out, r)
 	writeSheet(&out, r)
 	writeGenerationRecord(&out, r)
-
-	if readings {
-		writeReadings(&out, r.Errata)
-	}
 
 	fmt.Fprintf(&out, "---\n\n%s\n\n%s\n", provenance(r), keepTheNote)
 

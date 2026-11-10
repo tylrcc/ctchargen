@@ -329,7 +329,7 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 			separator = "\n"
 		}
 
-		_, err := io.WriteString(out, separator+render.Note(character, false))
+		_, err := io.WriteString(out, separator+render.Note(character))
 		if err != nil {
 			return fmt.Errorf("member %d: %w", index, err)
 		}
@@ -373,7 +373,7 @@ func (b batchRun) intoDirectory(dir string) (tally, error) {
 				return err
 			}
 
-			return where.write(render.Note(character, false))
+			return where.write(render.Note(character))
 		},
 	)
 }

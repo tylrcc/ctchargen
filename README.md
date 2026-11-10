@@ -7,8 +7,8 @@ A Go CLI that generates rules-accurate Classic Traveller characters.
 Ruleset baseline: **Books 1–3 only** — the FFE reprints of the © 1977 text.
 Character generation is Book 1 pp. 4–25; Books 2 and 3 are consulted only
 where Book 1 points at them. Every implemented rule carries its printed-page
-cite, and every place the text is silent or ambiguous has a recorded reading,
-which the tool prints on request and names on every note it governs.
+cite, and every place the text is silent or ambiguous has a recorded reading
+in the source, with its page cite.
 
 ## Install
 
@@ -35,8 +35,7 @@ go build ./cmd/ctchargen
 All six services generate, the book's own worked character (pp. 23–25)
 is reproduced by the engine, and characters can be written to files or
 generated in batches as markdown notes. `new` without `--auto` walks the
-procedure a question at a time, showing each throw between the questions, and
-a note can end with the full text of the readings its generation record names.
+procedure a question at a time, showing each throw between the questions.
 
 Every command lists its own flags, which is where the current set lives:
 
@@ -47,20 +46,16 @@ ctchargen new --help      # one command's flags, with their values and defaults
 
 ## Using it
 
-Four commands. `new` generates one character; `batch` generates many;
-`readings` explains the readings a note names; and `version` writes the build.
+Three commands. `new` generates one character; `batch` generates many; and
+`version` writes the build.
 
 ```sh
 ctchargen new --auto --service merchants
 ctchargen new --auto --name "Alexander Jamison" -o jamison.md
-ctchargen new --auto --readings                 # with each reading it names, in full
 ctchargen new                                   # asks at every choice point
 
 ctchargen batch --count 20 --service merchants
 ctchargen batch --count 20 --service merchants -o characters/
-
-ctchargen readings                              # every reading, and whether it is in force
-ctchargen readings E002 E011                    # those two, in full
 ```
 
 **A character is written as one markdown note**: the sheet — the UPP line,
@@ -81,18 +76,8 @@ Rifle-2. Musters out with CR 30000." `age` is completed years, and `terms`
 counts every term begun, the one a death ended included.
 
 **A reading is how the tool decides where the page is silent or contradicts
-itself**, and the generation record names the reading beside each outcome it
-governed, as an id like `E002`. **`--readings`** ends the note with the full
-text of each reading its record names: what the page says, the gap, the
-reading and why. `ctchargen readings` lists them all, or writes the ones named
-in full. The sheet leaves the ids out, since it is the page a player keeps.
-
-**An id means one decision for good.** A reading may be reworded under its
-id, but a changed decision gets a new id, so a note names the same readings
-in every build. A reading whose decision no longer holds is withdrawn rather
-than deleted: it keeps its id, still explains the notes already stamped with
-it, says why, and is stamped on no new one. `ctchargen readings` marks each as
-in force or withdrawn.
+itself.** The readings are the tool's own record of its authority, kept in
+the source with their page cites, and a note names none of them (ADR 0007).
 
 **The dice are not seeded, and the note is the only way back to a
 character.** Every run rolls fresh dice; nothing brings a character back but
@@ -188,13 +173,13 @@ standard error after `ctchargen:`.
 
 ## The documents
 
-| File                                                     | What it holds                                                                                                      |
-| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values. `ctchargen readings` prints them. |
-| [docs/CHANGELOG.md](docs/CHANGELOG.md)                   | What each release changed.                                                                                         |
-| [docs/GLOSSARY.md](docs/GLOSSARY.md)                     | The words a referee and the code share: note, record, reading, erratum, golden.                                    |
-| [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                                                        |
-| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                                                    |
+| File                                                     | What it holds                                                                    |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values. |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md)                   | What each release changed.                                                       |
+| [docs/GLOSSARY.md](docs/GLOSSARY.md)                     | The tool's vocabulary: note, record, reading, erratum, golden.                   |
+| [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                      |
+| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                  |
 
 ## The gate
 

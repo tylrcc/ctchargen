@@ -78,10 +78,10 @@ UPP 644776, age 38, Other, 5 terms, retired
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  23. Advanced Education Table: rolled 4
- 24. Gambling-1 (from 23) [E002]
+ 24. Gambling-1 (from 23)
  25. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Service Skills Table: rolled 2
- 27. Gambling-2 (from 26) [E002]
+ 27. Gambling-2 (from 26)
  28. reenlistment: rolled 6+6 = 12 against 5+, made
  29. a 12 exactly: the service requires another term (from 28)
 
@@ -94,7 +94,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 
  34. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  35. Personal Development Table: rolled 3
- 36. Endurance +1, 4 to 5 (from 35) [E002]
+ 36. Endurance +1, 4 to 5 (from 35)
  37. reenlistment: rolled 2+5 = 7 against 5+, made
  38. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  39. reenlisted for term 3 (from 37)
@@ -108,7 +108,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 
  44. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  45. Advanced Education Table: rolled 1
- 46. Streetwise-1 (from 45) [E002]
+ 46. Streetwise-1 (from 45)
  47. reenlistment: rolled 2+5 = 7 against 5+, made
  48. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  49. reenlisted for term 4 (from 47)
@@ -123,7 +123,7 @@ UPP 644776, age 38, Other, 5 terms, retired
  54. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  55. Service Skills Table: rolled 5
  56. weapon of expertise, specified immediately (p. 11): policy chose Automatic Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 57. Gun Combat: Automatic Pistol-1 (from 55) [E002]
+ 57. Gun Combat: Automatic Pistol-1 (from 55)
  58. reenlistment: rolled 3+4 = 7 against 5+, made
  59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  60. reenlisted for term 5 (from 58)
@@ -131,11 +131,11 @@ UPP 644776, age 38, Other, 5 terms, retired
 **61. aging, end of term 4 (pp. 7-9)**
 
  62. aging, Strength: rolled 5+6 = 11 against 8+, made
- 63. Strength holds (from 62) [E006 E007]
+ 63. Strength holds (from 62)
  64. aging, Dexterity: rolled 4+2 = 6 against 7+, missed
- 65. Dexterity -1, 6 to 5 (from 64) [E006 E007]
+ 65. Dexterity -1, 6 to 5 (from 64)
  66. aging, Endurance: rolled 5+2 = 7 against 8+, missed
- 67. Endurance -1, 5 to 4 (from 66) [E006 E007]
+ 67. Endurance -1, 5 to 4 (from 66)
 
 **68. term 5 (pp. 5-7)**
 
@@ -146,18 +146,18 @@ UPP 644776, age 38, Other, 5 terms, retired
 
  72. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  73. Personal Development Table: rolled 6
- 74. Social Standing -1, 7 to 6 (from 73) [E002]
+ 74. Social Standing -1, 7 to 6 (from 73)
  75. reenlistment: rolled 1+2 = 3 against 5+, missed
  76. left the service after term 5 and is retired: reenlistment denied (from 75)
 
 **77. aging, end of term 5 (pp. 7-9)**
 
  78. aging, Strength: rolled 5+1 = 6 against 8+, missed
- 79. Strength -1, 7 to 6 (from 78) [E006 E007]
+ 79. Strength -1, 7 to 6 (from 78)
  80. aging, Dexterity: rolled 4+1 = 5 against 7+, missed
- 81. Dexterity -1, 5 to 4 (from 80) [E006 E007]
+ 81. Dexterity -1, 5 to 4 (from 80)
  82. aging, Endurance: rolled 3+6 = 9 against 8+, made
- 83. Endurance holds (from 82) [E006 E007]
+ 83. Endurance holds (from 82)
 
 **84. mustering out, 5 rolls (pp. 7, 9, 21-23)**
 

@@ -101,8 +101,8 @@ func (r *record) choice(point traveller.ChoicePoint, from []string, chosen strin
 	})
 }
 
-// outcomef records a consequence, the event that caused it, and any recorded
-// readings that governed it.
+// outcomef records a consequence and the event that caused it, and stamps the
+// character with any readings that governed it.
 func (r *record) outcomef(because int, errata []traveller.Erratum, format string, args ...any) {
 	for _, e := range errata {
 		r.errata[e] = true
@@ -112,13 +112,13 @@ func (r *record) outcomef(because int, errata []traveller.Erratum, format string
 		Seq:         r.next(),
 		Because:     because,
 		Description: fmt.Sprintf(format, args...),
-		Errata:      errata,
 	})
 }
 
 // stamped is every erratum that governed this generation, in id order.
 //
-// Implements: Every reading that governed a record is named on it [Authority].
+// Implements: Every reading that governed a character is stamped on it
+// [Authority].
 func (r *record) stamped() []traveller.Erratum {
 	var stamped []traveller.Erratum
 
@@ -133,14 +133,15 @@ func (r *record) stamped() []traveller.Erratum {
 
 // fact records an outcome that carries a typed fact: its prose is the fact's
 // own String, so the record and what is read from the fact cannot disagree
-// (#412).
+// (#412). Like outcomef, it stamps the character with any readings that
+// governed it.
 func (r *record) fact(because int, errata []traveller.Erratum, fact traveller.Fact) {
 	for _, e := range errata {
 		r.errata[e] = true
 	}
 
 	r.add(traveller.OutcomeEvent{
-		Seq: r.next(), Because: because, Description: fact.String(), Errata: errata, Fact: fact,
+		Seq: r.next(), Because: because, Description: fact.String(), Fact: fact,
 	})
 }
 

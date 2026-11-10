@@ -48,7 +48,7 @@ UPP 76B348, age 18, civilian, no prior service
  16. enlistment, Scouts: rolled 4+2 = 6 against 7+, missed
  17. the Scouts rejected him (from 16)
  18. submit to the draft (p. 5): policy chose no from yes, no
- 19. declined the draft, and remains a civilian [E001]
+ 19. declined the draft, and remains a civilian
 
 ---
 

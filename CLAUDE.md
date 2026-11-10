@@ -68,7 +68,7 @@ goes stale every time one closes.
 
 5. **Where the text is silent or ambiguous, a new reading is a new erratum
    and a `Reading` value in `rules`** with its page cite and stamping
-   condition, named on every record it governs. Never applied silently.
+   condition, stamped on every character it governs. Never applied silently.
 
 6. **A number that indexes a printed table belongs in the transcription; a
    bare procedural bound is a constant beside the code that applies it, with
@@ -154,11 +154,11 @@ gate is verified by breaking it.
 The arrows are non-test imports, and they point one way: `traveller` and
 `dice` import none of the others; `rules` imports `traveller`; `chargen`
 imports `traveller`, `rules` and `dice`; `render` imports `chargen` for the
-character, `traveller` for its values and `rules` for the readings it writes,
-and never `dice`; the command imports `chargen`, `render` and `traveller`, and
-neither `rules` nor `dice`. Only test files import `scripted`. Every edge
-ruled out here that would compile is a depguard rule in `.golangci.yml`; the
-rest would be import cycles.
+character and `traveller` for its values, and neither `rules`, since a note
+names no reading (ADR 0007), nor `dice`; the command imports `chargen`,
+`render` and `traveller`, and neither `rules` nor `dice`. Only test files
+import `scripted`. Every edge ruled out here that would compile is a depguard
+rule in `.golangci.yml`; the rest would be import cycles.
 
 Some tests import more than their package does: `chargen`'s external tests
 import `render`, to hold the goldens to the note the tool writes, and

@@ -31,7 +31,7 @@ const (
 var (
 	newFlags = []string{
 		flagAuto, flagService, flagName, flagCareer, flagSkills,
-		flagMuster, flagReadings, flagOutput, flagForce,
+		flagMuster, flagOutput, flagForce,
 	}
 	batchFlags = []string{
 		flagCount, flagService, flagCareer,
@@ -163,7 +163,7 @@ func TestTopLevelHelpNamesEverySubcommand(t *testing.T) {
 			continue
 		}
 
-		for _, command := range []string{cmdNew, cmdBatch, cmdReadings, cmdVersion} {
+		for _, command := range []string{cmdNew, cmdBatch, cmdVersion} {
 			if !strings.Contains(out.String(), command) {
 				t.Errorf("ctchargen %s: does not name %s", asked, command)
 			}
@@ -183,8 +183,7 @@ func TestAPositionalArgumentIsRefused(t *testing.T) {
 		"new before auto": {cmdNew, wantTypo, flagAuto},
 		cmdBatch:          {cmdBatch, flagCount, "1", wantTypo},
 		// The two that take no word and have no flag set refuse one too,
-		// rather than printing as though nothing had been typed. readings
-		// has no flag set either, but its words are ids.
+		// rather than printing as though nothing had been typed.
 		cmdVersion: {cmdVersion, wantTypo},
 		cmdHelp:    {cmdHelp, wantTypo},
 	} {
@@ -235,7 +234,7 @@ func TestHelpReportsAWriteThatFailed(t *testing.T) {
 	}{
 		"top level":       {[]string{flagHelp}, &failsAfter{}},
 		cmdNew:            {[]string{cmdNew, flagHelp}, &failsAfter{}},
-		cmdReadings:       {[]string{cmdReadings, flagHelp}, &failsAfter{}},
+		cmdVersion:        {[]string{cmdVersion, flagHelp}, &failsAfter{}},
 		"the flags alone": {[]string{cmdNew, flagHelp}, &failsAfter{left: 1}},
 	} {
 		err := run(tc.args, nil, tc.out, io.Discard)
@@ -249,31 +248,27 @@ func TestHelpReportsAWriteThatFailed(t *testing.T) {
 	}
 }
 
-// `version --help` is a help and not the build, and `readings --help` is a
-// help and not the index. The top-level help tells the reader that every
-// command it lists answers --help, and these two have no flag set to answer
-// it for them; answering with the build or the readings breaks that promise
-// for a script that asked what the command takes.
-func TestTheCommandsWithoutFlagsAnswerHelp(t *testing.T) {
+// `version --help` is a help and not the build. The top-level help tells the
+// reader that every command it lists answers --help, and version has no flag
+// set to answer it; answering with the build breaks that promise for a
+// script that asked what the command takes.
+func TestTheCommandWithoutFlagsAnswersHelp(t *testing.T) {
 	t.Parallel()
 
-	for command, want := range map[string]string{
-		cmdVersion:  "usage: ctchargen version\n",
-		cmdReadings: "usage: ctchargen readings [E001 ...]\n",
-	} {
-		for _, asked := range []string{flagHelp, flagShort} {
-			var out strings.Builder
+	const want = "usage: ctchargen version\n"
 
-			err := run([]string{command, asked}, nil, &out, io.Discard)
-			if err != nil {
-				t.Errorf("%s %s: %v", command, asked, err)
+	for _, asked := range []string{flagHelp, flagShort} {
+		var out strings.Builder
 
-				continue
-			}
+		err := run([]string{cmdVersion, asked}, nil, &out, io.Discard)
+		if err != nil {
+			t.Errorf("version %s: %v", asked, err)
 
-			if out.String() != want {
-				t.Errorf("%s %s: not the usage: %q", command, asked, out.String())
-			}
+			continue
+		}
+
+		if out.String() != want {
+			t.Errorf("version %s: not the usage: %q", asked, out.String())
 		}
 	}
 }
@@ -302,7 +297,6 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 		"top level, -help": {"-help", wantTypo},
 		cmdHelp:            {cmdHelp, wantTypo},
 		cmdVersion:         {cmdVersion, flagHelp, wantTypo},
-		cmdReadings:        {cmdReadings, flagHelp, wantTypo},
 		cmdNew:             {cmdNew, flagHelp, wantTypo},
 		cmdBatch:           {cmdBatch, flagHelp, wantTypo},
 	} {

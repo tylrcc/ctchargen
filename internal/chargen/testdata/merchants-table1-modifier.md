@@ -89,14 +89,14 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
  28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Advanced Education Table: rolled 2
- 30. Mechanical-1 (from 29) [E002]
+ 30. Mechanical-1 (from 29)
  31. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  32. Service Skills Table: rolled 3
  33. weapon of expertise, specified immediately (p. 11): policy chose Halberd from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 34. Blade Combat: Halberd-1 (from 32) [E002]
+ 34. Blade Combat: Halberd-1 (from 32)
  35. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  36. Personal Development Table: rolled 3
- 37. Endurance +1, 9 to 10 (from 36) [E002]
+ 37. Endurance +1, 9 to 10 (from 36)
  38. reenlistment: rolled 6+5 = 11 against 4+, made
  39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  40. reenlisted for term 2 (from 38)
@@ -113,7 +113,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
  48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  49. Advanced Education Table: rolled 6
- 50. Medical-1 (from 49) [E002]
+ 50. Medical-1 (from 49)
  51. reenlistment: rolled 3+4 = 7 against 4+, made
  52. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  53. reenlisted for term 3 (from 51)
@@ -130,10 +130,10 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
  61. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  62. Service Skills Table: rolled 2
- 63. Vacc Suit-1 (from 62) [E002]
+ 63. Vacc Suit-1 (from 62)
  64. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  65. Personal Development Table: rolled 4
- 66. Strength +1, 10 to 11 (from 65) [E002]
+ 66. Strength +1, 10 to 11 (from 65)
  67. reenlistment: rolled 5+5 = 10 against 4+, made
  68. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  69. reenlisted for term 4 (from 67)
@@ -150,10 +150,10 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
  77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  78. Advanced Education Table: rolled 3
- 79. Electronic-1 (from 78) [E002]
+ 79. Electronic-1 (from 78)
  80. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  81. Service Skills Table: rolled 5
- 82. Electronic-2 (from 81) [E002]
+ 82. Electronic-2 (from 81)
  83. reenlistment: rolled 6+5 = 11 against 4+, made
  84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  85. reenlisted for term 5 (from 83)
@@ -161,11 +161,11 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 **86. aging, end of term 4 (pp. 7-9)**
 
  87. aging, Strength: rolled 3+4 = 7 against 8+, missed
- 88. Strength -1, 11 to 10 (from 87) [E006 E007]
+ 88. Strength -1, 11 to 10 (from 87)
  89. aging, Dexterity: rolled 6+6 = 12 against 7+, made
- 90. Dexterity holds (from 89) [E006 E007]
+ 90. Dexterity holds (from 89)
  91. aging, Endurance: rolled 6+3 = 9 against 8+, made
- 92. Endurance holds (from 91) [E006 E007]
+ 92. Endurance holds (from 91)
 
 **93. term 5 (pp. 5-7)**
 
@@ -180,10 +180,10 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
 101. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 102. Personal Development Table: rolled 4
-103. Strength +1, 10 to 11 (from 102) [E002]
+103. Strength +1, 10 to 11 (from 102)
 104. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 105. Advanced Education Table: rolled 5
-106. Gunnery-1 (from 105) [E002]
+106. Gunnery-1 (from 105)
 107. reenlistment: rolled 6+2 = 8 against 4+, made
 108. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 109. reenlisted for term 6 (from 107)
@@ -191,16 +191,16 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 **110. aging, end of term 5 (pp. 7-9)**
 
 111. aging, Strength: rolled 4+1 = 5 against 8+, missed
-112. Strength -1, 11 to 10 (from 111) [E006 E007]
+112. Strength -1, 11 to 10 (from 111)
 113. aging, Dexterity: rolled 3+6 = 9 against 7+, made
-114. Dexterity holds (from 113) [E006 E007]
+114. Dexterity holds (from 113)
 115. aging, Endurance: rolled 6+6 = 12 against 8+, made
-116. Endurance holds (from 115) [E006 E007]
+116. Endurance holds (from 115)
 
 **117. term 6 (pp. 5-7)**
 
 118. survival: rolled 3+1 = 4 against 5+, missed
-119. died in term 6, aged 42 (from 118) [E004]
+119. died in term 6, aged 42 (from 118)
 
 ---
 

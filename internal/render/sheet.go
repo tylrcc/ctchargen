@@ -11,9 +11,6 @@ import (
 // writeSheet writes the sheet the way Book 1 summarises a character: the
 // UPP line, then skills and possessions, as p. 25 does for Jamison, and the
 // service a term at a time.
-//
-// Implements: The errata are on the generation record and not the sheet
-// [Generation record].
 func writeSheet(out *strings.Builder, r view) {
 	fmt.Fprintf(out, "# %s\n\n%s\n\n", heading(r), summary(r))
 	fmt.Fprintf(out, "%s\n\n", headline(r))
@@ -21,11 +18,6 @@ func writeSheet(out *strings.Builder, r view) {
 	writeSection(out, "Skills", skillLines(r))
 	writeSection(out, "Possessions", possessionLines(r))
 	writeSection(out, "Service record", serviceLines(r))
-
-	// The errata are deliberately not here. They are on the generation
-	// record below, where an id beside the outcome it governed is how a
-	// reading is checked against the page. On the sheet a player reads they
-	// are codes he cannot expand and does not need.
 }
 
 // age reads as whole years, or years and months where a medical crisis

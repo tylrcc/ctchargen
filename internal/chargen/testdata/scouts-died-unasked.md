@@ -58,12 +58,12 @@ UPP 673735, age 22, Scouts, 1 term, killed by the survival throw
 
 **18. rank and service skills (p. 23)**
 
- 19. Pilot-1 [E005]
+ 19. Pilot-1
 
 **20. term 1 (pp. 5-7)**
 
  21. survival: rolled 1+3 = 4 against 7+, missed
- 22. died in term 1, aged 22 (from 21) [E004]
+ 22. died in term 1, aged 22 (from 21)
 
 ---
 

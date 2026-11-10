@@ -73,10 +73,10 @@ UPP A68AAC, age 22, Other, 1 term, baron/baroness, forced out
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 2
- 24. Forgery-1 (from 23) [E002]
+ 24. Forgery-1 (from 23)
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 3
- 27. Electronic-1 (from 26) [E002]
+ 27. Electronic-1 (from 26)
  28. reenlistment: rolled 2+1 = 3 against 5+, missed
  29. left the service after term 1: reenlistment denied (from 28)
 

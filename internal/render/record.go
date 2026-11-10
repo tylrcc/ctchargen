@@ -137,10 +137,6 @@ func outcomeLine(event entry) string {
 		line += fmt.Sprintf(" (from %d)", event.Because)
 	}
 
-	if len(event.Errata) > 0 {
-		line += " [" + strings.Join(event.Errata, " ") + "]"
-	}
-
 	return line
 }
 

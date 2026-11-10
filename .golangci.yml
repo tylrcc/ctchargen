@@ -81,11 +81,13 @@ linters:
               desc: the command drives the engine; the tables are chargen's to consult
             - pkg: github.com/philoserf/ctchargen/internal/dice
               desc: the command drives the engine; the dice stream is chargen's to consume
-        render-does-not-roll:
+        render-writes-the-character:
           files: ["**/render/*.go"]
           deny:
             - pkg: github.com/philoserf/ctchargen/internal/dice
               desc: the note is written from the character; the dice are already thrown
+            - pkg: github.com/philoserf/ctchargen/internal/rules
+              desc: the note names no reading; the readings are the authority's record, not the referee's (ADR 0007)
         dice-imports-nothing:
           files: ["**/dice/*.go"]
           deny:

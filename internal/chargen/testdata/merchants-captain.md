@@ -103,13 +103,13 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
  28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  29. Advanced Education Table (education 8+): rolled 3
- 30. Engineer-1 (from 29) [E002]
+ 30. Engineer-1 (from 29)
  31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  32. Advanced Education Table: rolled 4
- 33. Navigation-1 (from 32) [E002]
+ 33. Navigation-1 (from 32)
  34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Service Skills Table: rolled 2
- 36. Vacc Suit-1 (from 35) [E002]
+ 36. Vacc Suit-1 (from 35)
  37. reenlistment: rolled 2+3 = 5 against 4+, made
  38. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  39. reenlisted for term 2 (from 37)
@@ -126,7 +126,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
  47. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  48. Personal Development Table: rolled 1
- 49. Strength +1, 8 to 9 (from 48) [E002]
+ 49. Strength +1, 8 to 9 (from 48)
  50. reenlistment: rolled 3+2 = 5 against 4+, made
  51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  52. reenlisted for term 3 (from 50)
@@ -143,10 +143,10 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
  60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  61. Advanced Education Table (education 8+): rolled 2
- 62. Navigation-2 (from 61) [E002]
+ 62. Navigation-2 (from 61)
  63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  64. Advanced Education Table: rolled 2
- 65. Mechanical-1 (from 64) [E002]
+ 65. Mechanical-1 (from 64)
  66. reenlistment: rolled 1+4 = 5 against 4+, made
  67. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  68. reenlisted for term 4 (from 66)
@@ -164,10 +164,10 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
  76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  77. Service Skills Table: rolled 4
  78. weapon of expertise, specified immediately (p. 11): policy chose Laser Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 79. Gun Combat: Laser Carbine-1 (from 77) [E002]
+ 79. Gun Combat: Laser Carbine-1 (from 77)
  80. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  81. Personal Development Table: rolled 6
- 82. Bribery-1 (from 81) [E002]
+ 82. Bribery-1 (from 81)
  83. reenlistment: rolled 4+2 = 6 against 4+, made
  84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  85. reenlisted for term 5 (from 83)
@@ -175,11 +175,11 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 **86. aging, end of term 4 (pp. 7-9)**
 
  87. aging, Strength: rolled 1+6 = 7 against 8+, missed
- 88. Strength -1, 9 to 8 (from 87) [E006 E007]
+ 88. Strength -1, 9 to 8 (from 87)
  89. aging, Dexterity: rolled 1+1 = 2 against 7+, missed
- 90. Dexterity -1, 4 to 3 (from 89) [E006 E007]
+ 90. Dexterity -1, 4 to 3 (from 89)
  91. aging, Endurance: rolled 5+4 = 9 against 8+, made
- 92. Endurance holds (from 91) [E006 E007]
+ 92. Endurance holds (from 91)
 
 **93. term 5 (pp. 5-7)**
 
@@ -193,7 +193,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Advanced Education Table (education 8+): rolled 2
-102. Navigation-3 (from 101) [E002]
+102. Navigation-3 (from 101)
 103. reenlistment: rolled 6+1 = 7 against 4+, made
 104. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 105. reenlisted for term 6 (from 103)
@@ -201,11 +201,11 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 **106. aging, end of term 5 (pp. 7-9)**
 
 107. aging, Strength: rolled 5+1 = 6 against 8+, missed
-108. Strength -1, 8 to 7 (from 107) [E006 E007]
+108. Strength -1, 8 to 7 (from 107)
 109. aging, Dexterity: rolled 5+4 = 9 against 7+, made
-110. Dexterity holds (from 109) [E006 E007]
+110. Dexterity holds (from 109)
 111. aging, Endurance: rolled 6+4 = 10 against 8+, made
-112. Endurance holds (from 111) [E006 E007]
+112. Endurance holds (from 111)
 
 **113. term 6 (pp. 5-7)**
 
@@ -220,11 +220,11 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 121. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 122. Advanced Education Table: rolled 2
-123. Mechanical-2 (from 122) [E002]
+123. Mechanical-2 (from 122)
 124. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 125. Service Skills Table: rolled 3
 126. weapon of expertise, specified immediately (p. 11): policy chose Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-127. Blade Combat: Sword-1 (from 125) [E002]
+127. Blade Combat: Sword-1 (from 125)
 128. reenlistment: rolled 6+1 = 7 against 4+, made
 129. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 130. reenlisted for term 7 (from 128)
@@ -232,11 +232,11 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 **131. aging, end of term 6 (pp. 7-9)**
 
 132. aging, Strength: rolled 4+4 = 8 against 8+, made
-133. Strength holds (from 132) [E006 E007]
+133. Strength holds (from 132)
 134. aging, Dexterity: rolled 3+3 = 6 against 7+, missed
-135. Dexterity -1, 3 to 2 (from 134) [E006 E007]
+135. Dexterity -1, 3 to 2 (from 134)
 136. aging, Endurance: rolled 6+3 = 9 against 8+, made
-137. Endurance holds (from 136) [E006 E007]
+137. Endurance holds (from 136)
 
 **138. term 7 (pp. 5-7)**
 
@@ -250,21 +250,21 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 145. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 146. Personal Development Table: rolled 4
-147. Strength +1, 7 to 8 (from 146) [E002]
+147. Strength +1, 7 to 8 (from 146)
 148. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 149. Advanced Education Table (education 8+): rolled 2
-150. Navigation-4 (from 149) [E002]
+150. Navigation-4 (from 149)
 151. reenlistment: rolled 1+5 = 6 against 4+, made
 152. left the service after term 7 and is retired: retire (from 151)
 
 **153. aging, end of term 7 (pp. 7-9)**
 
 154. aging, Strength: rolled 4+5 = 9 against 8+, made
-155. Strength holds (from 154) [E006 E007]
+155. Strength holds (from 154)
 156. aging, Dexterity: rolled 6+1 = 7 against 7+, made
-157. Dexterity holds (from 156) [E006 E007]
+157. Dexterity holds (from 156)
 158. aging, Endurance: rolled 2+3 = 5 against 8+, missed
-159. Endurance -1, 6 to 5 (from 158) [E006 E007]
+159. Endurance -1, 6 to 5 (from 158)
 
 **160. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 

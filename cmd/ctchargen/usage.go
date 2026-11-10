@@ -13,7 +13,7 @@ import (
 // commandList is the subcommands in the order run's switch takes them. Both
 // messages that name them read it here, so the two cannot come to disagree
 // about the order again.
-const commandList = "new|batch|readings|version"
+const commandList = "new|batch|version"
 
 // The usage line of each subcommand: what it takes that is not a flag.
 //
@@ -25,20 +25,18 @@ const commandList = "new|batch|readings|version"
 // writeFlags prints from the set itself is what carries the detail, and it
 // cannot go stale.
 const (
-	newUsage      = "new [flags]"
-	batchUsage    = "batch --count N [flags]"
-	readingsUsage = "readings [E001 ...]"
-	versionUsage  = "version"
+	newUsage     = "new [flags]"
+	batchUsage   = "batch --count N [flags]"
+	versionUsage = "version"
 )
 
 // topLevelUsage answers `ctchargen --help`: what the commands are, and where
 // to ask about one of them.
 const topLevelUsage = "usage: ctchargen <command> [flags]\n" +
 	"\n" +
-	"  new       generate one character, asking at every choice unless --auto\n" +
-	"  batch     generate many characters, each decided by the policy\n" +
-	"  readings  list the readings, or write the ones named in full\n" +
-	"  version   write the build\n" +
+	"  new      generate one character, asking at every choice unless --auto\n" +
+	"  batch    generate many characters, each decided by the policy\n" +
+	"  version  write the build\n" +
 	"\n" +
 	"Run `ctchargen <command> --help` for that command's flags.\n"
 
@@ -58,24 +56,6 @@ const shortFlag = 1
 // writeTopLevelHelp answers --help before a subcommand is named.
 func writeTopLevelHelp(out io.Writer) error {
 	return writeUsageText(out, topLevelUsage)
-}
-
-// answerHelp answers --help for a command with no flag set, version or
-// readings, reporting whether it was asked; when it was not, the error is
-// nil and the command goes on. Such a command cannot go through writeHelp:
-// that would print the usage line, a blank line, and then nothing at all. A
-// word after the help flag is refused rather than dropped with the help
-// (#84).
-func answerHelp(args []string, out io.Writer, line string) (bool, error) {
-	if len(args) == 0 || !isHelpFlag(args[0]) {
-		return false, nil
-	}
-
-	if len(args) > 1 {
-		return true, fmt.Errorf("%w: %s; %s", errUsage, line, helpTakesNoArguments(args[1]))
-	}
-
-	return true, writeUsageText(out, "usage: ctchargen "+line+"\n")
 }
 
 // helpTakesNoArguments is the refusal of a word after a help flag, wherever
@@ -104,7 +84,7 @@ func writeUsageText(out io.Writer, text string) error {
 //
 // A word after a help flag is refused, not discarded, the same as everywhere
 // else a command meets an unexpected word (#69): `new --help junk`, `batch
-// --help junk`, `readings --help junk` and `version --help junk` refuse it as
+// --help junk` and `version --help junk` refuse it as
 // `ctchargen help junk` does (#84). The flag package returns ErrHelp before a
 // command reaches its own NArg check, so the word has to be looked at here.
 //

@@ -76,7 +76,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 
  17. the Navy rejected him (from 16)
  18. submit to the draft (p. 5): policy chose yes from yes, no
  19. draft: rolled 5
- 20. drafted into the Merchants (from 19) [E001]
+ 20. drafted into the Merchants (from 19)
 
 **21. term 1 (pp. 5-7)**
 
@@ -87,10 +87,10 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 
 
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  26. Advanced Education Table: rolled 2
- 27. Mechanical-1 (from 26) [E002]
+ 27. Mechanical-1 (from 26)
  28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  29. Service Skills Table: rolled 6
- 30. Jack of all Trades-1 (from 29) [E002]
+ 30. Jack of all Trades-1 (from 29)
  31. reenlistment: rolled 6+1 = 7 against 4+, made
  32. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  33. reenlisted for term 2 (from 31)
@@ -110,13 +110,13 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 
 
  44. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  45. Personal Development Table: rolled 1
- 46. Strength +1, 7 to 8 (from 45) [E002]
+ 46. Strength +1, 7 to 8 (from 45)
  47. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  48. Advanced Education Table: rolled 2
- 49. Mechanical-2 (from 48) [E002]
+ 49. Mechanical-2 (from 48)
  50. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  51. Service Skills Table: rolled 5
- 52. Electronic-1 (from 51) [E002]
+ 52. Electronic-1 (from 51)
  53. reenlistment: rolled 4+6 = 10 against 4+, made
  54. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  55. reenlisted for term 3 (from 53)
@@ -134,7 +134,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 
  63. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  64. Personal Development Table: rolled 5
  65. weapon of expertise, specified immediately (p. 11): policy chose Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 66. Blade Combat: Cudgel-1 (from 64) [E002]
+ 66. Blade Combat: Cudgel-1 (from 64)
  67. reenlistment: rolled 4+2 = 6 against 4+, made
  68. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  69. reenlisted for term 4 (from 67)
@@ -151,18 +151,18 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused him), 
 
  77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  78. Advanced Education Table: rolled 6
- 79. Medical-1 (from 78) [E002]
+ 79. Medical-1 (from 78)
  80. reenlistment: rolled 1+2 = 3 against 4+, missed
  81. left the service after term 4: reenlistment denied (from 80)
 
 **82. aging, end of term 4 (pp. 7-9)**
 
  83. aging, Strength: rolled 5+1 = 6 against 8+, missed
- 84. Strength -1, 8 to 7 (from 83) [E006 E007]
+ 84. Strength -1, 8 to 7 (from 83)
  85. aging, Dexterity: rolled 4+1 = 5 against 7+, missed
- 86. Dexterity -1, 6 to 5 (from 85) [E006 E007]
+ 86. Dexterity -1, 6 to 5 (from 85)
  87. aging, Endurance: rolled 3+6 = 9 against 8+, made
- 88. Endurance holds (from 87) [E006 E007]
+ 88. Endurance holds (from 87)
 
 **89. mustering out, 5 rolls (pp. 7, 9, 21-23)**
 

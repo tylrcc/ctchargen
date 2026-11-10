@@ -18,17 +18,20 @@ import (
 // so it is accepted here and held by TestEveryDeclaredFlagIsListed instead.
 // Typed out rather than read back, for the reason usage_test.go gives.
 const (
-	baseForce    = "force bool false"
-	baseOutput   = "o string "
-	baseReadings = "readings bool false"
+	baseForce  = "force bool false"
+	baseOutput = "o string "
 )
 
 var cliBaseline = map[string][]string{
 	cmdNew: {
 		"auto bool false", "career string serve", baseForce,
-		"muster string cash", "name string ", baseOutput, baseReadings,
+		"muster string cash", "name string ", baseOutput,
 		"service string ", "skills string advanced",
 	},
+	// new's "readings bool false" was removed on purpose before v1.0.0, with
+	// the readings subcommand (#460): the readings are the authority's
+	// record, not the referee's (ADR 0007), and a note names no erratum for
+	// the flag to explain.
 	// batch's "auto bool false" was removed on purpose, before v1.0.0
 	// freezes the CLI: a batch is always decided by the policy, and the flag
 	// said nothing (#336). Like seed and answers before it (#216), it went
@@ -85,6 +88,32 @@ func TestEveryBaselineFlagIsStillDeclared(t *testing.T) {
 	}
 }
 
+// The readings are the authority's record, not the referee's (ADR 0007), so
+// the command line has no readings subcommand and no --readings flag (#460).
+// Each is refused as any unknown word is, with exit status 1.
+func TestTheReadingsAreNotOnTheCommandLine(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range map[string]struct {
+		args []string
+		says string
+	}{
+		"the readings subcommand": {[]string{"readings"}, `unknown command "readings"`},
+		"new --readings":          {[]string{cmdNew, flagAuto, "--readings"}, "-readings"},
+	} {
+		err := run(tc.args, nil, io.Discard, io.Discard)
+
+		switch {
+		case err == nil:
+			t.Errorf("%s: run(%v) was accepted", name, tc.args)
+		case exitStatus(err) != 1:
+			t.Errorf("%s: exit status %d, want 1 (%v)", name, exitStatus(err), err)
+		case !strings.Contains(err.Error(), tc.says):
+			t.Errorf("%s: error %q does not say %q", name, err, tc.says)
+		}
+	}
+}
+
 // The exit status is 0 for a run that did what it was asked and 1 for one
 // that did not (#121), whichever kind of failure it was.
 func TestTheExitStatusIsZeroOrOne(t *testing.T) {
@@ -104,13 +133,11 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 		err  error
 		want int
 	}{
-		"version":    {run([]string{cmdVersion}, nil, io.Discard, io.Discard), 0},
-		"help":       {run([]string{cmdNew, flagHelp}, nil, io.Discard, io.Discard), 0},
-		"usage":      {run(nil, nil, io.Discard, io.Discard), 1},
-		"search":     {searched, 1},
-		"a death":    {died, 0},
-		"readings":   {run([]string{cmdReadings}, nil, io.Discard, io.Discard), 0},
-		"no reading": {run([]string{cmdReadings, "E099"}, nil, io.Discard, io.Discard), 1},
+		"version": {run([]string{cmdVersion}, nil, io.Discard, io.Discard), 0},
+		"help":    {run([]string{cmdNew, flagHelp}, nil, io.Discard, io.Discard), 0},
+		"usage":   {run(nil, nil, io.Discard, io.Discard), 1},
+		"search":  {searched, 1},
+		"a death": {died, 0},
 	} {
 		if got := exitStatus(tc.err); got != tc.want {
 			t.Errorf("%s: exit status %d, want %d (%v)", name, got, tc.want, tc.err)

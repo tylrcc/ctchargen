@@ -6,12 +6,12 @@ import "fmt"
 //
 // Every place the held text is silent, ambiguous, or self-contradictory has
 // a reading recorded with its page cite and its stamping condition, and the
-// reading is named on every record it governed. A reading applied with no
-// recorded reading and no stamp is the one defect no comparison between the
-// readings and the code can find.
+// reading is stamped on every character it governed. A reading applied with
+// no recorded reading and no stamp is the one defect no comparison between
+// the readings and the code can find.
 //
-// An erratum names one decision for good: never reused, never renumbered,
-// and a withdrawn reading keeps its constant (ADR 0004).
+// An erratum is the authority's own name for a reading, and no note carries
+// it: the readings are the authority's record, not the referee's (ADR 0007).
 //
 // The rules package declares one reading per entry of Errata, with its title
 // and its prose: the compiler holds the readings to Errata's length, so a

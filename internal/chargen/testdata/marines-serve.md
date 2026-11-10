@@ -75,7 +75,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 
 **18. rank and service skills (p. 23)**
 
- 19. Cutlass-1 [E005]
+ 19. Cutlass-1
 
 **20. term 1 (pp. 5-7)**
 
@@ -89,10 +89,10 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 
  27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  28. Advanced Education Table (education 8+): rolled 2
- 29. Tactics-1 (from 28) [E002]
+ 29. Tactics-1 (from 28)
  30. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  31. Advanced Education Table: rolled 1
- 32. ATV-1 (from 31) [E002]
+ 32. ATV-1 (from 31)
  33. reenlistment: rolled 3+5 = 8 against 6+, made
  34. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  35. reenlisted for term 2 (from 33)
@@ -113,10 +113,10 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 
  47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  48. Service Skills Table: rolled 1
- 49. ATV-2 (from 48) [E002]
+ 49. ATV-2 (from 48)
  50. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  51. Personal Development Table: rolled 3
- 52. Endurance +1, 8 to 9 (from 51) [E002]
+ 52. Endurance +1, 8 to 9 (from 51)
  53. reenlistment: rolled 5+4 = 9 against 6+, made
  54. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  55. reenlisted for term 3 (from 53)
@@ -133,11 +133,11 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, forced out
 
  63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  64. Advanced Education Table (education 8+): rolled 2
- 65. Tactics-2 (from 64) [E002]
+ 65. Tactics-2 (from 64)
  66. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  67. Advanced Education Table: rolled 6
  68. weapon of expertise, specified immediately (p. 11): policy chose Laser Rifle from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 69. Gun Combat: Laser Rifle-1 (from 67) [E002]
+ 69. Gun Combat: Laser Rifle-1 (from 67)
  70. reenlistment: rolled 3+1 = 4 against 6+, missed
  71. left the service after term 3: reenlistment denied (from 70)
 

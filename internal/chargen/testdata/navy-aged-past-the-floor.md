@@ -105,16 +105,16 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
  28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  29. Advanced Education Table (education 8+): rolled 6
- 30. Administration-1 (from 29) [E002]
+ 30. Administration-1 (from 29)
  31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  32. Advanced Education Table: rolled 6
- 33. Jack of all Trades-1 (from 32) [E002]
+ 33. Jack of all Trades-1 (from 32)
  34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Service Skills Table: rolled 6
- 36. Gunnery-1 (from 35) [E002]
+ 36. Gunnery-1 (from 35)
  37. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  38. Personal Development Table: rolled 6
- 39. Education +1, 10 to 11 (from 38) [E002]
+ 39. Education +1, 10 to 11 (from 38)
  40. reenlistment: rolled 6+3 = 9 against 6+, made
  41. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  42. reenlisted for term 2 (from 40)
@@ -131,10 +131,10 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
  50. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  51. Advanced Education Table (education 8+): rolled 6
- 52. Administration-2 (from 51) [E002]
+ 52. Administration-2 (from 51)
  53. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  54. Advanced Education Table: rolled 6
- 55. Jack of all Trades-2 (from 54) [E002]
+ 55. Jack of all Trades-2 (from 54)
  56. reenlistment: rolled 6+6 = 12 against 6+, made
  57. a 12 exactly: the service requires another term (from 56)
 
@@ -150,10 +150,10 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
  65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  66. Service Skills Table: rolled 1
- 67. Ship's Boat-1 (from 66) [E002]
+ 67. Ship's Boat-1 (from 66)
  68. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Personal Development Table: rolled 6
- 70. Education +1, 11 to 12 (from 69) [E002]
+ 70. Education +1, 11 to 12 (from 69)
  71. reenlistment: rolled 6+5 = 11 against 6+, made
  72. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  73. reenlisted for term 4 (from 71)
@@ -171,21 +171,21 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
  82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  83. Advanced Education Table (education 8+): rolled 6
- 84. Administration-3 (from 83) [E002]
+ 84. Administration-3 (from 83)
  85. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  86. Advanced Education Table: rolled 6
- 87. Jack of all Trades-3 (from 86) [E002]
+ 87. Jack of all Trades-3 (from 86)
  88. reenlistment: rolled 6+6 = 12 against 6+, made
  89. a 12 exactly: the service requires another term (from 88)
 
 **90. aging, end of term 4 (pp. 7-9)**
 
  91. aging, Strength: rolled 3+6 = 9 against 8+, made
- 92. Strength holds (from 91) [E006 E007]
+ 92. Strength holds (from 91)
  93. aging, Dexterity: rolled 6+6 = 12 against 7+, made
- 94. Dexterity holds (from 93) [E006 E007]
+ 94. Dexterity holds (from 93)
  95. aging, Endurance: rolled 6+6 = 12 against 8+, made
- 96. Endurance holds (from 95) [E006 E007]
+ 96. Endurance holds (from 95)
 
 **97. term 5 (pp. 5-7)**
 
@@ -200,10 +200,10 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
 105. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 106. Service Skills Table: rolled 6
-107. Gunnery-2 (from 106) [E002]
+107. Gunnery-2 (from 106)
 108. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 109. Personal Development Table: rolled 6
-110. Education +1, 12 to 13 (from 109) [E002]
+110. Education +1, 12 to 13 (from 109)
 111. reenlistment: rolled 6+2 = 8 against 6+, made
 112. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 113. reenlisted for term 6 (from 111)
@@ -211,23 +211,23 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 **114. aging, end of term 5 (pp. 7-9)**
 
 115. aging, Strength: rolled 1+6 = 7 against 8+, missed
-116. Strength -1, 10 to 9 (from 115) [E006 E007]
+116. Strength -1, 10 to 9 (from 115)
 117. aging, Dexterity: rolled 6+2 = 8 against 7+, made
-118. Dexterity holds (from 117) [E006 E007]
+118. Dexterity holds (from 117)
 119. aging, Endurance: rolled 2+5 = 7 against 8+, missed
-120. Endurance -1, 7 to 6 (from 119) [E006 E007]
+120. Endurance -1, 7 to 6 (from 119)
 
 **121. term 6 (pp. 5-7)**
 
 122. survival: rolled 4+6 +2 = 12 against 5+, made
 123. survived term 6 (from 122)
-124. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 6 [E013]
+124. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 6
 
 **125. skills and training (pp. 6, 11)**
 
 126. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 127. Advanced Education Table (education 8+): rolled 6
-128. Administration-4 (from 127) [E002]
+128. Administration-4 (from 127)
 129. reenlistment: rolled 1+6 = 7 against 6+, made
 130. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 131. reenlisted for term 7 (from 129)
@@ -235,204 +235,204 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 **132. aging, end of term 6 (pp. 7-9)**
 
 133. aging, Strength: rolled 2+6 = 8 against 8+, made
-134. Strength holds (from 133) [E006 E007]
+134. Strength holds (from 133)
 135. aging, Dexterity: rolled 6+6 = 12 against 7+, made
-136. Dexterity holds (from 135) [E006 E007]
+136. Dexterity holds (from 135)
 137. aging, Endurance: rolled 6+6 = 12 against 8+, made
-138. Endurance holds (from 137) [E006 E007]
+138. Endurance holds (from 137)
 
 **139. term 7 (pp. 5-7)**
 
 140. survival: rolled 6+5 +2 = 13 against 5+, made
 141. survived term 7 (from 140)
-142. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 7 [E013]
+142. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 7
 
 **143. skills and training (pp. 6, 11)**
 
 144. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 145. Advanced Education Table: rolled 6
-146. Jack of all Trades-4 (from 145) [E002]
+146. Jack of all Trades-4 (from 145)
 147. reenlistment: rolled 6+6 = 12 against 6+, made
 148. a 12 exactly: the service requires another term (from 147)
 
 **149. aging, end of term 7 (pp. 7-9)**
 
 150. aging, Strength: rolled 6+2 = 8 against 8+, made
-151. Strength holds (from 150) [E006 E007]
+151. Strength holds (from 150)
 152. aging, Dexterity: rolled 4+6 = 10 against 7+, made
-153. Dexterity holds (from 152) [E006 E007]
+153. Dexterity holds (from 152)
 154. aging, Endurance: rolled 4+3 = 7 against 8+, missed
-155. Endurance -1, 6 to 5 (from 154) [E006 E007]
+155. Endurance -1, 6 to 5 (from 154)
 
 **156. term 8 (pp. 5-7)**
 
 157. survival: rolled 2+6 +2 = 10 against 5+, made
 158. survived term 8 (from 157)
-159. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 8 [E013]
+159. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 8
 
 **160. skills and training (pp. 6, 11)**
 
 161. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 162. Service Skills Table: rolled 6
-163. Gunnery-3 (from 162) [E002]
+163. Gunnery-3 (from 162)
 164. reenlistment: rolled 6+6 = 12 against 6+, made
-165. a 12 exactly: the service requires another term (from 164) [E003]
+165. a 12 exactly: the service requires another term (from 164)
 
 **166. aging, end of term 8 (pp. 7-9)**
 
 167. aging, Strength: rolled 1+1 = 2 against 9+, missed
-168. Strength -1, 9 to 8 (from 167) [E006 E007]
+168. Strength -1, 9 to 8 (from 167)
 169. aging, Dexterity: rolled 6+4 = 10 against 8+, made
-170. Dexterity holds (from 169) [E006 E007]
+170. Dexterity holds (from 169)
 171. aging, Endurance: rolled 6+6 = 12 against 9+, made
-172. Endurance holds (from 171) [E006 E007]
+172. Endurance holds (from 171)
 
 **173. term 9 (pp. 5-7)**
 
 174. survival: rolled 6+6 +2 = 14 against 5+, made
 175. survived term 9 (from 174)
-176. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 9 [E013]
+176. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 9
 
 **177. skills and training (pp. 6, 11)**
 
 178. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 179. Personal Development Table: rolled 5
-180. Intelligence +1, 10 to 11 (from 179) [E002]
+180. Intelligence +1, 10 to 11 (from 179)
 181. reenlistment: rolled 6+6 = 12 against 6+, made
-182. a 12 exactly: the service requires another term (from 181) [E003]
+182. a 12 exactly: the service requires another term (from 181)
 
 **183. aging, end of term 9 (pp. 7-9)**
 
 184. aging, Strength: rolled 6+3 = 9 against 9+, made
-185. Strength holds (from 184) [E006 E007]
+185. Strength holds (from 184)
 186. aging, Dexterity: rolled 3+6 = 9 against 8+, made
-187. Dexterity holds (from 186) [E006 E007]
+187. Dexterity holds (from 186)
 188. aging, Endurance: rolled 6+6 = 12 against 9+, made
-189. Endurance holds (from 188) [E006 E007]
+189. Endurance holds (from 188)
 
 **190. term 10 (pp. 5-7)**
 
 191. survival: rolled 4+6 +2 = 12 against 5+, made
 192. survived term 10 (from 191)
-193. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 10 [E013]
+193. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 10
 
 **194. skills and training (pp. 6, 11)**
 
 195. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 196. Advanced Education Table (education 8+): rolled 6
-197. Administration-5 (from 196) [E002]
+197. Administration-5 (from 196)
 198. reenlistment: rolled 6+6 = 12 against 6+, made
-199. a 12 exactly: the service requires another term (from 198) [E003]
+199. a 12 exactly: the service requires another term (from 198)
 
 **200. aging, end of term 10 (pp. 7-9)**
 
 201. aging, Strength: rolled 4+6 = 10 against 9+, made
-202. Strength holds (from 201) [E006 E007]
+202. Strength holds (from 201)
 203. aging, Dexterity: rolled 6+6 = 12 against 8+, made
-204. Dexterity holds (from 203) [E006 E007]
+204. Dexterity holds (from 203)
 205. aging, Endurance: rolled 3+1 = 4 against 9+, missed
-206. Endurance -1, 5 to 4 (from 205) [E006 E007]
+206. Endurance -1, 5 to 4 (from 205)
 
 **207. term 11 (pp. 5-7)**
 
 208. survival: rolled 1+2 +2 = 5 against 5+, made
 209. survived term 11 (from 208)
-210. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 11 [E013]
+210. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 11
 
 **211. skills and training (pp. 6, 11)**
 
 212. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 213. Advanced Education Table: rolled 2
-214. Mechanical-1 (from 213) [E002]
+214. Mechanical-1 (from 213)
 215. reenlistment: rolled 6+6 = 12 against 6+, made
-216. a 12 exactly: the service requires another term (from 215) [E003]
+216. a 12 exactly: the service requires another term (from 215)
 
 **217. aging, end of term 11 (pp. 7-9)**
 
 218. aging, Strength: rolled 6+6 = 12 against 9+, made
-219. Strength holds (from 218) [E006 E007]
+219. Strength holds (from 218)
 220. aging, Dexterity: rolled 5+5 = 10 against 8+, made
-221. Dexterity holds (from 220) [E006 E007]
+221. Dexterity holds (from 220)
 222. aging, Endurance: rolled 6+2 = 8 against 9+, missed
-223. Endurance -1, 4 to 3 (from 222) [E006 E007]
+223. Endurance -1, 4 to 3 (from 222)
 
 **224. term 12 (pp. 5-7)**
 
 225. survival: rolled 5+6 +2 = 13 against 5+, made
 226. survived term 12 (from 225)
-227. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 12 [E013]
+227. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 12
 
 **228. skills and training (pp. 6, 11)**
 
 229. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 230. Service Skills Table: rolled 6
-231. Gunnery-4 (from 230) [E002]
+231. Gunnery-4 (from 230)
 232. reenlistment: rolled 6+6 = 12 against 6+, made
-233. a 12 exactly: the service requires another term (from 232) [E003]
+233. a 12 exactly: the service requires another term (from 232)
 
 **234. aging, end of term 12 (pp. 7-9)**
 
 235. aging, Strength: rolled 6+6 = 12 against 9+, made
-236. Strength holds (from 235) [E006 E007]
+236. Strength holds (from 235)
 237. aging, Dexterity: rolled 6+6 = 12 against 9+, made
-238. Dexterity holds (from 237) [E006 E007]
+238. Dexterity holds (from 237)
 239. aging, Endurance: rolled 2+6 = 8 against 9+, missed
-240. Endurance -2, 3 to 1 (from 239) [E006 E007]
+240. Endurance -2, 3 to 1 (from 239)
 241. aging, Intelligence: rolled 6+6 = 12 against 9+, made
-242. Intelligence holds (from 241) [E006 E007]
+242. Intelligence holds (from 241)
 
 **243. term 13 (pp. 5-7)**
 
 244. survival: rolled 6+6 +2 = 14 against 5+, made
 245. survived term 13 (from 244)
-246. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 13 [E013]
+246. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 13
 
 **247. skills and training (pp. 6, 11)**
 
 248. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 249. Personal Development Table: rolled 2
-250. Dexterity +1, 12 to 13 (from 249) [E002]
+250. Dexterity +1, 12 to 13 (from 249)
 251. reenlistment: rolled 6+6 = 12 against 6+, made
-252. a 12 exactly: the service requires another term (from 251) [E003]
+252. a 12 exactly: the service requires another term (from 251)
 
 **253. aging, end of term 13 (pp. 7-9)**
 
 254. aging, Strength: rolled 6+6 = 12 against 9+, made
-255. Strength holds (from 254) [E006 E007]
+255. Strength holds (from 254)
 256. aging, Dexterity: rolled 1+3 = 4 against 9+, missed
-257. Dexterity -2, 13 to 11 (from 256) [E006 E007]
+257. Dexterity -2, 13 to 11 (from 256)
 258. aging, Endurance: rolled 5+6 = 11 against 9+, made
-259. Endurance holds (from 258) [E006 E007]
+259. Endurance holds (from 258)
 260. aging, Intelligence: rolled 6+6 = 12 against 9+, made
-261. Intelligence holds (from 260) [E006 E007]
+261. Intelligence holds (from 260)
 
 **262. term 14 (pp. 5-7)**
 
 263. survival: rolled 6+6 +2 = 14 against 5+, made
 264. survived term 14 (from 263)
-265. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 14 [E013]
+265. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 14
 
 **266. skills and training (pp. 6, 11)**
 
 267. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 268. Advanced Education Table (education 8+): rolled 6
-269. Administration-6 (from 268) [E002]
+269. Administration-6 (from 268)
 270. reenlistment: rolled 5+6 = 11 against 6+, made
 271. left the service after term 14 and is retired: retire (from 270)
 
 **272. aging, end of term 14 (pp. 7-9)**
 
 273. aging, Strength: rolled 6+6 = 12 against 9+, made
-274. Strength holds (from 273) [E006 E007]
+274. Strength holds (from 273)
 275. aging, Dexterity: rolled 6+6 = 12 against 9+, made
-276. Dexterity holds (from 275) [E006 E007]
+276. Dexterity holds (from 275)
 277. aging, Endurance: rolled 2+4 = 6 against 9+, missed
-278. Endurance -2, 1 to 0 (from 277) [E006 E007 E010]
+278. Endurance -2, 1 to 0 (from 277)
 279. medical crisis, Endurance at zero: rolled 6+4 = 10 against 8+, made
 280. months of recovery: rolled 6
-281. recovered: Endurance to 1, and 6 months older, now aged 74 years 6 months (from 280) [E008 E009]
+281. recovered: Endurance to 1, and 6 months older, now aged 74 years 6 months (from 280)
 282. aging, Intelligence: rolled 6+6 = 12 against 9+, made
-283. Intelligence holds (from 282) [E006 E007]
+283. Intelligence holds (from 282)
 
 **284. mustering out, 16 rolls (pp. 7, 9, 21-23)**
 
@@ -491,7 +491,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 **336. titles (p. 5; Book 3 p. 22)**
 
 337. assume the hereditary title (p. 5): policy chose yes from yes, no
-338. social standing 15 confers duke/duchess, and it is assumed [E011]
+338. social standing 15 confers duke/duchess, and it is assumed
 
 ---
 

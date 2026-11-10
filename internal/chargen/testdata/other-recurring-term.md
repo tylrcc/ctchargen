@@ -89,10 +89,10 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
  22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  23. Advanced Education Table (education 8+): rolled 1
- 24. Medical-1 (from 23) [E002]
+ 24. Medical-1 (from 23)
  25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  26. Advanced Education Table: rolled 1
- 27. Streetwise-1 (from 26) [E002]
+ 27. Streetwise-1 (from 26)
  28. reenlistment: rolled 6+6 = 12 against 5+, made
  29. a 12 exactly: the service requires another term (from 28)
 
@@ -105,7 +105,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
  34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  35. Service Skills Table: rolled 1
- 36. Forgery-1 (from 35) [E002]
+ 36. Forgery-1 (from 35)
  37. reenlistment: rolled 6+6 = 12 against 5+, made
  38. a 12 exactly: the service requires another term (from 37)
 
@@ -118,7 +118,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
  43. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  44. Personal Development Table: rolled 1
- 45. Strength +1, 12 to 13 (from 44) [E002]
+ 45. Strength +1, 12 to 13 (from 44)
  46. reenlistment: rolled 6+6 = 12 against 5+, made
  47. a 12 exactly: the service requires another term (from 46)
 
@@ -131,18 +131,18 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
  52. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  53. Advanced Education Table (education 8+): rolled 1
- 54. Medical-2 (from 53) [E002]
+ 54. Medical-2 (from 53)
  55. reenlistment: rolled 6+6 = 12 against 5+, made
  56. a 12 exactly: the service requires another term (from 55)
 
 **57. aging, end of term 4 (pp. 7-9)**
 
  58. aging, Strength: rolled 6+6 = 12 against 8+, made
- 59. Strength holds (from 58) [E006 E007]
+ 59. Strength holds (from 58)
  60. aging, Dexterity: rolled 6+6 = 12 against 7+, made
- 61. Dexterity holds (from 60) [E006 E007]
+ 61. Dexterity holds (from 60)
  62. aging, Endurance: rolled 6+6 = 12 against 8+, made
- 63. Endurance holds (from 62) [E006 E007]
+ 63. Endurance holds (from 62)
 
 **64. term 5 (pp. 5-7)**
 
@@ -153,18 +153,18 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
  68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  69. Advanced Education Table: rolled 1
- 70. Streetwise-2 (from 69) [E002]
+ 70. Streetwise-2 (from 69)
  71. reenlistment: rolled 6+6 = 12 against 5+, made
  72. a 12 exactly: the service requires another term (from 71)
 
 **73. aging, end of term 5 (pp. 7-9)**
 
  74. aging, Strength: rolled 6+6 = 12 against 8+, made
- 75. Strength holds (from 74) [E006 E007]
+ 75. Strength holds (from 74)
  76. aging, Dexterity: rolled 6+6 = 12 against 7+, made
- 77. Dexterity holds (from 76) [E006 E007]
+ 77. Dexterity holds (from 76)
  78. aging, Endurance: rolled 6+6 = 12 against 8+, made
- 79. Endurance holds (from 78) [E006 E007]
+ 79. Endurance holds (from 78)
 
 **80. term 6 (pp. 5-7)**
 
@@ -175,18 +175,18 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
  84. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  85. Service Skills Table: rolled 1
- 86. Forgery-2 (from 85) [E002]
+ 86. Forgery-2 (from 85)
  87. reenlistment: rolled 6+6 = 12 against 5+, made
  88. a 12 exactly: the service requires another term (from 87)
 
 **89. aging, end of term 6 (pp. 7-9)**
 
  90. aging, Strength: rolled 6+6 = 12 against 8+, made
- 91. Strength holds (from 90) [E006 E007]
+ 91. Strength holds (from 90)
  92. aging, Dexterity: rolled 6+6 = 12 against 7+, made
- 93. Dexterity holds (from 92) [E006 E007]
+ 93. Dexterity holds (from 92)
  94. aging, Endurance: rolled 6+6 = 12 against 8+, made
- 95. Endurance holds (from 94) [E006 E007]
+ 95. Endurance holds (from 94)
 
 **96. term 7 (pp. 5-7)**
 
@@ -197,18 +197,18 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Personal Development Table: rolled 1
-102. Strength +1, 13 to 14 (from 101) [E002]
+102. Strength +1, 13 to 14 (from 101)
 103. reenlistment: rolled 6+6 = 12 against 5+, made
 104. a 12 exactly: the service requires another term (from 103)
 
 **105. aging, end of term 7 (pp. 7-9)**
 
 106. aging, Strength: rolled 6+6 = 12 against 8+, made
-107. Strength holds (from 106) [E006 E007]
+107. Strength holds (from 106)
 108. aging, Dexterity: rolled 6+6 = 12 against 7+, made
-109. Dexterity holds (from 108) [E006 E007]
+109. Dexterity holds (from 108)
 110. aging, Endurance: rolled 6+6 = 12 against 8+, made
-111. Endurance holds (from 110) [E006 E007]
+111. Endurance holds (from 110)
 
 **112. term 8 (pp. 5-7)**
 
@@ -219,18 +219,18 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
 116. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 117. Advanced Education Table (education 8+): rolled 1
-118. Medical-3 (from 117) [E002]
+118. Medical-3 (from 117)
 119. reenlistment: rolled 6+6 = 12 against 5+, made
-120. a 12 exactly: the service requires another term (from 119) [E003]
+120. a 12 exactly: the service requires another term (from 119)
 
 **121. aging, end of term 8 (pp. 7-9)**
 
 122. aging, Strength: rolled 6+6 = 12 against 9+, made
-123. Strength holds (from 122) [E006 E007]
+123. Strength holds (from 122)
 124. aging, Dexterity: rolled 6+6 = 12 against 8+, made
-125. Dexterity holds (from 124) [E006 E007]
+125. Dexterity holds (from 124)
 126. aging, Endurance: rolled 6+6 = 12 against 9+, made
-127. Endurance holds (from 126) [E006 E007]
+127. Endurance holds (from 126)
 
 **128. term 9 (pp. 5-7)**
 
@@ -241,18 +241,18 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 
 132. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 133. Advanced Education Table: rolled 1
-134. Streetwise-3 (from 133) [E002]
+134. Streetwise-3 (from 133)
 135. reenlistment: rolled 1+1 = 2 against 5+, missed
 136. left the service after term 9 and is retired: reenlistment denied (from 135)
 
 **137. aging, end of term 9 (pp. 7-9)**
 
 138. aging, Strength: rolled 1+1 = 2 against 9+, missed
-139. Strength -1, 14 to 13 (from 138) [E006 E007]
+139. Strength -1, 14 to 13 (from 138)
 140. aging, Dexterity: rolled 1+1 = 2 against 8+, missed
-141. Dexterity -1, 12 to 11 (from 140) [E006 E007]
+141. Dexterity -1, 12 to 11 (from 140)
 142. aging, Endurance: rolled 1+1 = 2 against 9+, missed
-143. Endurance -1, 12 to 11 (from 142) [E006 E007]
+143. Endurance -1, 12 to 11 (from 142)
 
 **144. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 

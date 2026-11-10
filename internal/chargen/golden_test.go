@@ -117,29 +117,10 @@ func difference(want, got string) string {
 // Holds: Every step, throw, choice and consequence, in order.
 // Holds: Each choice names what was offered and what was chosen.
 func TestGoldens(t *testing.T) {
-	// withReadings is the fixture whose note is also kept with its
-	// readings. It names E002, whose prose carries the page's own italic, so
-	// the golden shows that emphasis reaching the note unchanged.
-	const withReadings = "army-serve"
-
 	t.Parallel()
 
-	keptWithReadings := false
-
 	for _, fixture := range fixtures {
-		character := fixture.generate(t)
-
-		golden(t, fixture.name+".md", []byte(render.Note(character, false)))
-
-		if fixture.name == withReadings {
-			golden(t, fixture.name+".readings.md", []byte(render.Note(character, true)))
-
-			keptWithReadings = true
-		}
-	}
-
-	if !keptWithReadings {
-		t.Errorf("%s keeps its note with its readings but is not in the fixture roster", withReadings)
+		golden(t, fixture.name+".md", []byte(render.Note(fixture.generate(t))))
 	}
 }
 
@@ -157,7 +138,7 @@ func TestGoldensRegenerate(t *testing.T) {
 	t.Parallel()
 
 	for _, f := range fixtures {
-		first, second := render.Note(f.generate(t), false), render.Note(f.generate(t), false)
+		first, second := render.Note(f.generate(t)), render.Note(f.generate(t))
 		if first != second {
 			t.Errorf("%s did not generate the same note twice from its fixture", f.name)
 		}
@@ -270,7 +251,7 @@ func TestNoGenerationRecordSkipsANumber(t *testing.T) {
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		_, record, found := strings.Cut(render.Note(character, false), "## Generation record")
+		_, record, found := strings.Cut(render.Note(character), "## Generation record")
 		if !found {
 			t.Fatalf("%s: the note has no generation record", fixture.name)
 		}

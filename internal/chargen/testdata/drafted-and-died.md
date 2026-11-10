@@ -52,12 +52,12 @@ UPP 8777A8, age 22, Other (drafted after the Navy refused him), 1 term, killed b
  17. the Navy rejected him (from 16)
  18. submit to the draft (p. 5): policy chose yes from yes, no
  19. draft: rolled 6
- 20. drafted into the Other (from 19) [E001]
+ 20. drafted into the Other (from 19)
 
 **21. term 1 (pp. 5-7)**
 
  22. survival: rolled 1+3 = 4 against 5+, missed
- 23. died in term 1, aged 22 (from 22) [E004]
+ 23. died in term 1, aged 22 (from 22)
 
 ---
 

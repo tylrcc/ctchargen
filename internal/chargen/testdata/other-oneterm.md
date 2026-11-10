@@ -72,10 +72,10 @@ UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, d
 
  23. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  24. Personal Development Table: rolled 6
- 25. Social Standing -1, 12 to 11 (from 24) [E002]
+ 25. Social Standing -1, 12 to 11 (from 24)
  26. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  27. Service Skills Table: rolled 3
- 28. Brawling-1 (from 27) [E002]
+ 28. Brawling-1 (from 27)
  29. reenlistment: rolled 4+6 = 10 against 5+, made
  30. leave the service or remain for another term (pp. 6-7, 21): policy chose discharge from continue, discharge
  31. left the service after term 1: discharge (from 29)

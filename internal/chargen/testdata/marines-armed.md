@@ -93,7 +93,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
 **18. rank and service skills (p. 23)**
 
- 19. Cutlass-1 [E005]
+ 19. Cutlass-1
 
 **20. term 1 (pp. 5-7)**
 
@@ -111,14 +111,14 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
  31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  32. Advanced Education Table: rolled 2
- 33. Mechanical-1 (from 32) [E002]
+ 33. Mechanical-1 (from 32)
  34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  35. Service Skills Table: rolled 3
  36. weapon of expertise, specified immediately (p. 11): policy chose Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 37. Blade Combat: Sword-1 (from 35) [E002]
+ 37. Blade Combat: Sword-1 (from 35)
  38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  39. Personal Development Table: rolled 3
- 40. Endurance +1, 8 to 9 (from 39) [E002]
+ 40. Endurance +1, 8 to 9 (from 39)
  41. reenlistment: rolled 4+6 = 10 against 6+, made
  42. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  43. reenlisted for term 2 (from 41)
@@ -136,7 +136,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
  51. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  52. Advanced Education Table: rolled 5
  53. weapon of expertise, specified immediately (p. 11): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
- 54. Blade Combat: Dagger-1 (from 52) [E002]
+ 54. Blade Combat: Dagger-1 (from 52)
  55. reenlistment: rolled 6+3 = 9 against 6+, made
  56. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  57. reenlisted for term 3 (from 55)
@@ -154,10 +154,10 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
  65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
  66. Service Skills Table: rolled 6
  67. weapon of expertise, specified immediately (p. 11): policy chose Shotgun from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 68. Gun Combat: Shotgun-1 (from 66) [E002]
+ 68. Gun Combat: Shotgun-1 (from 66)
  69. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
  70. Personal Development Table: rolled 5
- 71. Brawling-1 (from 70) [E002]
+ 71. Brawling-1 (from 70)
  72. reenlistment: rolled 5+3 = 8 against 6+, made
  73. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  74. reenlisted for term 4 (from 72)
@@ -174,7 +174,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
  82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
  83. Advanced Education Table: rolled 2
- 84. Mechanical-2 (from 83) [E002]
+ 84. Mechanical-2 (from 83)
  85. reenlistment: rolled 4+2 = 6 against 6+, made
  86. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  87. reenlisted for term 5 (from 85)
@@ -182,11 +182,11 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 **88. aging, end of term 4 (pp. 7-9)**
 
  89. aging, Strength: rolled 1+3 = 4 against 8+, missed
- 90. Strength -1, 5 to 4 (from 89) [E006 E007]
+ 90. Strength -1, 5 to 4 (from 89)
  91. aging, Dexterity: rolled 4+5 = 9 against 7+, made
- 92. Dexterity holds (from 91) [E006 E007]
+ 92. Dexterity holds (from 91)
  93. aging, Endurance: rolled 5+5 = 10 against 8+, made
- 94. Endurance holds (from 93) [E006 E007]
+ 94. Endurance holds (from 93)
 
 **95. term 5 (pp. 5-7)**
 
@@ -201,7 +201,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 102. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 103. Service Skills Table: rolled 4
 104. weapon of expertise, specified immediately (p. 11): policy chose Bayonet from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-105. Blade Combat: Bayonet-1 (from 103) [E002]
+105. Blade Combat: Bayonet-1 (from 103)
 106. reenlistment: rolled 4+3 = 7 against 6+, made
 107. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 108. reenlisted for term 6 (from 106)
@@ -209,11 +209,11 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 **109. aging, end of term 5 (pp. 7-9)**
 
 110. aging, Strength: rolled 5+1 = 6 against 8+, missed
-111. Strength -1, 4 to 3 (from 110) [E006 E007]
+111. Strength -1, 4 to 3 (from 110)
 112. aging, Dexterity: rolled 6+4 = 10 against 7+, made
-113. Dexterity holds (from 112) [E006 E007]
+113. Dexterity holds (from 112)
 114. aging, Endurance: rolled 4+5 = 9 against 8+, made
-115. Endurance holds (from 114) [E006 E007]
+115. Endurance holds (from 114)
 
 **116. term 6 (pp. 5-7)**
 
@@ -227,10 +227,10 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
 123. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 124. Personal Development Table: rolled 2
-125. Dexterity +1, 11 to 12 (from 124) [E002]
+125. Dexterity +1, 11 to 12 (from 124)
 126. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 127. Advanced Education Table: rolled 4
-128. Tactics-1 (from 127) [E002]
+128. Tactics-1 (from 127)
 129. reenlistment: rolled 2+5 = 7 against 6+, made
 130. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 131. reenlisted for term 7 (from 129)
@@ -238,11 +238,11 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 **132. aging, end of term 6 (pp. 7-9)**
 
 133. aging, Strength: rolled 3+5 = 8 against 8+, made
-134. Strength holds (from 133) [E006 E007]
+134. Strength holds (from 133)
 135. aging, Dexterity: rolled 3+6 = 9 against 7+, made
-136. Dexterity holds (from 135) [E006 E007]
+136. Dexterity holds (from 135)
 137. aging, Endurance: rolled 5+4 = 9 against 8+, made
-138. Endurance holds (from 137) [E006 E007]
+138. Endurance holds (from 137)
 
 **139. term 7 (pp. 5-7)**
 
@@ -256,18 +256,18 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
 146. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 147. Service Skills Table: rolled 2
-148. Vacc Suit-1 (from 147) [E002]
+148. Vacc Suit-1 (from 147)
 149. reenlistment: rolled 5+5 = 10 against 6+, made
 150. left the service after term 7 and is retired: retire (from 149)
 
 **151. aging, end of term 7 (pp. 7-9)**
 
 152. aging, Strength: rolled 4+6 = 10 against 8+, made
-153. Strength holds (from 152) [E006 E007]
+153. Strength holds (from 152)
 154. aging, Dexterity: rolled 4+1 = 5 against 7+, missed
-155. Dexterity -1, 12 to 11 (from 154) [E006 E007]
+155. Dexterity -1, 12 to 11 (from 154)
 156. aging, Endurance: rolled 1+4 = 5 against 8+, missed
-157. Endurance -1, 9 to 8 (from 156) [E006 E007]
+157. Endurance -1, 9 to 8 (from 156)
 
 **158. mustering out, 9 rolls (pp. 7, 9, 21-23)**
 

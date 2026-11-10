@@ -88,7 +88,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 **18. rank and service skills (p. 23)**
 
- 19. Pilot-1 [E005]
+ 19. Pilot-1
 
 **20. term 1 (pp. 5-7)**
 
@@ -99,10 +99,10 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
  24. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  25. Advanced Education Table (education 8+): rolled 1
- 26. Medical-1 (from 25) [E002]
+ 26. Medical-1 (from 25)
  27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  28. Advanced Education Table: rolled 2
- 29. Mechanical-1 (from 28) [E002]
+ 29. Mechanical-1 (from 28)
  30. reenlistment: rolled 6+6 = 12 against 3+, made
  31. a 12 exactly: the service requires another term (from 30)
 
@@ -115,7 +115,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
  36. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  37. Service Skills Table: rolled 6
- 38. Jack of all Trades-1 (from 37) [E002]
+ 38. Jack of all Trades-1 (from 37)
  39. reenlistment: rolled 6+4 = 10 against 3+, made
  40. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  41. reenlisted for term 3 (from 39)
@@ -130,7 +130,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
  46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  47. Personal Development Table: rolled 4
  48. weapon of expertise, specified immediately (p. 11): policy chose Laser Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
- 49. Gun Combat: Laser Carbine-1 (from 47) [E002]
+ 49. Gun Combat: Laser Carbine-1 (from 47)
  50. reenlistment: rolled 4+6 = 10 against 3+, made
  51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  52. reenlisted for term 4 (from 50)
@@ -144,7 +144,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
  57. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  58. Advanced Education Table (education 8+): rolled 2
- 59. Navigation-1 (from 58) [E002]
+ 59. Navigation-1 (from 58)
  60. reenlistment: rolled 4+4 = 8 against 3+, made
  61. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
  62. reenlisted for term 5 (from 60)
@@ -152,11 +152,11 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 **63. aging, end of term 4 (pp. 7-9)**
 
  64. aging, Strength: rolled 4+3 = 7 against 8+, missed
- 65. Strength -1, 8 to 7 (from 64) [E006 E007]
+ 65. Strength -1, 8 to 7 (from 64)
  66. aging, Dexterity: rolled 5+2 = 7 against 7+, made
- 67. Dexterity holds (from 66) [E006 E007]
+ 67. Dexterity holds (from 66)
  68. aging, Endurance: rolled 5+2 = 7 against 8+, missed
- 69. Endurance -1, 9 to 8 (from 68) [E006 E007]
+ 69. Endurance -1, 9 to 8 (from 68)
 
 **70. term 5 (pp. 5-7)**
 
@@ -167,7 +167,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
  74. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  75. Advanced Education Table: rolled 3
- 76. Electronic-1 (from 75) [E002]
+ 76. Electronic-1 (from 75)
  77. reenlistment: rolled 6+2 = 8 against 3+, made
  78. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  79. reenlisted for term 6 (from 77)
@@ -175,11 +175,11 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 **80. aging, end of term 5 (pp. 7-9)**
 
  81. aging, Strength: rolled 2+1 = 3 against 8+, missed
- 82. Strength -1, 7 to 6 (from 81) [E006 E007]
+ 82. Strength -1, 7 to 6 (from 81)
  83. aging, Dexterity: rolled 1+2 = 3 against 7+, missed
- 84. Dexterity -1, 10 to 9 (from 83) [E006 E007]
+ 84. Dexterity -1, 10 to 9 (from 83)
  85. aging, Endurance: rolled 4+1 = 5 against 8+, missed
- 86. Endurance -1, 8 to 7 (from 85) [E006 E007]
+ 86. Endurance -1, 8 to 7 (from 85)
 
 **87. term 6 (pp. 5-7)**
 
@@ -190,7 +190,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
  91. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
  92. Service Skills Table: rolled 2
- 93. Vacc Suit-1 (from 92) [E002]
+ 93. Vacc Suit-1 (from 92)
  94. reenlistment: rolled 5+4 = 9 against 3+, made
  95. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
  96. reenlisted for term 7 (from 94)
@@ -198,11 +198,11 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 **97. aging, end of term 6 (pp. 7-9)**
 
  98. aging, Strength: rolled 5+4 = 9 against 8+, made
- 99. Strength holds (from 98) [E006 E007]
+ 99. Strength holds (from 98)
 100. aging, Dexterity: rolled 4+1 = 5 against 7+, missed
-101. Dexterity -1, 9 to 8 (from 100) [E006 E007]
+101. Dexterity -1, 9 to 8 (from 100)
 102. aging, Endurance: rolled 4+2 = 6 against 8+, missed
-103. Endurance -1, 7 to 6 (from 102) [E006 E007]
+103. Endurance -1, 7 to 6 (from 102)
 
 **104. term 7 (pp. 5-7)**
 
@@ -213,18 +213,18 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 108. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 109. Personal Development Table: rolled 1
-110. Strength +1, 6 to 7 (from 109) [E002]
+110. Strength +1, 6 to 7 (from 109)
 111. reenlistment: rolled 6+2 = 8 against 3+, made
 112. left the service after term 7 and is retired: retire (from 111)
 
 **113. aging, end of term 7 (pp. 7-9)**
 
 114. aging, Strength: rolled 3+6 = 9 against 8+, made
-115. Strength holds (from 114) [E006 E007]
+115. Strength holds (from 114)
 116. aging, Dexterity: rolled 5+2 = 7 against 7+, made
-117. Dexterity holds (from 116) [E006 E007]
+117. Dexterity holds (from 116)
 118. aging, Endurance: rolled 5+6 = 11 against 8+, made
-119. Endurance holds (from 118) [E006 E007]
+119. Endurance holds (from 118)
 
 **120. mustering out, 7 rolls (pp. 7, 9, 21-23)**
 

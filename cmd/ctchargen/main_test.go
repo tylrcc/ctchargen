@@ -11,7 +11,6 @@ import (
 const (
 	cmdNew         = "new"
 	cmdVersion     = "version"
-	cmdReadings    = "readings"
 	wantUsage      = "usage"
 	wantNoStrategy = "no such strategy"
 	wantUnknown    = "unknown command"
@@ -22,7 +21,6 @@ const (
 	flagCareer     = "--career"
 	flagSkills     = "--skills"
 	flagMuster     = "--muster"
-	flagReadings   = "--readings"
 	flagForce      = "--force"
 	flagOutput     = "-o"
 	other          = "other"
@@ -38,7 +36,7 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		args     []string
 		mentions string
 	}{
-		"no command":      {nil, "new|batch|readings|version"},
+		"no command":      {nil, "new|batch|version"},
 		"unknown command": {[]string{"generate"}, wantUnknown},
 		// Interactive mode with nothing to read from asks its first
 		// question and reports that the input ended, rather than answering

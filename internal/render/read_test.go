@@ -20,7 +20,7 @@ func noteOf(change func(c *chargen.Character)) string {
 
 	change(character)
 
-	return render.Note(character, false)
+	return render.Note(character)
 }
 
 // headlineOf is the line the sheet leads with, the one every headline case
@@ -282,34 +282,21 @@ func TestOneTermIsSingular(t *testing.T) {
 	}
 }
 
-// The errata are on the generation record and not on the sheet.
+// A note names no erratum, on the sheet or in the generation record, even
+// for a character every reading governed. The readings are the authority's
+// record, not the referee's (ADR 0007): an id beside an outcome was a code the
+// playtest's referee was never told what to do with (#460, #488).
 //
-// On the sheet a player reads they are codes he cannot expand; beside the
-// outcome they governed they are how a reading is checked against the page,
-// which is what the generation record is for.
-//
-// Holds: The errata are on the generation record and not the sheet.
-func TestTheErrataAreOnTheGenerationRecordAndNotTheSheet(t *testing.T) {
+// Holds: A note names no erratum.
+func TestANoteNamesNoErratum(t *testing.T) {
 	t.Parallel()
 
-	note := noteOf(func(c *chargen.Character) {
-		c.Errata = []traveller.Erratum{traveller.E001}
-		c.Events = recorded(traveller.OutcomeEvent{
-			Seq: 1, Description: "drafted", Errata: []traveller.Erratum{traveller.E001},
-		}, aDischargedSailor())
-	})
+	note := noteOf(func(c *chargen.Character) { c.Errata = traveller.Errata[:] })
 
-	sheet, record, found := strings.Cut(note, "## Generation record")
-	if !found {
-		t.Fatalf("the note has no generation record:\n%s", note)
-	}
-
-	if strings.Contains(sheet, "E001") {
-		t.Errorf("the sheet carries an erratum id:\n%s", sheet)
-	}
-
-	if !strings.Contains(record, "E001") {
-		t.Errorf("the generation record lost the erratum that governed an outcome:\n%s", record)
+	for _, erratum := range traveller.Errata {
+		if strings.Contains(note, erratum.String()) {
+			t.Errorf("the note names %v:\n%s", erratum, note)
+		}
 	}
 }
 
