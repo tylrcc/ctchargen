@@ -7,6 +7,9 @@ release turns out to be.
 
 - `task test` fails when the tests leave a file in the tree, and the coding
   standards say where a test writes and how it matches an expected line.
+- The release-snapshot rule moves from `CLAUDE.md` to the coding standards,
+  with the stamp each snapshot opens with, beside a new rule: a paragraph a
+  change rewrites, comment or document, is wrapped evenly.
 
 ## 1.0.0-rc.5
 

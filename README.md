@@ -201,16 +201,16 @@ standard error after `ctchargen:`.
 
 ## The documents
 
-| File                                                     | What it holds                                                                    |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values. |
-| [docs/CHANGELOG.md](docs/CHANGELOG.md)                   | What each release changed.                                                       |
-| [docs/THEORY.md](docs/THEORY.md)                         | Why the system is shaped as it is, as of the last release.                       |
-| [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)               | How the code runs, quoted from it, as of the last release.                       |
-| [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md)     | The rules a reviewer holds a change to.                                          |
-| [docs/GLOSSARY.md](docs/GLOSSARY.md)                     | The tool's vocabulary: note, record, reading, erratum, golden.                   |
-| [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                      |
-| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                  |
+| File                                                     | What it holds                                                                        |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values.     |
+| [docs/CHANGELOG.md](docs/CHANGELOG.md)                   | What each release changed.                                                           |
+| [docs/THEORY.md](docs/THEORY.md)                         | Why the system is shaped as it is, as of the last release.                           |
+| [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)               | How the code runs, quoted from it, as of the last release.                           |
+| [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md)     | The rules a reviewer holds a change to, and how a release regenerates the snapshots. |
+| [docs/GLOSSARY.md](docs/GLOSSARY.md)                     | The tool's vocabulary: note, record, reading, erratum, golden.                       |
+| [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                          |
+| [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                      |
 
 ## The gate
 

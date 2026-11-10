@@ -136,9 +136,9 @@ readings are the fallback.
 
 ## Documents and what each governs
 
-| File                       | Governs                                                              |
-| -------------------------- | -------------------------------------------------------------------- |
-| `docs/CODING_STANDARDS.md` | The rules a reviewer holds a diff to: the judgements no check makes. |
+| File                       | Governs                                                                                                              |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `docs/CODING_STANDARDS.md` | The rules a reviewer holds a diff to: the judgements no check makes. And how release prep regenerates the snapshots. |
 
 Each fact lives in one place, so there is no second copy to hold to the
 first. The readings are values in `rules`, one per entry of
@@ -237,25 +237,16 @@ go run ./cmd/ctchargen new --auto
 
 ## Working conventions
 
-- **The review rules are `docs/CODING_STANDARDS.md`**: sweeping a removal by its
-  vocabulary, verbatim quotation, predicates written from the prose, marker
-  placement, mutations shown. Read it before
-  calling a change done; the reviewer holds the diff to it.
+- **The review rules are `docs/CODING_STANDARDS.md`.** Read it before calling
+  a change done; the reviewer holds the diff to it.
 - **What a change does to the narrative documents.** The global release-docs
-  rule brings `README.md` and `CLAUDE.md`
-  current at release; here a change also sweeps them as `docs/CODING_STANDARDS.md`'s
-  "A removal is swept by its vocabulary" says — every sentence that still
-  tells the old story, not only the lines that name it — and adds its bullet
-  to the changelog's Unreleased section. Everything else in them waits for
-  the release pass.
+  rule brings `README.md` and `CLAUDE.md` current at release; here a change
+  also sweeps them as `docs/CODING_STANDARDS.md`'s "A removal is swept by its
+  vocabulary" says — every sentence that still tells the old story, not only
+  the lines that name it — and adds its bullet to the changelog's Unreleased
+  section. Everything else in them waits for the release pass.
 - The history is squash-merged PRs with sentence-case subjects that say what
   changed ("Correct two typed ranges, name the font trap, and add milestone 0").
-- **Release snapshots.** `docs/THEORY.md` and `docs/WALKTHROUGH.md` describe the
-  release they were written for, not `main`, and each opens with a stamp
-  naming that tag. The release prep PR regenerates them with `/code-theory`
-  and `/code-walkthrough`, overwriting the last release's copies, on the
-  release plan's `prep_branch` (`release/<version>`, from
-  `release-plan.sh <version>`); the tag step finds the prep merge by that
-  branch. Between
-  releases they are ignored: no change reads, sweeps or updates them, drift
-  in them is never a finding, and nothing in the gate holds them.
+- **`docs/THEORY.md` and `docs/WALKTHROUGH.md` are release snapshots**, left
+  alone between releases; `docs/CODING_STANDARDS.md` says how release prep
+  regenerates them.

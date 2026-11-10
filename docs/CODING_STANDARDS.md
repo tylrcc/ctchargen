@@ -1,6 +1,7 @@
 # Coding standards
 
-The rules a reviewer holds a diff to. Each is a judgement no check makes;
+The rules a reviewer holds a diff to, and how release prep regenerates the
+snapshots the last one leaves alone. Each rule is a judgement no check makes;
 what a check makes — formatting, lint, links, the coverage map's markers, the
 readings' count — is the gate's, and is not repeated here. `CLAUDE.md` carries
 the authority rules every change answers to; these are the ones a diff can be
@@ -13,9 +14,10 @@ tells the old story is a finding: a Go comment, a doc comment, a test's failure
 message, a document. Grep for the words the code and documents used to describe
 the thing — what it did, what it promised, what held it ("the gate", "the
 document", "row", "decision table") — not only its identifiers and paths. A
-name-only sweep left stale prose in every ticket of #203 and #204. spec-review's
-`removed-names.sh` lists the removed names the tree still mentions; that list is where the sweep
-starts, and the words that described them are where it goes on.
+name-only sweep left stale prose in every ticket of #203 and #204.
+spec-review's `removed-names.sh` lists the removed names the tree still
+mentions; that list is where the sweep starts, and the words that described
+them are where it goes on.
 
 ## A test writes only into its own temporary folder
 
@@ -82,3 +84,27 @@ spellings are, or is the whole package, as the coverage check's is.
 invariant, or a check rewritten, comes with the mutation that killed it and
 what the failure said, in the commit or the PR. `go run ./internal/mutate`
 prints both, so the evidence can be pasted as it ran.
+
+## A paragraph a change rewrites is wrapped evenly
+
+A comment or a document paragraph that a change rewrites is rewrapped whole,
+every line but the last near the width of its neighbours. A scripted edit
+leaves a short line in the middle, or one long past the rest. `lll` catches
+only a comment line past 120 columns, and `bun fmt` preserves a document's
+wrapping as it finds it.
+
+## A release snapshot is left alone between releases
+
+`docs/THEORY.md` and `docs/WALKTHROUGH.md` describe the release they were
+written for, not `main`. Between releases no change reads, sweeps or updates
+them, drift in them is never a finding, and nothing in the gate holds them.
+
+The release prep PR regenerates both with `/code-theory` and
+`/code-walkthrough`, overwriting the last release's copies, on the release
+plan's `prep_branch` (`release/<version>`, from `release-plan.sh <version>`);
+the tag step finds the prep merge by that branch. Each opens with this stamp,
+its tag filled in:
+
+> Release snapshot for `vX.Y.Z`. It describes that tag, not `main`. Between
+> releases nothing reads, sweeps or updates it (`docs/CODING_STANDARDS.md`, "A
+> release snapshot is left alone between releases").
