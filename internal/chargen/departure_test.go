@@ -15,17 +15,18 @@ const firstRetiringTerm = 5
 
 // The three departures a living character can have, as this test names them.
 const (
-	retired    = "retired"
-	forcedOut  = "forced out"
-	discharged = "discharged"
+	retired            = "retired"
+	deniedReenlistment = "denied reenlistment"
+	discharged         = "discharged"
 )
 
 // P. 21 decides a departure by the term count, and nothing else does.
 //
 // "A character who leaves the service at the end of the 5th or later term of
 // service is considered to have retired." So a character who left alive at or
-// past that term is Retired, and one who left alive below it never is - he is
-// Discharged if he chose to go and ForcedOut if the service refused him.
+// past that term is Retired, and one who left alive below it never is: it is
+// Discharged where the character chose to go, and DeniedReenlistment where
+// the service refused the character.
 //
 // This is here because until #45 the choice between the last two was made by
 // comparing the record's own sentence against the literal "reenlistment
@@ -33,8 +34,8 @@ const (
 // held it, and a golden holds an invariant by accident of who is on the
 // roster.
 //
-// Holds: A departure below term 5 is forced out if the service refused him,
-// discharged if he chose to go.
+// Holds: A departure below term 5 is a denied reenlistment if the service
+// refused it, a discharge if the character chose to go.
 func TestADepartureIsDecidedByTheTermCount(t *testing.T) {
 	t.Parallel()
 
@@ -46,7 +47,7 @@ func TestADepartureIsDecidedByTheTermCount(t *testing.T) {
 
 	// A roster reaching only one of the three would pass every check above
 	// while proving nothing about the other two.
-	for _, want := range []string{retired, forcedOut, discharged} {
+	for _, want := range []string{retired, deniedReenlistment, discharged} {
 		if !seen[want] {
 			t.Errorf("no fixture departs %q, so that branch is unchecked", want)
 		}
@@ -65,8 +66,8 @@ func departedByTheBook(
 	switch character.Departure().(type) {
 	case traveller.Retired:
 		how = retired
-	case traveller.ForcedOut:
-		how = forcedOut
+	case traveller.DeniedReenlistment:
+		how = deniedReenlistment
 	case traveller.Discharged:
 		how = discharged
 	default:
@@ -96,8 +97,8 @@ func departedByTheBook(
 	}
 
 	// Below the retiring term the two part on one thing: whether the
-	// service would have him. P. 6's throw is what says so.
-	if (how == forcedOut) == kept {
+	// service would keep the character. P. 6's throw is what says so.
+	if (how == deniedReenlistment) == kept {
 		t.Errorf("%s: %s after a reenlistment throw that %s",
 			name, how, map[bool]string{true: "succeeded", false: "failed"}[kept])
 	}

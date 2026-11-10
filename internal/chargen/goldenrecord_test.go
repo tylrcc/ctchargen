@@ -149,8 +149,8 @@ func (n *departureWordsFold) Discharged() error {
 	return nil
 }
 
-func (n *departureWordsFold) ForcedOut() error {
-	n.out = "forced out"
+func (n *departureWordsFold) DeniedReenlistment() error {
+	n.out = "denied reenlistment"
 
 	return nil
 }

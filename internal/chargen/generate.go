@@ -9,13 +9,6 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// Ruleset names the text this tool implements. All page cites in a record's
-// generation record are to these three books and nothing else.
-//
-// Implements: The note names its ruleset and the build that wrote it [ADR
-// 0002].
-const Ruleset = "Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
-
 // An Option is an optional input to a generation: dice of the caller's own,
 // or somebody watching the record as it is written.
 //
@@ -52,18 +45,19 @@ func WithBuild(build string) Option {
 }
 
 // Auto walks Book 1's character generation procedure, pp. 4-25, as an auto
-// run: policy answers every choice point, and the record names it and the
-// version it answered as. It rolls dice of its own unless a roller is given.
+// run: policy answers every choice point, and the record credits each choice
+// to it. It rolls dice of its own unless a roller is given.
 //
-// Implements: A note names the policy that answered it [Generation record].
+// Implements: A note says who made each choice [Generation record].
 func Auto(in Inputs, policy Policy, options ...Option) (*Character, error) {
 	// The pointer is what marks an auto run: Guided passes nil.
 	return generate(in, policy, &policy, options)
 }
 
 // Guided walks the same procedure as a guided run: decider answers every
-// choice point on a person's behalf, and the record names no policy. Every
-// choice is the player's, whatever decider stands for him.
+// choice point on a person's behalf, and the record credits no choice to the
+// policy. Every choice is the player's, whatever decider stands for the
+// player.
 //
 // Implements: A guided run's choices are recorded as the player's, not the
 // policy's [Choices].

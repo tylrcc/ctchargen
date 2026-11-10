@@ -84,7 +84,7 @@ func whoseService(r view) string {
 
 	switch {
 	case attempted != r.Service:
-		return fmt.Sprintf(" (%s after the %s refused him)", r.Enlistment.How, attempted)
+		return fmt.Sprintf(" (%s after the %s refused enlistment)", r.Enlistment.How, attempted)
 	case byPolicy:
 		return " (service chosen by the policy)"
 	default:
@@ -165,10 +165,13 @@ func shipLine(ship shipView) string {
 }
 
 // serviceLines is how the character entered, each term that has something to
-// tell, and how the service ended.
+// tell, how the service ended, and what mustering out changed (#490).
 //
 // Implements: The service record narrates the career a term at a time
 // [Sheet].
+//
+// Implements: A characteristic raised at mustering out is on the service
+// record [Sheet].
 func serviceLines(r view) []string {
 	if r.Service == "" {
 		return []string{r.Enlistment.How}
@@ -193,13 +196,19 @@ func serviceLines(r view) []string {
 
 	switch {
 	case r.Departure.Characteristic != "":
-		return append(lines, fmt.Sprintf("%s in term %d (%s reached zero)",
+		lines = append(lines, fmt.Sprintf("%s in term %d (%s reached zero)",
 			r.Departure.How, r.Terms, r.Departure.Characteristic))
 	case r.Departure.Fatal:
-		return append(lines, fmt.Sprintf("%s in term %d", r.Departure.How, r.Terms))
+		lines = append(lines, fmt.Sprintf("%s in term %d", r.Departure.How, r.Terms))
 	default:
-		return append(lines, fmt.Sprintf("%s after term %d", r.Departure.How, r.Terms))
+		lines = append(lines, fmt.Sprintf("%s after term %d", r.Departure.How, r.Terms))
 	}
+
+	if len(r.History.MusteredOut) > 0 {
+		lines = append(lines, "mustered out with "+strings.Join(r.History.MusteredOut, ", "))
+	}
+
+	return lines
 }
 
 // termText is one term's rank, gains and aging, each part left out where the
@@ -257,7 +266,8 @@ func serving(r view) string {
 }
 
 // skillText is a skill in the book's notation, Skill-1 (p. 12): the one form
-// the sheet, the summary, the service history and the properties all write.
+// the sheet, the summary and the service history write. The properties write
+// the name alone (#474).
 func skillText(name string, level int) string {
 	return fmt.Sprintf("%s-%d", name, level)
 }

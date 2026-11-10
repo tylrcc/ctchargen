@@ -24,7 +24,7 @@ func (r *run) enlist() error {
 
 	service := r.tables.Service(name)
 
-	throw := roll(r.roll, service.Enlistment.Target, service.Enlistment.Modifier(r.profile))
+	throw := r.against(service.Enlistment)
 	seq := r.record.throw("enlistment, "+name.String(), throw)
 
 	if throw.succeeded {
@@ -138,8 +138,8 @@ func (r *run) grantsOnEntering() error {
 // apply applies one Acquired Skills table result, or one grant, which take
 // the same three shapes (p. 12), and records what it gives as a fact naming its
 // source, which is where the service history files it. A mustering out
-// benefit names AtMusteringOut, which the history leaves out: mustering out
-// is not a term, and the sheet already lists what it delivered.
+// benefit names AtMusteringOut, which the history files after the terms:
+// mustering out is not a term.
 func (r *run) apply(
 	result traveller.TableResult, because int, errata []traveller.Erratum, source traveller.Source,
 ) error {

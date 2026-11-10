@@ -2,6 +2,7 @@ package render_test
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -118,6 +119,75 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 	}
 }
 
+// A characteristic a mustering-out benefit raised is on the sheet's service
+// record, as every other gain is, after the line that says how the service
+// ended, since mustering out comes after it (#490). It was in the record and
+// the UPP, and nowhere the sheet said where it came from.
+//
+// Holds: A characteristic raised at mustering out is on the service record.
+func TestAMusteringOutGainIsOnTheServiceRecord(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = recorded(
+			enlisted(traveller.Navy),
+			traveller.Term(1),
+			traveller.DischargedFact{Age: traveller.NewAge(22)},
+			applied(traveller.Change{Characteristic: traveller.Education, From: 9, To: 10, Delta: 1},
+				traveller.AtMusteringOut),
+			applied(traveller.Change{Characteristic: traveller.Intelligence, From: 7, To: 8, Delta: 1},
+				traveller.AtMusteringOut),
+		)
+	})
+
+	want := "- mustered out with Education +1, Intelligence +1\n"
+	if !strings.Contains(note, want) {
+		t.Errorf("the service record does not read %q:\n%s", want, note)
+	}
+}
+
+// A throw's DM names the characteristics it is earned by, as the page prints
+// them, so a referee can check it against p. 10 (#487); and an outcome names
+// the step it came from as a step, since "(from 2)" read as a characteristic
+// that had been 2.
+//
+// Holds: A throw's DM names what earned it.
+func TestAThrowsDMNamesWhatEarnedIt(t *testing.T) {
+	t.Parallel()
+
+	target := func(printed string) traveller.Target {
+		parsed, err := traveller.ParseTarget(printed)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return parsed
+	}
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = append(recorded(aDischargedSailor()...),
+			traveller.ThrowEvent{
+				Seq: 3, Step: "enlistment, Army", Dice: []int{3, 4}, DM: 3,
+				Target: target("5+"), Succeeded: true,
+				DMFrom: []traveller.Prerequisite{
+					{Characteristic: traveller.Dexterity, Threshold: target("6+")},
+					{Characteristic: traveller.Endurance, Threshold: target("5+")},
+				},
+			},
+			traveller.OutcomeEvent{Seq: 4, Because: 3, Description: "enlisted in the Army"},
+		)
+	})
+
+	for _, want := range []string{
+		"enlistment, Army: rolled 3+4 +3 (Dexterity 6+, Endurance 5+) = 10 against 5+, made",
+		"enlisted in the Army (from step 3)",
+	} {
+		if !strings.Contains(note, want) {
+			t.Errorf("the record does not read %q:\n%s", want, note)
+		}
+	}
+}
+
 // A choice is named on the generation record in the words of the page that
 // poses it, with that page, and never by the Decider method's name (#402).
 // The labels are typed out here from the pages, not read from the code that
@@ -220,7 +290,7 @@ func headlineCases() map[string]headlineCase {
 	return map[string]headlineCase{
 		"asked for one service and got another": {
 			entered: draftedAfter(traveller.Marines, traveller.Navy), forced: true, chose: traveller.Marines,
-			wants: "Navy (drafted after the Marines refused him)",
+			wants: "Navy (drafted after the Marines refused enlistment)",
 		},
 		"asked for a service and got it": {
 			entered: []traveller.Fact{enlisted(traveller.Navy)}, forced: true, chose: traveller.Navy,
@@ -240,12 +310,12 @@ func headlineCases() map[string]headlineCase {
 		// made, in the case this exists to expose.
 		"the policy picked one and the draft gave another": {
 			entered: draftedAfter(traveller.Navy, traveller.Marines), chose: traveller.Navy, byPolicy: true,
-			wants: "Marines (drafted after the Navy refused him)", does: "chosen by the policy",
+			wants: "Marines (drafted after the Navy refused enlistment)", does: "chosen by the policy",
 		},
 		// And after a draft the player does not know either: he chose Navy.
 		"the player picked one and the draft gave another": {
 			entered: draftedAfter(traveller.Navy, traveller.Marines), chose: traveller.Navy,
-			wants: "Marines (drafted after the Navy refused him)",
+			wants: "Marines (drafted after the Navy refused enlistment)",
 		},
 	}
 }
@@ -300,40 +370,38 @@ func TestANoteNamesNoErratum(t *testing.T) {
 	}
 }
 
-// A note ends by saying what generated it and what to keep: the ruleset its
-// page cites are to, the build that wrote it where there is one, and who
-// answered its choices - the policy with its strategies, or the player - and
-// then that the generation record is the only way back (ADR 0001, ADR 0002).
-//
-// Holds: A note names the ruleset, the build and who answered it.
-// Holds: A note names the policy that answered it.
-func TestANoteEndsWithWhatWroteItAndWhatToKeep(t *testing.T) {
-	t.Parallel()
+// recordLine is a numbered line of the generation record.
+var recordLine = regexp.MustCompile(`^ *[0-9]+\. `)
 
-	const (
-		ruleset = "Generated under Classic Traveller, Books 1-3 (FFE reprint of the 1977 text)"
-		keep    = "\n\nKeep this note whole: its generation record is the only way back to this character.\n"
-	)
+// A note ends with its generation record. Nothing follows it: the ruleset is
+// the same on every note and is the README's to say, the build is the
+// ctchargen property, and who answered each choice is on that choice's line
+// (#525, and the footer dropped on #474's PR).
+//
+// Holds: A note ends with its generation record.
+func TestANoteEndsWithItsGenerationRecord(t *testing.T) {
+	t.Parallel()
 
 	policy := chargen.DefaultPolicy()
 
-	for name, tc := range map[string]struct {
-		change func(c *chargen.Character)
-		ends   string
-	}{
-		"a guided run": {
-			func(*chargen.Character) {},
-			ruleset + "; every choice answered by the player." + keep,
-		},
-		"an auto run, built": {
-			func(c *chargen.Character) { c.Policy, c.Build = &policy, "v1.2.3" },
-			ruleset + " by ctchargen v1.2.3; every choice answered by the policy, version 4: " +
-				"career serve, skills advanced, muster cash." + keep,
-		},
+	for name, change := range map[string]func(c *chargen.Character){
+		"a guided run":       func(*chargen.Character) {},
+		"an auto run, built": func(c *chargen.Character) { c.Policy, c.Build = &policy, "v1.2.3" },
 	} {
-		note := noteOf(tc.change)
-		if !strings.HasSuffix(note, "---\n\n"+tc.ends) {
-			t.Errorf("%s: the note does not end with\n%s\nin:\n%s", name, tc.ends, note)
+		note := noteOf(change)
+
+		_, record, found := strings.Cut(note, "## Generation record\n")
+		if !found {
+			t.Fatalf("%s: no generation record:\n%s", name, note)
+		}
+
+		if strings.Contains(record, "\n---\n") || strings.Contains(record, "Generated under") {
+			t.Errorf("%s: something follows the generation record:\n%s", name, record)
+		}
+
+		lines := strings.Split(strings.TrimSuffix(note, "\n"), "\n")
+		if last := lines[len(lines)-1]; !recordLine.MatchString(last) {
+			t.Errorf("%s: the note ends %q, not on a record line", name, last)
 		}
 	}
 }
@@ -439,41 +507,46 @@ func skilled(skills ...traveller.Skill) []traveller.Fact {
 	return facts
 }
 
-// A note opens with properties a vault can query (#399): flat keys in the
-// sheet's own words, single values because a character serves one service
-// (Book 1 p. 5), `status` saying outright whether he lived (#418), skills in
-// the book's notation, and the name as an alias when one was given. A key
-// with nothing to say is absent rather than blank, but for name. The UPP is
-// quoted, since six digits would otherwise read as a number.
+// A note opens with properties a vault can query (#399), in the shape decided
+// on #474: flat keys in the sheet's own words, single values because a
+// character serves one service (Book 1 p. 5), `status` saying outright whether
+// the character lived (#418), skills as names alone, possessions one item
+// each, and the build's version. Every key is on every note: empty, or [] for
+// a list, where there is nothing to say (#480, #477). The UPP is quoted, since
+// six digits would otherwise read as a number.
 //
 // Holds: A note opens with properties a vault can query.
 func TestANoteOpensWithItsProperties(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range map[string]noteCase{
-		"a named officer who took his title": {
+		"a named officer who took the title, built": {
 			func(c *chargen.Character) {
 				c.Inputs.Name = "Kira Vance"
+				c.Build = "v1.2.3"
 				c.Events = recorded(rolled(7, 9, 3, 7, 4, 11),
 					skilled(traveller.Skill{Name: "Brawling", Level: 1}, traveller.Skill{Name: "Rifle", Level: 2}),
 					traveller.CashFact{Cash: 30000, Total: 30000},
 					traveller.TitledFact{SocialStanding: 11, Title: traveller.Knight, Assumed: true},
 					enlisted(traveller.Army), opened(2),
 					traveller.RaisedFact{How: traveller.Commissioned, Rank: 2, Name: captain},
-					traveller.ForcedOutFact{After: 2, Age: traveller.NewAge(26)})
+					traveller.DeniedReenlistmentFact{After: 2, Age: traveller.NewAge(26)})
 			},
 			"---\nname: \"Kira Vance\"\naliases:\n  - \"Kira Vance\"\nupp: \"79374B\"\n" +
 				"strength: 7\ndexterity: 9\nendurance: 3\nintelligence: 7\neducation: 4\nsocial: 11\n" +
-				"age: 26\nservice: \"Army\"\nrank: \"Captain\"\nterms: 2\nstatus: \"alive\"\ndeparture: \"forced out\"\n" +
-				"skills:\n  - \"Brawling-1\"\n  - \"Rifle-2\"\ncredits: 30000\npension: 0\nnobility: \"knight/dame\"\n---\n",
+				"age: 26\nservice: \"Army\"\nrank: \"Captain\"\nterms: 2\nstatus: \"alive\"\n" +
+				"departure: \"denied reenlistment\"\n" +
+				"skills:\n  - \"Brawling\"\n  - \"Rifle\"\ncredits: 30000\npension: 0\nnobility: \"knight/dame\"\n" +
+				"possessions: []\nctchargen: \"v1.2.3\"\n---\n",
 		},
 		"an unnamed civilian": {
 			func(c *chargen.Character) {
 				c.Events = recorded(rolled(7, 7, 7, 7, 7, 7), civilian())
 			},
-			"---\nname:\nupp: \"777777\"\n" +
+			"---\nname:\naliases: []\nupp: \"777777\"\n" +
 				"strength: 7\ndexterity: 7\nendurance: 7\nintelligence: 7\neducation: 7\nsocial: 7\n" +
-				"age: 18\nterms: 0\nstatus: \"alive\"\nskills: []\ncredits: 0\npension: 0\n---\n",
+				"age: 18\nservice:\nrank:\nterms: 0\nstatus: \"alive\"\ndeparture:\nskills: []\ncredits: 0\npension: 0\n" +
+				"nobility:\npossessions: []\nctchargen:\n---\n",
 		},
 		// What a referee types is escaped, not trusted: quotes, a colon, a
 		// hash, a backslash and a letter outside ASCII all read back as typed.
@@ -490,10 +563,11 @@ func TestANoteOpensWithItsProperties(t *testing.T) {
 				c.Events = recorded(rolled(6, 6, 6, 6, 6, 6), skilled(traveller.Skill{Name: pilot, Level: 1}),
 					enlisted(traveller.Scouts), opened(3), traveller.DiedFact{Term: 3, Age: traveller.NewAge(30)})
 			},
-			"---\nname:\nupp: \"666666\"\n" +
+			"---\nname:\naliases: []\nupp: \"666666\"\n" +
 				"strength: 6\ndexterity: 6\nendurance: 6\nintelligence: 6\neducation: 6\nsocial: 6\n" +
-				"age: 30\nservice: \"Scouts\"\nterms: 3\nstatus: \"dead\"\ndeparture: \"killed by the survival throw\"\n" +
-				"skills:\n  - \"Pilot-1\"\ncredits: 0\npension: 0\n---\n",
+				"age: 30\nservice: \"Scouts\"\nrank:\nterms: 3\nstatus: \"dead\"\n" +
+				"departure: \"killed by the survival throw\"\n" +
+				"skills:\n  - \"Pilot\"\ncredits: 0\npension: 0\nnobility:\npossessions: []\nctchargen:\n---\n",
 		},
 	} {
 		note := noteOf(tc.change)
@@ -501,6 +575,31 @@ func TestANoteOpensWithItsProperties(t *testing.T) {
 			got, _, _ := strings.Cut(note, "\n# ")
 			t.Errorf("%s: the note opens\n%s\nwant\n%s", name, got, tc.want)
 		}
+	}
+}
+
+// Each possession is one item: two passages are two, and a Free Trader
+// received again is still the one ship (#475).
+//
+// Holds: Possessions are one item each.
+func TestPossessionsAreOneItemEach(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = recorded(rolled(7, 7, 7, 7, 7, 7), enlisted(traveller.Merchants), opened(5),
+			traveller.RetiredFact{After: 5, Age: traveller.NewAge(38)},
+			traveller.PassageFact{Class: traveller.LowPassage},
+			traveller.PassageFact{Class: traveller.LowPassage},
+			traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.FreeTrader, Tons: 200, PaymentYears: 40}},
+			traveller.FreeTraderAgainFact{Ship: traveller.Ship{
+				Kind: traveller.FreeTrader, Tons: 200, Years: 10, PaymentYears: 30,
+			}})
+	})
+
+	const want = "\npossessions:\n  - \"Low Passage\"\n  - \"Low Passage\"\n  - \"Free Trader\"\nctchargen:\n---\n"
+
+	if !strings.Contains(note, want) {
+		t.Errorf("the properties do not read %q:\n%s", want, note)
 	}
 }
 
@@ -544,7 +643,7 @@ func summaryCases() map[string]noteCase {
 			func(c *chargen.Character) {
 				c.Events = recorded(enlisted(traveller.Army), opened(2),
 					traveller.RaisedFact{How: traveller.Commissioned, Rank: 2, Name: captain},
-					traveller.ForcedOutFact{After: 2, Age: traveller.NewAge(26)},
+					traveller.DeniedReenlistmentFact{After: 2, Age: traveller.NewAge(26)},
 					skilled(
 						traveller.Skill{Name: "Brawling", Level: 1},
 						traveller.Skill{Name: "Medical", Level: 1},
@@ -552,7 +651,7 @@ func summaryCases() map[string]noteCase {
 						traveller.Skill{Name: "Tactics", Level: 1},
 					), traveller.CashFact{Cash: 30000, Total: 30000})
 			},
-			"Army Captain, 2 terms, forced out at 26. Known for Rifle-2. " +
+			"Army Captain, 2 terms, denied reenlistment at 26. Known for Rifle-2. " +
 				"Musters out with CR 30000.",
 		},
 		"a merchant with a ship": {
@@ -605,7 +704,7 @@ func TestAnUnnamedNoteIsHeadedByItsTitle(t *testing.T) {
 			func(c *chargen.Character) {
 				c.Events = recorded(rolled(9, 3, 8, 7, 8, 8), enlisted(traveller.Army), opened(1),
 					traveller.RaisedFact{How: traveller.Commissioned, Rank: 2, Name: captain},
-					traveller.ForcedOutFact{After: 1, Age: traveller.NewAge(22)})
+					traveller.DeniedReenlistmentFact{After: 1, Age: traveller.NewAge(22)})
 			},
 			"\n# Army Captain 938788\n",
 		},
@@ -717,7 +816,8 @@ func enlisted(service traveller.ServiceName) traveller.EnlistedFact {
 	return traveller.EnlistedFact{Service: service, Accepted: true}
 }
 
-// draftedAfter is the throw that refused him, and the draft that took him.
+// draftedAfter is the throw that refused enlistment, and the draft that
+// followed.
 func draftedAfter(refused, into traveller.ServiceName) []traveller.Fact {
 	return []traveller.Fact{traveller.EnlistedFact{Service: refused}, traveller.DraftedFact{Service: into}}
 }

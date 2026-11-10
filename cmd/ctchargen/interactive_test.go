@@ -160,7 +160,7 @@ func TestAQuestionSaysHowToAnswerIt(t *testing.T) {
 	shown := mustRunTogether(t, []string{cmdNew},
 		io.MultiReader(strings.NewReader("army\n\n"), answers("1", 300)))
 
-	const menu = "  6) Other (enlistment 3+, and you earn +0)\nanswer 1-6> "
+	const menu = "  6) Other (enlistment 3+, DM +0)\nanswer 1-6> "
 
 	for _, want := range []string{
 		// The range, at the prompt, before anything was typed.
@@ -353,12 +353,13 @@ func TestAThrowsQuestionShowsTheThrow(t *testing.T) {
 		withDice(draftedWalked.roller(t)))
 
 	for _, want := range []string{
-		"\nAttempt a commission this term? (commission 9+, DM +1; p. 6 names no cost for a failure)\n" +
+		"\nAttempt a commission this term? (commission 9+, DM +1 for Education 7+; p. 6 names no cost for a failure)\n" +
 			"  1) yes\n  2) no\nanswer 1-2> ",
-		"\nAttempt a promotion this term? (promotion 9+, DM +1; p. 6 names no cost for a failure)\n" +
+		"\nAttempt a promotion this term? (promotion 9+, DM +1 for Social Standing 8+; p. 6 names no cost for a failure)\n" +
 			"  1) yes\n  2) no\nanswer 1-2> ",
 		"\nThe term is over. What now? (pp. 6-7, 21)\n" +
-			"  1) continue (next term's survival 6+, DM +2, before any aging)\n  2) discharge\nanswer 1-2> ",
+			"  1) continue (next term's survival 6+, DM +2 for Endurance 8+, before any aging)\n" +
+			"  2) discharge\nanswer 1-2> ",
 	} {
 		if !strings.Contains(shown, want) {
 			t.Errorf("the session never asked\n%s", want)
@@ -385,12 +386,12 @@ func TestTheEnlistmentMenuShowsEachThrow(t *testing.T) {
 	shown := mustRunTogether(t, []string{cmdNew}, answers("1", 300), withDice(draftedWalked.roller(t)))
 
 	const want = "" +
-		"  1) Navy (enlistment 8+, and you earn +2)\n" +
-		"  2) Marines (enlistment 9+, and you earn +0)\n" +
-		"  3) Army (enlistment 5+, and you earn +3)\n" +
-		"  4) Scouts (enlistment 7+, and you earn +1)\n" +
-		"  5) Merchants (enlistment 7+, and you earn +3)\n" +
-		"  6) Other (enlistment 3+, and you earn +0)\n"
+		"  1) Navy (enlistment 8+, DM +2 for Education 9+)\n" +
+		"  2) Marines (enlistment 9+, DM +0)\n" +
+		"  3) Army (enlistment 5+, DM +3 for Dexterity 6+, Endurance 5+)\n" +
+		"  4) Scouts (enlistment 7+, DM +1 for Intelligence 6+)\n" +
+		"  5) Merchants (enlistment 7+, DM +3 for Strength 7+, Intelligence 6+)\n" +
+		"  6) Other (enlistment 3+, DM +0)\n"
 
 	if !strings.Contains(shown, want) {
 		t.Errorf("the enlistment menu is not\n%s\nin\n%s", want, shown)
@@ -521,7 +522,7 @@ func TestTheQuestionsStayOutOfTheNote(t *testing.T) {
 		t.Fatal("the note holds no choice the player made, so it asserts nothing about who answered")
 	}
 
-	if strings.Contains(note, "policy chose") || !strings.Contains(note, "every choice answered by the player.") {
+	if strings.Contains(note, "policy chose") {
 		t.Errorf("a guided note credits the policy with a choice:\n%s", note)
 	}
 }

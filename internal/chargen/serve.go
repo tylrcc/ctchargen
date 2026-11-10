@@ -96,10 +96,10 @@ func (r *run) term(term traveller.Term) (bool, error) {
 // Implements: Survival throw; failure is death [1:5].
 // Implements: The dead character's age and term [1:5, 9 (E004)].
 func (r *run) survive(term traveller.Term) bool {
-	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.profile))
-	seq := r.record.throw("survival", throw)
+	survival := r.against(r.service.Survival)
+	seq := r.record.throw("survival", survival)
 
-	if throw.succeeded {
+	if survival.succeeded {
 		r.record.outcomef(seq, nil, "survived term %d", term)
 
 		return true
@@ -119,7 +119,17 @@ func (r *run) survive(term traveller.Term) bool {
 // it: the printed target, and the DM the character's characteristics earn
 // against it now.
 func (r *run) odds(throw rules.Throw) traveller.Odds {
-	return traveller.Odds{Target: throw.Target, DM: throw.Modifier(r.profile)}
+	return traveller.Odds{Target: throw.Target, DM: throw.Modifier(r.profile), From: throw.Met(r.profile)}
+}
+
+// against makes a throw the page prints with characteristic DMs: the target,
+// the DM the character's characteristics earn now, and what earned it.
+func (r *run) against(printed rules.Throw) throw {
+	made := roll(r.roll, printed.Target, printed.Modifier(r.profile))
+
+	made.from = printed.Met(r.profile)
+
+	return made
 }
 
 // grantEligibility adds the term's skill eligibilities, per the Basic Skill

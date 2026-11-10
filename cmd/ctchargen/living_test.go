@@ -13,6 +13,10 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
+// eachNote is a line every note carries once, its generation record's
+// heading, so counting it counts the notes a run wrote.
+const eachNote = "## Generation record"
+
 // scouts is the service the report used, and the one that kills most.
 const (
 	scouts = "scouts"
@@ -143,7 +147,7 @@ func TestAFailedSearchCountsOnce(t *testing.T) {
 		t.Errorf("the search reported %q, want it to say it %s", err, want)
 	}
 
-	if notes := strings.Count(out.String(), "Keep this note whole"); notes != 1 {
+	if notes := strings.Count(out.String(), eachNote); notes != 1 {
 		t.Errorf("%d notes streamed, want the one survivor", notes)
 	}
 
@@ -175,8 +179,8 @@ func livingCount(t *testing.T, notes string) census {
 		}
 	}
 
-	if found.members != strings.Count(notes, "Keep this note whole") {
-		t.Fatalf("%d headlines for %d notes", found.members, strings.Count(notes, "Keep this note whole"))
+	if found.members != strings.Count(notes, eachNote) {
+		t.Fatalf("%d headlines for %d notes", found.members, strings.Count(notes, eachNote))
 	}
 
 	return found
@@ -223,12 +227,12 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 		departure traveller.Departure
 		fatal     bool
 	}{
-		"discharged": {traveller.Discharged{}, false},
-		"forced out": {traveller.ForcedOut{}, false},
-		"retired":    {traveller.Retired{}, false},
-		"survival":   {traveller.KilledBySurvivalThrow{}, true},
-		"medical":    {traveller.KilledByMedicalCrisis{Characteristic: traveller.Endurance}, true},
-		"no service": {nil, false},
+		"discharged":          {traveller.Discharged{}, false},
+		"denied reenlistment": {traveller.DeniedReenlistment{}, false},
+		"retired":             {traveller.Retired{}, false},
+		"survival":            {traveller.KilledBySurvivalThrow{}, true},
+		"medical":             {traveller.KilledByMedicalCrisis{Characteristic: traveller.Endurance}, true},
+		"no service":          {nil, false},
 	} {
 		if got := traveller.Fatal(tc.departure); got != tc.fatal {
 			t.Errorf("%s: fatal is %v, want %v", name, got, tc.fatal)
@@ -236,32 +240,28 @@ func TestOnlyTheTwoDeathsCountAsDying(t *testing.T) {
 	}
 }
 
-// A note names the policy that answered it, and only then.
+// A note says who made each choice, on the choice's own line: the policy on
+// an auto run, the player on a guided one, and never the other. A note that
+// credited the policy with a choice the player made would misdescribe how the
+// character was made.
 //
-// The line exists so a referee reading a note can tell which version of the
-// policy's answers made it, under which strategies. On a character he walked
-// by hand the policy answered nothing, and naming a policy that decided none
-// of it is a claim the note cannot support.
-//
-// Holds: A note names the policy that answered it.
-func TestOnlyANoteThePolicyAnsweredNamesOne(t *testing.T) {
+// Holds: A note says who made each choice.
+func TestANoteSaysWhoMadeEachChoice(t *testing.T) {
 	t.Parallel()
 
-	policyLine := fmt.Sprintf("answered by the policy, version %d: career %s,", chargen.PolicyVersion, serve)
-
 	// Each walks a scripted path that lives to be asked: random dice can kill
-	// a character in his first survival throw, before any choice is put.
+	// a character at the first survival throw, before any choice is put.
 	for name, tc := range map[string]struct {
-		args  []string
-		in    io.Reader
-		walk  walk
-		wants bool
+		args          []string
+		in            io.Reader
+		walk          walk
+		made, notMade string
 	}{
 		"the policy answered": {
-			[]string{cmdNew, flagAuto, flagService, other}, nil, otherByPolicy, true,
+			[]string{cmdNew, flagAuto, flagService, other}, nil, otherByPolicy, ": policy chose ", ": player chose ",
 		},
 		"the player answered": {
-			[]string{cmdNew, flagService, other}, answers("1", 300), otherWalked, false,
+			[]string{cmdNew, flagService, other}, answers("1", 300), otherWalked, ": player chose ", ": policy chose ",
 		},
 	} {
 		var out strings.Builder
@@ -273,13 +273,8 @@ func TestOnlyANoteThePolicyAnsweredNamesOne(t *testing.T) {
 			continue
 		}
 
-		if named := strings.Contains(out.String(), "answered by the policy"); named != tc.wants {
-			t.Errorf("%s: names a policy = %v, want %v", name, named, tc.wants)
-		}
-
-		if tc.wants && !strings.Contains(out.String(), policyLine) {
-			t.Errorf("%s: does not name version %d under the default career:\n%s",
-				name, chargen.PolicyVersion, out.String())
+		if !strings.Contains(out.String(), tc.made) || strings.Contains(out.String(), tc.notMade) {
+			t.Errorf("%s: the record does not credit every choice to the one who made it:\n%s", name, out.String())
 		}
 	}
 }

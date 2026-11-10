@@ -52,6 +52,9 @@ type ThrowEvent struct {
 	DM        int
 	Target    Target
 	Succeeded bool
+
+	// DMFrom is each characteristic DM met, which DM sums (#487).
+	DMFrom []Prerequisite
 }
 
 // RollEvent records a roll with nothing to meet: the draft die, a skills
@@ -110,9 +113,9 @@ type OutcomeEvent struct {
 	Description string
 
 	// Fact is what the outcome did, typed, wherever a fact about the character
-	// comes from it: Character's folds read every one (#441), the service
-	// history leaving out what mustering out applied. Its Description is then
-	// its String (#412).
+	// comes from it: Character's folds read every one (#441), and the service
+	// history files what mustering out applied after the terms (#490). Its
+	// Description is then its String (#412).
 	Fact Fact
 }
 

@@ -2,6 +2,8 @@ package main
 
 import (
 	"io"
+	"slices"
+	"strconv"
 	"strings"
 	"testing"
 )
@@ -83,13 +85,13 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 	}
 }
 
-// The note, and that it carries the sheet, the generation record and what
-// wrote it. The command is what fills the build, so a note it writes says
-// which tool wrote it where a test-generated one says nothing; and so does
-// every member of a batch, which generates on a path of its own: one that
-// skipped the build would ship unnoticed (#282).
+// The note, and that it carries the sheet, the generation record and the
+// build that wrote it, in its ctchargen property. The command is what fills
+// the build, so a note it writes names it where a test-generated one leaves
+// it empty; and so does every member of a batch, which generates on a path of
+// its own: one that skipped the build would ship unnoticed (#282).
 //
-// Holds: The note names its ruleset and the build that wrote it.
+// Holds: A note names the build that wrote it.
 func TestRunWritesTheNote(t *testing.T) {
 	t.Parallel()
 
@@ -99,13 +101,9 @@ func TestRunWritesTheNote(t *testing.T) {
 	}{
 		"the sheet":             {[]string{cmdNew, flagAuto, flagService, other}, "UPP "},
 		"the generation record": {[]string{cmdNew, flagAuto, flagService, other}, "## Generation record"},
-		"the ruleset": {
-			[]string{cmdNew, flagAuto, flagService, other},
-			"Generated under Classic Traveller, Books 1-3",
-		},
-		"the build":       {[]string{cmdNew, flagAuto, flagService, other}, " by ctchargen "},
-		"a batch's build": {[]string{cmdBatch, flagCount, "1", flagService, other}, " by ctchargen "},
-		"version":         {[]string{cmdVersion}, "ctchargen"},
+		"the build":             {[]string{cmdNew, flagAuto, flagService, other}, "\nctchargen: \""},
+		"a batch's build":       {[]string{cmdBatch, flagCount, "1", flagService, other}, "\nctchargen: \""},
+		"version":               {[]string{cmdVersion}, "ctchargen"},
 	} {
 		var out strings.Builder
 
@@ -137,19 +135,28 @@ func TestTheNoteCarriesTheNameGiven(t *testing.T) {
 	}
 }
 
-// An auto run that names no strategy applies chargen.DefaultPolicy, and its
-// note says so. The three names are typed out, not read from DefaultPolicy,
-// so a default changed there is caught here, on the command a referee runs
-// (#367).
+// An auto run that names no strategy applies chargen.DefaultPolicy. The three
+// names are typed out, not read from DefaultPolicy, so a default changed there
+// is caught here, at the flags a referee types (#367).
 func TestAnAutoRunNamingNoStrategyAppliesTheDefault(t *testing.T) {
 	t.Parallel()
 
-	note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other}, nil)
+	flags := declareNewFlags()
 
-	const want = "answered by the policy, version 4: career serve, skills advanced, muster cash."
+	err := flags.set.Parse([]string{flagAuto})
+	if err != nil {
+		t.Fatal(err)
+	}
 
-	if !strings.Contains(note, want) {
-		t.Errorf("an auto run naming no strategy does not say %q:\n%s", want, note)
+	_, policy, err := flags.inputs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got := []string{policy.Career.String(), policy.Skills.String(), policy.Muster.String()}; !slices.Equal(
+		got, []string{"serve", "advanced", "cash"},
+	) {
+		t.Errorf("an auto run naming no strategy applies %v, want serve, advanced and cash", got)
 	}
 }
 
@@ -184,4 +191,71 @@ func mustRunTogether(t *testing.T, args []string, in io.Reader, options ...optio
 	}
 
 	return both.String()
+}
+
+// A note's ctchargen property is the version of the build that wrote it, as
+// the version subcommand reports it (#476): a vault can query which build
+// wrote a note, and the key already names the tool, so the module path is
+// left out.
+//
+// Holds: A note's ctchargen property is the build's version.
+func TestTheCtchargenPropertyIsTheBuildsVersion(t *testing.T) {
+	t.Parallel()
+
+	var reported, note strings.Builder
+
+	err := run([]string{cmdVersion}, nil, &reported, io.Discard)
+	if err != nil {
+		t.Fatalf("version: %v", err)
+	}
+
+	fields := strings.Fields(reported.String())
+	if len(fields) == 0 {
+		t.Fatal("the version subcommand reported nothing")
+	}
+
+	version := fields[len(fields)-1]
+
+	err = run([]string{cmdNew, flagAuto}, nil, &note, io.Discard)
+	if err != nil {
+		t.Fatalf("new --auto: %v", err)
+	}
+
+	if want := "\nctchargen: " + strconv.Quote(version) + "\n"; !strings.Contains(note.String(), want) {
+		t.Errorf("the note's properties do not carry %q:\n%s", want, note.String())
+	}
+}
+
+// An auto run applies the strategies given, all the way to the record: under
+// --career oneterm the policy leaves after the first term, where the default
+// would continue. The footer used to show the strategies; with it gone (#474's
+// PR), the choice they decide is what shows them.
+//
+// The dice are live, and a character can die before the end of the first term
+// is asked about, so runs are made until one reaches it.
+func TestAnAutoRunAppliesTheStrategiesGiven(t *testing.T) {
+	t.Parallel()
+
+	const (
+		attempts = 100
+		asked    = "leave the service or remain for another term (pp. 6-7, 21): "
+	)
+
+	for range attempts {
+		note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagCareer, "oneterm"}, nil)
+
+		for line := range strings.Lines(note) {
+			if !strings.Contains(line, asked) {
+				continue
+			}
+
+			if !strings.Contains(line, "policy chose discharge from") {
+				t.Errorf("--career oneterm did not leave after the first term:\n%s", line)
+			}
+
+			return
+		}
+	}
+
+	t.Fatalf("no run in %d reached the end of a term", attempts)
 }

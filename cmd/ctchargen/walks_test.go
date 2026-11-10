@@ -112,7 +112,7 @@ var otherKilled = walk{
 }
 
 // navyOfficer is the Navy under --career oneterm: commissioned Lieutenant in
-// his one term, then forced out.
+// the one term, then denied reenlistment.
 var navyOfficer = walk{
 	name: "navyOfficer",
 	dice: []int{

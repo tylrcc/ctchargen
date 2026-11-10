@@ -1,6 +1,9 @@
 package traveller
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Intent is what a character means to do at the end of a term, once the
 // reenlistment throw has been made and was neither a 12 nor a failure
@@ -153,6 +156,34 @@ func (c ChoicePoint) String() string {
 type Odds struct {
 	Target Target
 	DM     int
+
+	// From is each characteristic DM the character meets, which DM sums
+	// (#487).
+	From []Prerequisite
+}
+
+// Prerequisite is a characteristic DM met: the characteristic and the
+// threshold the page prints for it (p. 10, "if the characters have the
+// necessary prerequisites"). It is what a DM is earned by, so a referee can
+// check the DM against the page (#487).
+type Prerequisite struct {
+	Characteristic Characteristic
+	Threshold      Target
+}
+
+// String is the prerequisite as the page prints it: Intelligence 8+.
+func (p Prerequisite) String() string { return fmt.Sprintf("%v %v", p.Characteristic, p.Threshold) }
+
+// Prerequisites is the prerequisites met, as the page prints them, joined:
+// Dexterity 6+, Endurance 5+. The record and the session both say a DM's
+// sources this way.
+func Prerequisites(met []Prerequisite) string {
+	words := make([]string, 0, len(met))
+	for _, prerequisite := range met {
+		words = append(words, prerequisite.String())
+	}
+
+	return strings.Join(words, ", ")
 }
 
 // Earned is how many skills rolls a term has given, by what gave them: the

@@ -280,3 +280,27 @@ func TestNoGenerationRecordSkipsANumber(t *testing.T) {
 		}
 	}
 }
+
+// pronoun is a pronoun a sentence about a character would use. A character
+// has no sex in these rules (p. 8, "Any character is potentially of any race
+// or of either sex"), so the note names none (#459).
+var pronoun = regexp.MustCompile(`(?i)\b(he|him|his|himself|she|her|hers|herself)\b`)
+
+// No note uses a pronoun for its character, on the sheet or in the record
+// (#459). Every fixture's note is read, so a pronoun any path can print is
+// found.
+//
+// Holds: No note uses a pronoun for its character.
+func TestNoNoteUsesAPronoun(t *testing.T) {
+	t.Parallel()
+
+	for _, fixture := range fixtures {
+		note := render.Note(fixture.generate(t))
+
+		for line := range strings.Lines(note) {
+			if found := pronoun.FindString(line); found != "" {
+				t.Errorf("%s says %q: %s", fixture.name, found, strings.TrimSpace(line))
+			}
+		}
+	}
+}

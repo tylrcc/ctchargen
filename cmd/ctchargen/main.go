@@ -59,10 +59,9 @@ type source func() chargen.Roller
 // to come from rather than a call at each generating site (#282).
 // TestRunWritesTheNote holds a new note and a batch member to carrying it.
 //
-// Implements: The note names its ruleset and the build that wrote it [ADR
-// 0002].
+// Implements: A note names the build that wrote it [ADR 0002].
 func (s source) options() []chargen.Option {
-	options := []chargen.Option{chargen.WithBuild(build())}
+	options := []chargen.Option{chargen.WithBuild(noteBuild())}
 
 	if s != nil {
 		options = append(options, chargen.WithRoller(s()))
@@ -174,7 +173,22 @@ func build() string {
 		return ""
 	}
 
-	return info.Main.Path + " " + buildVersion(info)
+	return info.Main.Path + " " + noteBuild()
+}
+
+// noteBuild is the build a note names: the version alone, since the note
+// names the tool already, in its ctchargen property and in "by ctchargen"
+// (#476). Nothing where no build information is embedded.
+//
+// Implements: A note's ctchargen property is the build's version
+// [Command line].
+func noteBuild() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return ""
+	}
+
+	return buildVersion(info)
 }
 
 func buildVersion(info *debug.BuildInfo) string {

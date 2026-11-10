@@ -78,7 +78,7 @@ func pick[T any](p *player, question string, from []T, name func(T) string) (T, 
 func (p *player) Service(from []traveller.EnlistmentOffer, _ chargen.Vary) (traveller.ServiceName, error) {
 	offer, err := pick(p, "Which service will you try to enlist in? (p. 10)", from,
 		func(o traveller.EnlistmentOffer) string {
-			return fmt.Sprintf("%v (enlistment %v, and you earn %+d)", o.Service, o.Target, o.DM)
+			return fmt.Sprintf("%v (enlistment %s)", o.Service, oddsText(o.Odds))
 		})
 
 	return offer.Service, err
@@ -122,9 +122,16 @@ func (p *player) AttemptPromotion(odds traveller.Odds) (bool, error) {
 	))
 }
 
-// oddsText is a throw as the questions show it: its target and its DM.
+// oddsText is a throw as the questions show it: its target, its DM, and the
+// characteristics the DM is earned by, as the page prints them (#487).
 func oddsText(odds traveller.Odds) string {
-	return fmt.Sprintf("%v, DM %+d", odds.Target, odds.DM)
+	text := fmt.Sprintf("%v, DM %+d", odds.Target, odds.DM)
+
+	if len(odds.From) == 0 {
+		return text
+	}
+
+	return text + " for " + traveller.Prerequisites(odds.From)
 }
 
 // SkillTable says which of the term's rolls this is and why the term has

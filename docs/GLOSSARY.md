@@ -7,8 +7,7 @@ A Classic Traveller character generator holding to the © 1977 text of Books
 
 **Note**:
 The markdown the tool writes for one character: its properties, its heading
-and summary, the sheet, then the generation record, then what wrote it and
-what to keep (ADR 0006).
+and summary, the sheet, then the generation record, which ends it (ADR 0006).
 _Avoid_: Output, result, file
 
 **Record**:
@@ -24,9 +23,8 @@ _Avoid_: Career (the policy's career strategy), log (the events)
 
 **Auto run**:
 A generation the policy answers, every choice point of it: `new --auto`, and
-every batch, which has nobody else to ask. Its
-note names the policy, the version of what it answers and its strategies,
-whether or not the policy was asked anything.
+every batch, which has nobody else to ask. Its record credits every choice to
+the policy.
 _Avoid_: Automatic mode, batch (a batch is many auto runs)
 
 **Batch**:
@@ -43,8 +41,8 @@ A member's place in its batch, the number its note's name opens with.
 _Avoid_: Index, slot
 
 **Guided run**:
-A generation a person answers, every choice point of it. Its note names no
-policy, and says the player made every choice.
+A generation a person answers, every choice point of it. Its record credits
+every choice to the player.
 _Avoid_: Interactive mode (for the note's fact), manual run
 
 **Replay**:

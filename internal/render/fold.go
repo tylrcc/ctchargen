@@ -48,8 +48,8 @@ func (d *departureFold) Discharged() error {
 	return nil
 }
 
-func (d *departureFold) ForcedOut() error {
-	d.out = departureView{How: "forced out"}
+func (d *departureFold) DeniedReenlistment() error {
+	d.out = departureView{How: "denied reenlistment"}
 
 	return nil
 }
@@ -121,6 +121,7 @@ type entry struct {
 	Chosen       string
 	Because      int
 	Description  string
+	DMFrom       string
 }
 
 // entryOf folds a domain event into its entry.
@@ -145,6 +146,7 @@ func (e *entryFold) Throw(from traveller.ThrowEvent) error {
 	e.out = entry{
 		Seq: from.Seq, Kind: kindThrow, Step: from.Step, Dice: from.Dice,
 		DM: from.DM, Target: from.Target.String(), Total: from.Total(), Succeeded: from.Succeeded,
+		DMFrom: traveller.Prerequisites(from.DMFrom),
 	}
 
 	return nil

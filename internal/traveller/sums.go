@@ -80,9 +80,9 @@ func Fatal(departure Departure) bool {
 // three others are ways of leaving alive.
 type fatalDepartureFold struct{ fatal bool }
 
-func (*fatalDepartureFold) Discharged() error { return nil }
-func (*fatalDepartureFold) ForcedOut() error  { return nil }
-func (*fatalDepartureFold) Retired() error    { return nil }
+func (*fatalDepartureFold) Discharged() error         { return nil }
+func (*fatalDepartureFold) DeniedReenlistment() error { return nil }
+func (*fatalDepartureFold) Retired() error            { return nil }
 
 func (f *fatalDepartureFold) KilledBySurvivalThrow() error {
 	f.fatal = true
@@ -214,7 +214,7 @@ type Departure interface {
 // is death at all).
 type DepartureCases interface {
 	Discharged() error
-	ForcedOut() error
+	DeniedReenlistment() error
 	Retired() error
 	KilledBySurvivalThrow() error
 	KilledByMedicalCrisis(characteristic Characteristic) error
@@ -223,9 +223,9 @@ type DepartureCases interface {
 // Discharged is leaving by choice before the fifth term ends (pp. 6-7).
 type Discharged struct{}
 
-// ForcedOut is a failed reenlistment throw: "reenlistment has been denied,
+// DeniedReenlistment is a failed reenlistment throw: "reenlistment has been denied,
 // and the person must leave the service" (p. 6).
-type ForcedOut struct{}
+type DeniedReenlistment struct{}
 
 // Retired is leaving at the end of the fifth term or later, which p. 21
 // makes retirement by definition: "A character who leaves the service at the
@@ -241,14 +241,14 @@ type KilledBySurvivalThrow struct{}
 type KilledByMedicalCrisis struct{ Characteristic Characteristic }
 
 func (Discharged) Fold(c DepartureCases) error            { return c.Discharged() }
-func (ForcedOut) Fold(c DepartureCases) error             { return c.ForcedOut() }
+func (DeniedReenlistment) Fold(c DepartureCases) error    { return c.DeniedReenlistment() }
 func (Retired) Fold(c DepartureCases) error               { return c.Retired() }
 func (KilledBySurvivalThrow) Fold(c DepartureCases) error { return c.KilledBySurvivalThrow() }
 func (k KilledByMedicalCrisis) Fold(c DepartureCases) error {
 	return c.KilledByMedicalCrisis(k.Characteristic)
 }
 func (Discharged) sealedDeparture()            {}
-func (ForcedOut) sealedDeparture()             {}
+func (DeniedReenlistment) sealedDeparture()    {}
 func (Retired) sealedDeparture()               {}
 func (KilledBySurvivalThrow) sealedDeparture() {}
 func (KilledByMedicalCrisis) sealedDeparture() {}

@@ -11,8 +11,9 @@ import (
 // time: what entering the service granted, and what each term conferred, gave
 // and took (#401). Each gain is already the words the sheet prints.
 type historyView struct {
-	OnEntering []string
-	Terms      []termView
+	OnEntering  []string
+	Terms       []termView
+	MusteredOut []string
 }
 
 // termView is one term of service. The term a survival throw ended carries
@@ -36,8 +37,9 @@ type raiseView struct {
 // projectHistory is the service history as the sheet tells it.
 func projectHistory(history chargen.ServiceHistory) historyView {
 	out := historyView{
-		OnEntering: gainWords(history.OnEntering),
-		Terms:      make([]termView, 0, len(history.Terms)),
+		OnEntering:  gainWords(history.OnEntering),
+		Terms:       make([]termView, 0, len(history.Terms)),
+		MusteredOut: gainWords(history.MusteredOut),
 	}
 
 	for _, term := range history.Terms {

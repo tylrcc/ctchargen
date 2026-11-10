@@ -4,8 +4,12 @@
 //
 // It names no erratum. The readings are the authority's record, not the
 // referee's (ADR 0007), so it does not import rules, where they are declared.
+// And it names the character by no pronoun: a character has no sex in these
+// rules (p. 8), and the note says none (#459).
 //
 // Implements: A note names no erratum [Generation record].
+//
+// Implements: No note uses a pronoun for its character [Sheet].
 //
 // The domain types are the interface, and the note is written from them
 // through one view, built once (viewOf), so the sheet and the generation
@@ -13,19 +17,19 @@
 package render
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
 // Note is the character as a referee keeps it: its properties, its heading
-// and summary and the sheet, then the generation record, which is every die thrown and every choice made and the
-// only way back to the character (ADR 0006).
+// and summary and the sheet, then the generation record, which is every die
+// thrown and every choice made and the only way back to the character (ADR
+// 0006). It ends with the record. The build that wrote it is a property, who
+// made each choice is on that choice's line, and the ruleset is the same on
+// every note, so nothing follows the record to say them again.
 //
-// It ends by saying what wrote it and what to keep. That is last because it
-// is not the character: a referee reads the headline and the possessions
-// first, and thinks about keeping the note only once he wants this one.
+// Implements: A note ends with its generation record [Generation record].
 func Note(character *chargen.Character) string {
 	r := viewOf(character)
 
@@ -35,38 +39,8 @@ func Note(character *chargen.Character) string {
 	writeSheet(&out, r)
 	writeGenerationRecord(&out, r)
 
-	fmt.Fprintf(&out, "---\n\n%s\n\n%s\n", provenance(r), keepTheNote)
-
-	return out.String()
-}
-
-// keepTheNote is the line every note ends with. The dice are not seeded, so
-// without this line a note spun, read and liked would be a character
-// discarded the moment its generation record was cut from it (ADR 0001).
-const keepTheNote = "Keep this note whole: its generation record is the only way back to this character."
-
-// provenance says what the note was generated under, by which build, and who
-// answered its choices (ADR 0002): which books its page cites are to, which
-// code a referee is reading or filing a report against, and whether a policy
-// or a person made the choices.
-//
-// A note generated in-process by a test names no build, so a golden does not
-// differ by machine.
-//
-// Implements: A note names the ruleset, the build and who answered it
-// [Generation record].
-func provenance(r view) string {
-	generated := "Generated under " + r.Ruleset
-	if r.Build != "" {
-		generated += " by ctchargen " + r.Build
-	}
-
-	if r.Policy == nil {
-		return generated + "; every choice answered by the player."
-	}
-
-	return fmt.Sprintf("%s; every choice answered by the policy, version %d: career %s, skills %s, muster %s.",
-		generated, r.Policy.Version, r.Policy.Career, r.Policy.Skills, r.Policy.Muster)
+	// The record's last line ends the note, with no blank line after it.
+	return strings.TrimRight(out.String(), "\n") + "\n"
 }
 
 // Title is what a batch names a character's note by: his service and the

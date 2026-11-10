@@ -18,6 +18,11 @@ type ServiceHistory struct {
 	OnEntering []traveller.Gain
 
 	Terms []TermServed
+
+	// MusteredOut is what mustering out changed in the character: a
+	// characteristic a Table 1 row altered (p. 9), "applied to the character
+	// immediately" (p. 23), in the order rolled (#490).
+	MusteredOut []traveller.Gain
 }
 
 // TermServed is one term of service. The term a survival throw ended has
@@ -125,8 +130,8 @@ func (h *historyFold) Recovered(f traveller.RecoveredFact) error {
 func (*historyFold) Enlisted(traveller.EnlistedFact) error { return nil }
 
 // A characteristic as rolled is the sheet's, not the service's, and expertise
-// taken instead of a weapon is mustering out's, which the history leaves out
-// as it leaves out every result applied there.
+// taken instead of a weapon is on the sheet's skills, as the weapon would have
+// been on its possessions.
 func (*historyFold) Rolled(traveller.RolledFact) error       { return nil }
 func (*historyFold) Expertise(traveller.ExpertiseFact) error { return nil }
 
@@ -141,21 +146,21 @@ func (*historyFold) FreeTraderAgain(traveller.FreeTraderAgainFact) error { retur
 func (*historyFold) Pension(traveller.PensionFact) error                 { return nil }
 func (*historyFold) Titled(traveller.TitledFact) error                   { return nil }
 
-// How the character entered, the age each term left him at and how he left
-// are the sheet's to tell; a term is read from the step that opens it.
-func (*historyFold) Started(traveller.StartedFact) error           { return nil }
-func (*historyFold) Drafted(traveller.DraftedFact) error           { return nil }
-func (*historyFold) Declined(traveller.DeclinedFact) error         { return nil }
-func (*historyFold) Died(traveller.DiedFact) error                 { return nil }
-func (*historyFold) DiedOfCrisis(traveller.DiedOfCrisisFact) error { return nil }
-func (*historyFold) Retained(traveller.RetainedFact) error         { return nil }
-func (*historyFold) Reenlisted(traveller.ReenlistedFact) error     { return nil }
-func (*historyFold) Retired(traveller.RetiredFact) error           { return nil }
-func (*historyFold) ForcedOut(traveller.ForcedOutFact) error       { return nil }
-func (*historyFold) Discharged(traveller.DischargedFact) error     { return nil }
+// How the character entered, the age each term ended at and how the service
+// ended are the sheet's to tell; a term is read from the step that opens it.
+func (*historyFold) Started(traveller.StartedFact) error                       { return nil }
+func (*historyFold) Drafted(traveller.DraftedFact) error                       { return nil }
+func (*historyFold) Declined(traveller.DeclinedFact) error                     { return nil }
+func (*historyFold) Died(traveller.DiedFact) error                             { return nil }
+func (*historyFold) DiedOfCrisis(traveller.DiedOfCrisisFact) error             { return nil }
+func (*historyFold) Retained(traveller.RetainedFact) error                     { return nil }
+func (*historyFold) Reenlisted(traveller.ReenlistedFact) error                 { return nil }
+func (*historyFold) Retired(traveller.RetiredFact) error                       { return nil }
+func (*historyFold) DeniedReenlistment(traveller.DeniedReenlistmentFact) error { return nil }
+func (*historyFold) Discharged(traveller.DischargedFact) error                 { return nil }
 
-// gained files a gain where its source says the sheet tells it. A benefit
-// is on the sheet's possessions and characteristics, not its service record.
+// gained files a gain where its source says the sheet tells it: on entering,
+// at a rank, in a term, or at mustering out.
 func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {
 	switch source {
 	case traveller.OnEntering:
@@ -171,6 +176,7 @@ func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {
 	case traveller.InTerm:
 		h.serving().Gained = append(h.serving().Gained, gain)
 	case traveller.AtMusteringOut:
+		h.out.MusteredOut = append(h.out.MusteredOut, gain)
 	}
 }
 

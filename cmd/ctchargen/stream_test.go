@@ -52,13 +52,13 @@ func TestABatchToStandardOutputArrivesANoteAtATime(t *testing.T) {
 			out.writes, members)
 	}
 
-	if notes := strings.Count(out.got.String(), "Keep this note whole"); notes != members {
+	if notes := strings.Count(out.got.String(), eachNote); notes != members {
 		t.Errorf("%d notes for %d members", notes, members)
 	}
 
 	// One note after another, a blank line between each and the next, so each
 	// opens its own heading rather than running on from the last.
-	if apart := strings.Count(out.got.String(), "character.\n\n---\nname:"); apart != members-1 {
+	if apart := strings.Count(out.got.String(), "\n\n---\nname:"); apart != members-1 {
 		t.Errorf("%d notes set apart from the one before, want %d", apart, members-1)
 	}
 }

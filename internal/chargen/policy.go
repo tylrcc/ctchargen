@@ -51,25 +51,6 @@ type Policy struct {
 	Muster Muster
 }
 
-// PolicyVersion is the version of what --auto answers.
-//
-// Every auto run's note names it on its closing lines, beside the ruleset
-// that governed the rules and the build that wrote the note. Those two move for
-// reasons that have nothing to do with what --auto answers; this moves only
-// when an answer does.
-//
-// It is what a referee reading a record consults to tell which answers made
-// it. Without it he can see only what was answered, and `build` cannot tell
-// him which policy did - it changes when a comment changes.
-//
-// Changing what any Policy method answers is a bump, because it changes every
-// character --auto makes. A new choice point is not: no record was answered
-// differently before it, because the question was never asked. Version 2
-// draws the weapon rather than taking the first name; version 3 designates
-// the skills table he has trained on least (#34); version 4 draws the service
-// rather than taking the likeliest enlistment (#420).
-const PolicyVersion = 4
-
 // Career is the --auto career strategy: continue, retire, or take one term.
 //
 // It is a type and not a string because it names a closed set: a value

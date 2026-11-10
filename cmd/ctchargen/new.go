@@ -222,8 +222,8 @@ func writeCharacter(inputs chargen.Inputs, policy chargen.Policy, how newRenderi
 // This is the boundary the strategies are parsed at, and the only one: past
 // here a Career is a Career, and no part of the engine asks again whether it
 // is one of three. That is why chargen has no Validate any more (#41). The
-// strategies go into the policy and nowhere else, so an auto record names
-// the strategies that decided it because they are the policy's own.
+// strategies go into the policy and nowhere else, so what an auto run's
+// record credits to the policy is what those strategies decided.
 func (f characterFlags) inputs() (chargen.Inputs, chargen.Policy, error) {
 	policy, err := chargen.ParsePolicy(*f.career, *f.skills, *f.muster)
 	if err != nil {

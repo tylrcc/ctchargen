@@ -96,6 +96,11 @@ func choiceWords(point traveller.ChoicePoint) string {
 	return fmt.Sprintf("ChoicePoint(%d)", int(point))
 }
 
+// throwLine is a throw as the record reads it: the dice, the DM and the
+// characteristics it is earned by, the total, the target and whether it was
+// met.
+//
+// Implements: A throw's DM names what earned it [Generation record].
 func throwLine(event entry) string {
 	dice := make([]string, 0, len(event.Dice))
 	for _, die := range event.Dice {
@@ -106,6 +111,12 @@ func throwLine(event entry) string {
 
 	if event.DM != 0 {
 		line += fmt.Sprintf(" %+d", event.DM)
+	}
+
+	// The characteristics the DM is earned by, as the page prints them, so it
+	// can be checked against p. 10 (#487).
+	if event.DMFrom != "" {
+		line += " (" + event.DMFrom + ")"
 	}
 
 	// The total is printed whenever it is not simply the dice: a throw with
@@ -134,7 +145,7 @@ func outcomeLine(event entry) string {
 	line := fmt.Sprintf("%3d. %s", event.Seq, event.Description)
 
 	if event.Because != 0 {
-		line += fmt.Sprintf(" (from %d)", event.Because)
+		line += fmt.Sprintf(" (from step %d)", event.Because)
 	}
 
 	return line

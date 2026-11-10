@@ -13,8 +13,9 @@ import (
 
 // The service history is the service a term at a time: the grants on
 // entering it (E005), each commission or promotion with what p. 23 granted at
-// its rank, what each term's skill rolls gave, what aging took, and any
-// medical crisis survived (#401).
+// its rank, what each term's skill rolls gave, what aging took, any medical
+// crisis survived (#401), and what mustering out changed in the character
+// (#490).
 //
 // The literals are typed from each fixture's generation record, which is what the
 // history has to agree with, and not from the code that fills it. Three
@@ -78,6 +79,7 @@ func armyServeHistory() chargen.ServiceHistory {
 				Aged: []traveller.Change{change(traveller.Endurance, 6, 5)},
 			},
 		},
+		MusteredOut: gains(change(traveller.SocialStanding, 12, 13), change(traveller.Intelligence, 10, 11)),
 	}
 }
 
@@ -119,6 +121,7 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 				Aged:   []traveller.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 7, 6)},
 			},
 		},
+		MusteredOut: gains(change(traveller.Education, 11, 13), change(traveller.Intelligence, 10, 11)),
 	}
 }
 
@@ -149,6 +152,10 @@ func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 				Recovered: []traveller.Characteristic{traveller.Strength},
 			},
 		},
+		MusteredOut: gains(
+			change(traveller.Intelligence, 4, 5), change(traveller.Education, 8, 9),
+			change(traveller.Intelligence, 5, 6), change(traveller.Intelligence, 6, 7),
+		),
 	}
 }
 
@@ -185,6 +192,8 @@ func historyText(history chargen.ServiceHistory) string {
 	for _, term := range history.Terms {
 		fmt.Fprintf(&text, "\n  %+v", term)
 	}
+
+	fmt.Fprintf(&text, "\n  mustered out %+v", history.MusteredOut)
 
 	return text.String()
 }

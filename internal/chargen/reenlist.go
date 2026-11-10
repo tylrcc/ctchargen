@@ -121,22 +121,22 @@ func (r *run) settle(seq int, term traveller.Term, intent traveller.Intent) {
 // count rather than by how it came about, so a departure at or past the
 // retiring term is a retirement whatever brought it on.
 //
-// Below that term, denied - the reenlistment throw refused him - makes it
-// forced out, and otherwise discharged. It is passed in rather than inferred
+// Below that term, denied - the reenlistment throw refused the character -
+// makes it a denied reenlistment, and otherwise a discharge. It is passed in rather than inferred
 // from the words the record prints (#45), so a change of wording cannot change
 // the domain outcome; the words are the fact's.
 //
 // Implements: Leaving at the end of term 5 or later is retirement [1:21].
-// Implements: A departure below term 5 is forced out if the service refused
-// him, discharged if he chose to go [1:6, 21].
+// Implements: A departure below term 5 is a denied reenlistment if the service
+// refused it, a discharge if the character chose to go [1:6, 21].
 func (r *run) depart(seq int, term traveller.Term, denied bool) {
 	switch {
 	case term >= firstRetiringTerm:
 		r.departure = traveller.Retired{}
 		r.record.fact(seq, nil, traveller.RetiredFact{After: term, Age: r.atAge, Denied: denied})
 	case denied:
-		r.departure = traveller.ForcedOut{}
-		r.record.fact(seq, nil, traveller.ForcedOutFact{After: term, Age: r.atAge})
+		r.departure = traveller.DeniedReenlistment{}
+		r.record.fact(seq, nil, traveller.DeniedReenlistmentFact{After: term, Age: r.atAge})
 	default:
 		r.departure = traveller.Discharged{}
 		r.record.fact(seq, nil, traveller.DischargedFact{After: term, Age: r.atAge})
@@ -151,7 +151,7 @@ func (r *run) depart(seq int, term traveller.Term, denied bool) {
 // earned by the term count, not by the manner of leaving. P. 21: "A character
 // who leaves the service at the end of the 5th or later term of service is
 // considered to have retired, and receives retirement pay" — so a character
-// forced out by a failed reenlistment throw at the end of term 5 or later draws
+// denied reenlistment by a failed throw at the end of term 5 or later draws
 // it too. P. 21 also excludes the Scouts and Other services from retirement pay
 // entirely, whatever the term count.
 //

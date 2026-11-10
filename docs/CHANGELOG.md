@@ -5,6 +5,37 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- A note ends with its generation record. The closing line naming the
+  ruleset, the build and who answered is gone: the build is the `ctchargen`
+  property, each choice's line says whether the policy or the player made it,
+  and the ruleset is the same on every note. With it go the policy's version
+  and strategies, which nothing else said.
+- The note's properties take the shape `v1.0.0` freezes (#474). `skills` is the
+  skill names alone, one exact item each, so "which crew have Pilot?" is an
+  exact match (Dataview `econtains`, Bases `contains`). Every property is on
+  every note, empty or `[]` where there is none, `aliases` included (#480,
+  #477). Two are new: `possessions`, what mustering out gave besides cash,
+  one item each (#475), and `ctchargen`, the version of the build that wrote
+  the note (#476). The README lists each property's type (#481).
+- The record and the session say where each number comes from (#487). A
+  throw's DM names the characteristics it is earned by, as p. 10 prints them:
+  `rolled 3+4 +3 (Dexterity 6+, Endurance 5+) = 10`, and the session's
+  questions and enlistment menu say `DM +3 for Dexterity 6+, Endurance 5+`
+  where the menu said `and you earn +3`. An outcome names its cause as
+  `(from step N)`.
+- No note, and not the README, names a character by a pronoun: a character
+  has no sex in these rules (p. 8). The record reads "rejected by the Navy",
+  where it read "the Navy rejected him", and the sheet "(drafted after the
+  Navy refused enlistment)" (#459).
+- A failed reenlistment throw below term 5 reads "denied reenlistment", in
+  the `departure` property, the summary and the service record, where it read
+  "forced out", which nothing explained (#485).
+- The record says `mustering out, 1 roll`, where it said `1 rolls`, and a
+  characteristic a mustering-out benefit raised is on the sheet's service
+  record, after the departure line: `mustered out with Education +1` (#490).
+- A note no longer ends with "Keep this note whole: its generation record is
+  the only way back to this character." That advice was about the tool, and
+  the note is the character's record (#525).
 - The command line refuses what it cannot read one way, before anything is
   asked or written: `--count` is decimal digits only (`010` is ten, and
   `0x10` and `1_000` are refused); a flag given twice, or given an empty

@@ -129,13 +129,41 @@ type DM struct {
 func (t Throw) Modifier(p traveller.Profile) int {
 	total := 0
 
-	for _, dm := range t.DMs {
-		if dm.Threshold.Satisfied(p[dm.Characteristic]) {
-			total += dm.Amount
-		}
+	for _, dm := range t.met(p) {
+		total += dm.Amount
 	}
 
 	return total
+}
+
+// Met is each DM a profile meets on this throw, as the prerequisite the page
+// prints for it, in the order the page prints them: what Modifier sums, named
+// so the record can show where its DM came from (#487).
+func (t Throw) Met(p traveller.Profile) []traveller.Prerequisite {
+	met := t.met(p)
+	prerequisites := make([]traveller.Prerequisite, 0, len(met))
+
+	for _, dm := range met {
+		prerequisites = append(prerequisites, traveller.Prerequisite{
+			Characteristic: dm.Characteristic, Threshold: dm.Threshold,
+		})
+	}
+
+	return prerequisites
+}
+
+// met is each DM a profile meets on this throw: the one test both Modifier
+// and Met read.
+func (t Throw) met(p traveller.Profile) []DM {
+	var met []DM
+
+	for _, dm := range t.DMs {
+		if dm.Threshold.Satisfied(p[dm.Characteristic]) {
+			met = append(met, dm)
+		}
+	}
+
+	return met
 }
 
 // Commissions reports whether the service commissions at all. P. 10:

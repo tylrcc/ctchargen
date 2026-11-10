@@ -316,7 +316,7 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 
 // A strategy is the --auto policy's, so one given to a guided run is refused
 // rather than accepted and then ignored: the player answers every choice it
-// would have decided, and the record names no policy to carry it. The flag's
+// would have decided, and the record credits no choice to the policy. The flag's
 // own default is refused too, because what is refused is the operator setting
 // it, and every strategy flag has one.
 //

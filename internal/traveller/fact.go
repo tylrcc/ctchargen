@@ -45,7 +45,7 @@ type FactCases interface {
 	Retained(f RetainedFact) error
 	Reenlisted(f ReenlistedFact) error
 	Retired(f RetiredFact) error
-	ForcedOut(f ForcedOutFact) error
+	DeniedReenlistment(f DeniedReenlistmentFact) error
 	Discharged(f DischargedFact) error
 }
 
@@ -130,7 +130,7 @@ func (f EnlistedFact) String() string {
 		return fmt.Sprintf("enlisted in the %v", f.Service)
 	}
 
-	return fmt.Sprintf("the %v rejected him", f.Service)
+	return fmt.Sprintf("rejected by the %v", f.Service)
 }
 
 func (f RecoveredFact) String() string {
@@ -320,14 +320,14 @@ func (f RetiredFact) String() string {
 	return fmt.Sprintf("left the service after term %d and is retired: %s", f.After, why)
 }
 
-// ForcedOutFact is a failed reenlistment throw before the fifth term ends
+// DeniedReenlistmentFact is a failed reenlistment throw before the fifth term ends
 // (p. 6).
-type ForcedOutFact struct {
+type DeniedReenlistmentFact struct {
 	After Term
 	Age   Age
 }
 
-func (f ForcedOutFact) String() string {
+func (f DeniedReenlistmentFact) String() string {
 	return fmt.Sprintf("left the service after term %d: %s", f.After, denied)
 }
 
@@ -356,55 +356,55 @@ func (g gainWordsFold) Change(change Change) error {
 	return nil
 }
 
-func (f AppliedFact) Fold(c FactCases) error         { return c.Applied(f) }
-func (f WeaponPickedFact) Fold(c FactCases) error    { return c.WeaponPicked(f) }
-func (f RaisedFact) Fold(c FactCases) error          { return c.Raised(f) }
-func (f AgedFact) Fold(c FactCases) error            { return c.Aged(f) }
-func (f RecoveredFact) Fold(c FactCases) error       { return c.Recovered(f) }
-func (f EnlistedFact) Fold(c FactCases) error        { return c.Enlisted(f) }
-func (f RolledFact) Fold(c FactCases) error          { return c.Rolled(f) }
-func (f ExpertiseFact) Fold(c FactCases) error       { return c.Expertise(f) }
-func (f CashFact) Fold(c FactCases) error            { return c.Cash(f) }
-func (f PassageFact) Fold(c FactCases) error         { return c.Passage(f) }
-func (f TravellersAidFact) Fold(c FactCases) error   { return c.TravellersAid(f) }
-func (f WeaponReceivedFact) Fold(c FactCases) error  { return c.WeaponReceived(f) }
-func (f ShipReceivedFact) Fold(c FactCases) error    { return c.ShipReceived(f) }
-func (f FreeTraderAgainFact) Fold(c FactCases) error { return c.FreeTraderAgain(f) }
-func (f PensionFact) Fold(c FactCases) error         { return c.Pension(f) }
-func (f TitledFact) Fold(c FactCases) error          { return c.Titled(f) }
-func (f StartedFact) Fold(c FactCases) error         { return c.Started(f) }
-func (f DraftedFact) Fold(c FactCases) error         { return c.Drafted(f) }
-func (f DeclinedFact) Fold(c FactCases) error        { return c.Declined(f) }
-func (f DiedFact) Fold(c FactCases) error            { return c.Died(f) }
-func (f DiedOfCrisisFact) Fold(c FactCases) error    { return c.DiedOfCrisis(f) }
-func (f RetainedFact) Fold(c FactCases) error        { return c.Retained(f) }
-func (f ReenlistedFact) Fold(c FactCases) error      { return c.Reenlisted(f) }
-func (f RetiredFact) Fold(c FactCases) error         { return c.Retired(f) }
-func (f ForcedOutFact) Fold(c FactCases) error       { return c.ForcedOut(f) }
-func (f DischargedFact) Fold(c FactCases) error      { return c.Discharged(f) }
-func (StartedFact) sealedFact()                      {}
-func (DraftedFact) sealedFact()                      {}
-func (DeclinedFact) sealedFact()                     {}
-func (DiedFact) sealedFact()                         {}
-func (DiedOfCrisisFact) sealedFact()                 {}
-func (RetainedFact) sealedFact()                     {}
-func (ReenlistedFact) sealedFact()                   {}
-func (RetiredFact) sealedFact()                      {}
-func (ForcedOutFact) sealedFact()                    {}
-func (DischargedFact) sealedFact()                   {}
-func (CashFact) sealedFact()                         {}
-func (PassageFact) sealedFact()                      {}
-func (TravellersAidFact) sealedFact()                {}
-func (WeaponReceivedFact) sealedFact()               {}
-func (ShipReceivedFact) sealedFact()                 {}
-func (FreeTraderAgainFact) sealedFact()              {}
-func (PensionFact) sealedFact()                      {}
-func (TitledFact) sealedFact()                       {}
-func (EnlistedFact) sealedFact()                     {}
-func (RolledFact) sealedFact()                       {}
-func (ExpertiseFact) sealedFact()                    {}
-func (AppliedFact) sealedFact()                      {}
-func (WeaponPickedFact) sealedFact()                 {}
-func (RaisedFact) sealedFact()                       {}
-func (AgedFact) sealedFact()                         {}
-func (RecoveredFact) sealedFact()                    {}
+func (f AppliedFact) Fold(c FactCases) error            { return c.Applied(f) }
+func (f WeaponPickedFact) Fold(c FactCases) error       { return c.WeaponPicked(f) }
+func (f RaisedFact) Fold(c FactCases) error             { return c.Raised(f) }
+func (f AgedFact) Fold(c FactCases) error               { return c.Aged(f) }
+func (f RecoveredFact) Fold(c FactCases) error          { return c.Recovered(f) }
+func (f EnlistedFact) Fold(c FactCases) error           { return c.Enlisted(f) }
+func (f RolledFact) Fold(c FactCases) error             { return c.Rolled(f) }
+func (f ExpertiseFact) Fold(c FactCases) error          { return c.Expertise(f) }
+func (f CashFact) Fold(c FactCases) error               { return c.Cash(f) }
+func (f PassageFact) Fold(c FactCases) error            { return c.Passage(f) }
+func (f TravellersAidFact) Fold(c FactCases) error      { return c.TravellersAid(f) }
+func (f WeaponReceivedFact) Fold(c FactCases) error     { return c.WeaponReceived(f) }
+func (f ShipReceivedFact) Fold(c FactCases) error       { return c.ShipReceived(f) }
+func (f FreeTraderAgainFact) Fold(c FactCases) error    { return c.FreeTraderAgain(f) }
+func (f PensionFact) Fold(c FactCases) error            { return c.Pension(f) }
+func (f TitledFact) Fold(c FactCases) error             { return c.Titled(f) }
+func (f StartedFact) Fold(c FactCases) error            { return c.Started(f) }
+func (f DraftedFact) Fold(c FactCases) error            { return c.Drafted(f) }
+func (f DeclinedFact) Fold(c FactCases) error           { return c.Declined(f) }
+func (f DiedFact) Fold(c FactCases) error               { return c.Died(f) }
+func (f DiedOfCrisisFact) Fold(c FactCases) error       { return c.DiedOfCrisis(f) }
+func (f RetainedFact) Fold(c FactCases) error           { return c.Retained(f) }
+func (f ReenlistedFact) Fold(c FactCases) error         { return c.Reenlisted(f) }
+func (f RetiredFact) Fold(c FactCases) error            { return c.Retired(f) }
+func (f DeniedReenlistmentFact) Fold(c FactCases) error { return c.DeniedReenlistment(f) }
+func (f DischargedFact) Fold(c FactCases) error         { return c.Discharged(f) }
+func (StartedFact) sealedFact()                         {}
+func (DraftedFact) sealedFact()                         {}
+func (DeclinedFact) sealedFact()                        {}
+func (DiedFact) sealedFact()                            {}
+func (DiedOfCrisisFact) sealedFact()                    {}
+func (RetainedFact) sealedFact()                        {}
+func (ReenlistedFact) sealedFact()                      {}
+func (RetiredFact) sealedFact()                         {}
+func (DeniedReenlistmentFact) sealedFact()              {}
+func (DischargedFact) sealedFact()                      {}
+func (CashFact) sealedFact()                            {}
+func (PassageFact) sealedFact()                         {}
+func (TravellersAidFact) sealedFact()                   {}
+func (WeaponReceivedFact) sealedFact()                  {}
+func (ShipReceivedFact) sealedFact()                    {}
+func (FreeTraderAgainFact) sealedFact()                 {}
+func (PensionFact) sealedFact()                         {}
+func (TitledFact) sealedFact()                          {}
+func (EnlistedFact) sealedFact()                        {}
+func (RolledFact) sealedFact()                          {}
+func (ExpertiseFact) sealedFact()                       {}
+func (AppliedFact) sealedFact()                         {}
+func (WeaponPickedFact) sealedFact()                    {}
+func (RaisedFact) sealedFact()                          {}
+func (AgedFact) sealedFact()                            {}
+func (RecoveredFact) sealedFact()                       {}

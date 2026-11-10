@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -222,27 +223,43 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 }
 
 // A batch is always an auto run: it has nobody to ask, so it needs no flag to
-// say so (#336). `batch --count 1` writes a note that names the policy and
-// each strategy given,
-// and --auto, which no longer means anything to a batch, is the flag
-// package's own usage error rather than a word accepted and ignored. A
-// strategy is accepted without it, since it is always the policy's.
+// say so (#336). `batch --count 1` writes a note whose choices the policy
+// made, and the strategy flags parse into the policy it is given; --auto,
+// which no longer means anything
+// to a batch, is the flag package's own usage error rather than a word
+// accepted and ignored. A strategy is accepted without it, since it is
+// always the policy's.
 //
 // Holds: A batch is always an auto run, and takes no --auto.
 func TestABatchIsAlwaysAuto(t *testing.T) {
 	t.Parallel()
 
-	out, _ := mustRun(t, []string{
-		cmdBatch, flagCount, "1", flagCareer, "retire", flagSkills, "service", flagMuster, "goods",
-	}, nil)
+	given := []string{cmdBatch, flagCount, "1", flagCareer, "retire", flagSkills, "service", flagMuster, "goods"}
 
-	for _, want := range []string{"answered by the policy", "career retire", "skills service", "muster goods"} {
-		if !strings.Contains(out, want) {
-			t.Errorf("batch with all three strategies wrote no %s in its note:\n%s", want, out)
-		}
+	out, _ := mustRun(t, given, nil)
+	if !strings.Contains(out, ": policy chose ") || strings.Contains(out, ": player chose ") {
+		t.Errorf("a batch's note does not credit its choices to the policy:\n%s", out)
 	}
 
-	err := run([]string{cmdBatch, flagAuto, flagCount, "1"}, nil, io.Discard, io.Discard)
+	flags := declareBatchFlags()
+
+	err := flags.set.Parse(given[1:])
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	_, policy, err := flags.inputs()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if got := []string{policy.Career.String(), policy.Skills.String(), policy.Muster.String()}; !slices.Equal(
+		got, []string{"retire", "service", "goods"},
+	) {
+		t.Errorf("batch with all three strategies applies %v", got)
+	}
+
+	err = run([]string{cmdBatch, flagAuto, flagCount, "1"}, nil, io.Discard, io.Discard)
 
 	switch {
 	case err == nil:

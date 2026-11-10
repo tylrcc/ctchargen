@@ -14,3 +14,9 @@ carried (#232).
 
 Amended by ADR 0006: the ruleset and the build are named on the note's last
 lines rather than as record fields.
+
+Amended on 2026-11-10, with ADR 0006: the note no longer ends with lines
+naming the ruleset, the build and who answered. The build is the note's
+`ctchargen` property (#476), and who made each choice is on that choice's line
+in the record. The ruleset is the same on every note this tool writes, so the
+README says it once. The note still names what wrote it, in those two places.

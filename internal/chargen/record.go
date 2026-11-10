@@ -61,6 +61,7 @@ func (r *record) throw(step string, t throw) int {
 		DM:        t.modifier,
 		Target:    t.target,
 		Succeeded: t.succeeded,
+		DMFrom:    t.from,
 	})
 
 	return seq

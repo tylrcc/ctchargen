@@ -25,8 +25,7 @@ type view struct {
 	Departure  departureView
 	Nobility   *nobilityView
 	Attempt    attemptView
-	Ruleset    string
-	Policy     *policyView
+	ByPolicy   bool
 	Events     []entry
 	Build      string
 }
@@ -47,6 +46,8 @@ type skillView struct {
 }
 
 type shipView struct {
+	// Item is the ship as one possession: "Free Trader", "Scout ship".
+	Item         string
 	Kind         string
 	Tons         int
 	Years        int
@@ -80,38 +81,12 @@ type attemptView struct {
 	ByPolicy bool
 }
 
-// policyView is the policy that answered an auto run, and the whole of
-// what tells an auto run from a guided one: present whenever the policy
-// answered, whether or not it was asked anything, and absent when a person
-// answered.
-type policyView struct {
-	Version int
-	Career  string
-	Skills  string
-	Muster  string
-}
-
-// projectPolicy is the policy that answered an auto run, and the version it
-// answered as, which is this build's (#369). A guided run names none.
-//
-// Implements: A note names the policy that answered it [Generation record].
-func projectPolicy(answered *chargen.Policy) *policyView {
-	if answered == nil {
-		return nil
-	}
-
-	return &policyView{
-		Version: chargen.PolicyVersion,
-		Career:  answered.Career.String(),
-		Skills:  answered.Skills.String(),
-		Muster:  answered.Muster.String(),
-	}
-}
-
 // answerer names who answered every choice: the policy on an auto run, the
-// player on a guided one.
+// player on a guided one. The record says it on each choice's line.
+//
+// Implements: A note says who made each choice [Generation record].
 func (r view) answerer() string {
-	if r.Policy != nil {
+	if r.ByPolicy {
 		return "policy"
 	}
 
@@ -133,8 +108,7 @@ func viewOf(character *chargen.Character) view {
 		Skills:     make([]skillView, 0, len(skills)),
 		Benefits:   projectBenefits(character.Benefits()),
 		Pension:    int64(character.Pension()),
-		Ruleset:    chargen.Ruleset,
-		Policy:     projectPolicy(character.Policy),
+		ByPolicy:   character.Policy != nil,
 		Events:     entries(character.Events),
 		Build:      character.Build,
 	}
@@ -171,7 +145,7 @@ func viewOf(character *chargen.Character) view {
 func projectAttempt(character *chargen.Character) attemptView {
 	attempt, attempted := character.Attempted()
 	if !attempted {
-		panic("render: a served character with no enlistment throw in his record")
+		panic("render: a served character with no enlistment throw in its record")
 	}
 
 	return attemptView{
@@ -192,12 +166,25 @@ func projectBenefits(b chargen.Benefits) benefitsView {
 
 	for _, ship := range b.Ships {
 		out.Ships = append(out.Ships, shipView{
-			Kind: ship.Kind.String(), Tons: ship.Tons,
+			Item: shipItem(ship.Kind), Kind: ship.Kind.String(), Tons: ship.Tons,
 			Years: ship.Years, PaymentYears: ship.PaymentYears,
 		})
 	}
 
 	return out
+}
+
+// shipItem is a ship as the possessions property names it, without the
+// hull type the sheet gives (#475).
+func shipItem(kind traveller.ShipKind) string {
+	switch kind {
+	case traveller.ScoutShip:
+		return "Scout ship"
+	case traveller.FreeTrader:
+		return "Free Trader"
+	}
+
+	return kind.String()
 }
 
 // entries is every event, flat, in the order the run recorded them.

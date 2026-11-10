@@ -24,18 +24,16 @@ type Character struct {
 	Inputs Inputs
 
 	// Policy is what answered an auto run. It is nil on a guided run, where a
-	// person answered and no policy decided anything. The version it
-	// answered as is this build's PolicyVersion, which the record writes
-	// beside it (#369).
+	// person answered and no policy decided anything.
 	Policy *Policy
 
 	Events []traveller.Event
 	Errata []traveller.Erratum
 
-	// Build is what wrote the record, from debug.ReadBuildInfo - the same
-	// source the version subcommand reports. Naming the build is what lets a
-	// referee say which code wrote the record he is reading or filing a
-	// report against.
+	// Build is the version of what wrote the record, from
+	// debug.ReadBuildInfo - the same source the version subcommand reports.
+	// Naming the build is what lets a referee say which code wrote the record
+	// being read, or a report filed against.
 	//
 	// The command fills it, through WithBuild. A record generated
 	// in-process by a test does not carry one, because the build info of a
@@ -487,8 +485,8 @@ func (s *sheetFold) Retired(f traveller.RetiredFact) error {
 	return nil
 }
 
-func (s *sheetFold) ForcedOut(f traveller.ForcedOutFact) error {
-	s.age, s.departure = f.Age, traveller.ForcedOut{}
+func (s *sheetFold) DeniedReenlistment(f traveller.DeniedReenlistmentFact) error {
+	s.age, s.departure = f.Age, traveller.DeniedReenlistment{}
 
 	return nil
 }

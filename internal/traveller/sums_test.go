@@ -156,7 +156,7 @@ func TestBenefitRowFolds(t *testing.T) {
 type departureWordsFold struct{ words }
 
 func (w *departureWordsFold) Discharged() error            { return w.say("discharged") }
-func (w *departureWordsFold) ForcedOut() error             { return w.say("forced out") }
+func (w *departureWordsFold) DeniedReenlistment() error    { return w.say("denied reenlistment") }
 func (w *departureWordsFold) Retired() error               { return w.say("retired") }
 func (w *departureWordsFold) KilledBySurvivalThrow() error { return w.say("killed by survival") }
 func (w *departureWordsFold) KilledByMedicalCrisis(c traveller.Characteristic) error {
@@ -170,7 +170,7 @@ func TestDepartureFolds(t *testing.T) {
 
 	for _, d := range []traveller.Departure{
 		traveller.Discharged{},
-		traveller.ForcedOut{},
+		traveller.DeniedReenlistment{},
 		traveller.Retired{},
 		traveller.KilledBySurvivalThrow{},
 		traveller.KilledByMedicalCrisis{Characteristic: traveller.Endurance},
@@ -182,7 +182,7 @@ func TestDepartureFolds(t *testing.T) {
 	}
 
 	fold.check(t, "Departure", []string{
-		"discharged", "forced out", "retired", "killed by survival", "killed by crisis in Endurance",
+		"discharged", "denied reenlistment", "retired", "killed by survival", "killed by crisis in Endurance",
 	})
 }
 

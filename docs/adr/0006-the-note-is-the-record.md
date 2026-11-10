@@ -73,3 +73,15 @@ holds beside its record is not a fact about him: its Inputs and its Policy,
 which are what the generation was given, its Build, which names what wrote
 it, and its Errata, the stamp of every reading that governed it, gathered
 from the ids its outcomes name.
+
+Amended on 2026-11-10: a note no longer ends with a line telling the
+referee to keep it whole (#525). That advice was about the tool, and the
+note is the character's record. #525 changes nothing else in the note's shape.
+And since ADR 0007 (#460) the errata are stamped on the character as its
+readings govern it, not gathered from ids its outcomes name, since an
+outcome no longer carries any.
+
+Amended again on 2026-11-10: the note ends with the generation record. The
+closing lines naming the ruleset, the build and who answered are gone (ADR
+0002, amended), and with them the policy's version and strategies, which
+nothing else in the note said and no referee needs to read a character.

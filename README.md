@@ -67,19 +67,36 @@ ctchargen batch --count 20 --service merchants -o characters/
 **A character is written as one markdown note**: the sheet — the UPP line,
 skills, possessions and the service a term at a time, as Book 1 summarises a
 character — and under it the generation record, every die thrown and every
-choice made, step by step with its page cite. The note ends by naming the
-ruleset, the build and who answered its choices, so it drops into a notes
-vault as it is.
+choice made, step by step with its page cite, each choice saying whether the
+policy or the player made it. The note ends with the record, and drops into a
+notes vault as it is; its `ctchargen` property names the build that wrote it.
 
-**A note opens with properties** a vault can query — `upp`, the six
-characteristics, `age`, `service`, `rank`, `terms`, `status` (`alive` or
-`dead`), `departure`, `skills` in the book's notation, `credits`, `pension`,
-`nobility`, and the name with an alias when one was given — so Dataview or
-Bases can answer "which crew have Pilot?" Their names freeze at `v1.0.0`.
-Under the heading, **a one-paragraph summary** says who he is in words a
-referee can read aloud: "Army Captain, 2 terms, forced out at 26. Known for
-Rifle-2. Musters out with CR 30000." `age` is completed years, and `terms`
-counts every term begun, the one a death ended included.
+**A note opens with properties** a vault can query. Every note carries every
+one: a text property with no value is left empty, and a list with none is
+`[]`. Their names and meanings freeze at `v1.0.0`.
+
+| Property              | Type   | Holds                                                                         |
+| --------------------- | ------ | ----------------------------------------------------------------------------- |
+| `name`                | text   | the name given, or empty                                                      |
+| `aliases`             | list   | the name given, or `[]`                                                       |
+| `upp`                 | text   | the six characteristics in the book's hexadecimal                             |
+| `strength` … `social` | number | each characteristic                                                           |
+| `age`                 | number | completed years                                                               |
+| `service`, `rank`     | text   | the one service and the rank held in it, or empty                             |
+| `terms`               | number | every term begun, the one a death ended included                              |
+| `status`              | text   | `alive` or `dead`                                                             |
+| `departure`           | text   | how the service ended, such as `retired` or `denied reenlistment`             |
+| `skills`              | list   | skill names, one each, with no level: the sheet has the levels                |
+| `credits`, `pension`  | number | cash mustered out with, and annual retirement pay                             |
+| `nobility`            | text   | the title assumed (Book 3 p. 22's pairs, such as `knight/dame`), or empty     |
+| `possessions`         | list   | what mustering out gave besides cash, one item each, or `[]`                  |
+| `ctchargen`           | text   | the version of the build that wrote the note, or empty where none is embedded |
+
+Each skill and possession is an exact item, so "which crew have Pilot?" is an
+exact match: `econtains(skills, "Pilot")` in Dataview, and
+`skills.contains("Pilot")` in Bases. Under the heading, **a one-paragraph summary** says who the character is in words a
+referee can read aloud: "Army Captain, 2 terms, denied reenlistment at 26. Known for
+Rifle-2. Musters out with CR 30000."
 
 **A reading is how the tool decides where the page is silent or contradicts
 itself.** The readings are the tool's own record of its authority, kept in
@@ -88,7 +105,7 @@ the source with their page cites, and a note names none of them (ADR 0007).
 **The dice are not seeded, and the note is the only way back to a
 character.** Every run rolls fresh dice; nothing brings a character back but
 the generation record in its note, which carries every die thrown and every
-choice made, and which every note ends by telling you to keep whole.
+choice made.
 
 **A batch writes into a folder of its own**: `-o` names a folder that is new,
 or empty but for hidden files such as `.DS_Store`. A new one is made inside a
@@ -110,11 +127,11 @@ rather than after.
 it takes no `--auto`.
 
 **A batch writes only the living.** The rules kill a good many characters —
-the default `serve` strategy re-enlists until the service throws him out, so
+the default `serve` strategy re-enlists until the service refuses reenlistment, so
 the survival throw gets most Scouts in the end — and a batch passes over the
 dead and generates another until it has the number asked for. It doesn't
 reroll anybody: a dead character is written nowhere and another is generated
-in his place, so every note in the batch is one the dice made. A batch says
+to fill that slot, so every note in the batch is one the dice made. A batch says
 what it did on standard error, so it never lands among the notes:
 
 ```sh
@@ -140,8 +157,8 @@ Answered 1, 2, 1; the session is lost and nothing was written.
 or any batch) the policy draws one of the six at random, so a batch mixes
 them rather than filling with whichever is easiest to join. The sheet says so
 on its headline. Naming a service does not guarantee you get it either: a
-failed enlistment throw sends the character to the draft, which may put him
-somewhere else entirely — the sheet says that too.
+failed enlistment throw sends the character to the draft, which may put the
+character somewhere else entirely — the sheet says that too.
 
 **Three flags steer the policy** where the procedure offers a choice, on
 `new --auto` and on `batch`. `--career` governs the draft, commission and
@@ -149,8 +166,8 @@ promotion attempts, reenlistment and the title; `--skills` the skills table
 and the weapon a combat result names; `--muster` the mustering-out table, its
 two DMs and repeated weapons. What each strategy answers at each choice is in
 the doc comment of the `chargen.Policy` method that asks it. On `new` without
-`--auto` the three are refused: you answer every choice they would have, and the
-note names no policy for them to belong to.
+`--auto` the three are refused: you answer every choice they would have, and no
+choice in the note is the policy's.
 
 | Flag       | Values                                        |
 | ---------- | --------------------------------------------- |
@@ -174,7 +191,7 @@ character does not have.
 
 Death is an outcome and not an error: a character `new` makes who is killed by
 a survival throw (Book 1 p. 5) gets a complete note like anyone else, and
-nothing rerolls him; a batch passes him over.
+nothing rerolls the character; a batch passes the dead over.
 
 **The exit status is 0 or 1.** 0 when the command did what it was asked —
 the dead character above included — and 1 when it did not, with the reason on

@@ -17,6 +17,15 @@ const (
 	minRankForTable1Modifier = 5
 )
 
+// rollsWord is "roll" or "rolls", as the count asks (#490).
+func rollsWord(n int) string {
+	if n == 1 {
+		return "roll"
+	}
+
+	return "rolls"
+}
+
 // musterOut spends the benefit rolls the service earned (pp. 7, 9).
 //
 // Implements: Its ship, cash and pension [1:25].
@@ -26,7 +35,7 @@ func (r *run) musterOut() error {
 		return nil
 	}
 
-	r.record.step(fmt.Sprintf("mustering out, %d rolls", rolls), "pp. 7, 9, 21-23")
+	r.record.step(fmt.Sprintf("mustering out, %d %s", rolls, rollsWord(rolls)), "pp. 7, 9, 21-23")
 
 	onTableTwo := 0
 

@@ -44,6 +44,9 @@ type throw struct {
 	modifier  int
 	target    traveller.Target
 	succeeded bool
+
+	// from is each characteristic DM met, which modifier sums (#487).
+	from []traveller.Prerequisite
 }
 
 func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
