@@ -81,11 +81,11 @@ func (r *run) agingErrata(term traveller.Term) []traveller.Erratum {
 func (r *run) age(
 	seq int, term traveller.Term, characteristic traveller.Characteristic, reduction int,
 ) error {
-	before := r.char.Profile[characteristic]
+	before := r.profile[characteristic]
 
-	r.char.Profile = r.char.Profile.AgeReduce(characteristic, reduction)
+	r.profile = r.profile.AgeReduce(characteristic, reduction)
 
-	after := r.char.Profile[characteristic]
+	after := r.profile[characteristic]
 
 	errata := r.agingErrata(term)
 	if before-reduction < traveller.MinCharacteristic {
@@ -138,7 +138,7 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 		return nil
 	}
 
-	r.char.Profile = r.char.Profile.Alter(characteristic, crisis.RecoversTo-r.char.Profile[characteristic])
+	r.profile = r.profile.Alter(characteristic, crisis.RecoversTo-r.profile[characteristic])
 
 	// Every die is kept, not their sum: the record logs what was thrown, and
 	// a sum written into a one-die event would read as a face no die has.

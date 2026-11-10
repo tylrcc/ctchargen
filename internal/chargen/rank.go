@@ -34,7 +34,7 @@ func (r *run) commission(term traveller.Term) error {
 		return nil
 	}
 
-	made := roll(r.roll, throw.Target, throw.Modifier(r.char.Profile))
+	made := roll(r.roll, throw.Target, throw.Modifier(r.profile))
 	seq := r.log.throw("commission", made)
 
 	if !made.succeeded {
@@ -81,7 +81,7 @@ func (r *run) promote(term traveller.Term) error {
 		return nil
 	}
 
-	made := roll(r.roll, throw.Target, throw.Modifier(r.char.Profile))
+	made := roll(r.roll, throw.Target, throw.Modifier(r.profile))
 	seq := r.log.throw("promotion", made)
 
 	if !made.succeeded {

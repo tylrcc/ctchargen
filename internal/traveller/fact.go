@@ -3,12 +3,13 @@ package traveller
 import "fmt"
 
 // Fact is what an outcome did to the character, typed, so that what a sheet
-// tells - the service attempted (#397), and what the service gave and took
-// (#412) - is read from the generation record rather than kept beside it. An
-// outcome's prose is its fact's String, so the two cannot say different
-// things. A result applied at mustering out carries one too, naming its
-// source, and the service history leaves it out; an outcome nothing is read
-// from - a year elapsed, a benefit's cash - carries none.
+// tells - the service attempted (#397), what the service gave and took
+// (#412), the characteristics and the skills (#441) - is read from the
+// generation record rather than kept beside it. An outcome's prose is its
+// fact's String, so the two cannot say different things. A result applied at
+// mustering out carries one too, naming its source, and the service history
+// leaves it out; an outcome nothing is read from - a year elapsed, a
+// benefit's cash - carries none.
 type Fact interface {
 	Fold(cases FactCases) error
 	String() string
@@ -23,6 +24,8 @@ type FactCases interface {
 	Aged(f AgedFact) error
 	Recovered(f RecoveredFact) error
 	Enlisted(f EnlistedFact) error
+	Rolled(f RolledFact) error
+	Expertise(f ExpertiseFact) error
 }
 
 // Source is where an applied result came from, which is where a sheet tells
@@ -112,6 +115,23 @@ func (f RecoveredFact) String() string {
 		f.Characteristic, f.To, f.Months, f.Age)
 }
 
+// RolledFact is one characteristic as p. 4 rolled it, before anything moved
+// it.
+type RolledFact struct {
+	Characteristic Characteristic
+	Value          int
+}
+
+func (f RolledFact) String() string { return fmt.Sprintf("%v %d", f.Characteristic, f.Value) }
+
+// ExpertiseFact is a repeat weapon benefit taken as expertise in that weapon
+// instead (p. 22), at the level it reached.
+type ExpertiseFact struct{ Skill Skill }
+
+func (f ExpertiseFact) String() string {
+	return fmt.Sprintf("expertise instead: %s-%d", f.Skill.Name, f.Skill.Level)
+}
+
 // gainText writes a gain as the record says it.
 type gainText struct{ out *string }
 
@@ -133,7 +153,11 @@ func (f RaisedFact) Fold(c FactCases) error       { return c.Raised(f) }
 func (f AgedFact) Fold(c FactCases) error         { return c.Aged(f) }
 func (f RecoveredFact) Fold(c FactCases) error    { return c.Recovered(f) }
 func (f EnlistedFact) Fold(c FactCases) error     { return c.Enlisted(f) }
+func (f RolledFact) Fold(c FactCases) error       { return c.Rolled(f) }
+func (f ExpertiseFact) Fold(c FactCases) error    { return c.Expertise(f) }
 func (EnlistedFact) sealedFact()                  {}
+func (RolledFact) sealedFact()                    {}
+func (ExpertiseFact) sealedFact()                 {}
 func (AppliedFact) sealedFact()                   {}
 func (WeaponPickedFact) sealedFact()              {}
 func (RaisedFact) sealedFact()                    {}

@@ -131,7 +131,7 @@ func (r *run) musterModifier(table traveller.MusterTable) (int, error) {
 		return 0, nil
 	}
 
-	if !r.char.has(r.tables.Muster().Table2ModifierFrom) {
+	if !r.has(r.tables.Muster().Table2ModifierFrom) {
 		return 0, nil
 	}
 
@@ -159,7 +159,7 @@ func (r *run) musterModifier(table traveller.MusterTable) (int, error) {
 // Implements: E011 is stamped only where the reading changed the answer
 // [(E011)].
 func (r *run) assessTitle() error {
-	social := r.char.Profile[traveller.SocialStanding]
+	social := r.profile[traveller.SocialStanding]
 
 	rank, eligible := r.tables.TitleFor(social)
 
@@ -333,8 +333,10 @@ func (t *takeWeapon) TakeWeapon(weapon traveller.WeaponName) error {
 }
 
 func (t *takeWeapon) TakeExpertise(weapon traveller.WeaponName) error {
-	level := t.run.char.addSkill(traveller.SkillName(weapon))
-	t.run.log.outcomef(t.because, nil, "expertise instead: %s-%d", weapon, level)
+	level := t.run.addSkill(traveller.SkillName(weapon))
+	t.run.log.fact(t.because, nil, traveller.ExpertiseFact{
+		Skill: traveller.Skill{Name: traveller.SkillName(weapon), Level: level},
+	})
 
 	return nil
 }

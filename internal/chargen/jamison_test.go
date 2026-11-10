@@ -263,7 +263,7 @@ func TestTheWorkedExampleReproduces(t *testing.T) {
 		t.Errorf("the worked example names policy %+v, which answered none of its choices", *jamison.Policy)
 	}
 
-	if got := jamison.Profile.UPP(); got != "779C99" {
+	if got := jamison.Profile().UPP(); got != "779C99" {
 		t.Errorf("UPP %s, want 779C99", got)
 	}
 
@@ -308,7 +308,7 @@ func TestTheWorkedExamplesSkills(t *testing.T) {
 	}
 
 	got := make([]string, 0, len(want))
-	for _, skill := range reproduceJamison(t).Skills {
+	for _, skill := range reproduceJamison(t).Skills() {
 		got = append(got, skill.String())
 	}
 

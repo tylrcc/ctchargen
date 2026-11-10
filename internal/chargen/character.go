@@ -1,6 +1,7 @@
 package chargen
 
 import (
+	"cmp"
 	"slices"
 
 	"github.com/philoserf/ctchargen/internal/traveller"
@@ -12,10 +13,12 @@ import (
 // A deliberate delta from sibling tools: Books 1-3 have no calendar and no
 // birthdate rules, so the record carries an age and a count of terms, not a
 // date. That is the books, not an omission.
+//
+// Its characteristics and skills are not kept on it but read from its log
+// (#441): Profile and Skills fold the facts the outcomes carry.
 type Character struct {
-	Profile traveller.Profile
-	Age     traveller.Age
-	Terms   int
+	Age   traveller.Age
+	Terms int
 
 	// Enlistment is how the character entered a service, or that he
 	// declined the draft and never did (p. 5).
@@ -23,7 +26,6 @@ type Character struct {
 	Rank       traveller.Rank
 	RankName   string
 
-	Skills   []traveller.Skill
 	Benefits Benefits
 
 	Pension traveller.Credits
@@ -172,43 +174,117 @@ func (c *Character) ServedIn() (traveller.ServiceName, bool) {
 	return codec.service, codec.served
 }
 
-// addSkill records a skill, raising its level if it is already held. P. 12:
-// "Each time an already acquired skill is again acquired, the level of the
-// skill is increased by 1."
-//
-// Implements: Skills accumulate as Skill-1, Skill-2, with no cap [1:12].
-// Implements: Its skills, as its inset lists them [1:25].
-func (c *Character) addSkill(name traveller.SkillName) int {
-	for i := range c.Skills {
-		if c.Skills[i].Name == name {
-			c.Skills[i].Level++
+// Profile is the six characteristics as generation left them, read from the
+// log (#441): each starts at the value p. 4 rolled, and each change after it
+// - a table's, an aging round's, a crisis's recovery - carries the value it
+// left, so the last fact for a characteristic is its value.
+func (c *Character) Profile() traveller.Profile {
+	var fold sheetFold
 
-			return c.Skills[i].Level
+	c.fold(&fold)
+
+	return fold.profile
+}
+
+// Skills is every skill the character holds, at the level it reached, read
+// from the log (#441), in name order, so a record reads the same way twice.
+// Each fact that gives a skill carries the level the engine reached, so the
+// last for a name is its level; the fold applies no rule of p. 12's.
+//
+// Implements: Its skills, as its inset lists them [1:25].
+func (c *Character) Skills() []traveller.Skill {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	slices.SortFunc(fold.skills, func(a, b traveller.Skill) int {
+		return cmp.Compare(a.Name, b.Name)
+	})
+
+	return fold.skills
+}
+
+// fold walks the log's outcomes' facts through cases.
+func (c *Character) fold(cases traveller.FactCases) {
+	for _, event := range c.Events {
+		outcome, isOutcome := event.(traveller.OutcomeEvent)
+		if !isOutcome || outcome.Fact == nil {
+			continue
+		}
+
+		// An error from cases is dropped, so every FactCases handed here must
+		// be one whose cases only assign and cannot fail.
+		_ = outcome.Fact.Fold(cases)
+	}
+}
+
+// sheetFold reads the characteristics and the skills out of the log's facts.
+type sheetFold struct {
+	profile traveller.Profile
+	skills  []traveller.Skill
+}
+
+func (s *sheetFold) Rolled(f traveller.RolledFact) error {
+	s.profile[f.Characteristic] = f.Value
+
+	return nil
+}
+
+func (s *sheetFold) Applied(f traveller.AppliedFact) error {
+	// A fold over this codec cannot fail: both cases only assign.
+	_ = f.Gain.Fold(s)
+
+	return nil
+}
+
+func (s *sheetFold) Skill(skill traveller.Skill) error {
+	s.skill(skill)
+
+	return nil
+}
+
+func (s *sheetFold) Change(change traveller.Change) error {
+	s.profile[change.Characteristic] = change.To
+
+	return nil
+}
+
+func (s *sheetFold) WeaponPicked(f traveller.WeaponPickedFact) error {
+	s.skill(f.Skill)
+
+	return nil
+}
+
+func (s *sheetFold) Expertise(f traveller.ExpertiseFact) error {
+	s.skill(f.Skill)
+
+	return nil
+}
+
+func (s *sheetFold) Aged(f traveller.AgedFact) error {
+	s.profile[f.Change.Characteristic] = f.Change.To
+
+	return nil
+}
+
+func (s *sheetFold) Recovered(f traveller.RecoveredFact) error {
+	s.profile[f.Characteristic] = f.To
+
+	return nil
+}
+
+func (*sheetFold) Raised(traveller.RaisedFact) error     { return nil }
+func (*sheetFold) Enlisted(traveller.EnlistedFact) error { return nil }
+
+// skill holds a skill at the level a fact says it reached.
+func (s *sheetFold) skill(skill traveller.Skill) {
+	for i := range s.skills {
+		if s.skills[i].Name == skill.Name {
+			s.skills[i].Level = skill.Level
+
+			return
 		}
 	}
 
-	c.Skills = append(c.Skills, traveller.Skill{Name: name, Level: 1})
-
-	return 1
-}
-
-// has reports whether the character holds a skill at any level. Gambling
-// expertise is what allows the +1 on Mustering Out Table 2 (p. 9).
-func (c *Character) has(name traveller.SkillName) bool {
-	return slices.ContainsFunc(c.Skills, func(s traveller.Skill) bool { return s.Name == name })
-}
-
-// sortSkills puts the skill list in a stable order, so a record reads the
-// same way twice.
-func (c *Character) sortSkills() {
-	slices.SortFunc(c.Skills, func(a, b traveller.Skill) int {
-		switch {
-		case a.Name < b.Name:
-			return -1
-		case a.Name > b.Name:
-			return 1
-		default:
-			return 0
-		}
-	})
+	s.skills = append(s.skills, skill)
 }

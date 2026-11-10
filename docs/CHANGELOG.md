@@ -74,6 +74,10 @@ release turns out to be.
 - The service history and the service attempted are stated once, in the
   generation record (#412, #397): they are read from typed facts in the log
   rather than kept beside it. No note changes.
+- The characteristics and the skills are stated once, in the generation
+  record (#441): each initial roll and each expertise taken at mustering out
+  now carries a typed fact, and both are read from the log rather than kept
+  beside it. No note changes.
 - **The auto policy draws the service** (#420), uniformly among the six, with
   the run's own dice, where it took the likeliest enlistment every time and a
   batch came out nearly all Army. `PolicyVersion` is 4; `--career` no longer

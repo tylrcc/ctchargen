@@ -39,3 +39,12 @@ and the service attempted, the events are now the one store: each outcome
 they are read from carries a typed fact, and its prose is that fact's text.
 The sheet's other facts - skills, benefits, characteristics, departure -
 are still kept on the character beside the record's prose.
+
+Extended on 2026-11-09 (#441): the characteristics and the skills are read
+from the log too. Each initial roll, and each skill taken as expertise at
+mustering out, now carries a typed fact, and every fact that changes a
+characteristic or gives a skill carries the value the engine reached, so the
+fold applies no rule. The engine keeps its own working copy while it runs,
+since every DM reads it, but the finished character does not. Benefits,
+pension, nobility, enlistment, rank, terms, age and departure are still kept
+on the character beside the record's prose.

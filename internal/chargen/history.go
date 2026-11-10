@@ -124,6 +124,12 @@ func (h *historyFold) Recovered(f traveller.RecoveredFact) error {
 
 func (*historyFold) Enlisted(traveller.EnlistedFact) error { return nil }
 
+// A characteristic as rolled is the sheet's, not the service's, and expertise
+// taken instead of a weapon is mustering out's, which the history leaves out
+// as it leaves out every result applied there.
+func (*historyFold) Rolled(traveller.RolledFact) error       { return nil }
+func (*historyFold) Expertise(traveller.ExpertiseFact) error { return nil }
+
 // gained files a gain where its source says the sheet tells it. A benefit
 // is on the sheet's possessions and characteristics, not its service record.
 func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {

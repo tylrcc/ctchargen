@@ -64,8 +64,9 @@ func recordOf(name string, character *chargen.Character) record {
 		rec.Service = service.String()
 	}
 
+	profile := character.Profile()
 	for _, c := range traveller.Characteristics {
-		rec.Characteristics[c.String()] = character.Profile[c]
+		rec.Characteristics[c.String()] = profile[c]
 	}
 
 	for _, erratum := range character.Errata {

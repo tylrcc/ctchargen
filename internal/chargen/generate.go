@@ -2,6 +2,7 @@ package chargen
 
 import (
 	"fmt"
+	"slices"
 
 	"github.com/philoserf/ctchargen/internal/dice"
 	"github.com/philoserf/ctchargen/internal/rules"
@@ -111,8 +112,6 @@ func generate(in Inputs, decider Decider, policy *Policy, options []Option) (*Ch
 		return nil, err
 	}
 
-	run.char.sortSkills()
-
 	run.char.Events = record.events
 	run.char.Errata = record.stamped()
 
@@ -146,10 +145,20 @@ type run struct {
 	service  rules.Service
 	eligible int
 
+	// profile and skills are the character as the procedure has him so far,
+	// which every DM and the gambling modifier read mid-run. They are the
+	// engine's working state and not the record: each change to them is
+	// logged as a fact carrying the value it left, and the finished
+	// Character's Profile and Skills are read from those facts (#441).
+	profile traveller.Profile
+	skills  []traveller.Skill
+
 	// rolledSocial is the Social Standing of p. 4, before anything moved
 	// it. E011 turns on whether assessing at the end rather than at 18
 	// changes the answer, and that cannot be known from the final value
-	// alone.
+	// alone. It is working state, as profile is: the Social Standing
+	// RolledFact records the same value, and the finished character is read
+	// from that.
 	rolledSocial int
 
 	// trained counts the results taken off each skills table, which the
@@ -205,15 +214,41 @@ func (r *run) rollProfile() {
 	for _, c := range traveller.Characteristics {
 		first, second := twoDice(r.roll)
 
-		r.char.Profile[c] = first + second
+		r.profile[c] = first + second
 
 		if c == traveller.SocialStanding {
-			r.rolledSocial = r.char.Profile[c]
+			r.rolledSocial = r.profile[c]
 		}
 
 		seq := r.log.dice(c.String(), first, second)
-		r.log.outcomef(seq, nil, "%v %d", c, first+second)
+		r.log.fact(seq, nil, traveller.RolledFact{Characteristic: c, Value: r.profile[c]})
 	}
 
-	r.log.outcomef(0, nil, "UPP %s at age %v", r.char.Profile.UPP(), r.char.Age)
+	r.log.outcomef(0, nil, "UPP %s at age %v", r.profile.UPP(), r.char.Age)
+}
+
+// addSkill records a skill, raising its level if it is already held, and
+// returns the level it reached, which the fact logging it carries. P. 12:
+// "Each time an already acquired skill is again acquired, the level of the
+// skill is increased by 1."
+//
+// Implements: Skills accumulate as Skill-1, Skill-2, with no cap [1:12].
+func (r *run) addSkill(name traveller.SkillName) int {
+	for i := range r.skills {
+		if r.skills[i].Name == name {
+			r.skills[i].Level++
+
+			return r.skills[i].Level
+		}
+	}
+
+	r.skills = append(r.skills, traveller.Skill{Name: name, Level: 1})
+
+	return 1
+}
+
+// has reports whether the character holds a skill at any level. Gambling
+// expertise is what allows the +1 on Mustering Out Table 2 (p. 9).
+func (r *run) has(name traveller.SkillName) bool {
+	return slices.ContainsFunc(r.skills, func(s traveller.Skill) bool { return s.Name == name })
 }

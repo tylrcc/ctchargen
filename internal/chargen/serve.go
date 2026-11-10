@@ -94,7 +94,7 @@ func (r *run) term(term traveller.Term) (bool, error) {
 //
 // Implements: Survival throw; failure is death [1:5].
 func (r *run) survive(term traveller.Term) bool {
-	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.char.Profile))
+	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.profile))
 	seq := r.log.throw("survival", throw)
 
 	if throw.succeeded {
@@ -196,7 +196,7 @@ func (r *run) offeredTables() []traveller.SkillTable {
 	offered := make([]traveller.SkillTable, 0, len(traveller.SkillTables))
 
 	for _, table := range traveller.SkillTables {
-		if table == r.tables.Education().Table && !r.tables.Education().Open(r.char.Profile) {
+		if table == r.tables.Education().Table && !r.tables.Education().Open(r.profile) {
 			continue
 		}
 

@@ -24,7 +24,7 @@ func (r *run) enlist() error {
 
 	service := r.tables.Service(name)
 
-	throw := roll(r.roll, service.Enlistment.Target, service.Enlistment.Modifier(r.char.Profile))
+	throw := roll(r.roll, service.Enlistment.Target, service.Enlistment.Modifier(r.profile))
 	seq := r.log.throw("enlistment, "+name.String(), throw)
 
 	if throw.succeeded {
@@ -87,7 +87,7 @@ func (r *run) chooseService() (traveller.ServiceName, error) {
 		offers = append(offers, traveller.EnlistmentOffer{
 			Service: name,
 			Target:  service.Enlistment.Target,
-			DM:      service.Enlistment.Modifier(r.char.Profile),
+			DM:      service.Enlistment.Modifier(r.profile),
 		})
 	}
 
@@ -176,11 +176,11 @@ type applyResult struct {
 //
 // Implements: A held change keeps the table's change [Generation record].
 func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta int) error {
-	before := a.run.char.Profile[characteristic]
+	before := a.run.profile[characteristic]
 
-	a.run.char.Profile = a.run.char.Profile.Alter(characteristic, delta)
+	a.run.profile = a.run.profile.Alter(characteristic, delta)
 
-	after := a.run.char.Profile[characteristic]
+	after := a.run.profile[characteristic]
 
 	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
 		Gain:   traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: delta},
@@ -191,7 +191,7 @@ func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta 
 }
 
 func (a *applyResult) Skill(name traveller.SkillName) error {
-	level := a.run.char.addSkill(name)
+	level := a.run.addSkill(name)
 	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
 		Gain: traveller.SkillGain{Skill: traveller.Skill{Name: name, Level: level}}, Source: a.source,
 	})
@@ -211,7 +211,7 @@ func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 		return fmt.Errorf("choosing a weapon: %w", err)
 	}
 
-	level := a.run.char.addSkill(traveller.SkillName(chosen))
+	level := a.run.addSkill(traveller.SkillName(chosen))
 	a.run.log.fact(a.because, a.errata, traveller.WeaponPickedFact{
 		Category: category, Skill: traveller.Skill{Name: traveller.SkillName(chosen), Level: level}, Source: a.source,
 	})

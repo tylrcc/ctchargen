@@ -121,15 +121,17 @@ func (r view) answerer() string {
 
 // viewOf is the character as the note reads it.
 func viewOf(character *chargen.Character) view {
+	profile, skills := character.Profile(), character.Skills()
+
 	out := view{
 		Name:       character.Inputs.Name,
-		UPP:        character.Profile.UPP(),
-		Profile:    character.Profile,
+		UPP:        profile.UPP(),
+		Profile:    profile,
 		Age:        ageView{Years: character.Age.Years(), Months: character.Age.Months()},
 		Terms:      character.Terms,
 		Enlistment: foldEnlistment(character.Enlistment),
 		RankName:   character.RankName,
-		Skills:     make([]skillView, 0, len(character.Skills)),
+		Skills:     make([]skillView, 0, len(skills)),
 		Benefits:   projectBenefits(character.Benefits),
 		Pension:    int64(character.Pension),
 		Attempt:    projectAttempt(character),
@@ -152,7 +154,7 @@ func viewOf(character *chargen.Character) view {
 		out.Departure = foldDeparture(character.Departure)
 	}
 
-	for _, skill := range character.Skills {
+	for _, skill := range skills {
 		out.Skills = append(out.Skills, skillView{Name: string(skill.Name), Level: skill.Level})
 	}
 
