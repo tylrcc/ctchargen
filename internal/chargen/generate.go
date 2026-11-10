@@ -140,7 +140,7 @@ type run struct {
 	char   *Character
 
 	service  rules.Service
-	eligible int
+	eligible traveller.Earned
 
 	// profile and skills are the character as the procedure has him so far,
 	// which every DM and the gambling modifier read mid-run. They are the

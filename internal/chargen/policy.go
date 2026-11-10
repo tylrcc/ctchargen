@@ -286,13 +286,13 @@ func (p Policy) SubmitToDraft() (bool, error) { return p.Career != CareerOneTerm
 // failed commission throw, and a commission carries a skill eligibility
 // (p. 6); a strategy that declined would be modelling a preference the book
 // does not price.
-func (p Policy) AttemptCommission() (bool, error) { return true, nil }
+func (p Policy) AttemptCommission(traveller.Odds) (bool, error) { return true, nil }
 
 // AttemptPromotion is asked when the character is commissioned and holds a
 // rank below the highest his service prints (E013), once per term (p. 6).
 //
 // All three strategies answer yes, for the reason AttemptCommission does.
-func (p Policy) AttemptPromotion() (bool, error) { return true, nil }
+func (p Policy) AttemptPromotion(traveller.Odds) (bool, error) { return true, nil }
 
 // AssumeTitle is asked when the character survived generation and his final
 // Social Standing is 11 or greater - once, at the end of generation (E011).
@@ -323,7 +323,7 @@ func (p Policy) AssumeTitle(traveller.Title) (bool, error) { return true, nil }
 //     pays a pension.
 //   - oneterm: Discharge, Retire, Continue. It leaves at the first
 //     opportunity.
-func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error) {
+func (p Policy) ReenlistIntent(from []traveller.Intent, _ traveller.Odds) (traveller.Intent, error) {
 	var ranked []traveller.Intent
 
 	switch p.Career {
@@ -354,9 +354,9 @@ func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error
 //   - personal: Personal Development, Service Skills, Advanced Education (8+),
 //     Advanced Education.
 //
-// taken is parallel to from: how many results he has already had off each
-// offered table. It is engine-computed and never recorded, so this weighs
-// where he is thin without reaching into him (#34).
+// Each offer's Taken is how many results he has already had off that table.
+// It is engine-computed and never recorded, so this weighs where he is thin
+// without reaching into him (#34).
 //
 // Version 2 followed the ranking alone, so advanced designated Advanced
 // Education every time it was offered and Personal Development never - ninety
@@ -379,9 +379,7 @@ func (p Policy) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error
 //
 // Implements: The skills table designated is the one he has trained on least
 // [1:11].
-func (p Policy) SkillTable(
-	from []traveller.SkillTable, taken []int,
-) (traveller.SkillTable, error) {
+func (p Policy) SkillTable(from []traveller.SkillTableOffer, _ traveller.SkillRoll) (traveller.SkillTable, error) {
 	var ranked []traveller.SkillTable
 
 	switch p.Skills {
@@ -402,20 +400,19 @@ func (p Policy) SkillTable(
 		}
 	}
 
-	return prefer(thinnest(from, taken), ranked), nil
+	return prefer(thinnest(from), ranked), nil
 }
 
-// thinnest is the offered tables the character has had fewest results off.
-// taken is parallel to from, one count per offered table, as the engine
-// passes it (#370).
-func thinnest(from []traveller.SkillTable, taken []int) []traveller.SkillTable {
-	fewest := slices.Min(taken)
+// thinnest is the offered tables the character has had fewest results off,
+// read from each offer's count as the engine passes it (#370).
+func thinnest(from []traveller.SkillTableOffer) []traveller.SkillTable {
+	fewest := slices.MinFunc(from, func(a, b traveller.SkillTableOffer) int { return a.Taken - b.Taken }).Taken
 
 	thin := make([]traveller.SkillTable, 0, len(from))
 
-	for i, table := range from {
-		if taken[i] == fewest {
-			thin = append(thin, table)
+	for _, offer := range from {
+		if offer.Taken == fewest {
+			thin = append(thin, offer.Table)
 		}
 	}
 

@@ -41,6 +41,15 @@ release turns out to be.
   `## 1.0.0-beta.2`, where those before `1.0.0-beta.3` carried a `v` and a
   date. Each of those dates now stands on its own line beneath its heading
   (#495).
+- The guided session's questions say what they ask before they are
+  answered. The prompt shows the numbers it accepts, and a refused answer or
+  an empty line is told what is wanted (#461). The commission and promotion
+  questions show their throw and that p. 6 names no cost for a failure, and
+  the end of a term shows the next term's survival throw (#482). The draft
+  question says that declining ends the generation (#483). The skills
+  question says which roll of how many and what gave the term that many,
+  shows each table's six results, and names each table as the note does
+  (#486).
 
 ## 1.0.0-rc.4
 

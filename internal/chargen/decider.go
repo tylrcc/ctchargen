@@ -35,20 +35,18 @@ type Decider interface {
 	SubmitToDraft() (bool, error)
 
 	// AttemptCommission asks whether to try for a commission this term
-	// (p. 6).
-	AttemptCommission() (bool, error)
+	// (p. 6). odds is the commission throw that answering yes leads to.
+	AttemptCommission(odds traveller.Odds) (bool, error)
 
 	// AttemptPromotion asks whether to try for a promotion this term
-	// (p. 6).
-	AttemptPromotion() (bool, error)
+	// (p. 6). odds is the promotion throw that answering yes leads to.
+	AttemptPromotion(odds traveller.Odds) (bool, error)
 
-	// SkillTable designates the skills table to consult (p. 11).
-	//
-	// taken is parallel to from: how many results this character has
-	// already had off each offered table. It is engine-computed and never
-	// recorded, so a decider can weigh where he is under-trained without
-	// reaching into him, and rewording nothing can change a character.
-	SkillTable(from []traveller.SkillTable, taken []int) (traveller.SkillTable, error)
+	// SkillTable designates the skills table to consult (p. 11). Each offer
+	// carries its table, the results already taken off it and its six
+	// results. roll is which of the term's skills rolls this one is, and
+	// what gave the term its rolls; it is not recorded.
+	SkillTable(from []traveller.SkillTableOffer, roll traveller.SkillRoll) (traveller.SkillTable, error)
 
 	// Weapon names the specific weapon for a Blade Combat or Gun Combat
 	// result (pp. 11-13).
@@ -64,8 +62,10 @@ type Decider interface {
 	) (traveller.WeaponName, error)
 
 	// ReenlistIntent asks what the character means to do at the end of a
-	// term (pp. 6-7, 21).
-	ReenlistIntent(from []traveller.Intent) (traveller.Intent, error)
+	// term (pp. 6-7, 21). survival is the throw the next term opens with,
+	// which continuing leads to, with the DM the characteristics earn before
+	// this term's aging round.
+	ReenlistIntent(from []traveller.Intent, survival traveller.Odds) (traveller.Intent, error)
 
 	// MusterTable designates the mustering out table for one benefit roll
 	// (p. 9).

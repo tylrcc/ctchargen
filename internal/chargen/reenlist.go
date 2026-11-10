@@ -77,7 +77,7 @@ func (r *run) intent(seq int, term traveller.Term) (traveller.Intent, error) {
 		return offered[0], nil
 	}
 
-	chosen, err := r.decide.ReenlistIntent(offered)
+	chosen, err := r.decide.ReenlistIntent(offered, r.odds(r.service.Survival))
 	if err != nil {
 		return chosen, fmt.Errorf("deciding whether to reenlist: %w", err)
 	}

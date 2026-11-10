@@ -82,11 +82,7 @@ func (r *run) chooseService() (traveller.ServiceName, error) {
 	for _, name := range traveller.ServiceNames {
 		service := r.tables.Service(name)
 
-		offers = append(offers, traveller.EnlistmentOffer{
-			Service: name,
-			Target:  service.Enlistment.Target,
-			DM:      service.Enlistment.Modifier(r.profile),
-		})
+		offers = append(offers, traveller.EnlistmentOffer{Service: name, Odds: r.odds(service.Enlistment)})
 	}
 
 	name, err := r.decide.Service(offers, varyOnly{r.roll})

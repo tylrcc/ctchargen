@@ -25,7 +25,7 @@ func (r *run) commission(term traveller.Term) error {
 		return nil
 	}
 
-	attempt, err := r.decide.AttemptCommission()
+	attempt, err := r.decide.AttemptCommission(r.odds(throw))
 	if err != nil {
 		return fmt.Errorf("attempting a commission: %w", err)
 	}
@@ -43,7 +43,7 @@ func (r *run) commission(term traveller.Term) error {
 		return nil
 	}
 
-	return r.raise(seq, 1, r.tables.Eligibility().OnCommission, traveller.Commissioned)
+	return r.raise(seq, 1, traveller.Commissioned)
 }
 
 // promote attempts a promotion (p. 6): "In the same term of service that he
@@ -72,7 +72,7 @@ func (r *run) promote(term traveller.Term) error {
 		return nil
 	}
 
-	attempt, err := r.decide.AttemptPromotion()
+	attempt, err := r.decide.AttemptPromotion(r.odds(throw))
 	if err != nil {
 		return fmt.Errorf("attempting a promotion: %w", err)
 	}
@@ -90,18 +90,31 @@ func (r *run) promote(term traveller.Term) error {
 		return nil
 	}
 
-	return r.raise(seq, r.rank+1, r.tables.Eligibility().OnPromotion, traveller.Promoted)
+	return r.raise(seq, r.rank+1, traveller.Promoted)
 }
 
 // raise confers a rank, the skill eligibility that comes with it (p. 6), and
 // whatever the Rank and Service Skills box grants at it (p. 23).
 //
+// The eligibility is read from how the rank was conferred, and tallied
+// under it, so the skills question can say why the term has the rolls it
+// has. The switch is the only one over how, and the exhaustive linter
+// requires a case for every Advancement, with no default to fall through to:
+// a third kind fails the gate rather than conferring nothing.
+//
 // Implements: A commission or promotion confers one skill eligibility [1:6].
 // Implements: Rank-keyed grants, at the moment the rank is conferred [1:23].
-func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how traveller.Advancement) error {
+// Implements: The skills question says which roll of how many, and why
+// [Choices].
+func (r *run) raise(seq int, conferred traveller.Rank, how traveller.Advancement) error {
 	r.rank = conferred
 
-	r.eligible += eligibility
+	switch how {
+	case traveller.Commissioned:
+		r.eligible.Commission += r.tables.Eligibility().OnCommission
+	case traveller.Promoted:
+		r.eligible.Promotion += r.tables.Eligibility().OnPromotion
+	}
 
 	r.record.fact(seq, nil, traveller.RaisedFact{How: how, Rank: conferred, Name: r.rankName()})
 

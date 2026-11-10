@@ -84,38 +84,126 @@ func (p *player) Service(from []traveller.EnlistmentOffer, _ chargen.Vary) (trav
 	return offer.Service, err
 }
 
+// SubmitToDraft says, before the answer, what declining costs. The page
+// cite is the question's; the consequence is this tool's reading of it,
+// E001, which ends generation with an eighteen-year-old civilian. It is
+// stated plainly rather than credited to the page, and nothing later in the
+// session would say so until the note came back with no service in it.
+//
+// Implements: The draft question says that declining ends generation [1:5
+// (E001)].
 func (p *player) SubmitToDraft() (bool, error) {
-	return p.confirm("Rejected. Submit to the draft? (p. 5)")
+	return p.confirm("Rejected. Submit to the draft? (p. 5) " +
+		"Declining ends the generation with a character who never served.")
 }
 
-func (p *player) AttemptCommission() (bool, error) {
-	return p.confirm("Attempt a commission this term? (p. 6)")
-}
-
-func (p *player) AttemptPromotion() (bool, error) {
-	return p.confirm("Attempt a promotion this term? (p. 6)")
-}
-
-func (p *player) SkillTable(from []traveller.SkillTable, _ []int) (traveller.SkillTable, error) {
-	return pick(p, "Which skills table? It is designated before the die (p. 11)",
-		from, skillTableMenu)
-}
-
-// skillTableMenu names a skills table for a person reading a list at speed.
+// AttemptCommission shows the commission throw before the answer, and that
+// p. 6 names no cost for a failed one. The page says only "A character may
+// attempt to acquire a commission once per term of service until he is
+// successful", and prices nothing for the throws in between.
 //
-// Two of them are identical up to a parenthesis - "Advanced Education Table"
-// and "Advanced Education Table (education 8+)" - which is honest and easy to
-// pick wrong. What separates them is moved to the front, because the eye scans
-// down the left of a numbered list and never reaches a parenthesis.
+// Implements: A throw's question shows its target and DM before the answer
+// [Choices].
+func (p *player) AttemptCommission(odds traveller.Odds) (bool, error) {
+	return p.confirm(fmt.Sprintf(
+		"Attempt a commission this term? (commission %v; p. 6 names no cost for a failure)", oddsText(odds),
+	))
+}
+
+// AttemptPromotion shows the promotion throw as AttemptCommission shows its
+// own. P. 6 names no cost for a failed promotion either; it says only "A
+// character is eligible for one promotion per term of service."
 //
-// The wording here is the menu's, not the record's, for the reason
-// MusterWeapon's is: they address two readers and nothing compares them.
-func skillTableMenu(table traveller.SkillTable) string {
-	if table == traveller.AdvancedEducationEight {
-		return "Education 8+ table (the second Advanced Education table)"
+// Implements: A throw's question shows its target and DM before the answer
+// [Choices].
+func (p *player) AttemptPromotion(odds traveller.Odds) (bool, error) {
+	return p.confirm(fmt.Sprintf(
+		"Attempt a promotion this term? (promotion %v; p. 6 names no cost for a failure)", oddsText(odds),
+	))
+}
+
+// oddsText is a throw as the questions show it: its target and its DM.
+func oddsText(odds traveller.Odds) string {
+	return fmt.Sprintf("%v, DM %+d", odds.Target, odds.DM)
+}
+
+// SkillTable says which of the term's rolls this is and why the term has
+// that many, and shows each table's six results beside its name, so the
+// table is chosen knowing what each result gives. The name is the record's, so the
+// menu, the echo and the note call a table one thing.
+//
+// Implements: The skills question says which roll of how many, and why
+// [Choices].
+// Implements: A skills table offered shows its six results [Choices].
+func (p *player) SkillTable(from []traveller.SkillTableOffer, roll traveller.SkillRoll) (traveller.SkillTable, error) {
+	question := fmt.Sprintf("Which skills table? Roll %d of %d: %s. It is designated before the die (p. 11)",
+		roll.N, roll.Of.Rolls(), earnedText(roll.Of))
+
+	offer, err := pick(p, question, from, func(o traveller.SkillTableOffer) string {
+		results := make([]string, 0, len(o.Results))
+		for _, result := range o.Results {
+			results = append(results, resultText(result))
+		}
+
+		return o.Table.String() + ": " + strings.Join(results, ", ")
+	})
+
+	return offer.Table, err
+}
+
+// earnedText says what gave the term its skills rolls, leaving out a source
+// that gave none.
+func earnedText(earned traveller.Earned) string {
+	var parts []string
+
+	for _, source := range []struct {
+		rolls int
+		what  string
+	}{
+		{earned.Term, "the term"},
+		{earned.Commission, "the commission"},
+		{earned.Promotion, "the promotion"},
+	} {
+		if source.rolls > 0 {
+			parts = append(parts, fmt.Sprintf("%d for %s", source.rolls, source.what))
+		}
 	}
 
-	return table.String()
+	return strings.Join(parts, ", ")
+}
+
+// resultText is one table result as the skills menu shows it: a
+// characteristic change with its sign, a skill by name, and a weapon
+// category, whose weapon is named when it is rolled.
+func resultText(result traveller.TableResult) string {
+	var text resultWords
+
+	// A fold that only assigns cannot fail.
+	_ = result.Fold(&text)
+
+	return text.words
+}
+
+// resultWords is the fold resultText reads a result through, so a fourth
+// kind of result cannot be added without this seeing it.
+type resultWords struct{ words string }
+
+func (r *resultWords) Alteration(characteristic traveller.Characteristic, delta int) error {
+	r.words = fmt.Sprintf("%+d %v", delta, characteristic)
+
+	return nil
+}
+
+func (r *resultWords) Skill(name traveller.SkillName) error {
+	r.words = string(name)
+
+	return nil
+}
+
+func (r *resultWords) WeaponPick(category traveller.WeaponCategory) error {
+	r.words = category.String()
+
+	return nil
 }
 
 func (p *player) Weapon(
@@ -126,8 +214,20 @@ func (p *player) Weapon(
 	return pick(p, question, from, func(w traveller.WeaponName) string { return string(w) })
 }
 
-func (p *player) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error) {
-	return pick(p, "The term is over. What now? (pp. 6-7, 21)", from, traveller.Intent.String)
+// ReenlistIntent shows, beside continuing, the survival throw the next term
+// opens with. Its DM is the characteristics' before this term's aging round,
+// which comes after the answer and can lower them, and the line says so.
+//
+// Implements: A throw's question shows its target and DM before the answer
+// [Choices].
+func (p *player) ReenlistIntent(from []traveller.Intent, survival traveller.Odds) (traveller.Intent, error) {
+	return pick(p, "The term is over. What now? (pp. 6-7, 21)", from, func(intent traveller.Intent) string {
+		if intent == traveller.Continue {
+			return fmt.Sprintf("continue (next term's survival %v, before any aging)", oddsText(survival))
+		}
+
+		return intent.String()
+	})
 }
 
 func (p *player) MusterTable(from []traveller.MusterTable) (traveller.MusterTable, error) {
@@ -221,8 +321,14 @@ func (p *player) watch(event traveller.Event) {
 // would bury the complaint under six lines of menu and read as though the tool
 // had said nothing at all.
 //
+// The prompt carries the range it accepts, so the question says how to
+// answer it before any answer is refused (#461). A refusal says what it
+// wants; an empty line has nothing to quote back, and gets the nudge alone.
+//
 // Implements: The alternatives offered are exactly the engine's [Choices].
 // Implements: An unreadable answer is asked again, never guessed at [Choices].
+// Implements: A question shows the numbers it accepts before it is answered
+// [Choices].
 func (p *player) choose(question string, options []string) (int, error) {
 	p.sayf("\n%s\n", question)
 
@@ -230,8 +336,10 @@ func (p *player) choose(question string, options []string) (int, error) {
 		p.sayf("  %d) %s\n", i+1, option)
 	}
 
+	nudge := fmt.Sprintf("answer with one of the numbers shown, 1-%d", len(options))
+
 	for {
-		p.sayf("> ")
+		p.sayf("answer 1-%d> ", len(options))
 
 		if p.wrote != nil {
 			return 0, fmt.Errorf("asking the player: %w", p.wrote)
@@ -252,8 +360,13 @@ func (p *player) choose(question string, options []string) (int, error) {
 			return chosen - 1, nil
 		}
 
-		p.sayf("  %q is not one of them; answer with a number from 1 to %d\n",
-			typed, len(options))
+		if typed == "" {
+			p.sayf("  %s\n", nudge)
+
+			continue
+		}
+
+		p.sayf("  %q is refused; %s\n", typed, nudge)
 	}
 }
 

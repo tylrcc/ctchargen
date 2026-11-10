@@ -59,7 +59,7 @@ func TestCareerStrategies(t *testing.T) {
 	} {
 		policy := chargen.Policy{Career: tc.career, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash}
 
-		got, err := policy.ReenlistIntent(tc.offered)
+		got, err := policy.ReenlistIntent(tc.offered, traveller.Odds{})
 		if err != nil || got != tc.want {
 			t.Errorf("%s: chose %v (%v), want %v", name, got, err, tc.want)
 		}
@@ -100,7 +100,12 @@ func TestSkillsStrategies(t *testing.T) {
 		// No results off any table yet: an untrained character, where the
 		// ranking decides alone and the answer is what it was before counts
 		// existed.
-		got, err := policy.SkillTable(tc.offered, make([]int, len(tc.offered)))
+		offers := make([]traveller.SkillTableOffer, 0, len(tc.offered))
+		for _, table := range tc.offered {
+			offers = append(offers, traveller.SkillTableOffer{Table: table})
+		}
+
+		got, err := policy.SkillTable(offers, traveller.SkillRoll{})
 		if err != nil || got != tc.want {
 			t.Errorf("%s: designated %v (%v), want %v", name, got, err, tc.want)
 		}

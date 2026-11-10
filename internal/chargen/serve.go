@@ -2,7 +2,9 @@ package chargen
 
 import (
 	"fmt"
+	"slices"
 
+	"github.com/philoserf/ctchargen/internal/rules"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
@@ -113,33 +115,53 @@ func (r *run) survive(term traveller.Term) bool {
 	return false
 }
 
+// odds is a throw as a decider is shown it before the answer that leads to
+// it: the printed target, and the DM the character's characteristics earn
+// against it now.
+func (r *run) odds(throw rules.Throw) traveller.Odds {
+	return traveller.Odds{Target: throw.Target, DM: throw.Modifier(r.profile)}
+}
+
 // grantEligibility adds the term's skill eligibilities, per the Basic Skill
 // Eligibility box (p. 6): two for the initial term, one per subsequent term.
+// They are tallied as the term's, apart from what a commission or a
+// promotion gives, so the skills question can say why the term has them.
 //
 // Implements: Two eligibilities for the initial term, one thereafter [1:6].
+// Implements: The skills question says which roll of how many, and why
+// [Choices].
 func (r *run) grantEligibility(term traveller.Term) {
 	if term == 1 {
-		r.eligible += r.tables.Eligibility().InitialTerm
+		r.eligible.Term += r.tables.Eligibility().InitialTerm
 
 		return
 	}
 
-	r.eligible += r.tables.Eligibility().PerSubsequentTerm
+	r.eligible.Term += r.tables.Eligibility().PerSubsequentTerm
 }
 
-// trainSkills spends every eligibility the character has accrued. P. 11:
-// "must specify the table being consulted prior to the die throw."
+// trainSkills spends every eligibility the character has accrued this term.
+// P. 11: "must specify the table being consulted prior to the die throw."
+//
+// The tally is taken whole and cleared before the first roll: each roll is
+// asked as one of the term's whole count, and nothing carries into the next
+// term.
+//
+// Implements: The skills question says which roll of how many, and why
+// [Choices].
 func (r *run) trainSkills() error {
-	if r.eligible == 0 {
+	earned := r.eligible
+
+	r.eligible = traveller.Earned{}
+
+	if earned.Rolls() == 0 {
 		return nil
 	}
 
 	r.record.step("skills and training", "pp. 6, 11")
 
-	for r.eligible > 0 {
-		r.eligible--
-
-		err := r.trainOnce()
+	for n := 1; n <= earned.Rolls(); n++ {
+		err := r.trainOnce(traveller.SkillRoll{N: n, Of: earned})
 		if err != nil {
 			return err
 		}
@@ -148,16 +170,25 @@ func (r *run) trainSkills() error {
 	return nil
 }
 
+// trainOnce designates a table and rolls on it. Each table is offered with
+// its six results from the service's column, so it is designated knowing
+// what each result gives.
+//
 // Implements: The skills table is designated before the die [1:11].
-func (r *run) trainOnce() error {
-	offered := r.offeredTables()
+// Implements: A skills table offered shows its six results [Choices].
+func (r *run) trainOnce(roll traveller.SkillRoll) error {
+	tables := r.offeredTables()
 
-	taken := make([]int, len(offered))
-	for i, table := range offered {
-		taken[i] = r.trained[table]
+	offered := make([]traveller.SkillTableOffer, 0, len(tables))
+	for _, table := range tables {
+		offered = append(offered, traveller.SkillTableOffer{
+			Table:   table,
+			Taken:   r.trained[table],
+			Results: slices.Clone(r.service.Skills[table][:]),
+		})
 	}
 
-	table, err := r.decide.SkillTable(offered, taken)
+	table, err := r.decide.SkillTable(offered, roll)
 	if err != nil {
 		return fmt.Errorf("designating a skills table: %w", err)
 	}

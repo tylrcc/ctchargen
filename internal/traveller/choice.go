@@ -70,11 +70,12 @@ func (t MusterTable) String() string {
 // The DM travels with the offer so that choosing a service stays a pure
 // function of what the chooser is handed. A policy that had to reach into
 // the character to rank services would be reaching past the question it was
-// asked.
+// asked. The throw is an Odds, the shape every question that leads to a
+// throw shows it in.
 type EnlistmentOffer struct {
+	Odds
+
 	Service ServiceName
-	Target  Target
-	DM      int
 }
 
 // ChoicePoint names one point at which the procedure asks. There is exactly
@@ -141,4 +142,47 @@ func (c ChoicePoint) String() string {
 	}
 
 	return fmt.Sprintf("ChoicePoint(%d)", int(c))
+}
+
+// Odds is a throw a choice leads to, as the chooser is shown it before
+// answering: the target the service prints, and the cumulative modifier the
+// character earns against it as things stand (pp. 5-6, 10). Each enlistment
+// offer carries one, and so do the commission, the promotion and the next
+// term's survival.
+type Odds struct {
+	Target Target
+	DM     int
+}
+
+// Earned is how many skills rolls a term has given, by what gave them: the
+// term itself, a commission and a promotion (p. 6, the Basic Skill
+// Eligibility box). A term's rolls are spent before it ends, so this is one
+// term's and never a running total.
+type Earned struct {
+	Term, Commission, Promotion int
+}
+
+// Rolls is how many skills rolls the term has given in all.
+func (e Earned) Rolls() int { return e.Term + e.Commission + e.Promotion }
+
+// SkillRoll is one skills roll as the chooser is asked it: which of the
+// term's rolls it is, counting from 1, and what gave the term its rolls.
+type SkillRoll struct {
+	N  int
+	Of Earned
+}
+
+// SkillTableOffer is one skills table a character may designate, carried to
+// the Decider with what the choice turns on: the table, how many results the
+// character has already had off it, and its six results by die face from
+// the character's service column (p. 11).
+//
+// Taken is engine-computed and never recorded, so a decider can weigh where
+// the character is under-trained without reaching into the character, and
+// rewording nothing can change one. Results is what a person choosing needs
+// to see.
+type SkillTableOffer struct {
+	Table   SkillTable
+	Taken   int
+	Results []TableResult
 }

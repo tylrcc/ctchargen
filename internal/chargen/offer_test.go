@@ -29,11 +29,12 @@ func (s scribbling) Service(from []traveller.EnlistmentOffer, vary chargen.Vary)
 	return chosen, err //nolint:wrapcheck // the policy's own error, unchanged
 }
 
-func (s scribbling) SkillTable(from []traveller.SkillTable, taken []int) (traveller.SkillTable, error) {
-	chosen, err := s.Policy.SkillTable(from, taken)
+func (s scribbling) SkillTable(
+	from []traveller.SkillTableOffer, roll traveller.SkillRoll,
+) (traveller.SkillTable, error) {
+	chosen, err := s.Policy.SkillTable(from, roll)
 	for i := range from {
-		from[i] = chosen
-		taken[i] = 99
+		from[i] = traveller.SkillTableOffer{Table: chosen, Taken: 99}
 	}
 
 	return chosen, err //nolint:wrapcheck // the policy's own error, unchanged
@@ -50,8 +51,8 @@ func (s scribbling) Weapon(
 	return chosen, err //nolint:wrapcheck // the policy's own error, unchanged
 }
 
-func (s scribbling) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error) {
-	chosen, err := s.Policy.ReenlistIntent(from)
+func (s scribbling) ReenlistIntent(from []traveller.Intent, survival traveller.Odds) (traveller.Intent, error) {
+	chosen, err := s.Policy.ReenlistIntent(from, survival)
 	for i := range from {
 		from[i] = chosen
 	}
@@ -142,7 +143,7 @@ type answeringOutsideTheOffer struct {
 }
 
 func (a answeringOutsideTheOffer) SkillTable(
-	from []traveller.SkillTable, taken []int,
+	from []traveller.SkillTableOffer, roll traveller.SkillRoll,
 ) (traveller.SkillTable, error) {
 	if a.table {
 		// P. 11 opens this table only at Education 8, and the character
@@ -150,7 +151,7 @@ func (a answeringOutsideTheOffer) SkillTable(
 		return traveller.AdvancedEducationEight, nil
 	}
 
-	return a.Decider.SkillTable(from, taken) //nolint:wrapcheck // the policy's own error, unchanged
+	return a.Decider.SkillTable(from, roll) //nolint:wrapcheck // the policy's own error, unchanged
 }
 
 func (a answeringOutsideTheOffer) MusterWeapon(

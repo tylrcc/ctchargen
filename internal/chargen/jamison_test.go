@@ -128,10 +128,12 @@ func (d *decisions) SubmitToDraft() (bool, error) {
 	return false, nil
 }
 
-func (d *decisions) AttemptCommission() (bool, error) { return true, nil }
-func (d *decisions) AttemptPromotion() (bool, error)  { return true, nil }
+func (d *decisions) AttemptCommission(traveller.Odds) (bool, error) { return true, nil }
+func (d *decisions) AttemptPromotion(traveller.Odds) (bool, error)  { return true, nil }
 
-func (d *decisions) SkillTable([]traveller.SkillTable, []int) (traveller.SkillTable, error) {
+func (d *decisions) SkillTable(
+	[]traveller.SkillTableOffer, traveller.SkillRoll,
+) (traveller.SkillTable, error) {
 	d.t.Helper()
 
 	if len(d.tables) == 0 {
@@ -161,7 +163,7 @@ func (d *decisions) Weapon(
 	return next, nil
 }
 
-func (d *decisions) ReenlistIntent([]traveller.Intent) (traveller.Intent, error) {
+func (d *decisions) ReenlistIntent([]traveller.Intent, traveller.Odds) (traveller.Intent, error) {
 	return traveller.Continue, nil
 }
 

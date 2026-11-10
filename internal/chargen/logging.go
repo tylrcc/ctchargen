@@ -88,25 +88,35 @@ func (l logging) SubmitToDraft() (bool, error) {
 	return l.yesOrNo(traveller.ChoiceSubmitToDraft, l.to.SubmitToDraft)
 }
 
-func (l logging) AttemptCommission() (bool, error) {
-	return l.yesOrNo(traveller.ChoiceAttemptCommission, l.to.AttemptCommission)
+func (l logging) AttemptCommission(odds traveller.Odds) (bool, error) {
+	return l.yesOrNo(traveller.ChoiceAttemptCommission, func() (bool, error) {
+		return l.to.AttemptCommission(odds)
+	})
 }
 
-func (l logging) AttemptPromotion() (bool, error) {
-	return l.yesOrNo(traveller.ChoiceAttemptPromotion, l.to.AttemptPromotion)
+func (l logging) AttemptPromotion(odds traveller.Odds) (bool, error) {
+	return l.yesOrNo(traveller.ChoiceAttemptPromotion, func() (bool, error) {
+		return l.to.AttemptPromotion(odds)
+	})
 }
 
-func (l logging) SkillTable(
-	from []traveller.SkillTable, taken []int,
-) (traveller.SkillTable, error) {
-	offer := names(from, traveller.SkillTable.String)
+func (l logging) SkillTable(from []traveller.SkillTableOffer, roll traveller.SkillRoll) (traveller.SkillTable, error) {
+	offer := names(from, func(o traveller.SkillTableOffer) string { return o.Table.String() })
 
 	err := asked(traveller.ChoiceSkillTable, offer)
 	if err != nil {
 		return 0, err
 	}
 
-	chosen, err := l.to.SkillTable(own(from), own(taken))
+	// Each offer's results are copied as well as the list of offers, since
+	// a decider writing into one would otherwise write into whatever the
+	// engine built it from.
+	copied := own(from)
+	for i := range copied {
+		copied[i].Results = own(copied[i].Results)
+	}
+
+	chosen, err := l.to.SkillTable(copied, roll)
 	if err != nil {
 		return chosen, err
 	}
@@ -132,7 +142,7 @@ func (l logging) Weapon(
 	return chosen, l.record(traveller.ChoiceWeapon, offer, string(chosen))
 }
 
-func (l logging) ReenlistIntent(from []traveller.Intent) (traveller.Intent, error) {
+func (l logging) ReenlistIntent(from []traveller.Intent, survival traveller.Odds) (traveller.Intent, error) {
 	offer := names(from, traveller.Intent.String)
 
 	err := asked(traveller.ChoiceReenlistIntent, offer)
@@ -140,7 +150,7 @@ func (l logging) ReenlistIntent(from []traveller.Intent) (traveller.Intent, erro
 		return 0, err
 	}
 
-	chosen, err := l.to.ReenlistIntent(own(from))
+	chosen, err := l.to.ReenlistIntent(own(from), survival)
 	if err != nil {
 		return chosen, err
 	}

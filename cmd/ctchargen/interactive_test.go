@@ -48,7 +48,7 @@ func TestInteractiveWalksACharacter(t *testing.T) {
 		"\n18. term 1 (pp. 5-7)\n",
 		"survival: rolled",
 		// A question, with the alternatives the engine offered.
-		"Which skills table? It is designated before the die (p. 11)",
+		"Which skills table? Roll 1 of 2",
 		"1) Personal Development Table",
 	} {
 		if !strings.Contains(shown, want) {
@@ -98,15 +98,15 @@ func TestInteractiveReAsksWhatItCannotRead(t *testing.T) {
 
 	shown := out
 
-	if strings.Count(shown, "answer with a number from 1 to") != 3 {
+	if strings.Count(shown, "answer with one of the numbers shown") != 3 {
 		t.Errorf("three unusable answers drew %d re-prompts, want 3",
-			strings.Count(shown, "answer with a number from 1 to"))
+			strings.Count(shown, "answer with one of the numbers shown"))
 	}
 
-	// The complaint names what was typed, so a reader can see which of his
+	// The complaint names what was typed, so a reader can see which of the
 	// answers was refused rather than inferring it.
 	for _, given := range []string{`"banana"`, `"0"`, `"99"`} {
-		if !strings.Contains(shown, given+" is not one of them") {
+		if !strings.Contains(shown, given+" is refused") {
 			t.Errorf("the complaint does not name %s", given)
 		}
 	}
@@ -139,8 +139,46 @@ func TestABadAnswerDoesNotReprintTheMenu(t *testing.T) {
 		t.Errorf("three bad answers printed the menu %d times, want 1", asked)
 	}
 
-	if refused := strings.Count(shown, "is not one of them"); refused != 3 {
+	if refused := strings.Count(shown, " is refused; "); refused != 3 {
 		t.Errorf("three bad answers drew %d complaints, want 3", refused)
+	}
+}
+
+// A question says how to answer it before any answer is refused, and a
+// refusal says what it wants (#461). The prompt carries the range; a word and
+// an empty line each draw the same nudge, and only a typed word is quoted
+// back, since an empty line has nothing to quote.
+//
+// Held at the enlistment menu, the first question a bare new asks; every
+// question is put through the one prompt loop, so this is every question's
+// wording.
+//
+// Holds: A question shows the numbers it accepts before it is answered.
+func TestAQuestionSaysHowToAnswerIt(t *testing.T) {
+	t.Parallel()
+
+	shown := mustRunTogether(t, []string{cmdNew},
+		io.MultiReader(strings.NewReader("army\n\n"), answers("1", 300)))
+
+	const menu = "  6) Other (enlistment 3+, and you earn +0)\nanswer 1-6> "
+
+	for _, want := range []string{
+		// The range, at the prompt, before anything was typed.
+		menu,
+		// A word is quoted back, and the nudge says what is wanted.
+		menu + `  "army" is refused; answer with one of the numbers shown, 1-6` + "\nanswer 1-6> ",
+		// An empty line is given the nudge alone.
+		"\nanswer 1-6>   answer with one of the numbers shown, 1-6\nanswer 1-6> ",
+	} {
+		if !strings.Contains(shown, want) {
+			t.Errorf("the session never showed %q:\n%s", want, shown)
+		}
+	}
+
+	for _, gone := range []string{`""`, "one of them", "\n> "} {
+		if strings.Contains(shown, gone) {
+			t.Errorf("the session still shows %q:\n%s", gone, shown)
+		}
 	}
 }
 
@@ -181,26 +219,40 @@ func TestTheNumbersAPlayerWatchesDoNotSkip(t *testing.T) {
 	}
 }
 
-// The two Advanced Education tables are told apart at a glance.
-//
-// They are identical up to a parenthesis, which is honest and easy to pick
-// wrong at speed. What separates them belongs at the front, because the eye
-// scans down the left of a numbered list.
-func TestTheTwoAdvancedEducationTablesReadDifferently(t *testing.T) {
+// A skills table has one name, and the menu, the echo and the record all use
+// it (#486). The fourth table's menu line once read "Education 8+ table (the
+// second Advanced Education table)" where the record read "Advanced
+// Education Table (education 8+)": two names for one table, which a reader
+// matching the question to the note had to reconcile. The record's agrees
+// with p. 11, so it is the one kept; the six results shown beside each name
+// are what tells the two Advanced Education tables apart.
+func TestASkillsTableHasOneName(t *testing.T) {
 	t.Parallel()
 
-	// The Navy walk reaches a term offering all four tables, which needs
-	// the education 8+ gate open.
-	out := mustRunTogether(t, []string{cmdNew, flagService, navy}, answers("1", 200),
-		withDice(navyWalked.roller(t)))
+	// Answering 4 takes the fourth table at the drafted walk's first skills
+	// question, whose Education already opens it.
+	in := io.MultiReader(strings.NewReader("1\n4\n"), answers("1", 300))
 
-	shown := out
-	if !strings.Contains(shown, "Advanced Education Table\n") {
-		t.Fatalf("the run never offered the skills tables:\n%s", shown)
+	note, shown := mustRun(t, []string{cmdNew, flagService, navy}, in,
+		withDice(draftedWalked.roller(t)))
+
+	const name = "Advanced Education Table (education 8+)"
+
+	for where, text := range map[string]string{
+		"the menu": "  4) " + name + ": ",
+		"the echo": "you chose " + name + "\n",
+	} {
+		if !strings.Contains(shown, text) {
+			t.Errorf("%s does not name the table %q:\n%s", where, name, shown)
+		}
 	}
 
-	if !strings.Contains(shown, "Education 8+ table (the second Advanced Education table)") {
-		t.Errorf("the two Advanced Education entries are not told apart:\n%s", shown)
+	if !strings.Contains(note, "player chose "+name+" from ") {
+		t.Errorf("the record does not name the table %q:\n%s", name, note)
+	}
+
+	if strings.Contains(shown, "Education 8+ table") {
+		t.Errorf("the menu still has a second name for the table:\n%s", shown)
 	}
 }
 
@@ -271,9 +323,9 @@ func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 	shown := out
 
 	for _, want := range []string{
-		"Rejected. Submit to the draft? (p. 5)",
-		"Attempt a commission this term? (p. 6)",
-		"Attempt a promotion this term? (p. 6)",
+		"Rejected. Submit to the draft?",
+		"Attempt a commission this term?",
+		"Attempt a promotion this term?",
 		"Your rank allows +1 on this table. Take it? (p. 9)",
 		"Assume the title? (p. 5; Book 3 p. 22)",
 		// Both alternatives are offered at each of them.
@@ -282,6 +334,124 @@ func TestInteractiveAsksTheYesOrNoPoints(t *testing.T) {
 	} {
 		if !strings.Contains(shown, want) {
 			t.Errorf("the run never asked %q", want)
+		}
+	}
+}
+
+// A question that leads to a throw shows the throw before it is answered
+// (#482): the commission and the promotion their target and DM, and what a
+// failure costs, for which p. 6 names none; the end of a term the survival
+// throw the next term makes. Each is the Marines' as the drafted walk reaches
+// it, read from the transcription: a mutation to the p. 10 cell moves the
+// prompt with it.
+//
+// Holds: A throw's question shows its target and DM before the answer.
+func TestAThrowsQuestionShowsTheThrow(t *testing.T) {
+	t.Parallel()
+
+	shown := mustRunTogether(t, []string{cmdNew, flagService, navy}, answers("1", 300),
+		withDice(draftedWalked.roller(t)))
+
+	for _, want := range []string{
+		"\nAttempt a commission this term? (commission 9+, DM +1; p. 6 names no cost for a failure)\n" +
+			"  1) yes\n  2) no\nanswer 1-2> ",
+		"\nAttempt a promotion this term? (promotion 9+, DM +1; p. 6 names no cost for a failure)\n" +
+			"  1) yes\n  2) no\nanswer 1-2> ",
+		"\nThe term is over. What now? (pp. 6-7, 21)\n" +
+			"  1) continue (next term's survival 6+, DM +2, before any aging)\n  2) discharge\nanswer 1-2> ",
+	} {
+		if !strings.Contains(shown, want) {
+			t.Errorf("the session never asked\n%s", want)
+		}
+	}
+}
+
+// The enlistment menu shows each service's target and the DM the character
+// earns against it, built from the same Odds the commission and survival
+// questions are handed; its wording is its own. Driven by the drafted walk's
+// dice without --service: answering 1 attempts the Navy, the walk's own
+// path, and the menu asks without a die.
+//
+// The DMs are worked by hand from the walk's characteristics, Strength 7,
+// Dexterity 6, Endurance 11, Intelligence 7, Education 11, against the p. 10
+// enlistment DMs: the Navy +2 for Education 9+; the Marines none; the Army +1
+// for Dexterity 6+ and +2 for Endurance 5+; the Scouts +1 for Intelligence
+// 6+; the Merchants +1 for Strength 7+ and +2 for Intelligence 6+.
+//
+// Holds: A throw's question shows its target and DM before the answer.
+func TestTheEnlistmentMenuShowsEachThrow(t *testing.T) {
+	t.Parallel()
+
+	shown := mustRunTogether(t, []string{cmdNew}, answers("1", 300), withDice(draftedWalked.roller(t)))
+
+	const want = "" +
+		"  1) Navy (enlistment 8+, and you earn +2)\n" +
+		"  2) Marines (enlistment 9+, and you earn +0)\n" +
+		"  3) Army (enlistment 5+, and you earn +3)\n" +
+		"  4) Scouts (enlistment 7+, and you earn +1)\n" +
+		"  5) Merchants (enlistment 7+, and you earn +3)\n" +
+		"  6) Other (enlistment 3+, and you earn +0)\n"
+
+	if !strings.Contains(shown, want) {
+		t.Errorf("the enlistment menu is not\n%s\nin\n%s", want, shown)
+	}
+}
+
+// Declining the draft ends the generation, and the question says so before
+// it is answered (#483). The answer and its outcome are unchanged. The
+// consequence is E001's reading, so the page cite stays on the question and
+// is not put after the consequence as though p. 5 stated it.
+//
+// Holds: The draft question says that declining ends generation.
+func TestTheDraftQuestionSaysWhatDecliningCosts(t *testing.T) {
+	t.Parallel()
+
+	shown := mustRunTogether(t, []string{cmdNew, flagService, navy}, answers("1", 300),
+		withDice(draftedWalked.roller(t)))
+
+	const want = "\nRejected. Submit to the draft? (p. 5) " +
+		"Declining ends the generation with a character who never served.\n"
+
+	if !strings.Contains(shown, want) {
+		t.Errorf("the session never asked %q:\n%s", want, shown)
+	}
+}
+
+// The skills question says which roll of how many it is and what gave the
+// term that many, and each table offered shows its six results (#486). Held
+// at the drafted walk's third term, which is commissioned and promoted, so
+// all three sources of a roll are named; and at its first, where the term's
+// two are all there is.
+//
+// Each table is named once, as the record names it: the fourth is "Advanced
+// Education Table (education 8+)", which p. 11 prints as "Advanced Education
+// Table (allowed only for characters with education 8+)".
+//
+// Holds: The skills question says which roll of how many, and why.
+// Holds: A skills table offered shows its six results.
+func TestTheSkillsQuestionSaysWhichRollAndWhatEachTableHolds(t *testing.T) {
+	t.Parallel()
+
+	shown := mustRunTogether(t, []string{cmdNew, flagService, navy}, answers("1", 300),
+		withDice(draftedWalked.roller(t)))
+
+	//nolint:dupword // the Marines' column of p. 11 prints Tactics twice, and Blade and Gun Cbt
+	const marines = "" +
+		"  1) Personal Development Table: +1 Strength, +1 Dexterity, +1 Endurance, Gambling, Brawling, Blade Combat\n" +
+		"  2) Service Skills Table: ATV, Vacc Suit, Blade Combat, Blade Combat, Gun Combat, Gun Combat\n" +
+		"  3) Advanced Education Table: ATV, Mechanical, Electronic, Tactics, Blade Combat, Gun Combat\n" +
+		"  4) Advanced Education Table (education 8+): Medical, Tactics, Tactics, Computer, Leader, Administration\n" +
+		"answer 1-4> "
+
+	for _, want := range []string{
+		"\nWhich skills table? Roll 1 of 2: 2 for the term. It is designated before the die (p. 11)\n" + marines,
+		"\nWhich skills table? Roll 2 of 2: 2 for the term. It is designated before the die (p. 11)\n",
+		"\nWhich skills table? Roll 1 of 3: 1 for the term, 1 for the commission, 1 for the promotion. " +
+			"It is designated before the die (p. 11)\n" + marines,
+		"\nWhich skills table? Roll 3 of 3: 1 for the term, 1 for the commission, 1 for the promotion. ",
+	} {
+		if !strings.Contains(shown, want) {
+			t.Errorf("the session never asked\n%s\nin\n%s", want, shown)
 		}
 	}
 }
