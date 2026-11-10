@@ -13,7 +13,7 @@ in the source, with its page cite.
 ## Install
 
 ```sh
-go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.4
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.5
 ```
 
 Go excludes prereleases from `@latest`, so a prerelease installs by name. That
@@ -94,9 +94,10 @@ one: a text property with no value is left empty, and a list with none is
 
 Each skill and possession is an exact item, so "which crew have Pilot?" is an
 exact match: `econtains(skills, "Pilot")` in Dataview, and
-`skills.contains("Pilot")` in Bases. Under the heading, **a one-paragraph summary** says who the character is in words a
-referee can read aloud: "Army Captain, 2 terms, denied reenlistment at 26. Known for
-Rifle-2. Musters out with CR 30000."
+`skills.contains("Pilot")` in Bases.
+
+Under the heading, **a one-paragraph summary** says who the character is in
+words a referee can read aloud: "Army Captain, 2 terms, denied reenlistment at 26. Known for Rifle-2. Musters out with CR 30000."
 
 **A reading is how the tool decides where the page is silent or contradicts
 itself.** The readings are the tool's own record of its authority, kept in
@@ -161,11 +162,12 @@ failed enlistment throw sends the character to the draft, which may put the
 character somewhere else entirely — the sheet says that too.
 
 **Three flags steer the policy** where the procedure offers a choice, on
-`new --auto` and on `batch`. `--career` governs the draft, commission and
-promotion attempts, reenlistment and the title; `--skills` the skills table
-and the weapon a combat result names; `--muster` the mustering-out table, its
-two DMs and repeated weapons. What each strategy answers at each choice is in
-the doc comment of the `chargen.Policy` method that asks it. On `new` without
+`new --auto` and on `batch`. `--career` governs the draft and reenlistment;
+`--skills` the skills table; `--muster` the mustering-out table, its two DMs
+and repeated weapons. Every strategy attempts each commission and promotion
+and assumes a title, and draws the weapon a combat result names. What each
+strategy answers at each choice is in the doc comment of the `chargen.Policy`
+method that asks it. On `new` without
 `--auto` the three are refused: you answer every choice they would have, and no
 choice in the note is the policy's.
 
@@ -203,6 +205,9 @@ standard error after `ctchargen:`.
 | -------------------------------------------------------- | -------------------------------------------------------------------------------- |
 | [internal/rules/readings.go](internal/rules/readings.go) | Every recorded reading, with its page cite and stamping condition, as Go values. |
 | [docs/CHANGELOG.md](docs/CHANGELOG.md)                   | What each release changed.                                                       |
+| [docs/THEORY.md](docs/THEORY.md)                         | Why the system is shaped as it is, as of the last release.                       |
+| [docs/WALKTHROUGH.md](docs/WALKTHROUGH.md)               | How the code runs, quoted from it, as of the last release.                       |
+| [docs/CODING_STANDARDS.md](docs/CODING_STANDARDS.md)     | The rules a reviewer holds a change to.                                          |
 | [docs/GLOSSARY.md](docs/GLOSSARY.md)                     | The tool's vocabulary: note, record, reading, erratum, golden.                   |
 | [docs/adr/](docs/adr/)                                   | The decisions that shape the tool, and why.                                      |
 | [CLAUDE.md](CLAUDE.md)                                   | Authority, source precedence, and the working rules for agents.                  |

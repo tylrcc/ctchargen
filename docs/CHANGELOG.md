@@ -5,171 +5,130 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
-- Comments the rc.5 snapshots found still describing the tree before this
-  release now say what holds: the policy's strategies and versions, the
-  service history's mustering out, the answerer on each choice's line, the
-  build, and a DM's sources by name with p. 10's threshold (#537, #538,
-  #539).
-- A note's record lines no longer pad their numbers (`17.`, not ` 17.`), so a
-  note is Markdown the formatter keeps as written, and a referee's formatter
-  leaves it alone. The one exception is a step whose numbered lines cross
-  from 99 to 100, where the formatter aligns the list by where it starts;
-  `bunfig.toml` ignores the goldens that do, by name, and holds every other
-  golden to `bun fmt --check`. It replaces `.prettierignore`, which ignored
-  every golden and still named JSON files #405 removed (#540).
-- `task setup` installs every tool the gate runs, from the repository alone:
-  the Brewfile now lists each Homebrew tool the gate uses, and the task
-  installs NilAway with `go install`, since Homebrew has no formula for it.
-  The README's gate section names it (#492).
-- Comments give reasons rather than history: `character.go` points to #441
-  once rather than at each of its accessors, and the comments that told what
-  a batch, a bound or a transcription used to do now say what holds (#504).
-- The help names what `-o` takes: `-o file` for `new`, `-o folder` for
-  `batch`, where both said `string` (#517).
-- `CODING_STANDARDS.md` says where a quotation marks the page's emphasis: in a
-  reading's values, as `_…_`, and not in a Go comment, which quotes the same
-  words plain (#526).
-- The fixtures that walk career serve, skills advanced and muster goods name
-  that policy once, `servesMustersGoods`, where each spelled it out (#531).
-- A die's six faces are still said twice, in `dice` and in `rules`, since
-  `dice` depends on nothing and `rules` does not import it. Each constant now
-  names the other, and a test in `chargen`, which imports both, holds them
-  equal (#514).
-- A note ends with its generation record. The closing line naming the
-  ruleset, the build and who answered is gone: the build is the `ctchargen`
-  property, each choice's line says whether the policy or the player made it,
-  and the ruleset is the same on every note. With it go the policy's version
-  and strategies, which nothing else said.
-- The note's properties take the shape `v1.0.0` freezes (#474). `skills` is the
-  skill names alone, one exact item each, so "which crew have Pilot?" is an
-  exact match (Dataview `econtains`, Bases `contains`). Every property is on
-  every note, empty or `[]` where there is none, `aliases` included (#480,
-  #477). Two are new: `possessions`, what mustering out gave besides cash,
-  one item each (#475), and `ctchargen`, the version of the build that wrote
-  the note (#476). The README lists each property's type (#481).
-- The record and the session say where each number comes from (#487). A
-  throw's DM names the characteristics it is earned by, with the thresholds
-  p. 10 prints for them:
-  `rolled 3+4 +3 (Dexterity 6+, Endurance 5+) = 10`, and the session's
-  questions and enlistment menu say `DM +3 for Dexterity 6+, Endurance 5+`
-  where the menu said `and you earn +3`. An outcome names its cause as
-  `(from step N)`.
-- No note, and not the README, names a character by a pronoun: a character
-  has no sex in these rules (p. 8). The record reads "rejected by the Navy",
-  where it read "the Navy rejected him", and the sheet "(drafted after the
-  Navy refused enlistment)" (#459).
-- A failed reenlistment throw below term 5 reads "denied reenlistment", in
+## 1.0.0-rc.5
+
+The fifth release candidate for `v1.0.0`, and the one that settles what
+`v1.0.0` freezes. The note's properties take their final shape, and the
+command line refuses anything it could read two ways, since giving an input a
+meaning later is an addition and taking one away is a break (#466, #474). The
+readings become the tool's own record of its authority: a note names none of
+them, and states in plain words what a referee acts on (ADR 0007). The note
+ends with its generation record, with no footer, and every note but a long
+career's passes a Markdown formatter as written.
+
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.5
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### Breaking
+
+- **The readings are the authority's record, not the referee's (#460, ADR
+  0007).** The `readings` subcommand and `new --readings` are removed, a note
+  names no erratum (no `[E0xx]` beside any outcome), and a reading can no
+  longer be withdrawn. The readings, their stamping on the character and the
+  checks that hold them are unchanged (#458, #488, #502).
+- **The command line refuses what it cannot read one way** (#466, #467, #470,
+  #473), before anything is asked or written:
+  - `--count` takes decimal digits only: `010` is ten, and `0x10` and
+    `1_000` are refused.
+  - A flag given twice, or given an empty value, is refused, and the error
+    names it.
+  - `--force` with no `-o` file is refused.
+  - A batch makes its own folder only inside one that exists.
+  - `-o -` is standard output for `new` and `batch`.
+  - The help says how flags are written, and what `-o` takes: `-o file` for
+    `new`, `-o folder` for `batch` (#517).
+- **The note's properties take the shape `v1.0.0` freezes (#474).**
+  - `skills` is the skill names alone, one exact item each, so "which crew
+    have Pilot?" is an exact match.
+  - Every property is on every note, empty or `[]` where there is none,
+    `aliases` included (#480, #477).
+  - Two are new: `possessions`, what mustering out gave besides cash, one item
+    each (#475), and `ctchargen`, the version of the build that wrote the note
+    (#476).
+  - The README lists each property's type (#481).
+- **A note ends with its generation record.** The closing lines are gone:
+  "Keep this note whole" (#525), and the ruleset, build and policy line. The
+  build is the `ctchargen` property, and each choice's line says whether the
+  policy or the player made it.
+
+### The note
+
+- **Each number says where it comes from (#487).** A throw's DM names the
+  characteristics it is earned by, with the thresholds p. 10 prints for them:
+  `rolled 3+4 +3 (Dexterity 6+, Endurance 5+) = 10`. An outcome names its
+  cause as `(from step N)`.
+- **A characteristic raised at mustering out is on the sheet's service
+  record**, after the departure line: `mustered out with Education +1`
+  (#490). The record says `mustering out, 1 roll`, where it said `1 rolls`.
+- **A failed reenlistment throw below term 5 reads "denied reenlistment"**, in
   the `departure` property, the summary and the service record, where it read
-  "forced out", which nothing explained (#485).
-- The record says `mustering out, 1 roll`, where it said `1 rolls`, and a
-  characteristic a mustering-out benefit raised is on the sheet's service
-  record, after the departure line: `mustered out with Education +1` (#490).
-- A note no longer ends with "Keep this note whole: its generation record is
-  the only way back to this character." That advice was about the tool, and
-  the note is the character's record (#525).
-- The command line refuses what it cannot read one way, before anything is
-  asked or written: `--count` is decimal digits only (`010` is ten, and
-  `0x10` and `1_000` are refused); a flag given twice, or given an empty
-  value, is refused, naming it; and `--force` with no `-o` file is refused.
-  `-o -` is standard output for `new` and
-  `batch`, and a batch makes its own folder only inside one that exists. The
-  help says how flags are written (#466, #467, #470, #473).
-- A Free Trader received more than five times is decided by a reading, E016:
-  each receipt past the fifth ages the ship ten years as pp. 22–23 say, and its
-  payment term stays at zero. The engine stamps E016 on such a character, and
-  two new fixtures hold the boundary: five receipts, free and clear with no
-  stamp, and six, stamped. `muster.go` also quotes p. 23's scout-ship rule
-  whole (#464).
-- E001 introduces The Draft as the paragraph after the one it quotes, where it
-  said "two paragraphs later", and its Pages and Why name the last paragraph
-  under Enlistment and the first under The Draft, where they said "the
-  Enlistment paragraph". E001's decision and stamping are unchanged (#465).
-- The readings no longer cite the removed PRD. E004, E008, E009 and E014,
-  and the readings' doc comment, cite where each point lives now: CLAUDE.md's
-  Authority section, the note's `age`, `status` and `departure` properties,
-  and `traveller.Term`.
-- E009 no longer says "the page offers no value" for the medic DM. It cites
-  p. 21's revival DM for a low passenger, "Attending medic of expertise 2 or
-  better, +1", and says why it does not carry over: generation has no
-  attending medic. E009's decision and stamping are unchanged (#463).
-- E015 places each of the worked example's table miscitations on its own
-  page: "Table 7" on p. 24, and "Table 2" for Mustering Out Table 1 on p. 25.
-  Its quotation of p. 25, and the Jamison test's, now say "Table 2" as printed
-  and give the correction in their own words. E015's decision and stamping
-  are unchanged (#462).
-- The readings are the authority's record, not the referee's (ADR 0007):
-  the `readings` subcommand and `new --readings` are removed, a note names no
-  erratum, and a reading can no longer be withdrawn. The readings, their
-  stamping on the character and the checks that hold them are unchanged
-  (#460, #458, #488, #502).
-- `CLAUDE.md` no longer lists the packages one by one: each package's doc
-  comment says what the list said, and the section already sends readers there.
-- `CLAUDE.md` names the branch the release snapshots are written on: the
-  release plan's `prep_branch`, which the tag step finds the prep merge by.
-- The 21 `//nolint:gochecknoglobals` directives are gone: the config turns
-  that linter off, so they suppressed nothing. `.golangci.yml` gives the one
-  reason, and lists what the linter reports (#509).
-- `.golangci.yml` counts the five linters it disables and gives each its
-  reason, and three new depguard rules forbid edges that compiled with
-  no rule against them: `render` importing `dice`, `dice` importing `traveller` or
-  `rules`, and non-test code importing `scripted` (#510).
-- `CLAUDE.md`'s shape of the tree states every import arrow between the
-  internal packages, `chargen`'s of `rules` and `dice` among them, and says
-  which are depguard rules (#515).
-- The sums' comment no longer says no linter checks a type switch's
-  coverage. It names `gochecksumtype`, what it would need, and why a fold
-  needs none of it (#498).
-- The service fold's comments name all three of its fields, where they said
-  "both" (#513).
-- `docs/agents/domain.md` describes this repo, a single context with
-  `docs/GLOSSARY.md` and `docs/adr/`, rather than a generic multi-context
-  template (#496).
-- The goldens' flag is `-update`, the convention, where it was
-  `-regenerate`: `go test ./internal/chargen -update` rewrites them (#506).
-- A golden that no longer matches fails with the hunk that changed, the
-  golden's lines against the note's with the lines around them, so it can
-  be read before `-update` rewrites it (#505).
-- No `chargen` name shadows a standard package or its own type: the
-  generation record's type is `record`, the glossary's word, where it was
-  `log`, as are the fields that hold it and the comments that meant it,
-  and `generate` no longer names its run `run` (#507).
-- Every type that reads a sum into a value is a fold named with the suffix
-  `Fold`, where seven suffixes were in use and "Codec" named something that
-  encodes nothing; the glossary defines the term (#512).
-- Every release heading here has the one form the release tooling writes,
-  `## 1.0.0-beta.2`, where those before `1.0.0-beta.3` carried a `v` and a
-  date. Each of those dates now stands on its own line beneath its heading
-  (#495).
-- The guided session's questions say what they ask before they are
-  answered. The prompt shows the numbers it accepts, and a refused answer or
-  an empty line is told what is wanted (#461). The commission and promotion
-  questions show their throw and that p. 6 names no cost for a failure, and
-  the end of a term shows the next term's survival throw (#482). The draft
-  question says that declining ends the generation (#483). The skills
-  question says which roll of how many and what gave the term that many,
-  shows each table's six results, and names each table as the note does
-  (#486).
-- A failed write without `--force` leaves no note behind (#468). The note is
-  still opened exclusively and written in place; a write that fails now
-  removes it, where it was left truncated under its name and the rerun was
-  refused. An interrupt is the operating system's, and can leave a partial
-  note, as it can for `cp`. The refusal of an existing file now says
-  `pass --force to overwrite it`.
-- `--force` overwrites the file in place, as the shell's `>` does (#469),
-  where since #191 it wrote a new file beside it and renamed it over. The
-  file is opened once, created or truncated: it keeps its mode and its hard
-  links, and a symlink is followed to the note it names, even one not yet
-  there, and kept. The trade: a `--force` write that fails partway has lost
-  the old note, and the partial one stays. `--force`'s help says it
-  overwrites in place.
-- Notes and folders take the umask (#469): a note is created `0666` and a
-  batch's folder `0777`, less the umask, where they were `0600` and `0700`
-  whatever it said.
-- Error messages name flags and files as the operator typed them (#472,
-  #508). A flag is written as the help writes it (`--count`, `-o`), not with
-  the flag package's one dash, and a path appears once in a message. `usage:`
-  labels only a mistake in the command line: a file in the way, a missing or
-  non-empty folder and a build with nothing embedded no longer carry it.
+  "forced out" (#485).
+- **No note names a character by a pronoun**, since a character has no sex in
+  these rules (p. 8): "rejected by the Navy", "(drafted after the Navy refused
+  enlistment)" (#459).
+- **A note is Markdown a formatter keeps as written.** Record lines no longer
+  pad their numbers (`17.`, not ` 17.`). The one exception is a step whose
+  numbered lines cross from 99 to 100, which a formatter realigns.
+
+### The guided session
+
+- **Each question says what it asks before it is answered (#461, #482,
+  #483, #486).**
+  - The prompt shows the numbers it accepts.
+  - The commission and promotion questions show their throw, and that p. 6
+    names no cost for a failure.
+  - The end of a term shows the next term's survival throw.
+  - The draft question says that declining ends the generation.
+  - The skills question says which roll of how many, and shows each table's
+    six results.
+- **A throw's DM names its sources here too:** `DM +3 for Dexterity 6+,
+Endurance 5+`, where the enlistment menu said `and you earn +3`.
+
+### Readings
+
+- **E016 is new:** a Free Trader received more than five times ages ten years
+  per receipt past the fifth, as pp. 22–23 say, and its payment term stays at
+  zero (#464).
+- **E001, E009 and E015 are corrected against the page** (#462, #463, #465):
+  - E001 places The Draft as the next paragraph.
+  - E009 cites p. 21's medic DM, and says why it does not carry over.
+  - E015 places each of the worked example's miscitations on its own page.
+- **No reading cites the removed PRD**: each cites where its point lives now.
+
+### Writing notes
+
+- **A failed write without `--force` leaves no note behind** (#468).
+- **`--force` overwrites the file in place, as the shell's `>` does** (#469),
+  and a note or a batch's folder takes the umask. Anything in the way that is
+  not a regular file is the operating system's to refuse.
+- **Error messages name flags and files as typed (#472, #508).** `usage:`
+  labels only a mistake in the command line.
+
+### Inside
+
+No note changes from any of these.
+
+- **`task setup` installs every tool the gate runs**, from the repository
+  alone (#492). `bunfig.toml` replaces `.prettierignore` and ignores by name
+  only the goldens a formatter would realign.
+- **The goldens' flag is `-update`** (#506), and a golden that no longer
+  matches fails with the hunk that changed (#505).
+- **Names and import arrows:**
+  - `chargen`'s record type is `record` (#507), and every sum reader is a
+    fold (#512).
+  - Depguard forbids the edges the tree rules out (#510, #515).
+  - `dice.Faces` and `rules.Faces` are held equal by a test (#514).
+- **Comments give reasons, not history,** and no longer describe the tree
+  before this release (#498, #504, #509, #513, #526, #531, #537, #538, #539,
+  #540).
+- **The docs moved too.** `docs/agents/` is removed (#522), and every release
+  heading here has the one form, `## 1.0.0-beta.2` (#495). `CLAUDE.md` names
+  the release snapshots' branch and drops its package list.
 
 ## 1.0.0-rc.4
 
