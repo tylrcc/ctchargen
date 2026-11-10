@@ -201,7 +201,7 @@ task
 `go mod tidy -diff`, golangci-lint (go vet's analyzers among its own), NilAway, govulncheck,
 `go test -race`, `bun fmt` over the non-Go files, and lychee over the
 documents' links. The tests hold what `v1.0.0` freezes: each command's flags,
-defaults and exit status. There
+defaults and exit status, and the note's property names. There
 is no CI (#149); a change is checked when this is run, and not otherwise.
 
 Every implemented rule carries an `Implements:` marker with its cite, and the

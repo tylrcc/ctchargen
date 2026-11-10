@@ -170,8 +170,8 @@ promise (#199).
 - `chargen`: the procedure, the `Decider` it asks, and the auto run's `Policy`,
   which describes itself. Its tests hold the readings and the choice points to
   the goldens.
-- `render`: the note — the sheet and the generation record, from one view of
-  the character — and the readings written out, in full or as an index.
+- `render`: the note — its properties, summary, sheet and generation record,
+  from one view of the character — and the readings written out, in full or as an index.
 - `internal/coverage`: test code only. Holds the `Implements:` and `Holds:`
   markers to each other and their cites to what exists, writing nothing;
   `-print` shows the map.

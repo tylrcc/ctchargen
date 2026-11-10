@@ -8,10 +8,10 @@ release turns out to be.
 - The generation record names each choice in the words of the page that poses
   it, with that page — `attempt a commission (p. 6)` where it printed
   `AttemptCommission` (#402).
-- The sheet's service record tells the career a term at a time — `Term 7:
-promoted Captain (Social Standing +1); Education +1, Engineer-1; aging
-Strength -1, Endurance -1` — with the grants on entering the service on the
-  enlistment line and any medical crisis survived (#401).
+- The sheet's service record tells the career a term at a time, with the
+  grants on entering the service on the enlistment line and any medical crisis
+  survived (#401):
+  `Term 7: promoted Captain (Social Standing +1); Education +1, Engineer-1`.
 - **Breaking: the JSON record is gone (#398, ADR 0006).** `new` and `batch`
   write one markdown note per character: the sheet, then the generation
   record, then the ruleset, the build where the command wrote it, and who
@@ -22,10 +22,9 @@ Strength -1, Endurance -1` — with the grants on entering the service on the
   written by rc.3 and earlier can no longer be rendered;
   `ctchargen readings <id>` still explains any reading id one names. The
   note's shape is not frozen at `v1.0.0`; what the release freezes is the
-  command line.
+  command line, and the property names #399 added.
 - A batch names each note for its character as well as its position —
-  `01 Army Captain 938788.md` — so a vault lists a batch by who is in it.
-  `--name` names the character on its heading, not the file (#400).
+  `01 Army Captain 938788.md` — so a vault lists a batch by who is in it (#400).
 - **Breaking: a batch writes only into a folder of its own (#426).** `-o`
   names a folder that is new, or empty but for hidden files; anything else
   refuses the batch before anyone is generated. `batch --force` is removed:

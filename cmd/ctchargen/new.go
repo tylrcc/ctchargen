@@ -23,7 +23,7 @@ import (
 // so the two cannot come to disagree about them. The strategies' defaults are
 // read there from chargen.DefaultPolicy, so the help cannot disagree with what
 // an auto run applies (#367). They are carried as one
-// value from there on, because five adjacent strings in a signature are five
+// value from there on, because four adjacent strings in a signature are four
 // strings that can be transposed, and a transposed strategy is one the record
 // then reports as the one the operator asked for (#132).
 type characterFlags struct {

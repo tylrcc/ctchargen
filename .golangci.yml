@@ -93,10 +93,12 @@ linters:
         # The dice are game dice, not secrets. math/rand is the right source
         # for them, and a cryptographic one would harden nothing.
         - G404
-        # Every caller uses a path it was given - render and the -o flag
-        # from the command line, the document gates from a constant joined
-        # to a file name. A command-line tool that refused to open the file
-        # named on its command line would have nothing left to do.
+        # Every caller uses a path it was given or built itself - new's and
+        # batch's -o and the mutate tool's -file from the command line, the
+        # mutate tool's copy from its own walk of the module, and the tests
+        # from a constant joined to a file name. A command-line tool that
+        # refused to open the file named on its command line would have
+        # nothing left to do.
         - G304
         - G703
 

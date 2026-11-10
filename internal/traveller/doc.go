@@ -3,8 +3,8 @@
 // sums that say "exactly one of".
 //
 // It imports nothing else in this module, and nothing in it rolls dice,
-// reads a table, or marshals JSON. A domain type that needs to know about
-// any of those is in the wrong package.
+// or reads a table, or writes markdown. A domain type that needs to know
+// about any of those is in the wrong package.
 //
 // The dividing rule between what is a type here and what is data in the
 // rules package: types carry identity, never rule invariants. A service that

@@ -96,10 +96,10 @@ func writeUsageText(out io.Writer, text string) error {
 // writeHelp answers --help on a subcommand: its usage line, then its flags.
 //
 // It writes to out and returns nil, so that help asked for leaves by the
-// same door as the record and exits 0 - not to `asking`, which two of the
-// three subcommands are never handed, and which would put `new --help | less`
-// on the wrong stream. It cannot reach a `-o` file: parsing happens before
-// openDestination, and a run that comes here never opens one.
+// same door as the note and exits 0 - not to `asking`, which would put
+// `new --help | less` on the wrong stream. It cannot reach a `-o` file:
+// parsing happens before openDestination, and a run that comes here never
+// opens one.
 //
 // A word after a help flag is refused, not discarded, the same as everywhere
 // else a command meets an unexpected word (#69): `new --help junk`, `batch

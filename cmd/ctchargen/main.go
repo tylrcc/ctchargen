@@ -53,8 +53,7 @@ type source func() chargen.Roller
 // writes the note, and a roller of the source's own when one is given.
 // Every generation the command makes takes these, so the build has one place
 // to come from rather than a call at each generating site (#282).
-// TestRunWritesEachRendering holds a new note and a batch member to
-// carrying it.
+// TestRunWritesTheNote holds a new note and a batch member to carrying it.
 //
 // Implements: The note names its ruleset and the build that wrote it [ADR
 // 0002].

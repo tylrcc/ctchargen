@@ -1,6 +1,6 @@
 // Package render writes a generated character as the note a referee keeps:
-// the sheet, the generation record, and, when asked for, the readings the
-// record names, in markdown (ADR 0006).
+// its properties, its heading and summary, the sheet, the generation record,
+// and, when asked for, the readings the record names, in markdown (ADR 0006).
 //
 // It also writes the readings on their own: one in full (Reading), every one
 // as an index (ReadingsIndex), and those an id names (ReadingsNamed). That is
@@ -18,8 +18,8 @@ import (
 	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
-// Note is the character as a referee keeps it: the sheet, then the
-// generation record, which is every die thrown and every choice made and the
+// Note is the character as a referee keeps it: its properties, its heading
+// and summary and the sheet, then the generation record, which is every die thrown and every choice made and the
 // only way back to the character (ADR 0006). With readings, the full text of
 // each reading the record names comes after it, so the ids beside the
 // outcomes can be read without the tool to hand.

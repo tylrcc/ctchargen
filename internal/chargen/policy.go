@@ -53,8 +53,8 @@ type Policy struct {
 
 // PolicyVersion is the version of what --auto answers.
 //
-// Every auto run's record carries it, beside the ruleset that
-// governed the rules and the build that wrote the file. Those two move for
+// Every auto run's note names it on its closing lines, beside the ruleset
+// that governed the rules and the build that wrote the note. Those two move for
 // reasons that have nothing to do with what --auto answers; this moves only
 // when an answer does.
 //

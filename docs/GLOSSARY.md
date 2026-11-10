@@ -6,8 +6,9 @@ A Classic Traveller character generator holding to the © 1977 text of Books
 ## Language
 
 **Note**:
-The markdown the tool writes for one character: the sheet, then the
-generation record, then what wrote it and what to keep (ADR 0006).
+The markdown the tool writes for one character: its properties, its heading
+and summary, the sheet, then the generation record, then what wrote it and
+what to keep (ADR 0006).
 _Avoid_: Output, result, file
 
 **Record**:

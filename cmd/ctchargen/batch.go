@@ -306,9 +306,8 @@ func (b batchRun) each(take func(index int, character *chargen.Character) error)
 //
 // A stream is read as it arrives, so `batch --count 50000 | less` shows the
 // first note at once and the run holds one character in memory rather than
-// all of them (#44). The atomicity that justifies buffering is about not
-// leaving a file half-written and not clobbering one on a retry, and there is
-// no file to clobber on standard output (#64).
+// all of them (#44). There is no file to leave half-written or to clobber on
+// standard output, so nothing is staged (#64).
 func (b batchRun) streamed(out io.Writer) (tally, error) {
 	return b.each(writingTo(out))
 }
