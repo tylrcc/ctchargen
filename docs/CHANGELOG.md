@@ -5,6 +5,14 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The readings no longer cite the removed PRD. E004, E008, E009 and E014,
+  and the readings' doc comment, cite where each point lives now: CLAUDE.md's
+  Authority section, the note's `age`, `status` and `departure` properties,
+  and `traveller.Term`.
+- E009 no longer says "the page offers no value" for the medic DM. It cites
+  p. 21's revival DM for a low passenger, "Attending medic of expertise 2 or
+  better, +1", and says why it does not carry over: generation has no
+  attending medic. E009's decision and stamping are unchanged (#463).
 - E015 places each of the worked example's table miscitations on its own
   page: "Table 7" on p. 24, and "Table 2" for Mustering Out Table 1 on p. 25.
   Its quotation of p. 25, and the Jamison test's, now say "Table 2" as printed

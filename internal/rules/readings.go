@@ -43,8 +43,11 @@ func Readings() [len(traveller.Errata)]Reading { return readings }
 // readings is every reading, the one at index i named by erratum i+1: every
 // place the held text is silent, ambiguous or self-contradictory, and the
 // reading this tool applies there. A reading applied without one of these is
-// the one defect no gate catches (PRD, Testing and the gate); a reading applied silently on a record it
-// governed is the same defect wearing a citation.
+// the one defect no gate catches: every check holds a reading to its stamps,
+// and a reading never recorded has neither (traveller.Erratum). A reading
+// applied silently on a record it governed is the same defect wearing a
+// citation. CLAUDE.md's Authority rule 5 forbids both: "Never applied
+// silently".
 //
 // All of them were decided against a visual read of the held PDFs on
 // 2026-09-02, at Book 1 PDF pages 8–31 (printed 2–25) and Book 3 PDF page 27
@@ -54,9 +57,6 @@ func Readings() [len(traveller.Errata)]Reading { return readings }
 // ranks first, these readings second, the old errata third (CLAUDE.md,
 // Precedence) — but only as a pointer to a page, and what it yields is
 // decided here and gets its own erratum like any other reading.
-//
-// A rationale that cites "PRD" cites the delivered v1 contract, removed from
-// the tree after ec7289f; it is docs/PRD.md at that commit.
 //
 // An erratum names a reading inside the tree, and no note carries it (ADR
 // 0007). A reading whose decision no longer holds is changed or removed like
@@ -158,8 +158,8 @@ var readings = [...]Reading{
 			"completed.",
 		Gap: "The survival throw is the term's first step and kills the\n" +
 			"character part-way through a term the page's own arithmetic only counts when\n" +
-			"completed. The record must state an age (PRD FR8) and the page never states\n" +
-			"this one.",
+			"completed. The note must state an age (its `age` property) and the page never\n" +
+			"states this one.",
 		Reading: "The fatal term counts as served. A character who dies during\n" +
 			"term N is recorded with N terms of service, and the fatal term's four years\n" +
 			"are added to the character's own age at death, including any months already\n" +
@@ -311,8 +311,8 @@ var readings = [...]Reading{
 			"presupposes that he might not; a saving throw whose failure had no stated\n" +
 			"consequence would not be a saving throw. It is also the same shape the book\n" +
 			"gives its other lethal throw — survival, p. 5 — where failure is death\n" +
-			"stated plainly, and death is an outcome the record is built to carry (PRD,\n" +
-			"Decisions).",
+			"stated plainly, and death is an outcome the note is built to carry (its\n" +
+			"`status` and `departure` properties).",
 		StampedOn: "Records in which a medical-crisis saving throw was made —\n" +
 			"whether it succeeded or failed, since the reading is what put the throw's\n" +
 			"failure branch there at all.",
@@ -320,20 +320,24 @@ var readings = [...]Reading{
 	{
 		ID:    traveller.E009,
 		Title: "The medical-expertise DM during solo generation",
-		Pages: "Book 1 p. 7.",
+		Pages: "Book 1 p. 7 (Aging), p. 21 (Low Passage).",
 		PageSays: "\"A basic saving throw of 8+ applies (and may be\n" +
 			"modified by the expertise of attending medical personnel).\"",
 		Gap: "Character generation has no attending personnel. There is no\n" +
 			"crew, no patron, no referee-adjudicated scene — only the character being\n" +
-			"generated — so the printed DM has no referent, and the page offers no value\n" +
-			"for it.",
+			"generated — so the printed DM has no referent. P. 7 gives it no value. The\n" +
+			"book does print one for a like throw: p. 21's revival of a low passenger,\n" +
+			"where failure is death, allows \"Attending medic of expertise 2 or better,\n" +
+			"+1\". That DM needs an attending medic too, and generation has none, so it\n" +
+			"does not carry over.",
 		Reading: "No DM applies. The medical-crisis throw is an unmodified 8+ on\n" +
 			"two dice, always.",
 		Why: "The clause is permissive (\"may be modified\") and names a source of\n" +
 			"modification that generation does not contain. Supplying a value would be\n" +
-			"inventing a number the page does not print, which the tool's authority model\n" +
-			"forbids (PRD, Authority); a character's own Medical skill is not \"attending\n" +
-			"medical personnel\" treating him.",
+			"inventing a number p. 7 does not print, which the tool's authority model\n" +
+			"forbids (CLAUDE.md, Authority), and borrowing p. 21's +1 would apply another\n" +
+			"throw's DM without the medic it is conditioned on. A character's own Medical\n" +
+			"skill is not \"attending medical personnel\" treating him.",
 		StampedOn: "Records in which a medical-crisis saving throw was made.\n" +
 			"Stamped alongside E008.",
 	},
@@ -554,12 +558,10 @@ var readings = [...]Reading{
 			"chronological) year.\" P. 7: aging effects arrive at 34 \"and in 4 year\n" +
 			"increments thereafter\", with no end named.",
 		Gap: "The Term of Service row is a closed list that stops at 14. The\n" +
-			"Age row is not — its last cell is open-ended. `Term` has no upper bound\n" +
-			"(PRD, Domain model) and a 12 on the reenlistment throw recurs without limit\n" +
-			"(E003), so a\n" +
-			"character can reach term 15, and\n" +
-			"E006 sends the round to\n" +
-			"a row with no cell for him. The Age row would have covered him; the Term row\n" +
+			"Age row is not — its last cell is open-ended. `traveller.Term` has no upper\n" +
+			"bound and a 12 on the reenlistment throw recurs without limit (E003), so a\n" +
+			"character can reach term 15, and E006 sends the round to a row with no cell\n" +
+			"for him. The Age row would have covered him; the Term row\n" +
 			"does not.",
 		Reading: "The table's last column is terminal: every term from the 14th on\n" +
 			"is read off it. Aging never stops and never changes again after that column.",
