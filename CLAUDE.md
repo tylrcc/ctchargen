@@ -281,22 +281,3 @@ go run ./cmd/ctchargen new --auto
   branch. Between
   releases they are ignored: no change reads, sweeps or updates them, drift
   in them is never a finding, and nothing in the gate holds them.
-
-## Agent skills
-
-### Issue tracker
-
-Issues live in GitHub Issues for `philoserf/ctchargen`, worked through `gh`.
-See `docs/agents/issue-tracker.md`.
-
-### Triage labels
-
-The five canonical labels, unchanged: `needs-triage`, `needs-info`,
-`ready-for-agent`, `ready-for-human`, `wontfix`. See
-`docs/agents/triage-labels.md`.
-
-### Domain docs
-
-Single-context: `docs/GLOSSARY.md` and `docs/adr/`, both of which exist. See
-`docs/agents/domain.md`. The glossary is in `docs/` whatever a skill assumes
-about the root: never create a `GLOSSARY.md` at the repo root.
