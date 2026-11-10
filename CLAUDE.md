@@ -185,7 +185,8 @@ go test ./internal/chargen -run TestGoldens  # one test
 go test ./internal/chargen -update           # rewrite the goldens
 (cd internal/coverage && go test -run TestTheCoverageMapHolds -print)  # print the coverage map
 go run ./internal/mutate -file F -old TEXT -new TEXT go test ./pkg -run T  # show a mutation killed
-go run ./cmd/ctchargen new --auto
+go run ./cmd/ctchargen new --auto | less  # a note, read and dropped
+go run ./cmd/ctchargen new --auto -o "$(mktemp -d)/c.md"  # a note saved, outside the tree
 ```
 
 - **A package that passes on its own can still move the gate.** `-race`, the

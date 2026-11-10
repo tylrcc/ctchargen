@@ -58,11 +58,19 @@ Three commands. `new` generates one character; `batch` generates many; and
 ```sh
 ctchargen new --auto --service merchants
 ctchargen new --auto --name "Alexander Jamison" -o jamison.md
+ctchargen new --auto --service scouts > scout.md
+ctchargen new --auto | less
 ctchargen new                                   # asks at every choice point
 
 ctchargen batch --count 20 --service merchants
 ctchargen batch --count 20 --service merchants -o characters/
 ```
+
+**Save a note with `-o`, and send one on with `>` or a pipe.** `-o` keeps a
+file that exists, as "Nothing is overwritten without `--force`" below says;
+the shell's `>` empties its file before the command starts, whatever then
+happens. The questions go to standard error, so `>` and a pipe carry only the
+note, from `new` with or without `--auto`.
 
 **A character is written as one markdown note**: the sheet — the UPP line,
 skills, possessions and the service a term at a time, as Book 1 summarises a
@@ -179,10 +187,11 @@ choice in the note is the policy's.
 
 **Nothing is overwritten without `--force`.** `new -o` writes into a folder
 that exists, and `-o -` is standard output, as no `-o` is. `new -o` onto an
-existing file is refused unless `--force` is given, and a write without it
-that fails leaves no note. `--force` overwrites the file in place, as the shell's `>`
-does, so the file keeps its mode and its links, and a symlink is followed to
-the note it names; a write that fails partway has already lost the old note.
+existing file is refused unless `--force` is given, before anything is thrown
+or asked, and a write without it that fails leaves no note. `--force`
+overwrites the file in place, as the shell's `>` does, so the file keeps its
+mode and its links, and a symlink is followed to the note it names; a write
+that fails partway has already lost the old note.
 `--force` with no `-o` file is refused, since it has nothing to overwrite. A
 `batch` has no `--force`: it writes only into a folder of its own. Notes and
 folders are created with the mode your umask gives them.

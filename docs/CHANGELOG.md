@@ -10,6 +10,8 @@ release turns out to be.
 - The release-snapshot rule moves from `CLAUDE.md` to the coding standards,
   with the stamp each snapshot opens with, beside a new rule: a paragraph a
   change rewrites, comment or document, is wrapped evenly.
+- The README and `CLAUDE.md` show a note saved with `-o` beside one sent on
+  with `>` or a pipe, and say which to use when (#544).
 
 ## 1.0.0-rc.5
 
