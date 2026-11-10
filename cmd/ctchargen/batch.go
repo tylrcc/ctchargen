@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -71,11 +72,11 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 	}
 
 	run := batchRun{
-		base: base, policy: policy, count: *flags.count,
+		base: base, policy: policy, count: int(*flags.count),
 		attempts: attemptsPerMember, dice: dice,
 	}
 
-	return write(out, asking, run, *flags.output)
+	return write(out, asking, run, toFile(*flags.output))
 }
 
 // batchRun is what every member of a batch is generated from, and how many
@@ -97,7 +98,7 @@ type batchRun struct {
 type batchFlagSet struct {
 	characterFlags
 
-	count  *int
+	count  *decimalCount
 	output *string
 }
 
@@ -105,17 +106,26 @@ func declareBatchFlags() batchFlagSet {
 	set := flag.NewFlagSet("batch", flag.ContinueOnError)
 	set.SetOutput(io.Discard)
 
-	return batchFlagSet{
+	var count decimalCount
+
+	set.Var(&count, "count", "how many characters to generate, in decimal digits")
+
+	flags := batchFlagSet{
 		characterFlags: declareCharacterFlags(set, characterHelp{
 			service: "attempt every enlistment in this service: ",
 			career:  "the career `strategy`: ",
 			skills:  "the skills `strategy`: ",
 			muster:  "the mustering out `strategy`: ",
 		}),
-		count: set.Int("count", 0, "how many characters to generate"),
+		count: &count,
 		output: set.String("o", "",
-			"a folder of the batch's own to write one note per character into; absent, the notes to standard output"),
+			"a folder of the batch's own to write one note per character into, made inside one that exists; "+
+				"absent or -, the notes to standard output"),
 	}
+
+	strictly(set)
+
+	return flags
 }
 
 // write sends the batch where it was asked for, and says what it did either
@@ -354,9 +364,19 @@ func writingTo(out io.Writer) func(int, *chargen.Character) error {
 //
 // Implements: A directory batch that cannot write a member leaves what came
 // before [Command line].
+//
+// Implements: A batch makes its own folder and no folder above it
+// [Command line].
 func (b batchRun) intoDirectory(dir string) (tally, error) {
-	err := os.MkdirAll(dir, noteDirMode)
-	if err != nil {
+	// A batch makes its own folder and nothing above it, as new writes only
+	// into a folder that exists (#470).
+	folder := filepath.Dir(filepath.Clean(dir))
+	if !isDirectory(folder) {
+		return tally{}, fmt.Errorf("%s %w, so -o %s cannot be made", folder, errNoFolder, dir)
+	}
+
+	err := os.Mkdir(dir, noteDirMode)
+	if err != nil && !errors.Is(err, fs.ErrExist) {
 		return tally{}, fmt.Errorf("creating %s: %w", dir, withoutPath(dir, err))
 	}
 

@@ -148,8 +148,8 @@ func (d destination) write(text string) error {
 // names path itself. Every message here names the path the operator gave, so
 // the operation's own would name it a second time (#472):
 // `opening ro/x.md: open ro/x.md: permission denied`. A failure that names
-// another path is left as it stands: MkdirAll reports the ancestor it could
-// not make, which the message about path does not name.
+// another path is left as it stands, since the message about path does not
+// name that one.
 //
 // Implements: A path is named once in a message [Command line].
 func withoutPath(path string, err error) error {

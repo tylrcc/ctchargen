@@ -17,6 +17,7 @@ const (
 	flagHelp  = "--help"
 	flagShort = "-h"
 	cmdHelp   = "help"
+	topLevel  = "top level"
 	wantTypo  = "extra-arg"
 )
 
@@ -232,7 +233,7 @@ func TestHelpReportsAWriteThatFailed(t *testing.T) {
 		args []string
 		out  io.Writer
 	}{
-		"top level":       {[]string{flagHelp}, &failsAfter{}},
+		topLevel:          {[]string{flagHelp}, &failsAfter{}},
 		cmdNew:            {[]string{cmdNew, flagHelp}, &failsAfter{}},
 		cmdVersion:        {[]string{cmdVersion, flagHelp}, &failsAfter{}},
 		"the flags alone": {[]string{cmdNew, flagHelp}, &failsAfter{left: 1}},
@@ -292,7 +293,7 @@ func TestAWordAfterAHelpFlagIsRefused(t *testing.T) {
 	refusal := `help takes no arguments, and was given "` + wantTypo + `"`
 
 	for name, args := range map[string][]string{
-		"top level":        {flagHelp, wantTypo},
+		topLevel:           {flagHelp, wantTypo},
 		"top level, -h":    {flagShort, wantTypo},
 		"top level, -help": {"-help", wantTypo},
 		cmdHelp:            {cmdHelp, wantTypo},
@@ -347,5 +348,66 @@ func TestAStrategyWithoutAutoIsRefused(t *testing.T) {
 				t.Errorf("an auto run refused %s %s: %v", flag, value, err)
 			}
 		})
+	}
+}
+
+// The help says how flags are written (#466): Go's flag package reads them,
+// so one dash or two, a value after = or a space, a switch with none, and --
+// where a flag could stand ends them. The top-level help says it, and so does
+// each command's.
+//
+// Holds: The help says how flags are written.
+func TestTheHelpSaysHowFlagsAreWritten(t *testing.T) {
+	t.Parallel()
+
+	for name, args := range map[string][]string{
+		topLevel: {flagHelp},
+		cmdNew:   {cmdNew, flagHelp},
+		cmdBatch: {cmdBatch, flagHelp},
+	} {
+		var help strings.Builder
+
+		err := run(args, nil, &help, io.Discard)
+		if err != nil {
+			t.Errorf("%s: %v", name, err)
+
+			continue
+		}
+
+		for _, says := range []string{
+			"Go's", "one dash or two", "--auto", "-auto", "= or a space", "takes none", "-- where a flag could stand ends them",
+		} {
+			if !strings.Contains(help.String(), says) {
+				t.Errorf("%s --help does not say %q:\n%s", name, says, help.String())
+			}
+		}
+	}
+}
+
+// The help names the kind of value each flag takes, as the flag package
+// names it: a count is an int and a name a string. Wrapping every flag to
+// refuse a repeat or an empty value hid the kind behind the wrapper, and the
+// help printed "value" for each (#466).
+//
+// Holds: The help names the kind of value each flag takes.
+func TestTheHelpNamesEachFlagsKind(t *testing.T) {
+	t.Parallel()
+
+	for command, want := range map[string][]string{
+		cmdNew:   {"--name string", "-o string", "--service string", "--career strategy"},
+		cmdBatch: {"--count int", "-o string"},
+	} {
+		var help strings.Builder
+
+		err := run([]string{command, flagHelp}, nil, &help, io.Discard)
+		if err != nil {
+			t.Fatalf("%s --help: %v", command, err)
+		}
+
+		for _, line := range want {
+			if !strings.Contains(help.String(), line) {
+				t.Errorf("%s --help does not say %q:\n%s", command, line, help.String())
+			}
+		}
 	}
 }

@@ -5,6 +5,13 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The command line refuses what it cannot read one way, before anything is
+  asked or written: `--count` is decimal digits only (`010` is ten, and
+  `0x10` and `1_000` are refused); a flag given twice, or given an empty
+  value, is refused, naming it; and `--force` with no `-o` file is refused.
+  `-o -` is standard output for `new` and
+  `batch`, and a batch makes its own folder only inside one that exists. The
+  help says how flags are written (#466, #467, #470, #473).
 - A Free Trader received more than five times is decided by a reading, E016:
   each receipt past the fifth ages the ship ten years as pp. 22–23 say, and its
   payment term stays at zero. The engine stamps E016 on such a character, and

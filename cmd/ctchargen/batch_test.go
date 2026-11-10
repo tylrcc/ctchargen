@@ -85,7 +85,9 @@ func TestBatchCreatesTheOutputDirectory(t *testing.T) {
 }
 
 // A batch cannot make its output directory under an existing file, and says
-// so rather than reporting the first member's open.
+// so, naming the file that is in the way, rather than reporting the first
+// member's open. Since #470 it is refused before anything is made, as a
+// folder that does not exist.
 func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 	t.Parallel()
 
@@ -104,8 +106,8 @@ func TestBatchReportsADirectoryItCannotMake(t *testing.T) {
 		t.Fatal("a batch wrote into a directory it could not make")
 	}
 
-	if !strings.Contains(err.Error(), "creating") {
-		t.Errorf("the failure reads %q, which does not name the directory", err)
+	if !strings.Contains(err.Error(), blocking+" is not a folder that exists") {
+		t.Errorf("the failure reads %q, which does not name what is in the way", err)
 	}
 }
 

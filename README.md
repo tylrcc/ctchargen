@@ -44,6 +44,12 @@ ctchargen --help          # the commands
 ctchargen new --help      # one command's flags, with their values and defaults
 ```
 
+**Flags are Go's**: one dash or two (`-auto` or `--auto`). A flag that takes a
+value has it after `=` or a space; a switch such as `--auto` takes none; and
+`--` where a flag could stand ends them. The command line refuses what it
+cannot read one way: a flag given twice, a flag given an empty value, and a
+`--count` that is not decimal digits (`010` is ten; `0x10` is refused).
+
 ## Using it
 
 Three commands. `new` generates one character; `batch` generates many; and
@@ -85,7 +91,8 @@ the generation record in its note, which carries every die thrown and every
 choice made, and which every note ends by telling you to keep whole.
 
 **A batch writes into a folder of its own**: `-o` names a folder that is new,
-or empty but for hidden files such as `.DS_Store`. Anything else in it — a
+or empty but for hidden files such as `.DS_Store`. A new one is made inside a
+folder that exists, and nothing above it is made. Anything else in it — a
 note, a picture, a subfolder — refuses the batch before anyone is generated,
 so a batch never mixes with your notes and never removes anything. To run a
 batch again, remove its folder or name another. Each member's note is named
@@ -95,7 +102,7 @@ A batch names nobody: each note is headed by its title, `# Army Captain
 938788`, and you name a member in your vault by setting the note's `name`
 and `aliases` properties, and its heading if you like.
 
-**`batch` with no `-o` writes the notes to standard output**, one after
+**`batch` with no `-o`, or `-o -`, writes the notes to standard output**, one after
 another, and it streams, so the first note arrives before the run finishes
 rather than after.
 
@@ -151,11 +158,13 @@ note names no policy for them to belong to.
 | `--skills` | `advanced` (default) · `service` · `personal` |
 | `--muster` | `cash` (default) · `goods` · `spartan`        |
 
-**Nothing is overwritten without `--force`.** `new -o` onto an existing file
-is refused unless `--force` is given, and a write without it that fails
-leaves no note. `--force` overwrites the file in place, as the shell's `>`
+**Nothing is overwritten without `--force`.** `new -o` writes into a folder
+that exists, and `-o -` is standard output, as no `-o` is. `new -o` onto an
+existing file is refused unless `--force` is given, and a write without it
+that fails leaves no note. `--force` overwrites the file in place, as the shell's `>`
 does, so the file keeps its mode and its links, and a symlink is followed to
-the note it names; a write that fails partway has already lost the old note. A
+the note it names; a write that fails partway has already lost the old note.
+`--force` with no `-o` file is refused, since it has nothing to overwrite. A
 `batch` has no `--force`: it writes only into a folder of its own. Notes and
 folders are created with the mode your umask gives them.
 

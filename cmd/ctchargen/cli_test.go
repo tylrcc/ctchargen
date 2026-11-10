@@ -1,9 +1,12 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"io"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -142,5 +145,163 @@ func TestTheExitStatusIsZeroOrOne(t *testing.T) {
 		if got := exitStatus(tc.err); got != tc.want {
 			t.Errorf("%s: exit status %d, want %d (%v)", name, got, tc.want, tc.err)
 		}
+	}
+}
+
+// usageRefusal is a command line refused as malformed: exit status 1, the
+// error a usage error, and the message naming what was wrong.
+func usageRefusal(t *testing.T, name string, err error, says ...string) {
+	t.Helper()
+
+	switch {
+	case err == nil:
+		t.Errorf("%s: accepted", name)
+
+		return
+	case exitStatus(err) != 1:
+		t.Errorf("%s: exit status %d, want 1 (%v)", name, exitStatus(err), err)
+	case !errors.Is(err, errUsage):
+		t.Errorf("%s: %q is not a usage error", name, err)
+	}
+
+	for _, want := range says {
+		if !strings.Contains(err.Error(), want) {
+			t.Errorf("%s: error %q does not say %q", name, err, want)
+		}
+	}
+}
+
+// --count is decimal digits and nothing else (#466): "010" is ten, not the
+// eight the flag package's base-0 reading made of it, and a hex or
+// underscored literal is not a whole number at all.
+//
+// Holds: --count is decimal digits only.
+func TestCountIsDecimal(t *testing.T) {
+	t.Parallel()
+
+	var notes strings.Builder
+
+	err := run([]string{cmdBatch, flagCount, "010"}, nil, &notes, io.Discard)
+	if err != nil {
+		t.Fatalf("--count 010: %v", err)
+	}
+
+	if got := strings.Count(notes.String(), "## Generation record"); got != 10 {
+		t.Errorf("--count 010 wrote %d notes, want 10", got)
+	}
+
+	for _, given := range []string{"0x10", "1_000", "+3", "-3", "3.0", " 3"} {
+		err := run([]string{cmdBatch, flagCount, given}, nil, io.Discard, io.Discard)
+		usageRefusal(t, "--count "+given, err, flagCount, "not a whole number")
+	}
+}
+
+// An empty value, and a flag given twice, are refused, naming the flag
+// (#473). Each is a line whose meaning is unclear, so it is refused now
+// rather than given one.
+//
+// Holds: A flag given twice, or given an empty value, is refused.
+func TestAnEmptyOrRepeatedFlagIsRefused(t *testing.T) {
+	t.Parallel()
+
+	for _, named := range []string{flagService, flagCareer, flagSkills, flagMuster, flagName, flagOutput} {
+		err := run([]string{cmdNew, flagAuto, named, ""}, nil, io.Discard, io.Discard)
+		usageRefusal(t, "new "+named+" ''", err, named, "empty")
+	}
+
+	for _, named := range []string{flagService, flagCareer, flagSkills, flagMuster, flagOutput} {
+		err := run([]string{cmdBatch, flagCount, "1", named, ""}, nil, io.Discard, io.Discard)
+		usageRefusal(t, "batch "+named+" ''", err, named, "empty")
+	}
+
+	for name, args := range map[string][]string{
+		"--service twice": {cmdNew, flagAuto, flagService, navy, flagService, "army"},
+		"--auto twice":    {cmdNew, flagAuto, flagAuto},
+		"-o twice":        {cmdNew, flagAuto, flagOutput, "a.md", flagOutput, "b.md"},
+		"--count twice":   {cmdBatch, flagCount, "1", flagCount, "2"},
+	} {
+		err := run(args, nil, io.Discard, io.Discard)
+		usageRefusal(t, name, err, strings.Fields(name)[0], "twice")
+	}
+}
+
+// -o - is standard output, for both commands, exactly as no -o is (#467).
+//
+// Holds: -o - is standard output.
+//
+// Not parallel: it changes into an empty folder, to show nothing is written
+// there.
+func TestDashIsStandardOutput(t *testing.T) { //nolint:paralleltest // t.Chdir cannot run in a parallel test.
+	for name, args := range map[string][]string{
+		cmdNew:   {cmdNew, flagAuto, flagOutput, "-"},
+		cmdBatch: {cmdBatch, flagCount, "1", flagOutput, "-"},
+	} {
+		dir := t.TempDir()
+
+		t.Chdir(dir)
+
+		var notes strings.Builder
+
+		err := run(args, nil, &notes, io.Discard)
+		if err != nil {
+			t.Errorf("%s -o -: %v", name, err)
+
+			continue
+		}
+
+		if !strings.Contains(notes.String(), "## Generation record") {
+			t.Errorf("%s -o -: no note on standard output", name)
+		}
+
+		if entries, _ := os.ReadDir(dir); len(entries) > 0 {
+			t.Errorf("%s -o -: wrote %s, where standard output was asked for", name, entries[0].Name())
+		}
+	}
+}
+
+// --force overwrites an -o file, so without one it has nothing to do and is
+// refused rather than ignored (#473).
+//
+// Holds: --force without an -o file is refused.
+func TestForceWithoutAFileIsRefused(t *testing.T) {
+	t.Parallel()
+
+	for name, args := range map[string][]string{
+		"no -o": {cmdNew, flagAuto, flagForce},
+		"-o -":  {cmdNew, flagAuto, flagForce, flagOutput, "-"},
+	} {
+		err := run(args, nil, io.Discard, io.Discard)
+		usageRefusal(t, name, err, flagForce, flagOutput)
+	}
+}
+
+// A batch's -o folder is made only inside a folder that exists (#470), as new
+// writes only into one that exists: neither command makes the path to its
+// output.
+//
+// Holds: A batch makes its own folder and no folder above it.
+func TestABatchMakesOnlyItsOwnFolder(t *testing.T) {
+	t.Parallel()
+
+	dir := t.TempDir()
+	missing := filepath.Join(dir, "missing")
+
+	err := run([]string{cmdBatch, flagCount, "1", flagOutput, filepath.Join(missing, "b")}, nil, io.Discard, io.Discard)
+
+	switch {
+	case err == nil:
+		t.Error("a batch into a missing folder's subfolder was accepted")
+	case exitStatus(err) != 1 || !strings.Contains(err.Error(), "is not a folder that exists"):
+		t.Errorf("refused as %q, exit %d; want the missing folder named, exit 1", err, exitStatus(err))
+	}
+
+	_, statErr := os.Stat(missing)
+	if statErr == nil {
+		t.Errorf("%s was created", missing)
+	}
+
+	err = run([]string{cmdBatch, flagCount, "1", flagOutput, filepath.Join(dir, "b")}, nil, io.Discard, io.Discard)
+	if err != nil {
+		t.Errorf("a batch into a new folder inside one that exists: %v", err)
 	}
 }

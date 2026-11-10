@@ -62,7 +62,7 @@ func declareNewFlags() newFlagSet {
 	set := flag.NewFlagSet("new", flag.ContinueOnError)
 	set.SetOutput(io.Discard)
 
-	return newFlagSet{
+	flags := newFlagSet{
 		characterFlags: declareCharacterFlags(set, characterHelp{
 			service: "attempt enlistment in this service: ",
 			career:  "the --auto career `strategy`: ",
@@ -71,11 +71,21 @@ func declareNewFlags() newFlagSet {
 		}),
 		auto:   set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
 		name:   set.String("name", "", "the character's name"),
-		output: set.String("o", "", "write to this file rather than to standard output"),
+		output: set.String("o", "", "write to this file rather than to standard output, which - also names"),
 		force:  set.Bool("force", false, "overwrite the output file in place if it already exists"),
 	}
+
+	strictly(set)
+
+	return flags
 }
 
+// newCharacter generates one character and writes its note.
+//
+// --force overwrites an -o file, so without one, no -o or -o -, it has
+// nothing to do and is refused rather than ignored (#473).
+//
+// Implements: --force without an -o file is refused [Command line].
 func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice source) error {
 	flags := declareNewFlags()
 
@@ -114,10 +124,27 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 
 	inputs.Name = *flags.name
 
+	output := toFile(*flags.output)
+	if *flags.force && output == "" {
+		return fmt.Errorf("%w: --force overwrites an -o file, and no -o file was given", errUsage)
+	}
+
 	return writeCharacter(inputs, policy, newRendering{
 		auto:   *flags.auto,
-		output: *flags.output, force: *flags.force,
+		output: output, force: *flags.force,
 	}, in, out, asking, dice)
+}
+
+// toFile is the file an -o names, or nothing where it names standard output:
+// absent, or "-", the convention for it (#467).
+//
+// Implements: -o - is standard output [Command line].
+func toFile(output string) string {
+	if output == "-" {
+		return ""
+	}
+
+	return output
 }
 
 // strategiesWithoutAuto refuses a strategy flag on a guided run. The
@@ -276,6 +303,7 @@ var errNoFolder = errors.New("is not a folder that exists")
 // --force cannot overwrite either. Refused only at the end, a guided session
 // lost every answer the player had given. Without --force, the exclusive open
 // that writes the note still refuses a file that appears during the session.
+// Anything else in the way is the operating system's to refuse, at the open.
 //
 // None of these is a usage error: the command line was well formed, and what
 // stands in the way is on disk (#472).
