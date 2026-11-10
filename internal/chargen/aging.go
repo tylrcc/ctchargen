@@ -35,14 +35,14 @@ func (r *run) agingRound(term traveller.Term) error {
 		return nil
 	}
 
-	r.log.step(fmt.Sprintf("aging, end of term %d", term), "pp. 7-9")
+	r.record.step(fmt.Sprintf("aging, end of term %d", term), "pp. 7-9")
 
 	for _, effect := range effects {
 		throw := roll(r.roll, effect.Saving, 0)
-		seq := r.log.throw("aging, "+effect.Characteristic.String(), throw)
+		seq := r.record.throw("aging, "+effect.Characteristic.String(), throw)
 
 		if throw.succeeded {
-			r.log.outcomef(seq, r.agingErrata(term), "%v holds", effect.Characteristic)
+			r.record.outcomef(seq, r.agingErrata(term), "%v holds", effect.Characteristic)
 
 			continue
 		}
@@ -95,7 +95,7 @@ func (r *run) age(
 		errata = append(errata, traveller.E010)
 	}
 
-	r.log.fact(seq, errata, traveller.AgedFact{
+	r.record.fact(seq, errata, traveller.AgedFact{
 		Change: traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: -reduction},
 	})
 
@@ -127,18 +127,18 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 	// a step line here would put the round's remaining saving throws under it.
 	// The throw names the characteristic instead.
 	throw := roll(r.roll, crisis.Saving, 0)
-	seq := r.log.throw("medical crisis, "+characteristic.String()+" at zero", throw)
+	seq := r.record.throw("medical crisis, "+characteristic.String()+" at zero", throw)
 
 	if !throw.succeeded {
 		r.departure = traveller.KilledByMedicalCrisis{Characteristic: characteristic}
-		r.log.fact(seq, errata, traveller.DiedOfCrisisFact{Term: term, Characteristic: characteristic})
+		r.record.fact(seq, errata, traveller.DiedOfCrisisFact{Term: term, Characteristic: characteristic})
 
 		return nil
 	}
 
 	r.profile = r.profile.Alter(characteristic, crisis.RecoversTo-r.profile[characteristic])
 
-	// Every die is kept, not their sum: the record logs what was thrown, and
+	// Every die is kept, not their sum: the record keeps what was thrown, and
 	// a sum written into a one-die event would read as a face no die has.
 	faces := make([]int, 0, crisis.MonthsDice)
 	months := 0
@@ -153,8 +153,8 @@ func (r *run) crisis(term traveller.Term, characteristic traveller.Characteristi
 
 	r.atAge = r.atAge.PlusMonths(months)
 
-	monthSeq := r.log.dice("months of recovery", faces...)
-	r.log.fact(monthSeq, errata, traveller.RecoveredFact{
+	monthSeq := r.record.dice("months of recovery", faces...)
+	r.record.fact(monthSeq, errata, traveller.RecoveredFact{
 		Characteristic: characteristic, To: crisis.RecoversTo, Months: months, Age: r.atAge,
 	})
 

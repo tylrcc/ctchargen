@@ -36,7 +36,7 @@ type player struct {
 
 	// given is every answer accepted so far, in order, which is what a
 	// stopped session is told it loses and what nothing else records: the
-	// log holds what was chosen, not which number was typed to choose it.
+	// record holds what was chosen, not which number was typed to choose it.
 	given []int
 
 	// wrote is the first failure writing to the player, kept so that a

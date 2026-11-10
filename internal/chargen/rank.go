@@ -35,10 +35,10 @@ func (r *run) commission(term traveller.Term) error {
 	}
 
 	made := roll(r.roll, throw.Target, throw.Modifier(r.profile))
-	seq := r.log.throw("commission", made)
+	seq := r.record.throw("commission", made)
 
 	if !made.succeeded {
-		r.log.outcomef(seq, nil, "not commissioned this term")
+		r.record.outcomef(seq, nil, "not commissioned this term")
 
 		return nil
 	}
@@ -65,7 +65,7 @@ func (r *run) promote(term traveller.Term) error {
 	}
 
 	if r.rank >= r.service.MaxRank() {
-		r.log.outcomef(0, []traveller.Erratum{traveller.E013},
+		r.record.outcomef(0, []traveller.Erratum{traveller.E013},
 			"already %s, the highest rank the %v print, so no promotion is thrown for in term %d",
 			r.rankName(), r.service.Name, term)
 
@@ -82,10 +82,10 @@ func (r *run) promote(term traveller.Term) error {
 	}
 
 	made := roll(r.roll, throw.Target, throw.Modifier(r.profile))
-	seq := r.log.throw("promotion", made)
+	seq := r.record.throw("promotion", made)
 
 	if !made.succeeded {
-		r.log.outcomef(seq, nil, "not promoted this term")
+		r.record.outcomef(seq, nil, "not promoted this term")
 
 		return nil
 	}
@@ -103,7 +103,7 @@ func (r *run) raise(seq int, conferred traveller.Rank, eligibility int, how trav
 
 	r.eligible += eligibility
 
-	r.log.fact(seq, nil, traveller.RaisedFact{How: how, Rank: conferred, Name: r.rankName()})
+	r.record.fact(seq, nil, traveller.RaisedFact{How: how, Rank: conferred, Name: r.rankName()})
 
 	// No erratum is stamped here. E005 reads the timing of a service-wide
 	// entry, which the page leaves unstated; a rank entry's moment is exact

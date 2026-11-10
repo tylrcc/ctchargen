@@ -38,7 +38,7 @@ const forcedByTwelve = 12
 // Implements: A 12 recurs past the seventh term [1:6–7, 21 (E003)].
 func (r *run) reenlist(term traveller.Term) (traveller.Intent, error) {
 	attempt := roll(r.roll, r.service.Reenlist, 0)
-	seq := r.log.throw("reenlistment", attempt)
+	seq := r.record.throw("reenlistment", attempt)
 
 	if attempt.dice[0]+attempt.dice[1] == forcedByTwelve {
 		errata := []traveller.Erratum(nil)
@@ -52,7 +52,7 @@ func (r *run) reenlist(term traveller.Term) (traveller.Intent, error) {
 			errata = append(errata, traveller.E003)
 		}
 
-		r.log.fact(seq, errata, traveller.RetainedFact{Age: r.atAge})
+		r.record.fact(seq, errata, traveller.RetainedFact{Age: r.atAge})
 
 		return traveller.Continue, nil
 	}
@@ -106,7 +106,7 @@ func (r *run) offeredIntents(term traveller.Term) []traveller.Intent {
 
 func (r *run) settle(seq int, term traveller.Term, intent traveller.Intent) {
 	if intent == traveller.Continue {
-		r.log.fact(seq, nil, traveller.ReenlistedFact{For: term + 1, Age: r.atAge})
+		r.record.fact(seq, nil, traveller.ReenlistedFact{For: term + 1, Age: r.atAge})
 
 		return
 	}
@@ -123,7 +123,7 @@ func (r *run) settle(seq int, term traveller.Term, intent traveller.Intent) {
 //
 // Below that term, denied - the reenlistment throw refused him - makes it
 // forced out, and otherwise discharged. It is passed in rather than inferred
-// from the words the log prints (#45), so a change of wording cannot change
+// from the words the record prints (#45), so a change of wording cannot change
 // the domain outcome; the words are the fact's.
 //
 // Implements: Leaving at the end of term 5 or later is retirement [1:21].
@@ -133,13 +133,13 @@ func (r *run) depart(seq int, term traveller.Term, denied bool) {
 	switch {
 	case term >= firstRetiringTerm:
 		r.departure = traveller.Retired{}
-		r.log.fact(seq, nil, traveller.RetiredFact{After: term, Age: r.atAge, Denied: denied})
+		r.record.fact(seq, nil, traveller.RetiredFact{After: term, Age: r.atAge, Denied: denied})
 	case denied:
 		r.departure = traveller.ForcedOut{}
-		r.log.fact(seq, nil, traveller.ForcedOutFact{After: term, Age: r.atAge})
+		r.record.fact(seq, nil, traveller.ForcedOutFact{After: term, Age: r.atAge})
 	default:
 		r.departure = traveller.Discharged{}
-		r.log.fact(seq, nil, traveller.DischargedFact{After: term, Age: r.atAge})
+		r.record.fact(seq, nil, traveller.DischargedFact{After: term, Age: r.atAge})
 	}
 }
 
@@ -172,5 +172,5 @@ func (r *run) pension() {
 		return
 	}
 
-	r.log.fact(0, nil, traveller.PensionFact{Pay: pay})
+	r.record.fact(0, nil, traveller.PensionFact{Pay: pay})
 }

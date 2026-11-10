@@ -9,9 +9,11 @@ package traveller
 //
 // This is the same mechanism the Decider uses for choice points, and it is
 // here for the same reason: Go's compiler does not check that a type switch
-// covers every implementation of an interface, and neither does the
-// exhaustive linter. A type switch over a sealed interface is an
-// exhaustiveness promise that nothing keeps.
+// covers every implementation of an interface. A linter can: gochecksumtype,
+// which this repository's lint config enables, checks a type switch over a
+// sealed interface, but only one declared with a //sumtype:decl comment,
+// and only when the linter runs. A fold needs neither. Its exhaustiveness is
+// a method set, so the compiler keeps the promise on every build.
 
 // Enlistment is how — or whether — a character entered a service (p. 5).
 //
@@ -66,29 +68,29 @@ func Fatal(departure Departure) bool {
 		return false
 	}
 
-	var died fatalDeparture
+	var died fatalDepartureFold
 
-	// A fold over a codec cannot fail: every case only assigns.
+	// This fold cannot fail: every case only assigns.
 	_ = departure.Fold(&died)
 
 	return died.fatal
 }
 
-// fatalDeparture is Fatal's fold. The two Killed cases are the deaths; the
+// fatalDepartureFold is Fatal's fold. The two Killed cases are the deaths; the
 // three others are ways of leaving alive.
-type fatalDeparture struct{ fatal bool }
+type fatalDepartureFold struct{ fatal bool }
 
-func (*fatalDeparture) Discharged() error { return nil }
-func (*fatalDeparture) ForcedOut() error  { return nil }
-func (*fatalDeparture) Retired() error    { return nil }
+func (*fatalDepartureFold) Discharged() error { return nil }
+func (*fatalDepartureFold) ForcedOut() error  { return nil }
+func (*fatalDepartureFold) Retired() error    { return nil }
 
-func (f *fatalDeparture) KilledBySurvivalThrow() error {
+func (f *fatalDepartureFold) KilledBySurvivalThrow() error {
 	f.fatal = true
 
 	return nil
 }
 
-func (f *fatalDeparture) KilledByMedicalCrisis(Characteristic) error {
+func (f *fatalDepartureFold) KilledByMedicalCrisis(Characteristic) error {
 	f.fatal = true
 
 	return nil

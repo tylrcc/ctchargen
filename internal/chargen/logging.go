@@ -26,14 +26,14 @@ import (
 //
 // It must implement every method of Decider to compile, which is the whole
 // point of the shape: a choice point cannot reach the engine without
-// reaching the log. Adding a method to Decider breaks this type until the
-// log learns to record it.
+// reaching the record. Adding a method to Decider breaks this type until
+// it learns to write that answer into the record.
 //
 // Implements: Each choice names what was offered and what was chosen
 // [Generation record].
 type logging struct {
-	to  Decider
-	log *log
+	to   Decider
+	into *record
 }
 
 func names[T any](from []T, name func(T) string) []string {
@@ -194,7 +194,7 @@ func (l logging) MusterWeapon(
 		return chosen, err
 	}
 
-	var described describeWeaponBenefit
+	var described weaponBenefitWordsFold
 
 	err = chosen.Fold(&described)
 	if err != nil {
@@ -249,17 +249,17 @@ func asked(point traveller.ChoicePoint, alternatives []string) error {
 	return nil
 }
 
-// describeWeaponBenefit renders what was taken for a weapon row, by folding,
+// weaponBenefitWordsFold renders what was taken for a weapon row, by folding,
 // so a third way of taking one cannot be added without this seeing it.
-type describeWeaponBenefit struct{ text string }
+type weaponBenefitWordsFold struct{ text string }
 
-func (d *describeWeaponBenefit) TakeWeapon(weapon traveller.WeaponName) error {
+func (d *weaponBenefitWordsFold) TakeWeapon(weapon traveller.WeaponName) error {
 	d.text = string(weapon)
 
 	return nil
 }
 
-func (d *describeWeaponBenefit) TakeExpertise(weapon traveller.WeaponName) error {
+func (d *weaponBenefitWordsFold) TakeExpertise(weapon traveller.WeaponName) error {
 	d.text = expertiseIn(weapon)
 
 	return nil
@@ -308,7 +308,7 @@ func (l logging) record(point traveller.ChoicePoint, from []string, chosen strin
 			errNotOffered, point, from, chosen)
 	}
 
-	l.log.choice(point, from, chosen)
+	l.into.choice(point, from, chosen)
 
 	return nil
 }

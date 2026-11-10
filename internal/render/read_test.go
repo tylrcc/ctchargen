@@ -13,10 +13,10 @@ import (
 // noteOf is the note of the least character the sheet reads, with change
 // applied, so a test can pin one detail without carrying a whole character.
 // He served, so he has a departure, as generation gives every one who did
-// (#445). A change that sets the log sets the career with it, since the
-// career is read from the log (#441).
+// (#445). A change that sets the record sets the career with it, since the
+// career is read from the record (#441).
 func noteOf(change func(c *chargen.Character)) string {
-	character := &chargen.Character{Events: logged(aDischargedSailor())}
+	character := &chargen.Character{Events: recorded(aDischargedSailor())}
 
 	change(character)
 
@@ -53,7 +53,7 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 		"a scout ship":      {traveller.ScoutShip, "held in constructive possession", "owned free and clear"},
 	} {
 		note := noteOf(func(c *chargen.Character) {
-			c.Events = logged(aDischargedSailor(),
+			c.Events = recorded(aDischargedSailor(),
 				traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: tc.kind, Tons: 200}})
 		})
 
@@ -85,7 +85,7 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 	}
 
 	note := noteOf(func(c *chargen.Character) {
-		c.Events = logged(
+		c.Events = recorded(
 			enlisted(traveller.Army),
 			applied(skill("Rifle", 1), traveller.OnEntering),
 			traveller.Term(1),
@@ -145,7 +145,7 @@ func TestAChoiceIsNamedInThePagesWords(t *testing.T) {
 
 		note := noteOf(func(c *chargen.Character) {
 			c.Policy = &policy
-			c.Events = logged(traveller.ChoiceEvent{
+			c.Events = recorded(traveller.ChoiceEvent{
 				Seq: 4, Point: point, Alternatives: []string{"a", "b"}, Chosen: "a",
 			}, aDischargedSailor())
 		})
@@ -179,7 +179,7 @@ func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 		note := noteOf(func(character *chargen.Character) {
 			// The enlistment throw's outcome is where the service attempted is
 			// read from, whoever named it (#397); the draft's, where he served.
-			character.Events = logged(tc.entered, traveller.DischargedFact{Age: traveller.NewAge(18)})
+			character.Events = recorded(tc.entered, traveller.DischargedFact{Age: traveller.NewAge(18)})
 
 			if tc.forced {
 				character.Inputs.Forced = chargen.ForceService(tc.chose)
@@ -268,7 +268,7 @@ func TestOneTermIsSingular(t *testing.T) {
 		"none": {0, "0 terms", ""},
 	} {
 		lead := headlineOf(noteOf(func(c *chargen.Character) {
-			c.Events = logged(enlisted(traveller.Navy), opened(tc.terms),
+			c.Events = recorded(enlisted(traveller.Navy), opened(tc.terms),
 				traveller.DischargedFact{After: traveller.Term(tc.terms), Age: traveller.NewAge(18)})
 		}))
 
@@ -294,7 +294,7 @@ func TestTheErrataAreOnTheGenerationRecordAndNotTheSheet(t *testing.T) {
 
 	note := noteOf(func(c *chargen.Character) {
 		c.Errata = []traveller.Erratum{traveller.E001}
-		c.Events = logged(traveller.OutcomeEvent{
+		c.Events = recorded(traveller.OutcomeEvent{
 			Seq: 1, Description: "drafted", Errata: []traveller.Erratum{traveller.E001},
 		}, aDischargedSailor())
 	})
@@ -366,7 +366,7 @@ func TestARollClaimsNothingMet(t *testing.T) {
 	}
 
 	note := noteOf(func(c *chargen.Character) {
-		c.Events = logged(
+		c.Events = recorded(
 			traveller.RollEvent{Seq: 1, Step: "Table 2, Cash Allowances", Dice: []int{4}, DM: 1},
 			traveller.ThrowEvent{Seq: 2, Step: "survival", Dice: []int{3, 4}, Target: fivePlus, Succeeded: true},
 			aDischargedSailor(),
@@ -393,7 +393,7 @@ func TestTheGenerationRecordIsOneHeading(t *testing.T) {
 	t.Parallel()
 
 	note := noteOf(func(c *chargen.Character) {
-		c.Events = logged(
+		c.Events = recorded(
 			traveller.StepEvent{Seq: 1, Step: "characteristics", Pages: "p. 4"},
 			traveller.OutcomeEvent{Seq: 2, Description: "UPP 777777 at age 18"},
 			traveller.StepEvent{Seq: 3, Step: "enlistment", Pages: "pp. 5, 10"},
@@ -467,7 +467,7 @@ func TestANoteOpensWithItsProperties(t *testing.T) {
 		"a named officer who took his title": {
 			func(c *chargen.Character) {
 				c.Inputs.Name = "Kira Vance"
-				c.Events = logged(rolled(7, 9, 3, 7, 4, 11),
+				c.Events = recorded(rolled(7, 9, 3, 7, 4, 11),
 					skilled(traveller.Skill{Name: "Brawling", Level: 1}, traveller.Skill{Name: "Rifle", Level: 2}),
 					traveller.CashFact{Cash: 30000, Total: 30000},
 					traveller.TitledFact{SocialStanding: 11, Title: traveller.Knight, Assumed: true},
@@ -482,7 +482,7 @@ func TestANoteOpensWithItsProperties(t *testing.T) {
 		},
 		"an unnamed civilian": {
 			func(c *chargen.Character) {
-				c.Events = logged(rolled(7, 7, 7, 7, 7, 7), civilian())
+				c.Events = recorded(rolled(7, 7, 7, 7, 7, 7), civilian())
 			},
 			"---\nname:\nupp: \"777777\"\n" +
 				"strength: 7\ndexterity: 7\nendurance: 7\nintelligence: 7\neducation: 7\nsocial: 7\n" +
@@ -493,14 +493,14 @@ func TestANoteOpensWithItsProperties(t *testing.T) {
 		"a name a referee typed": {
 			func(c *chargen.Character) {
 				c.Inputs.Name = `O'Brien: "Red" #1 \ Mår`
-				c.Events = logged(rolled(7, 7, 7, 7, 7, 7), civilian())
+				c.Events = recorded(rolled(7, 7, 7, 7, 7, 7), civilian())
 			},
 			"---\nname: \"O'Brien: \\\"Red\\\" #1 \\\\ Mår\"\n" +
 				"aliases:\n  - \"O'Brien: \\\"Red\\\" #1 \\\\ Mår\"\n",
 		},
 		"a dead Scout": {
 			func(c *chargen.Character) {
-				c.Events = logged(rolled(6, 6, 6, 6, 6, 6), skilled(traveller.Skill{Name: pilot, Level: 1}),
+				c.Events = recorded(rolled(6, 6, 6, 6, 6, 6), skilled(traveller.Skill{Name: pilot, Level: 1}),
 					enlisted(traveller.Scouts), opened(3), traveller.DiedFact{Term: 3, Age: traveller.NewAge(30)})
 			},
 			"---\nname:\nupp: \"666666\"\n" +
@@ -555,7 +555,7 @@ func summaryCases() map[string]noteCase {
 	return map[string]noteCase{
 		"an officer": {
 			func(c *chargen.Character) {
-				c.Events = logged(enlisted(traveller.Army), opened(2),
+				c.Events = recorded(enlisted(traveller.Army), opened(2),
 					traveller.RaisedFact{How: traveller.Commissioned, Rank: 2, Name: captain},
 					traveller.ForcedOutFact{After: 2, Age: traveller.NewAge(26)},
 					skilled(
@@ -570,7 +570,7 @@ func summaryCases() map[string]noteCase {
 		},
 		"a merchant with a ship": {
 			func(c *chargen.Character) {
-				c.Events = logged(enlisted(traveller.Merchants), opened(7),
+				c.Events = recorded(enlisted(traveller.Merchants), opened(7),
 					traveller.RetiredFact{After: 7, Age: traveller.NewAge(46)},
 					skilled(traveller.Skill{Name: pilot, Level: 1}),
 					traveller.TravellersAidFact{},
@@ -580,12 +580,12 @@ func summaryCases() map[string]noteCase {
 				"Musters out with Travellers' Aid Society membership and a Free Trader, Type A.",
 		},
 		"a civilian": {
-			func(c *chargen.Character) { c.Events = logged(civilian()) },
+			func(c *chargen.Character) { c.Events = recorded(civilian()) },
 			"A civilian who declined the draft at 18.",
 		},
 		"a Scout with his ship": {
 			func(c *chargen.Character) {
-				c.Events = logged(enlisted(traveller.Scouts), opened(7),
+				c.Events = recorded(enlisted(traveller.Scouts), opened(7),
 					traveller.RetiredFact{After: 7, Age: traveller.NewAge(46)},
 					skilled(traveller.Skill{Name: pilot, Level: 2}, traveller.Skill{Name: "Electronic", Level: 3}),
 					traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.ScoutShip, Tons: 100}})
@@ -595,7 +595,7 @@ func summaryCases() map[string]noteCase {
 		},
 		"a dead Scout": {
 			func(c *chargen.Character) {
-				c.Events = logged(enlisted(traveller.Scouts), opened(3),
+				c.Events = recorded(enlisted(traveller.Scouts), opened(3),
 					traveller.DiedFact{Term: 3, Age: traveller.NewAge(30)},
 					skilled(traveller.Skill{Name: pilot, Level: 1}))
 			},
@@ -616,7 +616,7 @@ func TestAnUnnamedNoteIsHeadedByItsTitle(t *testing.T) {
 	for name, tc := range map[string]noteCase{
 		"an unnamed officer": {
 			func(c *chargen.Character) {
-				c.Events = logged(rolled(9, 3, 8, 7, 8, 8), enlisted(traveller.Army), opened(1),
+				c.Events = recorded(rolled(9, 3, 8, 7, 8, 8), enlisted(traveller.Army), opened(1),
 					traveller.RaisedFact{How: traveller.Commissioned, Rank: 2, Name: captain},
 					traveller.ForcedOutFact{After: 1, Age: traveller.NewAge(22)})
 			},
@@ -624,14 +624,14 @@ func TestAnUnnamedNoteIsHeadedByItsTitle(t *testing.T) {
 		},
 		"an unnamed civilian": {
 			func(c *chargen.Character) {
-				c.Events = logged(rolled(8, 7, 6, 6, 5, 11), civilian())
+				c.Events = recorded(rolled(8, 7, 6, 6, 5, 11), civilian())
 			},
 			"\n# Civilian 87665B\n",
 		},
 		"a named one": {
 			func(c *chargen.Character) {
 				c.Inputs.Name = "Kira Vance"
-				c.Events = logged(civilian())
+				c.Events = recorded(civilian())
 			},
 			"\n# Kira Vance\n",
 		},
@@ -653,7 +653,7 @@ func TestAClampedChangeSaysWhereItWasHeld(t *testing.T) {
 	t.Parallel()
 
 	note := noteOf(func(c *chargen.Character) {
-		c.Events = logged(
+		c.Events = recorded(
 			enlisted(traveller.Other),
 			traveller.Term(1),
 			applied(traveller.Change{Characteristic: traveller.SocialStanding, From: 1, To: 1, Delta: -1}, traveller.InTerm),
@@ -669,11 +669,11 @@ func TestAClampedChangeSaysWhereItWasHeld(t *testing.T) {
 	}
 }
 
-// logged is a log built from the terms it opens and the facts its outcomes
+// recorded is a record built from the terms it opens and the facts its outcomes
 // carry, in order, which is what a note's sheet, career and service record
 // are read from. A list of facts or of entries is taken in its order, and an
 // event is taken as it is.
-func logged(entries ...any) []traveller.Event {
+func recorded(entries ...any) []traveller.Event {
 	events := make([]traveller.Event, 0, len(entries))
 
 	for _, entry := range entries {
@@ -693,7 +693,7 @@ func logged(entries ...any) []traveller.Event {
 				})
 			}
 		case []any:
-			for _, event := range logged(entry...) {
+			for _, event := range recorded(entry...) {
 				events = append(events, renumbered(event, len(events)+1))
 			}
 		case traveller.Event:
@@ -709,7 +709,7 @@ func applied(gain traveller.Gain, source traveller.Source) traveller.AppliedFact
 	return traveller.AppliedFact{Gain: gain, Source: source}
 }
 
-// renumbered is an event logged on its own, numbered where it lands.
+// renumbered is an event recorded on its own, numbered where it lands.
 func renumbered(event traveller.Event, seq int) traveller.Event {
 	switch event := event.(type) {
 	case traveller.StepEvent:

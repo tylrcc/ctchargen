@@ -28,9 +28,10 @@ const (
 // Discharged if he chose to go and ForcedOut if the service refused him.
 //
 // This is here because until #45 the choice between the last two was made by
-// comparing the log's own sentence against the literal "reenlistment denied",
-// so editing the wording changed the domain outcome. Only the goldens held
-// it, and a golden holds an invariant by accident of who is on the roster.
+// comparing the record's own sentence against the literal "reenlistment
+// denied", so editing the wording changed the domain outcome. Only the goldens
+// held it, and a golden holds an invariant by accident of who is on the
+// roster.
 //
 // Holds: A departure below term 5 is forced out if the service refused him,
 // discharged if he chose to go.
@@ -102,7 +103,7 @@ func departedByTheBook(
 	}
 }
 
-// reenlistmentStep is the step name the engine logs a reenlistment throw
+// reenlistmentStep is the step name the engine records a reenlistment throw
 // under, typed out here rather than read from the engine for the reason the
 // term count is: a test that read it would agree with it however wrong both
 // were.

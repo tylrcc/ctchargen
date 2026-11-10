@@ -137,7 +137,7 @@ func TestUPP(t *testing.T) {
 	}
 }
 
-// Every value of every closed alphabet must name itself, or the event log
+// Every value of every closed alphabet must name itself, or the record
 // prints a blank where a reader needs a word.
 // namesByKind collects what every value of every closed alphabet calls
 // itself, keyed by the alphabet's name.
@@ -196,7 +196,7 @@ func namesByKind() map[string][]string {
 }
 
 // Every value of every closed alphabet must name itself, and no two may
-// share a name, or the event log prints a blank or an ambiguity where a
+// share a name, or the record prints a blank or an ambiguity where a
 // reader needs a word.
 func TestEveryEnumValueNamesItself(t *testing.T) {
 	t.Parallel()

@@ -41,7 +41,7 @@ The sheet's other facts - skills, benefits, characteristics, departure -
 are still kept on the character beside the record's prose.
 
 Extended on 2026-11-09 (#441): the characteristics and the skills are read
-from the log too. Each initial roll, and each skill taken as expertise at
+from the record too. Each initial roll, and each skill taken as expertise at
 mustering out, now carries a typed fact, and every fact that changes a
 characteristic or gives a skill carries the value the engine reached, so the
 fold applies no rule. The engine keeps its own working copy while it runs,
@@ -50,7 +50,7 @@ pension, nobility, enlistment, rank, terms, age and departure are still kept
 on the character beside the record's prose.
 
 Extended again on 2026-11-09 (#441): the benefits, the pension and the title
-are read from the log too. Each outcome that delivers a benefit - cash,
+are read from the record too. Each outcome that delivers a benefit - cash,
 a passage, Travellers' Aid, a weapon, a ship - and the retirement pay and a
 title conferred at the end now carries a typed fact. Each carries the value
 the engine reached: the cash total after the roll, a Free Trader as it stands
@@ -60,7 +60,7 @@ The engine keeps its benefits so far as working state, since a repeat and the
 cash total read them. Enlistment, rank, terms, age and departure are still
 kept on the character beside the record's prose.
 
-Finished on 2026-11-09 (#441): the career is read from the log too, so the
+Finished on 2026-11-09 (#441): the career is read from the record too, so the
 character keeps no fact about him beside it. The draft, the draft declined,
 each reenlistment outcome, each death and the line that writes the rolled UPP
 now carry a typed fact, and a commission or promotion's fact carries the rank
@@ -69,7 +69,7 @@ age he started at, the age a term, the fatal term or a crisis's recovery left
 him at, and how he left. The terms are read from the steps that open them. The engine
 keeps its career so far as working state, since the commission and promotion
 throws, mustering out and the pension read it. What the character still
-holds beside its log is not a fact about him: its Inputs and its Policy,
+holds beside its record is not a fact about him: its Inputs and its Policy,
 which are what the generation was given, its Build, which names what wrote
 it, and its Errata, the stamp of every reading that governed it, gathered
 from the ids its outcomes name.

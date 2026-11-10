@@ -37,7 +37,7 @@ func (r *run) serve() error {
 // Implements: The example's per-term order is not followed [1:24 (E002)].
 // Implements: The dead character's age and term [1:5, 9 (E004)].
 func (r *run) term(term traveller.Term) (bool, error) {
-	r.log.opens(term, "pp. 5-7")
+	r.record.opens(term, "pp. 5-7")
 
 	r.terms = int(term)
 
@@ -95,10 +95,10 @@ func (r *run) term(term traveller.Term) (bool, error) {
 // Implements: The dead character's age and term [1:5, 9 (E004)].
 func (r *run) survive(term traveller.Term) bool {
 	throw := roll(r.roll, r.service.Survival.Target, r.service.Survival.Modifier(r.profile))
-	seq := r.log.throw("survival", throw)
+	seq := r.record.throw("survival", throw)
 
 	if throw.succeeded {
-		r.log.outcomef(seq, nil, "survived term %d", term)
+		r.record.outcomef(seq, nil, "survived term %d", term)
 
 		return true
 	}
@@ -108,7 +108,7 @@ func (r *run) survive(term traveller.Term) bool {
 	// survived in an earlier term put months on it that arithmetic drops.
 	r.atAge = r.atAge.PlusYears(traveller.Years)
 	r.departure = traveller.KilledBySurvivalThrow{}
-	r.log.fact(seq, []traveller.Erratum{traveller.E004}, traveller.DiedFact{Term: term, Age: r.atAge})
+	r.record.fact(seq, []traveller.Erratum{traveller.E004}, traveller.DiedFact{Term: term, Age: r.atAge})
 
 	return false
 }
@@ -134,7 +134,7 @@ func (r *run) trainSkills() error {
 		return nil
 	}
 
-	r.log.step("skills and training", "pp. 6, 11")
+	r.record.step("skills and training", "pp. 6, 11")
 
 	for r.eligible > 0 {
 		r.eligible--
@@ -175,7 +175,7 @@ func (r *run) trainOnce() error {
 		return fmt.Errorf("consulting %v: %w", table, err)
 	}
 
-	seq := r.log.dice(table.String(), face)
+	seq := r.record.dice(table.String(), face)
 
 	return r.apply(result, seq, []traveller.Erratum{traveller.E002}, traveller.InTerm)
 }

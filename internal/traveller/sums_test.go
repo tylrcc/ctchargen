@@ -15,24 +15,24 @@ import (
 
 var errRefused = errors.New("refused")
 
-type recorder struct{ got []string }
+type words struct{ got []string }
 
-func (r *recorder) note(format string, args ...any) error {
-	r.got = append(r.got, fmt.Sprintf(format, args...))
+func (w *words) say(format string, args ...any) error {
+	w.got = append(w.got, fmt.Sprintf(format, args...))
 
 	return nil
 }
 
-func (r *recorder) check(t *testing.T, sum string, want []string) {
+func (w *words) check(t *testing.T, sum string, want []string) {
 	t.Helper()
 
-	if len(r.got) != len(want) {
-		t.Fatalf("%s: folded to %v, want %v", sum, r.got, want)
+	if len(w.got) != len(want) {
+		t.Fatalf("%s: folded to %v, want %v", sum, w.got, want)
 	}
 
 	seen := map[string]bool{}
 
-	for i, got := range r.got {
+	for i, got := range w.got {
 		if got != want[i] {
 			t.Errorf("%s: case %d folded to %q, want %q", sum, i, got, want[i])
 		}
@@ -45,47 +45,49 @@ func (r *recorder) check(t *testing.T, sum string, want []string) {
 	}
 }
 
-type enlistmentRecorder struct{ recorder }
+type enlistmentWordsFold struct{ words }
 
-func (r *enlistmentRecorder) Enlisted(s traveller.ServiceName) error { return r.note("enlisted %v", s) }
+func (w *enlistmentWordsFold) Enlisted(s traveller.ServiceName) error {
+	return w.say("enlisted %v", s)
+}
 
-func (r *enlistmentRecorder) Drafted(s traveller.ServiceName) error { return r.note("drafted %v", s) }
-func (r *enlistmentRecorder) DeclinedTheDraft() error               { return r.note("declined") }
+func (w *enlistmentWordsFold) Drafted(s traveller.ServiceName) error { return w.say("drafted %v", s) }
+func (w *enlistmentWordsFold) DeclinedTheDraft() error               { return w.say("declined") }
 
 func TestEnlistmentFolds(t *testing.T) {
 	t.Parallel()
 
-	var r enlistmentRecorder
+	var fold enlistmentWordsFold
 
 	for _, e := range []traveller.Enlistment{
 		traveller.Enlisted{Service: traveller.Navy},
 		traveller.Drafted{Service: traveller.Other},
 		traveller.DeclinedTheDraft{},
 	} {
-		err := e.Fold(&r)
+		err := e.Fold(&fold)
 		if err != nil {
 			t.Fatalf("Fold: %v", err)
 		}
 	}
 
-	r.check(t, "Enlistment", []string{"enlisted Navy", "drafted Other", "declined"})
+	fold.check(t, "Enlistment", []string{"enlisted Navy", "drafted Other", "declined"})
 }
 
-type tableResultRecorder struct{ recorder }
+type tableResultWordsFold struct{ words }
 
-func (r *tableResultRecorder) Alteration(c traveller.Characteristic, d int) error {
-	return r.note("alteration %v %+d", c, d)
+func (w *tableResultWordsFold) Alteration(c traveller.Characteristic, d int) error {
+	return w.say("alteration %v %+d", c, d)
 }
-func (r *tableResultRecorder) Skill(n traveller.SkillName) error { return r.note("skill %s", n) }
-func (r *tableResultRecorder) WeaponPick(c traveller.WeaponCategory) error {
-	return r.note("weapon %v", c)
+func (w *tableResultWordsFold) Skill(n traveller.SkillName) error { return w.say("skill %s", n) }
+func (w *tableResultWordsFold) WeaponPick(c traveller.WeaponCategory) error {
+	return w.say("weapon %v", c)
 }
 
 // Holds: Three kinds of result.
 func TestTableResultFolds(t *testing.T) {
 	t.Parallel()
 
-	var r tableResultRecorder
+	var fold tableResultWordsFold
 
 	for _, result := range []traveller.TableResult{
 		// Other's personal development table is the procedure's one
@@ -94,40 +96,42 @@ func TestTableResultFolds(t *testing.T) {
 		traveller.SkillResult{Name: "Jack of all Trades"},
 		traveller.WeaponPickResult{Category: traveller.Blade},
 	} {
-		err := result.Fold(&r)
+		err := result.Fold(&fold)
 		if err != nil {
 			t.Fatalf("Fold: %v", err)
 		}
 	}
 
-	r.check(t, "TableResult", []string{
+	fold.check(t, "TableResult", []string{
 		"alteration Social Standing -1", "skill Jack of all Trades", "weapon Blade Combat",
 	})
 }
 
-type benefitRecorder struct{ recorder }
+type benefitWordsFold struct{ words }
 
-func (r *benefitRecorder) Passage(p traveller.PassageClass) error {
-	return r.note("passage %v", p)
+func (w *benefitWordsFold) Passage(p traveller.PassageClass) error {
+	return w.say("passage %v", p)
 }
 
-func (r *benefitRecorder) Alteration(c traveller.Characteristic, d int) error {
-	return r.note("alteration %v %+d", c, d)
+func (w *benefitWordsFold) Alteration(c traveller.Characteristic, d int) error {
+	return w.say("alteration %v %+d", c, d)
 }
 
-func (r *benefitRecorder) WeaponPick(c traveller.WeaponCategory) error { return r.note("weapon %v", c) }
+func (w *benefitWordsFold) WeaponPick(c traveller.WeaponCategory) error {
+	return w.say("weapon %v", c)
+}
 
-func (r *benefitRecorder) TravellersAid() error { return r.note("travellers aid") }
+func (w *benefitWordsFold) TravellersAid() error { return w.say("travellers aid") }
 
-func (r *benefitRecorder) Ship(k traveller.ShipKind) error { return r.note("ship %v", k) }
-func (r *benefitRecorder) Nothing() error                  { return r.note("nothing") }
+func (w *benefitWordsFold) Ship(k traveller.ShipKind) error { return w.say("ship %v", k) }
+func (w *benefitWordsFold) Nothing() error                  { return w.say("nothing") }
 
 // Holds: The six kinds of Table 1 row.
 // Holds: Travellers' Aid only once; duplicates wasted.
 func TestBenefitRowFolds(t *testing.T) {
 	t.Parallel()
 
-	var r benefitRecorder
+	var fold benefitWordsFold
 
 	for _, row := range []traveller.BenefitRow{
 		traveller.PassageBenefit{Class: traveller.LowPassage},
@@ -137,32 +141,32 @@ func TestBenefitRowFolds(t *testing.T) {
 		traveller.ShipBenefit{Kind: traveller.ScoutShip},
 		traveller.NoBenefit{},
 	} {
-		err := row.Fold(&r)
+		err := row.Fold(&fold)
 		if err != nil {
 			t.Fatalf("Fold: %v", err)
 		}
 	}
 
-	r.check(t, "BenefitRow", []string{
+	fold.check(t, "BenefitRow", []string{
 		"passage Low Passage", "alteration Intelligence +2",
 		"weapon Gun Combat", "travellers aid", "ship Scout ship, Type S", "nothing",
 	})
 }
 
-type departureRecorder struct{ recorder }
+type departureWordsFold struct{ words }
 
-func (r *departureRecorder) Discharged() error            { return r.note("discharged") }
-func (r *departureRecorder) ForcedOut() error             { return r.note("forced out") }
-func (r *departureRecorder) Retired() error               { return r.note("retired") }
-func (r *departureRecorder) KilledBySurvivalThrow() error { return r.note("killed by survival") }
-func (r *departureRecorder) KilledByMedicalCrisis(c traveller.Characteristic) error {
-	return r.note("killed by crisis in %v", c)
+func (w *departureWordsFold) Discharged() error            { return w.say("discharged") }
+func (w *departureWordsFold) ForcedOut() error             { return w.say("forced out") }
+func (w *departureWordsFold) Retired() error               { return w.say("retired") }
+func (w *departureWordsFold) KilledBySurvivalThrow() error { return w.say("killed by survival") }
+func (w *departureWordsFold) KilledByMedicalCrisis(c traveller.Characteristic) error {
+	return w.say("killed by crisis in %v", c)
 }
 
 func TestDepartureFolds(t *testing.T) {
 	t.Parallel()
 
-	var r departureRecorder
+	var fold departureWordsFold
 
 	for _, d := range []traveller.Departure{
 		traveller.Discharged{},
@@ -171,31 +175,31 @@ func TestDepartureFolds(t *testing.T) {
 		traveller.KilledBySurvivalThrow{},
 		traveller.KilledByMedicalCrisis{Characteristic: traveller.Endurance},
 	} {
-		err := d.Fold(&r)
+		err := d.Fold(&fold)
 		if err != nil {
 			t.Fatalf("Fold: %v", err)
 		}
 	}
 
-	r.check(t, "Departure", []string{
+	fold.check(t, "Departure", []string{
 		"discharged", "forced out", "retired", "killed by survival", "killed by crisis in Endurance",
 	})
 }
 
-type weaponBenefitRecorder struct{ recorder }
+type weaponBenefitWordsFold struct{ words }
 
-func (r *weaponBenefitRecorder) TakeWeapon(w traveller.WeaponName) error {
-	return r.note("weapon %s", w)
+func (w *weaponBenefitWordsFold) TakeWeapon(weapon traveller.WeaponName) error {
+	return w.say("weapon %s", weapon)
 }
 
-func (r *weaponBenefitRecorder) TakeExpertise(w traveller.WeaponName) error {
-	return r.note("expertise %s", w)
+func (w *weaponBenefitWordsFold) TakeExpertise(weapon traveller.WeaponName) error {
+	return w.say("expertise %s", weapon)
 }
 
 func TestWeaponBenefitFolds(t *testing.T) {
 	t.Parallel()
 
-	var r weaponBenefitRecorder
+	var fold weaponBenefitWordsFold
 
 	// P. 22's own worked sentence: a cutlass, then either another blade or
 	// expertise in the cutlass already received.
@@ -203,32 +207,32 @@ func TestWeaponBenefitFolds(t *testing.T) {
 		traveller.TakeWeapon{Weapon: "Cutlass"},
 		traveller.TakeExpertise{Weapon: "Cutlass"},
 	} {
-		err := b.Fold(&r)
+		err := b.Fold(&fold)
 		if err != nil {
 			t.Fatalf("Fold: %v", err)
 		}
 	}
 
-	r.check(t, "WeaponBenefit", []string{"weapon Cutlass", "expertise Cutlass"})
+	fold.check(t, "WeaponBenefit", []string{"weapon Cutlass", "expertise Cutlass"})
 }
 
-type eventRecorder struct{ recorder }
+type eventWordsFold struct{ words }
 
-func (r *eventRecorder) Step(e traveller.StepEvent) error   { return r.note("step %s", e.Step) }
-func (r *eventRecorder) Throw(e traveller.ThrowEvent) error { return r.note("throw %d", e.Total()) }
-func (r *eventRecorder) Roll(e traveller.RollEvent) error   { return r.note("roll %d", e.Total()) }
-func (r *eventRecorder) Choice(e traveller.ChoiceEvent) error {
-	return r.note("choice %v", e.Point)
+func (w *eventWordsFold) Step(e traveller.StepEvent) error   { return w.say("step %s", e.Step) }
+func (w *eventWordsFold) Throw(e traveller.ThrowEvent) error { return w.say("throw %d", e.Total()) }
+func (w *eventWordsFold) Roll(e traveller.RollEvent) error   { return w.say("roll %d", e.Total()) }
+func (w *eventWordsFold) Choice(e traveller.ChoiceEvent) error {
+	return w.say("choice %v", e.Point)
 }
 
-func (r *eventRecorder) Outcome(e traveller.OutcomeEvent) error {
-	return r.note("outcome %s", e.Description)
+func (w *eventWordsFold) Outcome(e traveller.OutcomeEvent) error {
+	return w.say("outcome %s", e.Description)
 }
 
 func TestEventFolds(t *testing.T) {
 	t.Parallel()
 
-	var r eventRecorder
+	var fold eventWordsFold
 
 	events := []traveller.Event{
 		traveller.StepEvent{Seq: 1, Step: "enlistment"},
@@ -238,7 +242,7 @@ func TestEventFolds(t *testing.T) {
 		traveller.OutcomeEvent{Seq: 5, Description: "drafted into the Marines"},
 	}
 	for i, e := range events {
-		err := e.Fold(&r)
+		err := e.Fold(&fold)
 		if err != nil {
 			t.Fatalf("Fold: %v", err)
 		}
@@ -248,23 +252,24 @@ func TestEventFolds(t *testing.T) {
 		}
 	}
 
-	r.check(t, "Event", []string{
+	fold.check(t, "Event", []string{
 		"step enlistment", "throw 9", "roll 6", "choice SubmitToDraft", "outcome drafted into the Marines",
 	})
 }
 
-// A fold must carry its handler's error out rather than swallow it: applying
+// refusing is a handler that refuses a case, not a fold: a sum's Fold method
+// must carry its handler's error out rather than swallow it, because applying
 // a result can fail, and a generation that failed must stop.
-type refusing struct{ tableResultRecorder }
+type refusing struct{ tableResultWordsFold }
 
 func (refusing) Skill(traveller.SkillName) error { return errRefused }
 
 func TestFoldCarriesTheHandlersError(t *testing.T) {
 	t.Parallel()
 
-	var r refusing
+	var handler refusing
 
-	err := (traveller.SkillResult{Name: "Pilot"}).Fold(&r)
+	err := (traveller.SkillResult{Name: "Pilot"}).Fold(&handler)
 
 	if !errors.Is(err, errRefused) {
 		t.Errorf("Fold returned %v, want %v", err, errRefused)

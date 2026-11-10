@@ -346,7 +346,7 @@ func TestTheQuestionsStayOutOfTheNote(t *testing.T) {
 
 	// And the note names who answered. A guided run's choices were the
 	// player's: a note that called them the policy's would misdescribe how
-	// the character was made - the one thing the log exists to say.
+	// the character was made - the one thing the record exists to say.
 	if !strings.Contains(note, ": player chose ") {
 		t.Fatal("the note holds no choice the player made, so it asserts nothing about who answered")
 	}

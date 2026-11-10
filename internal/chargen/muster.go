@@ -26,7 +26,7 @@ func (r *run) musterOut() error {
 		return nil
 	}
 
-	r.log.step(fmt.Sprintf("mustering out, %d rolls", rolls), "pp. 7, 9, 21-23")
+	r.record.step(fmt.Sprintf("mustering out, %d rolls", rolls), "pp. 7, 9, 21-23")
 
 	onTableTwo := 0
 
@@ -80,7 +80,7 @@ func (r *run) benefit(table traveller.MusterTable) error {
 	face := r.roll.Die()
 
 	row := face + modifier
-	seq := r.log.dieWithModifier(table.String(), face, modifier)
+	seq := r.record.dieWithModifier(table.String(), face, modifier)
 
 	benefit, cash, err := r.service.Row(row)
 	if err != nil {
@@ -89,7 +89,7 @@ func (r *run) benefit(table traveller.MusterTable) error {
 
 	if table == traveller.TableTwo {
 		r.benefits.Cash += cash
-		r.log.fact(seq, nil, traveller.CashFact{Cash: cash, Total: r.benefits.Cash})
+		r.record.fact(seq, nil, traveller.CashFact{Cash: cash, Total: r.benefits.Cash})
 
 		return nil
 	}
@@ -183,8 +183,8 @@ func (r *run) assessTitle() error {
 		// and a record that said nothing at all would be the one place it
 		// mattered most and showed least.
 		if governed {
-			r.log.step("titles", "p. 5; Book 3 p. 22")
-			r.log.outcomef(0, errata,
+			r.record.step("titles", "p. 5; Book 3 p. 22")
+			r.record.outcomef(0, errata,
 				"social standing %d at the end, from %d at 18: no title, where the rolled value allowed one",
 				social, r.rolledSocial)
 		}
@@ -192,10 +192,10 @@ func (r *run) assessTitle() error {
 		return nil
 	}
 
-	r.log.step("titles", "p. 5; Book 3 p. 22")
+	r.record.step("titles", "p. 5; Book 3 p. 22")
 
 	if r.dead() {
-		r.log.fact(0, errata, traveller.TitledFact{SocialStanding: social, Title: rank, AtDeath: true})
+		r.record.fact(0, errata, traveller.TitledFact{SocialStanding: social, Title: rank, AtDeath: true})
 
 		return nil
 	}
@@ -205,7 +205,7 @@ func (r *run) assessTitle() error {
 		return fmt.Errorf("assuming a title: %w", err)
 	}
 
-	r.log.fact(0, errata, traveller.TitledFact{SocialStanding: social, Title: rank, Assumed: assume})
+	r.record.fact(0, errata, traveller.TitledFact{SocialStanding: social, Title: rank, Assumed: assume})
 
 	return nil
 }
@@ -220,7 +220,7 @@ type applyBenefit struct {
 }
 
 func (a *applyBenefit) Passage(class traveller.PassageClass) error {
-	a.run.log.fact(a.because, nil, traveller.PassageFact{Class: class})
+	a.run.record.fact(a.because, nil, traveller.PassageFact{Class: class})
 
 	return nil
 }
@@ -255,13 +255,13 @@ func (a *applyBenefit) TravellersAid() error {
 	// roll indicates membership after it has already been achieved, the die
 	// roll is wasted, and the character receives nothing for it."
 	if a.run.benefits.TravellersAid {
-		a.run.log.outcomef(a.because, nil, "Travellers' Aid again, which is wasted")
+		a.run.record.outcomef(a.because, nil, "Travellers' Aid again, which is wasted")
 
 		return nil
 	}
 
 	a.run.benefits.TravellersAid = true
-	a.run.log.fact(a.because, nil, traveller.TravellersAidFact{})
+	a.run.record.fact(a.because, nil, traveller.TravellersAidFact{})
 
 	return nil
 }
@@ -271,7 +271,7 @@ func (a *applyBenefit) Ship(kind traveller.ShipKind) error {
 }
 
 func (a *applyBenefit) Nothing() error {
-	a.run.log.outcomef(a.because, nil, "nothing: the table prints a dash for this service")
+	a.run.record.outcomef(a.because, nil, "nothing: the table prints a dash for this service")
 
 	return nil
 }
@@ -319,14 +319,14 @@ type takeWeapon struct {
 
 func (t *takeWeapon) TakeWeapon(weapon traveller.WeaponName) error {
 	t.run.benefits.Weapons = append(t.run.benefits.Weapons, weapon)
-	t.run.log.fact(t.because, nil, traveller.WeaponReceivedFact{Weapon: weapon})
+	t.run.record.fact(t.because, nil, traveller.WeaponReceivedFact{Weapon: weapon})
 
 	return nil
 }
 
 func (t *takeWeapon) TakeExpertise(weapon traveller.WeaponName) error {
 	level := t.run.addSkill(traveller.SkillName(weapon))
-	t.run.log.fact(t.because, nil, traveller.ExpertiseFact{
+	t.run.record.fact(t.because, nil, traveller.ExpertiseFact{
 		Skill: traveller.Skill{Name: traveller.SkillName(weapon), Level: level},
 	})
 
@@ -357,7 +357,7 @@ func (r *run) receiveShip(because int, kind traveller.ShipKind) error {
 	}
 
 	r.benefits.Ships = append(r.benefits.Ships, ship)
-	r.log.fact(because, nil, traveller.ShipReceivedFact{Ship: ship})
+	r.record.fact(because, nil, traveller.ShipReceivedFact{Ship: ship})
 
 	return nil
 }
@@ -373,7 +373,7 @@ func (r *run) receiveShipAgain(because, at int) error {
 	ship := &r.benefits.Ships[at]
 
 	if ship.Kind == traveller.ScoutShip {
-		r.log.outcomef(because, nil, "a second scout ship, which is lost")
+		r.record.outcomef(because, nil, "a second scout ship, which is lost")
 
 		return nil
 	}
@@ -382,7 +382,7 @@ func (r *run) receiveShipAgain(because, at int) error {
 
 	ship.PaymentYears = max(0, ship.PaymentYears-freeTraderYearsPerRoll)
 
-	r.log.fact(because, nil, traveller.FreeTraderAgainFact{Ship: *ship})
+	r.record.fact(because, nil, traveller.FreeTraderAgainFact{Ship: *ship})
 
 	return nil
 }

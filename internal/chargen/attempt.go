@@ -11,9 +11,9 @@ type Attempt struct {
 }
 
 // Attempted is the service enlistment was attempted in, read from the
-// enlistment throw's outcome in the log. Whether the policy named it is read
+// enlistment throw's outcome in the record. Whether the policy named it is read
 // from the run instead: an unforced auto run is the policy's choice, and a
-// --service or a guided answer is not. A character whose log holds no
+// --service or a guided answer is not. A character whose record holds no
 // enlistment throw attempted none.
 func (c *Character) Attempted() (Attempt, bool) {
 	for _, event := range c.Events {

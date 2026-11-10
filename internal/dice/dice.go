@@ -6,7 +6,7 @@
 // package; keeping that out of here is what lets dice depend on nothing.
 //
 // The stream is not seeded. No two are alike and none can be brought back:
-// the record is the only way back to a character (ADR 0001), and it logs
+// the record is the only way back to a character (ADR 0001), and it keeps
 // every die this hands out. Two properties are load-bearing all the same,
 // because every fixture's script and every reader of a record rest on them:
 //

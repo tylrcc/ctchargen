@@ -38,23 +38,23 @@ func load(t *testing.T) *rules.Rules {
 	return r
 }
 
-// describe renders a skills-table cell. It folds, so a case added to the sum
-// stops this file compiling too.
-type describer struct{ text string }
+// resultWordsFold renders a skills-table cell. It folds, so a case added to
+// the sum stops this file compiling too.
+type resultWordsFold struct{ text string }
 
-func (d *describer) Alteration(c traveller.Characteristic, delta int) error {
+func (d *resultWordsFold) Alteration(c traveller.Characteristic, delta int) error {
 	d.text = fmt.Sprintf("%+d %v", delta, c)
 
 	return nil
 }
 
-func (d *describer) Skill(n traveller.SkillName) error {
+func (d *resultWordsFold) Skill(n traveller.SkillName) error {
 	d.text = string(n)
 
 	return nil
 }
 
-func (d *describer) WeaponPick(c traveller.WeaponCategory) error {
+func (d *resultWordsFold) WeaponPick(c traveller.WeaponCategory) error {
 	d.text = "weapon " + c.String()
 
 	return nil
@@ -63,7 +63,7 @@ func (d *describer) WeaponPick(c traveller.WeaponCategory) error {
 func describe(t *testing.T, result traveller.TableResult) string {
 	t.Helper()
 
-	var d describer
+	var d resultWordsFold
 
 	err := result.Fold(&d)
 	if err != nil {
@@ -73,40 +73,40 @@ func describe(t *testing.T, result traveller.TableResult) string {
 	return d.text
 }
 
-// benefitDescriber renders a Mustering Out Table 1 cell, the same way.
-type benefitDescriber struct{ text string }
+// benefitWordsFold renders a Mustering Out Table 1 cell, the same way.
+type benefitWordsFold struct{ text string }
 
-func (b *benefitDescriber) Passage(p traveller.PassageClass) error {
+func (b *benefitWordsFold) Passage(p traveller.PassageClass) error {
 	b.text = p.String()
 
 	return nil
 }
 
-func (b *benefitDescriber) Alteration(c traveller.Characteristic, delta int) error {
+func (b *benefitWordsFold) Alteration(c traveller.Characteristic, delta int) error {
 	b.text = fmt.Sprintf("%+d %v", delta, c)
 
 	return nil
 }
 
-func (b *benefitDescriber) WeaponPick(c traveller.WeaponCategory) error {
+func (b *benefitWordsFold) WeaponPick(c traveller.WeaponCategory) error {
 	b.text = "weapon " + c.String()
 
 	return nil
 }
 
-func (b *benefitDescriber) TravellersAid() error {
+func (b *benefitWordsFold) TravellersAid() error {
 	b.text = "Travellers' Aid"
 
 	return nil
 }
 
-func (b *benefitDescriber) Ship(k traveller.ShipKind) error {
+func (b *benefitWordsFold) Ship(k traveller.ShipKind) error {
 	b.text = k.String()
 
 	return nil
 }
 
-func (b *benefitDescriber) Nothing() error {
+func (b *benefitWordsFold) Nothing() error {
 	b.text = "nothing"
 
 	return nil
@@ -115,7 +115,7 @@ func (b *benefitDescriber) Nothing() error {
 func describeBenefit(t *testing.T, row traveller.BenefitRow) string {
 	t.Helper()
 
-	var b benefitDescriber
+	var b benefitWordsFold
 
 	err := row.Fold(&b)
 	if err != nil {

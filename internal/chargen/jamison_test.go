@@ -40,8 +40,6 @@ const dagger = "Dagger"
 // example narrates the same throws in its own order; E002 puts skills before
 // reenlistment, so the reenlistment throw sits after that term's skills here
 // and before them on the page.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var jamisonDice = slices.Concat(
 	// "generate all six characteristics; the rolls, consecutively, 6, 8, 8,
 	// 12, 8, 9" - UPP 688C89.
@@ -385,7 +383,7 @@ func TestTheWorkedExamplesDepartures(t *testing.T) {
 
 	// E002. The example narrates reenlistment before that term's skills; the
 	// exposition's order governs, so the record throws for reenlistment
-	// after them. The order is visible in the log and nowhere else.
+	// after them. The order is visible in the record and nowhere else.
 	var reenlistedBeforeSkills bool
 
 	seenSkillsThisTerm := false
@@ -420,7 +418,7 @@ func TestTheWorkedExamplesDepartures(t *testing.T) {
 	}
 
 	// E006. The example resolves both aging rounds at mustering out and says
-	// so; the engine runs each at its own term end, which is where the log
+	// so; the engine runs each at its own term end, which is where the record
 	// must show them.
 	agingBeforeMuster := 0
 

@@ -22,8 +22,6 @@ import (
 // otherWalked is Other, forced, answered 1 at every question: four terms,
 // discharged. It is the walk most interactive tests take, so their event
 // numbering is fixed.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var otherWalked = walk{
 	name: "otherWalked",
 	dice: []int{
@@ -36,8 +34,6 @@ var otherWalked = walk{
 
 // otherByPolicy is the same Other under the default policy: five terms. It is
 // what the interactive walk is compared against.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var otherByPolicy = walk{
 	name: "otherByPolicy",
 	dice: []int{
@@ -50,8 +46,6 @@ var otherByPolicy = walk{
 
 // navyWalked is the Navy, answered 1 at every question: seven terms, with
 // Education past 8 so that a term offers all four skills tables.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var navyWalked = walk{
 	name: "navyWalked",
 	dice: []int{
@@ -69,8 +63,6 @@ var navyWalked = walk{
 // answered 1 at every question: seven terms to a rank that allows the +1 on
 // Table 1, and a title to assume. Every yes-or-no question the procedure puts
 // is put on this walk.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var draftedWalked = walk{
 	name: "draftedWalked",
 	dice: []int{
@@ -87,8 +79,6 @@ var draftedWalked = walk{
 // gamblerWalked is Other, answered 2 at every question: the Service Skills
 // Table every time, which is where Gambling comes from, so mustering out
 // offers the +1 the expertise allows.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var gamblerWalked = walk{
 	name: "gamblerWalked",
 	dice: []int{
@@ -103,8 +93,6 @@ var gamblerWalked = walk{
 // offers "+1 expertise in the Dagger" as its twelfth line, and it is the
 // thirtieth question asked. A menu line throws no dice, so the walk is the
 // same whichever line that question is answered with.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var navyRearmed = walk{
 	name: "navyRearmed",
 	dice: []int{
@@ -118,8 +106,6 @@ var navyRearmed = walk{
 }
 
 // scoutKilled is a Scout killed by the survival throw in his first term.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var scoutKilled = walk{
 	name: "scoutKilled",
 	dice: []int{
@@ -130,8 +116,6 @@ var scoutKilled = walk{
 
 // otherKilled is Other, killed by the survival throw in his fifth term under
 // the default policy.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var otherKilled = walk{
 	name: "otherKilled",
 	dice: []int{
@@ -144,8 +128,6 @@ var otherKilled = walk{
 
 // navyOfficer is the Navy under --career oneterm: commissioned Lieutenant in
 // his one term, then forced out.
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var navyOfficer = walk{
 	name: "navyOfficer",
 	dice: []int{
@@ -157,8 +139,6 @@ var navyOfficer = walk{
 
 // navyDeclined is the Navy under --career oneterm, refused at enlistment and
 // declining the draft: an 18-year-old civilian (E001).
-//
-//nolint:gochecknoglobals // an immutable script, and Go has no const slice.
 var navyDeclined = walk{
 	name:  "navyDeclined",
 	dice:  []int{4, 4, 1, 6, 5, 1, 5, 1, 4, 1, 6, 5, 3, 4},

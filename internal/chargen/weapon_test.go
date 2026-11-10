@@ -192,7 +192,7 @@ func (f forging) forge(from []traveller.WeaponName) traveller.WeaponName {
 }
 
 // A decider that rewrites its own offer and answers with the rewrite is
-// refused, rather than logged as having been offered what it wrote.
+// refused, rather than recorded as having been offered what it wrote.
 //
 // The offer is named before the decider is asked. Named afterwards, it read
 // the slice the decider had written to, and the gate passed a weapon no page

@@ -100,7 +100,7 @@ func (f AppliedFact) String() string {
 	var text string
 
 	// A fold over two cases that only format cannot fail.
-	_ = f.Gain.Fold(gainText{&text})
+	_ = f.Gain.Fold(gainWordsFold{&text})
 
 	return text
 }
@@ -341,16 +341,16 @@ func (f DischargedFact) String() string {
 	return fmt.Sprintf("left the service after term %d: %v", f.After, Discharge)
 }
 
-// gainText writes a gain as the record says it.
-type gainText struct{ out *string }
+// gainWordsFold writes a gain as the record says it.
+type gainWordsFold struct{ out *string }
 
-func (g gainText) Skill(skill Skill) error {
+func (g gainWordsFold) Skill(skill Skill) error {
 	*g.out = fmt.Sprintf("%s-%d", skill.Name, skill.Level)
 
 	return nil
 }
 
-func (g gainText) Change(change Change) error {
+func (g gainWordsFold) Change(change Change) error {
 	*g.out = fmt.Sprintf("%v %+d, %d to %d", change.Characteristic, change.Delta, change.From, change.To)
 
 	return nil

@@ -1,8 +1,8 @@
 package traveller
 
-// Event is one entry in the generation record: the ordered log of the whole
+// Event is one entry in the generation record: the ordered account of the whole
 // generation, which serves audit — verify any character against Book 1 by
-// walking the log — and narrative.
+// walking the record — and narrative.
 //
 // It is a sum for the same reason the others are: each kind carries only its
 // own fields, and a renderer that grows a further kind cannot forget to
@@ -13,7 +13,7 @@ type Event interface {
 	sealedEvent()
 }
 
-// EventCases handles each kind of log entry.
+// EventCases handles each kind of event.
 type EventCases interface {
 	Step(e StepEvent) error
 	Throw(e ThrowEvent) error
@@ -42,7 +42,7 @@ type StepEvent struct {
 // target (#50). One type told apart by an empty target would write every
 // targetless roll as "succeeded": true, which is a claim about nothing.
 //
-// The dice are kept, not only their sum, because the log is what an auditor
+// The dice are kept, not only their sum, because the record is what an auditor
 // walks against the page — and because a 12 exactly on the reenlistment
 // throw is a different event from a 12 reached any other way (pp. 6-7).
 type ThrowEvent struct {

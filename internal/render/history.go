@@ -70,9 +70,9 @@ func gainWords(gains []traveller.Gain) []string {
 	out := make([]string, 0, len(gains))
 
 	for _, gain := range gains {
-		var words gainWordsCodec
+		var words gainWordsFold
 
-		// A fold over a codec cannot fail: every case only assigns.
+		// This fold cannot fail: every case only assigns.
 		_ = gain.Fold(&words)
 
 		out = append(out, words.out)
@@ -81,17 +81,17 @@ func gainWords(gains []traveller.Gain) []string {
 	return out
 }
 
-// gainWordsCodec folds a gain into its words. Adding a kind of gain stops
+// gainWordsFold folds a gain into its words. Adding a kind of gain stops
 // this compiling until it has some.
-type gainWordsCodec struct{ out string }
+type gainWordsFold struct{ out string }
 
-func (g *gainWordsCodec) Skill(skill traveller.Skill) error {
+func (g *gainWordsFold) Skill(skill traveller.Skill) error {
 	g.out = skillText(string(skill.Name), skill.Level)
 
 	return nil
 }
 
-func (g *gainWordsCodec) Change(change traveller.Change) error {
+func (g *gainWordsFold) Change(change traveller.Change) error {
 	g.out = changeWords(change)
 
 	return nil

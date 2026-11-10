@@ -50,7 +50,7 @@ func (t throw) total() int { return t.dice[0] + t.dice[1] + t.modifier }
 
 // twoDice draws the two dice of a 2D throw: the next two dice of the stream,
 // first then second. Both are handed back, not their sum, because the record
-// logs the dice.
+// keeps the dice.
 //
 // Settled by the page and not a reading: checked as a possible silence at
 // milestone 0, and kept so it is not re-litigated as one. Which throws are two

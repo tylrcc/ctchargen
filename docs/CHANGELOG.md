@@ -7,6 +7,40 @@ release turns out to be.
 
 - `CLAUDE.md` names the branch the release snapshots are written on: the
   release plan's `prep_branch`, which the tag step finds the prep merge by.
+- The 21 `//nolint:gochecknoglobals` directives are gone: the config turns
+  that linter off, so they suppressed nothing. `.golangci.yml` gives the one
+  reason, and lists what the linter reports (#509).
+- `.golangci.yml` counts the five linters it disables and gives each its
+  reason, and three new depguard rules forbid edges that compiled with
+  no rule against them: `render` importing `dice`, `dice` importing `traveller` or
+  `rules`, and non-test code importing `scripted` (#510).
+- `CLAUDE.md`'s shape of the tree states every import arrow between the
+  internal packages, `chargen`'s of `rules` and `dice` among them, and says
+  which are depguard rules (#515).
+- The sums' comment no longer says no linter checks a type switch's
+  coverage. It names `gochecksumtype`, what it would need, and why a fold
+  needs none of it (#498).
+- The service fold's comments name all three of its fields, where they said
+  "both" (#513).
+- `docs/agents/domain.md` describes this repo, a single context with
+  `docs/GLOSSARY.md` and `docs/adr/`, rather than a generic multi-context
+  template (#496).
+- The goldens' flag is `-update`, the convention, where it was
+  `-regenerate`: `go test ./internal/chargen -update` rewrites them (#506).
+- A golden that no longer matches fails with the hunk that changed, the
+  golden's lines against the note's with the lines around them, so it can
+  be read before `-update` rewrites it (#505).
+- No `chargen` name shadows a standard package or its own type: the
+  generation record's type is `record`, the glossary's word, where it was
+  `log`, as are the fields that hold it and the comments that meant it,
+  and `generate` no longer names its run `run` (#507).
+- Every type that reads a sum into a value is a fold named with the suffix
+  `Fold`, where seven suffixes were in use and "Codec" named something that
+  encodes nothing; the glossary defines the term (#512).
+- Every release heading here has the one form the release tooling writes,
+  `## 1.0.0-beta.2`, where those before `1.0.0-beta.3` carried a `v` and a
+  date. Each of those dates now stands on its own line beneath its heading
+  (#495).
 
 ## 1.0.0-rc.4
 
@@ -627,7 +661,9 @@ takes. There is no CI; `task` is the gate.
 **Do not install `v1.0.0-alpha.1` or `v1.0.0-alpha.2`.** Both predate the
 rebuild at `41a213a` and are builds of a different implementation.
 
-## v1.0.0-beta.2 — 2026-09-08
+## 1.0.0-beta.2
+
+Released 2026-09-08.
 
 The tracker is empty, and this is the shape `v1.0.0` will freeze. Nothing here
 changes a character.
@@ -698,7 +734,9 @@ rebuild at `41a213a` and are builds of a different implementation.
 `docs/PRERELEASE.md` carries the full account, including the review that
 preceded this tag and the four new gates broken on purpose.
 
-## v1.0.0-beta.1 — 2026-09-05
+## 1.0.0-beta.1
+
+Released 2026-09-05.
 
 The backlog is empty. Every milestone is closed, and this is the first tag to
 ship with no finding open at any severity.
@@ -768,7 +806,9 @@ rebuild at `41a213a` and are builds of a different implementation.
 `docs/PRERELEASE.md` carries the full account, including the review that
 preceded this tag and what it kept finding.
 
-## v1.0.0-alpha.5 — 2026-09-04
+## 1.0.0-alpha.5
+
+Released 2026-09-04.
 
 The tag that closes the referee's alpha report. Every finding of
 [#26](https://github.com/philoserf/ctchargen/issues/26) is answered, and this
@@ -839,7 +879,9 @@ rebuild at `41a213a` and are builds of a different implementation.
 alpha.4's binaries were built locally and uploaded after the fact; its notes
 say so. These come from `release.yml`, which checks out this tag itself.
 
-## v1.0.0-alpha.4 — 2026-09-04
+## 1.0.0-alpha.4
+
+Released 2026-09-04.
 
 The tool describes itself now.
 
@@ -931,11 +973,15 @@ is recorded here rather than left to look identical.
 
 `checksums.txt` covers every binary beside it.
 
-## v1.0.0-alpha.3 — 2026-09-03
+## 1.0.0-alpha.3
+
+Released 2026-09-03.
 
 Tagged without published release notes.
 
-## v1.0.0-alpha.2 — 2026-08-30
+## 1.0.0-alpha.2
+
+Released 2026-08-30.
 
 > [!WARNING]
 > **Superseded — do not install this.** This release is a build of an
@@ -999,7 +1045,9 @@ Which strategy generated a character is caller input, so it is recorded in the r
 
 For the same reason as before: every defect found in review has come from reading a held page, not from running a test. `v1.0.0` waits on characters generated in anger against the book.
 
-## v1.0.0-alpha.1 — 2026-08-30
+## 1.0.0-alpha.1
+
+Released 2026-08-30.
 
 > [!WARNING]
 > **Superseded — do not install this.** This release is a build of an

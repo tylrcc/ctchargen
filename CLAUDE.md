@@ -151,11 +151,24 @@ gate is verified by breaking it.
 
 ## The shape of the tree
 
-The arrows point one way: `traveller` imports none of the others; `rules` and
-`chargen` import `traveller`; `render` imports `chargen` for the character and
-`traveller` for its values, and `rules` for the readings it writes. A domain type that
-needs to know about dice or markdown is in the wrong package. Each package's doc
-comment is its contract; read it before changing the package.
+The arrows are non-test imports, and they point one way: `traveller` and
+`dice` import none of the others; `rules` imports `traveller`; `chargen`
+imports `traveller`, `rules` and `dice`; `render` imports `chargen` for the
+character, `traveller` for its values and `rules` for the readings it writes,
+and never `dice`; the command imports `chargen`, `render` and `traveller`, and
+neither `rules` nor `dice`. Only test files import `scripted`. Every edge
+ruled out here that would compile is a depguard rule in `.golangci.yml`; the
+rest would be import cycles.
+
+Some tests import more than their package does: `chargen`'s external tests
+import `render`, to hold the goldens to the note the tool writes, and
+`scripted`, as the command's tests do. Two packages stand apart from the
+tool: `coverage` is test code alone, whose test imports `rules`, and `mutate`
+is a command of its own that imports none of the others.
+
+A domain type that needs to know about dice or markdown is in the wrong
+package. Each package's doc comment is its contract; read it before changing
+the package.
 
 Every package but the command is under `internal/`: there is no Go library,
 so nothing outside the module can import one and no exported name is a
@@ -191,7 +204,7 @@ narrower than a task, in a loop:
 ```sh
 go test ./internal/chargen                   # one package
 go test ./internal/chargen -run TestGoldens  # one test
-go test ./internal/chargen -regenerate       # rewrite the goldens
+go test ./internal/chargen -update           # rewrite the goldens
 (cd internal/coverage && go test -run TestTheCoverageMapHolds -print)  # print the coverage map
 go run ./internal/mutate -file F -old TEXT -new TEXT go test ./pkg -run T  # show a mutation killed
 go run ./cmd/ctchargen new --auto
@@ -284,6 +297,6 @@ The five canonical labels, unchanged: `needs-triage`, `needs-info`,
 
 ### Domain docs
 
-Single-context: `docs/GLOSSARY.md` and `docs/adr/`, created lazily. See
+Single-context: `docs/GLOSSARY.md` and `docs/adr/`, both of which exist. See
 `docs/agents/domain.md`. The glossary is in `docs/` whatever a skill assumes
 about the root: never create a `GLOSSARY.md` at the repo root.

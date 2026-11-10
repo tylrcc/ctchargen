@@ -2,6 +2,7 @@ package chargen_test
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -16,18 +17,17 @@ import (
 )
 
 // The goldens. They are regenerated, never hand-edited: run
-// `go test ./internal/chargen -regenerate` and read the diff. The roster that
-// generates them is in fixtures_test.go.
-//
-//nolint:gochecknoglobals // the flag package has no other shape.
-var regenerate = flag.Bool("regenerate", false, "rewrite the golden fixtures")
+// `go test ./internal/chargen -update` once a failure's diff, which it prints
+// before anything is regenerated, shows the change was intended. The roster
+// that generates them is in fixtures_test.go.
+var update = flag.Bool("update", false, "rewrite the golden fixtures")
 
 func golden(t *testing.T, name string, got []byte) {
 	t.Helper()
 
 	path := filepath.Join("testdata", name)
 
-	if *regenerate {
+	if *update {
 		err := os.WriteFile(path, got, 0o600)
 		if err != nil {
 			t.Fatalf("writing %s: %v", path, err)
@@ -38,13 +38,66 @@ func golden(t *testing.T, name string, got []byte) {
 
 	want, err := os.ReadFile(path)
 	if err != nil {
-		t.Fatalf("reading %s: %v (run go test ./internal/chargen -regenerate)", path, err)
+		t.Fatalf("reading %s: %v (run go test ./internal/chargen -update)", path, err)
 	}
 
 	if string(got) != string(want) {
-		t.Errorf("%s has changed. If that was intended, regenerate it and read the diff:\n"+
-			"  go test ./internal/chargen -regenerate", path)
+		t.Errorf("%s has changed.\n%s"+
+			"If that was intended, regenerate it: go test ./internal/chargen -update",
+			path, difference(string(want), string(got)))
 	}
+}
+
+// diffContext is how many agreeing lines difference shows on each side of
+// the lines that changed, and diffLimit how many changed lines it shows from
+// each side before it only counts the rest.
+const (
+	diffContext = 3
+	diffLimit   = 20
+)
+
+// difference is the one hunk in which a golden and the note generated for
+// it part: the lines both share before and after it as context, and between
+// them the golden's lines ("-") against the note's ("+"), so a failure can be
+// read before anything is regenerated.
+func difference(want, got string) string {
+	wantLines, gotLines := strings.Split(want, "\n"), strings.Split(got, "\n")
+
+	first := 0
+	for first < len(wantLines) && first < len(gotLines) && wantLines[first] == gotLines[first] {
+		first++
+	}
+
+	shared := 0
+	for shared < len(wantLines)-first && shared < len(gotLines)-first &&
+		wantLines[len(wantLines)-1-shared] == gotLines[len(gotLines)-1-shared] {
+		shared++
+	}
+
+	var diff strings.Builder
+
+	fmt.Fprintf(&diff, "The golden (-) against the note (+), from line %d:\n", first+1)
+
+	lines := func(prefix string, block []string) {
+		for i, line := range block {
+			if i == diffLimit {
+				fmt.Fprintf(&diff, "%s… %d more\n", prefix, len(block)-diffLimit)
+
+				return
+			}
+
+			diff.WriteString(prefix + line + "\n")
+		}
+	}
+
+	wantEnd, gotEnd := len(wantLines)-shared, len(gotLines)-shared
+
+	lines("  ", wantLines[max(0, first-diffContext):first])
+	lines("- ", wantLines[first:wantEnd])
+	lines("+ ", gotLines[first:gotEnd])
+	lines("  ", wantLines[wantEnd:min(len(wantLines), wantEnd+diffContext)])
+
+	return diff.String()
 }
 
 // Every fixture's note, pinned.

@@ -1,10 +1,12 @@
 version: "2"
 
 linters:
-  # Every linter golangci-lint ships. The list below disables three, and all
-  # three are deprecated upstream and replaced by a linter that is enabled
-  # and reports nothing -- so this file disables no check that is not
-  # already being made.
+  # Every linter golangci-lint ships. The list below disables five. Three
+  # are deprecated upstream and replaced by a linter that is enabled and
+  # reports nothing, so disabling them drops no check that is not already
+  # being made. The other two, exhaustruct_v5 and gochecknoglobals, are
+  # neither deprecated nor replaced: they are checks this file does not
+  # make, and each carries its reason beside it.
   #
   # Anything else that has ever been considered for this list was read
   # instead, and then either fixed or configured. If a linter is added here
@@ -25,12 +27,22 @@ linters:
     - exhaustruct_v5
 
     # The linter takes no settings, so the choice is all or nothing. Every
-    # finding is an immutable table: the closed alphabets' own iteration
-    # orders, the indexes the lift checks a printed name against, and the
-    # memoized load. Go has no const for an array, a slice or a map, so the
-    # alternative is an accessor that clones on every call - in the engine's
-    # term loop, to prevent a mutation nothing in this module performs and
-    # the alphabet tests would catch.
+    # finding is a value set once and only read after. Outside the tests:
+    # the closed alphabets, the indexes the lift checks a printed name
+    # against, the transcriptions, the readings, the policy's strategies,
+    # the note's property keys, and the memoized load. In the tests: the
+    # scripted walks and the Jamison script, the fixture roster, the second
+    # transcription's columns, the command line's baselines, the coverage
+    # map's promises and its test holding, the breakage tables too long for
+    # their functions, and the -update and -print flags, which the flag
+    # package sets from the command line and declares no other way. The
+    # load is set on first use. The rest are or hold arrays, slices and
+    # maps, and Go has no const for any of them, so the alternative is an
+    # accessor that clones on every call - in the engine's term loop, to
+    # prevent a mutation nothing in this module performs and the alphabet
+    # tests would catch. This is the one place the reason is given: a
+    # //nolint for a linter this list turns off suppresses nothing, and
+    # nolintlint cannot see that it is unused.
     - gochecknoglobals
 
   settings:
@@ -47,7 +59,8 @@ linters:
       # own imports, so the choice was never on or off but configured or
       # meaningless. What is NOT here matters: most of the package layering is
       # enforced by the compiler, because the reverse edge is an import
-      # cycle. These are the edges that would otherwise compile.
+      # cycle. These are the edges CLAUDE.md's shape of the tree rules out
+      # that would otherwise compile.
       rules:
         traveller-imports-nothing:
           files: ["**/traveller/*.go"]
@@ -68,6 +81,23 @@ linters:
               desc: the command drives the engine; the tables are chargen's to consult
             - pkg: github.com/philoserf/ctchargen/internal/dice
               desc: the command drives the engine; the dice stream is chargen's to consume
+        render-does-not-roll:
+          files: ["**/render/*.go"]
+          deny:
+            - pkg: github.com/philoserf/ctchargen/internal/dice
+              desc: the note is written from the character; the dice are already thrown
+        dice-imports-nothing:
+          files: ["**/dice/*.go"]
+          deny:
+            - pkg: github.com/philoserf/ctchargen/internal/traveller
+              desc: the dice depend on nothing; what a throw means is the caller's
+            - pkg: github.com/philoserf/ctchargen/internal/rules
+              desc: the dice depend on nothing; the tables are chargen's to consult
+        scripted-is-test-support:
+          files: ["$all", "!$test"]
+          deny:
+            - pkg: github.com/philoserf/ctchargen/internal/scripted
+              desc: the strict roller is test support, imported only by test files
 
     dupword:
       # The page is quoted throughout, and p. 3 writes "indicates that that

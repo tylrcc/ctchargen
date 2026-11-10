@@ -109,3 +109,14 @@ _Avoid_: Fixture (a fixture has a golden), replay
 **Golden**:
 The note a fixture generates, checked in and regenerated never hand-edited.
 _Avoid_: Snapshot, expected output, baseline
+
+**Fold**:
+A type that reads one of the sums into a value: it implements the sum's
+cases interface, one method per case, and each method only records what its
+case says, so folding into it cannot fail. Its name ends in `Fold`, and one
+that reads its sum into prose ends in `WordsFold`: `serviceFold`,
+`sheetFold`, `gainWordsFold`. A type that handles the cases to act on them,
+and so can fail, is not a fold, and is named for what it does: applying a
+table result, a benefit or a weapon to the run in progress, or a test's
+handler that refuses a case.
+_Avoid_: Codec, describer, recorder (for the type)

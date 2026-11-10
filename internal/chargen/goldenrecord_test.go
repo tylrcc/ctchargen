@@ -90,41 +90,41 @@ func recordOf(name string, character *chargen.Character) record {
 // eventOf is one event in the words the conditions use. It is a fold, so a
 // kind of event added to traveller stops this compiling until it is read.
 func eventOf(e traveller.Event) event {
-	var words eventWords
+	var fold eventFold
 
-	// A fold over a codec cannot fail: every case only assigns.
-	_ = e.Fold(&words)
+	// This fold cannot fail: every case only assigns.
+	_ = e.Fold(&fold)
 
-	return words.out
+	return fold.out
 }
 
-type eventWords struct{ out event }
+type eventFold struct{ out event }
 
-func (w *eventWords) Step(e traveller.StepEvent) error {
+func (w *eventFold) Step(e traveller.StepEvent) error {
 	w.out = event{Kind: stepKind, Step: e.Step}
 
 	return nil
 }
 
-func (w *eventWords) Throw(e traveller.ThrowEvent) error {
+func (w *eventFold) Throw(e traveller.ThrowEvent) error {
 	w.out = event{Kind: "throw", Step: e.Step, Total: e.Total(), Succeeded: e.Succeeded}
 
 	return nil
 }
 
-func (w *eventWords) Roll(e traveller.RollEvent) error {
+func (w *eventFold) Roll(e traveller.RollEvent) error {
 	w.out = event{Kind: "roll", Step: e.Step, Total: e.Total()}
 
 	return nil
 }
 
-func (w *eventWords) Choice(e traveller.ChoiceEvent) error {
+func (w *eventFold) Choice(e traveller.ChoiceEvent) error {
 	w.out = event{Kind: "choice", Point: e.Point.String()}
 
 	return nil
 }
 
-func (w *eventWords) Outcome(traveller.OutcomeEvent) error {
+func (w *eventFold) Outcome(traveller.OutcomeEvent) error {
 	w.out = event{Kind: "outcome"}
 
 	return nil
@@ -133,41 +133,41 @@ func (w *eventWords) Outcome(traveller.OutcomeEvent) error {
 // departureWords is how a departure is named where a condition reads it. It
 // is a fold, for the reason eventOf is.
 func departureWords(d traveller.Departure) string {
-	var words departureNames
+	var words departureWordsFold
 
-	// A fold over a codec cannot fail: every case only assigns.
+	// This fold cannot fail: every case only assigns.
 	_ = d.Fold(&words)
 
 	return words.out
 }
 
-type departureNames struct{ out string }
+type departureWordsFold struct{ out string }
 
-func (n *departureNames) Discharged() error {
+func (n *departureWordsFold) Discharged() error {
 	n.out = "discharged"
 
 	return nil
 }
 
-func (n *departureNames) ForcedOut() error {
+func (n *departureWordsFold) ForcedOut() error {
 	n.out = "forced out"
 
 	return nil
 }
 
-func (n *departureNames) Retired() error {
+func (n *departureWordsFold) Retired() error {
 	n.out = "retired"
 
 	return nil
 }
 
-func (n *departureNames) KilledBySurvivalThrow() error {
+func (n *departureWordsFold) KilledBySurvivalThrow() error {
 	n.out = "killed by the survival throw"
 
 	return nil
 }
 
-func (n *departureNames) KilledByMedicalCrisis(traveller.Characteristic) error {
+func (n *departureWordsFold) KilledByMedicalCrisis(traveller.Characteristic) error {
 	n.out = "killed by a medical crisis"
 
 	return nil

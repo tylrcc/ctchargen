@@ -110,8 +110,6 @@ const (
 // The three alphabets, for parsing a flag and for listing the choices. They
 // are unexported: nothing outside needs to iterate a strategy set, and the
 // two things that do need one - the parser and the help - are below.
-//
-//nolint:gochecknoglobals // three immutable tables, and Go has no const slice.
 var (
 	careerStrategies = []Career{CareerServe, CareerRetire, CareerOneTerm}
 	skillsStrategies = []Skills{SkillsAdvanced, SkillsService, SkillsPersonal}

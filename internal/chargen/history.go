@@ -6,10 +6,10 @@ import (
 
 // ServiceHistory is what the service gave and took, a term at a time, so a
 // sheet can tell it the way the Jamison example does (pp. 24-25) without
-// reading it back out of the log's prose (#401). It is empty for a civilian,
+// reading it back out of the record's prose (#401). It is empty for a civilian,
 // who served none.
 //
-// It is not kept beside the log but read from it (#412): each entry is an
+// It is not kept beside the record but read from it (#412): each entry is an
 // outcome's typed fact, and each term is the step that opened it, so the
 // history and the record are one fact stated once.
 type ServiceHistory struct {
@@ -49,7 +49,7 @@ type Raise struct {
 	Grants []traveller.Gain
 }
 
-// History is the service a term at a time, read from the log (#412). It is
+// History is the service a term at a time, read from the record (#412). It is
 // empty for a civilian, who served none.
 //
 // Implements: The service history records each term's rank, gains and aging
@@ -58,14 +58,14 @@ func (c *Character) History() ServiceHistory {
 	var fold historyFold
 
 	for _, event := range c.Events {
-		// A fold over this codec cannot fail: every case only appends.
+		// This fold cannot fail: every case only appends.
 		_ = event.Fold(&fold)
 	}
 
 	return fold.out
 }
 
-// historyFold reads the service history out of the log: a term from the step
+// historyFold reads the service history out of the record: a term from the step
 // that opens it, and each entry from the fact its outcome carries.
 type historyFold struct{ out ServiceHistory }
 
@@ -86,7 +86,7 @@ func (h *historyFold) Outcome(e traveller.OutcomeEvent) error {
 		return nil
 	}
 
-	// A fold over this codec cannot fail either: every case only appends.
+	// This fold cannot fail either: every case only appends.
 	_ = e.Fact.Fold(h)
 
 	return nil

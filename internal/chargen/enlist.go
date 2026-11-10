@@ -15,7 +15,7 @@ import (
 // Implements: One enlistment attempt, against the Prior Service Table [1:5,
 // 10].
 func (r *run) enlist() error {
-	r.log.step("enlistment", "pp. 5, 10")
+	r.record.step("enlistment", "pp. 5, 10")
 
 	name, err := r.chooseService()
 	if err != nil {
@@ -25,15 +25,15 @@ func (r *run) enlist() error {
 	service := r.tables.Service(name)
 
 	throw := roll(r.roll, service.Enlistment.Target, service.Enlistment.Modifier(r.profile))
-	seq := r.log.throw("enlistment, "+name.String(), throw)
+	seq := r.record.throw("enlistment, "+name.String(), throw)
 
 	if throw.succeeded {
-		r.log.fact(seq, nil, traveller.EnlistedFact{Service: name, Accepted: true})
+		r.record.fact(seq, nil, traveller.EnlistedFact{Service: name, Accepted: true})
 
 		return r.join(traveller.Enlisted{Service: name})
 	}
 
-	r.log.fact(seq, nil, traveller.EnlistedFact{Service: name})
+	r.record.fact(seq, nil, traveller.EnlistedFact{Service: name})
 
 	return r.draft()
 }
@@ -53,7 +53,7 @@ func (r *run) draft() error {
 
 	if !submit {
 		r.enlistment = traveller.DeclinedTheDraft{}
-		r.log.fact(0, []traveller.Erratum{traveller.E001}, traveller.DeclinedFact{})
+		r.record.fact(0, []traveller.Erratum{traveller.E001}, traveller.DeclinedFact{})
 
 		return nil
 	}
@@ -65,8 +65,8 @@ func (r *run) draft() error {
 		return fmt.Errorf("the draft: %w", err)
 	}
 
-	seq := r.log.dice("draft", face)
-	r.log.fact(seq, []traveller.Erratum{traveller.E001}, traveller.DraftedFact{Service: name})
+	seq := r.record.dice("draft", face)
+	r.record.fact(seq, []traveller.Erratum{traveller.E001}, traveller.DraftedFact{Service: name})
 
 	return r.join(traveller.Drafted{Service: name})
 }
@@ -127,7 +127,7 @@ func (r *run) grantsOnEntering() error {
 		return nil
 	}
 
-	r.log.step("rank and service skills", "p. 23")
+	r.record.step("rank and service skills", "p. 23")
 
 	for _, result := range granted {
 		err := r.apply(result, 0, []traveller.Erratum{traveller.E005}, traveller.OnEntering)
@@ -140,7 +140,7 @@ func (r *run) grantsOnEntering() error {
 }
 
 // apply applies one Acquired Skills table result, or one grant, which take
-// the same three shapes (p. 12), and logs what it gives as a fact naming its
+// the same three shapes (p. 12), and records what it gives as a fact naming its
 // source, which is where the service history files it. A mustering out
 // benefit names AtMusteringOut, which the history leaves out: mustering out
 // is not a term, and the sheet already lists what it delivered.
@@ -180,7 +180,7 @@ func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta 
 
 	after := a.run.profile[characteristic]
 
-	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
+	a.run.record.fact(a.because, a.errata, traveller.AppliedFact{
 		Gain:   traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: delta},
 		Source: a.source,
 	})
@@ -190,7 +190,7 @@ func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta 
 
 func (a *applyResult) Skill(name traveller.SkillName) error {
 	level := a.run.addSkill(name)
-	a.run.log.fact(a.because, a.errata, traveller.AppliedFact{
+	a.run.record.fact(a.because, a.errata, traveller.AppliedFact{
 		Gain: traveller.SkillGain{Skill: traveller.Skill{Name: name, Level: level}}, Source: a.source,
 	})
 
@@ -210,7 +210,7 @@ func (a *applyResult) WeaponPick(category traveller.WeaponCategory) error {
 	}
 
 	level := a.run.addSkill(traveller.SkillName(chosen))
-	a.run.log.fact(a.because, a.errata, traveller.WeaponPickedFact{
+	a.run.record.fact(a.because, a.errata, traveller.WeaponPickedFact{
 		Category: category, Skill: traveller.Skill{Name: traveller.SkillName(chosen), Level: level}, Source: a.source,
 	})
 

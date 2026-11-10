@@ -4,24 +4,24 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// The codecs for the sums. Each is a fold, so a case added to a sum stops
-// this package compiling until the view learns to read it.
+// The folds for the sums. Each implements a cases interface, so a case added
+// to a sum stops this package compiling until the view learns to read it.
 
-type enlistmentCodec struct{ out enlistmentView }
+type enlistmentFold struct{ out enlistmentView }
 
-func (e *enlistmentCodec) Enlisted(service traveller.ServiceName) error {
+func (e *enlistmentFold) Enlisted(service traveller.ServiceName) error {
 	e.out = enlistmentView{How: "enlisted", Service: service.String()}
 
 	return nil
 }
 
-func (e *enlistmentCodec) Drafted(service traveller.ServiceName) error {
+func (e *enlistmentFold) Drafted(service traveller.ServiceName) error {
 	e.out = enlistmentView{How: "drafted", Service: service.String()}
 
 	return nil
 }
 
-func (e *enlistmentCodec) DeclinedTheDraft() error {
+func (e *enlistmentFold) DeclinedTheDraft() error {
 	e.out = enlistmentView{How: "declined the draft"}
 
 	return nil
@@ -32,41 +32,41 @@ func (e *enlistmentCodec) DeclinedTheDraft() error {
 // generation defect, and panics where it is folded rather than reading as no
 // service, as #377 decided for ServedIn (#393).
 func foldEnlistment(from traveller.Enlistment) enlistmentView {
-	var codec enlistmentCodec
+	var fold enlistmentFold
 
-	// A fold over a codec cannot fail: every case only assigns.
-	_ = from.Fold(&codec)
+	// This fold cannot fail: every case only assigns.
+	_ = from.Fold(&fold)
 
-	return codec.out
+	return fold.out
 }
 
-type departureCodec struct{ out departureView }
+type departureFold struct{ out departureView }
 
-func (d *departureCodec) Discharged() error {
+func (d *departureFold) Discharged() error {
 	d.out = departureView{How: "discharged"}
 
 	return nil
 }
 
-func (d *departureCodec) ForcedOut() error {
+func (d *departureFold) ForcedOut() error {
 	d.out = departureView{How: "forced out"}
 
 	return nil
 }
 
-func (d *departureCodec) Retired() error {
+func (d *departureFold) Retired() error {
 	d.out = departureView{How: "retired"}
 
 	return nil
 }
 
-func (d *departureCodec) KilledBySurvivalThrow() error {
+func (d *departureFold) KilledBySurvivalThrow() error {
 	d.out = departureView{How: "killed by the survival throw"}
 
 	return nil
 }
 
-func (d *departureCodec) KilledByMedicalCrisis(characteristic traveller.Characteristic) error {
+func (d *departureFold) KilledByMedicalCrisis(characteristic traveller.Characteristic) error {
 	d.out = departureView{
 		How: "killed by a medical crisis", Characteristic: characteristic.String(),
 	}
@@ -75,17 +75,18 @@ func (d *departureCodec) KilledByMedicalCrisis(characteristic traveller.Characte
 }
 
 func foldDeparture(from traveller.Departure) departureView {
-	var codec departureCodec
+	var fold departureFold
 
-	// A fold over a codec cannot fail: every case only assigns.
-	_ = from.Fold(&codec)
+	// This fold cannot fail: every case only assigns.
+	_ = from.Fold(&fold)
 
 	// Which departures are deaths is traveller.Fatal's to say, not this
-	// codec's. It was stated here and again in the command, and a changed
-	// case would have moved one and not the other (#100).
-	codec.out.Fatal = traveller.Fatal(from)
+	// fold's: the engine and the command ask it too, so one answer serves
+	// all three, and a case added to Departure is answered once for them all
+	// (#100).
+	fold.out.Fatal = traveller.Fatal(from)
 
-	return codec.out
+	return fold.out
 }
 
 // entryKind is which case of traveller.Event an entry was folded from. A
@@ -125,23 +126,23 @@ type entry struct {
 
 // entryOf folds a domain event into its entry.
 func entryOf(event traveller.Event) entry {
-	var codec entryCodec
+	var fold entryFold
 
-	// A fold over a codec cannot fail: every case only assigns.
-	_ = event.Fold(&codec)
+	// This fold cannot fail: every case only assigns.
+	_ = event.Fold(&fold)
 
-	return codec.out
+	return fold.out
 }
 
-type entryCodec struct{ out entry }
+type entryFold struct{ out entry }
 
-func (e *entryCodec) Step(from traveller.StepEvent) error {
+func (e *entryFold) Step(from traveller.StepEvent) error {
 	e.out = entry{Seq: from.Seq, Kind: kindStep, Step: from.Step, Pages: from.Pages}
 
 	return nil
 }
 
-func (e *entryCodec) Throw(from traveller.ThrowEvent) error {
+func (e *entryFold) Throw(from traveller.ThrowEvent) error {
 	e.out = entry{
 		Seq: from.Seq, Kind: kindThrow, Step: from.Step, Dice: from.Dice,
 		DM: from.DM, Target: from.Target.String(), Total: from.Total(), Succeeded: from.Succeeded,
@@ -155,7 +156,7 @@ func (e *entryCodec) Throw(from traveller.ThrowEvent) error {
 //
 // Implements: A roll with nothing to meet is not recorded as a throw that
 // succeeded [Generation record].
-func (e *entryCodec) Roll(from traveller.RollEvent) error {
+func (e *entryFold) Roll(from traveller.RollEvent) error {
 	e.out = entry{
 		Seq: from.Seq, Kind: kindRoll, Step: from.Step,
 		Dice: from.Dice, DM: from.DM, Total: from.Total(),
@@ -164,7 +165,7 @@ func (e *entryCodec) Roll(from traveller.RollEvent) error {
 	return nil
 }
 
-func (e *entryCodec) Choice(from traveller.ChoiceEvent) error {
+func (e *entryFold) Choice(from traveller.ChoiceEvent) error {
 	e.out = entry{
 		Seq: from.Seq, Kind: kindChoice, Point: from.Point,
 		Alternatives: from.Alternatives, Chosen: from.Chosen,
@@ -173,7 +174,7 @@ func (e *entryCodec) Choice(from traveller.ChoiceEvent) error {
 	return nil
 }
 
-func (e *entryCodec) Outcome(from traveller.OutcomeEvent) error {
+func (e *entryFold) Outcome(from traveller.OutcomeEvent) error {
 	e.out = entry{Seq: from.Seq, Kind: kindOutcome, Because: from.Because, Description: from.Description}
 
 	for _, erratum := range from.Errata {

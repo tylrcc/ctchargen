@@ -8,10 +8,10 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// writeGenerationRecord writes the generation log as prose: every step
+// writeGenerationRecord writes the generation record as prose: every step
 // entered, every throw made, every choice answered, every consequence.
 //
-// It is what makes a character auditable against Book 1 - walk the log with
+// It is what makes a character auditable against Book 1 - walk the record with
 // the page open; the sheet above it tells the service in brief, and this is
 // every step of it. It is also the only way back to the character (ADR 0006).
 //

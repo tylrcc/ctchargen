@@ -11,8 +11,6 @@ import (
 // characteristicKeys are the six characteristics' property names, in the
 // order p. 4 rolls them. They are the sheet's words, lowercased, and Social
 // Standing is "social" so a key is one word a query can type.
-//
-//nolint:gochecknoglobals // a fixed table, and Go has no const map.
 var characteristicKeys = map[traveller.Characteristic]string{
 	traveller.Strength:       "strength",
 	traveller.Dexterity:      "dexterity",

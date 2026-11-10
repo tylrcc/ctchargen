@@ -10,9 +10,9 @@ import (
 // Every throw is two dice, the next two of the stream, and the draft is one.
 // P. 10: "All rolls except draft are two-die throws."
 //
-// Each fixture's record logs its dice in the order its script handed them
+// Each fixture's record keeps its dice in the order its script handed them
 // out, so a throw that drew its dice in any other way - one die, a die
-// skipped, the second before the first - logs a sequence the script does
+// skipped, the second before the first - records a sequence the script does
 // not state.
 //
 // Holds: Two-die throws except the draft.
@@ -24,7 +24,7 @@ func TestEveryThrowIsTheNextTwoDice(t *testing.T) {
 	for _, fixture := range fixtures {
 		character := fixture.generate(t)
 
-		var logged []int
+		var recorded []int
 
 		for _, event := range character.Events {
 			switch e := event.(type) {
@@ -33,7 +33,7 @@ func TestEveryThrowIsTheNextTwoDice(t *testing.T) {
 					t.Errorf("%s: the %s throw is %d dice", fixture.name, e.Step, len(e.Dice))
 				}
 
-				logged = append(logged, e.Dice...)
+				recorded = append(recorded, e.Dice...)
 			case traveller.RollEvent:
 				if e.Step == "draft" {
 					drafts++
@@ -43,12 +43,12 @@ func TestEveryThrowIsTheNextTwoDice(t *testing.T) {
 					}
 				}
 
-				logged = append(logged, e.Dice...)
+				recorded = append(recorded, e.Dice...)
 			}
 		}
 
-		if !slices.Equal(logged, fixture.dice) {
-			t.Errorf("%s: the record logs the dice %v; the script threw %v", fixture.name, logged, fixture.dice)
+		if !slices.Equal(recorded, fixture.dice) {
+			t.Errorf("%s: the record holds the dice %v; the script threw %v", fixture.name, recorded, fixture.dice)
 		}
 	}
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-// tableTwoStep is the step the engine logs a Table 2 throw under.
+// tableTwoStep is the step the engine records a Table 2 throw under.
 const tableTwoStep = "Table 2, Cash Allowances"
 
 // printedCap is p. 9's limit on how many benefit rolls may go on Table 2,

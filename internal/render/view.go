@@ -74,7 +74,7 @@ type nobilityView struct {
 }
 
 // attemptView is the service enlistment was attempted in, as chargen reads it
-// from the log, and whether the policy named it (#397). Only a served
+// from the record, and whether the policy named it (#397). Only a served
 // character's is projected (#454); a civilian's is the zero value, never read.
 type attemptView struct {
 	Service  string
@@ -173,7 +173,7 @@ func viewOf(character *chargen.Character) view {
 func projectAttempt(character *chargen.Character) attemptView {
 	attempt, attempted := character.Attempted()
 	if !attempted {
-		panic("render: a served character with no enlistment throw in his log")
+		panic("render: a served character with no enlistment throw in his record")
 	}
 
 	return attemptView{
@@ -202,7 +202,7 @@ func projectBenefits(b chargen.Benefits) benefitsView {
 	return out
 }
 
-// entries is every event, flat, in the order the run logged them.
+// entries is every event, flat, in the order the run recorded them.
 func entries(events []traveller.Event) []entry {
 	out := make([]entry, 0, len(events))
 

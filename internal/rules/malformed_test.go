@@ -413,8 +413,6 @@ func TestMalformedAging(t *testing.T) {
 
 // agingBreakages is each way to break the Aging Table's transcription, and
 // what the refusal must name.
-//
-//nolint:gochecknoglobals // a test table too long for its function.
 var agingBreakages = map[string]struct {
 	breaks   func(*agingTranscription)
 	mentions string

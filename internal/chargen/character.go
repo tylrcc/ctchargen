@@ -14,10 +14,10 @@ import (
 // birthdate rules, so the record carries an age and a count of terms, not a
 // date. That is the books, not an omission.
 //
-// Nothing it says of the character is kept on it beside its log (#441):
+// Nothing it says of the character is kept on it beside its record (#441):
 // Profile, Skills, Benefits, Pension, Nobility, Enlistment, Rank, RankName,
 // Age and Departure fold the facts the outcomes carry, and Terms reads the
-// number of the last term the log opens. What it keeps besides the log is
+// number of the last term the record opens. What it keeps besides the record is
 // what the generation was given and what stamped it: its Inputs, its
 // Policy, its Errata and its Build.
 type Character struct {
@@ -99,29 +99,29 @@ func (f ForcedService) Service() (traveller.ServiceName, bool) {
 	return *f.service, true
 }
 
-// serviceCodec folds an enlistment into the service it entered, and whether
-// the draft is what entered it.
-type serviceCodec struct {
+// serviceFold folds an enlistment into the service it entered, whether it
+// entered one, and whether the draft is what entered it.
+type serviceFold struct {
 	service traveller.ServiceName
 	served  bool
 	drafted bool
 }
 
-func (s *serviceCodec) Enlisted(service traveller.ServiceName) error {
+func (s *serviceFold) Enlisted(service traveller.ServiceName) error {
 	s.service, s.served = service, true
 
 	return nil
 }
 
-func (s *serviceCodec) Drafted(service traveller.ServiceName) error {
+func (s *serviceFold) Drafted(service traveller.ServiceName) error {
 	s.service, s.served, s.drafted = service, true, true
 
 	return nil
 }
 
-// DeclinedTheDraft leaves both at their zero values, and the false is what
-// the caller must read: the zero ServiceName is Navy.
-func (s *serviceCodec) DeclinedTheDraft() error { return nil }
+// DeclinedTheDraft leaves all three at their zero values, and served's false
+// is what the caller must read: the zero ServiceName is Navy.
+func (s *serviceFold) DeclinedTheDraft() error { return nil }
 
 // ServedIn is the service the character entered, and whether he entered one.
 //
@@ -140,18 +140,18 @@ func (c *Character) ServedIn() (traveller.ServiceName, bool) {
 // Only generation sets an Enlistment, and it always does: a nil one panics
 // here rather than reading as no service (#377).
 func servedIn(enlistment traveller.Enlistment) (traveller.ServiceName, bool) {
-	var codec serviceCodec
+	var fold serviceFold
 
-	// A fold over a codec cannot fail: every case only assigns.
-	_ = enlistment.Fold(&codec)
+	// This fold cannot fail: every case only assigns.
+	_ = enlistment.Fold(&fold)
 
-	return codec.service, codec.served
+	return fold.service, fold.served
 }
 
 // Enlistment is how the character entered a service, or that he declined the
-// draft and never did (p. 5), read from the log (#441): an enlistment throw
+// draft and never did (p. 5), read from the record (#441): an enlistment throw
 // he made, the service the draft put him in, or the draft declined. Nil for
-// a log that holds none of the three.
+// a record that holds none of the three.
 func (c *Character) Enlistment() traveller.Enlistment {
 	var fold sheetFold
 
@@ -160,7 +160,7 @@ func (c *Character) Enlistment() traveller.Enlistment {
 	return fold.enlistment
 }
 
-// Terms is how many terms the character began, read from the log (#441): the
+// Terms is how many terms the character began, read from the record (#441): the
 // number of the last term a step opened, the fatal one included (E004).
 func (c *Character) Terms() int {
 	terms := 0
@@ -175,7 +175,7 @@ func (c *Character) Terms() int {
 }
 
 // Rank is the character's place in his service's Table of Ranks (p. 10),
-// read from the log (#441): the rank the last commission or promotion
+// read from the record (#441): the rank the last commission or promotion
 // conferred, which the fact carries, or zero if none did.
 func (c *Character) Rank() traveller.Rank {
 	var fold sheetFold
@@ -195,7 +195,7 @@ func (c *Character) RankName() string {
 	return fold.rankName
 }
 
-// Age is the age generation left the character at, read from the log
+// Age is the age generation left the character at, read from the record
 // (#441). The UPP rolled at the start carries the age he began at, and every
 // fact that moves it carries the age it left him at - the reenlistment
 // throw's outcome at the end of each term, the fatal term's death, a crisis's
@@ -209,7 +209,7 @@ func (c *Character) Age() traveller.Age {
 	return fold.age
 }
 
-// Departure is how the service ended, read from the log (#441): the last
+// Departure is how the service ended, read from the record (#441): the last
 // fact that ends it, since a crisis can kill a character the term's
 // reenlistment throw has already retired. It is nil for a civilian, who
 // never joined a service.
@@ -222,7 +222,7 @@ func (c *Character) Departure() traveller.Departure {
 }
 
 // Profile is the six characteristics as generation left them, read from the
-// log (#441): each starts at the value p. 4 rolled, and each change after it
+// record (#441): each starts at the value p. 4 rolled, and each change after it
 // - a table's, an aging round's, a crisis's recovery - carries the value it
 // left, so the last fact for a characteristic is its value.
 func (c *Character) Profile() traveller.Profile {
@@ -234,7 +234,7 @@ func (c *Character) Profile() traveller.Profile {
 }
 
 // Skills is every skill the character holds, at the level it reached, read
-// from the log (#441), in name order, so a record reads the same way twice.
+// from the record (#441), in name order, so a record reads the same way twice.
 // Each fact that gives a skill carries the level the engine reached, so the
 // last for a name is its level; the fold applies no rule of p. 12's.
 //
@@ -251,7 +251,7 @@ func (c *Character) Skills() []traveller.Skill {
 	return fold.skills
 }
 
-// Benefits is what mustering out delivered, read from the log (#441). A
+// Benefits is what mustering out delivered, read from the record (#441). A
 // passage, a weapon or a first ship is appended in the order received; the
 // cash fact carries the running total and a repeat Free Trader the ship as it
 // stands, so for those the last is the value. Which result is a repeat is
@@ -264,7 +264,7 @@ func (c *Character) Benefits() Benefits {
 	return fold.benefits
 }
 
-// Pension is the annual retirement pay, read from the log (#441); zero for a
+// Pension is the annual retirement pay, read from the record (#441); zero for a
 // character who draws none.
 func (c *Character) Pension() traveller.Credits {
 	var fold sheetFold
@@ -275,7 +275,7 @@ func (c *Character) Pension() traveller.Credits {
 }
 
 // Nobility is what a final Social Standing of 11 or greater confers, assessed
-// once at the end of generation (E011), read from the log (#441).
+// once at the end of generation (E011), read from the record (#441).
 func (c *Character) Nobility() Nobility {
 	var fold sheetFold
 
@@ -284,7 +284,7 @@ func (c *Character) Nobility() Nobility {
 	return fold.nobility
 }
 
-// fold walks the log's outcomes' facts through cases.
+// fold walks the record's outcomes' facts through cases.
 func (c *Character) fold(cases traveller.FactCases) {
 	for _, event := range c.Events {
 		outcome, isOutcome := event.(traveller.OutcomeEvent)
@@ -298,7 +298,7 @@ func (c *Character) fold(cases traveller.FactCases) {
 	}
 }
 
-// sheetFold reads the sheet's facts out of the log: the characteristics, the
+// sheetFold reads the sheet's facts out of the record: the characteristics, the
 // skills, the benefits, the pension, the title, and the career - how he
 // entered, his rank, his age and how he left.
 type sheetFold struct {
@@ -322,7 +322,7 @@ func (s *sheetFold) Rolled(f traveller.RolledFact) error {
 }
 
 func (s *sheetFold) Applied(f traveller.AppliedFact) error {
-	// A fold over this codec cannot fail: both cases only assign.
+	// This fold cannot fail: both cases only assign.
 	_ = f.Gain.Fold(s)
 
 	return nil

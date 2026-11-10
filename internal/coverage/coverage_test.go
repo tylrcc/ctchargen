@@ -81,7 +81,6 @@ import (
 	"github.com/philoserf/ctchargen/internal/rules"
 )
 
-//nolint:gochecknoglobals // the flag package has no other shape.
 var printTable = flag.Bool("print", false, "write the coverage table to standard output")
 
 // The module root, relative to this package, and the files the check reads
@@ -142,8 +141,6 @@ var (
 //   - Sheet: what a note tells of the character - its properties, its sheet,
 //     its summary and the service history behind them.
 //   - Transcription: the transcribed tables and their lift.
-//
-//nolint:gochecknoglobals // a fixed list, and Go has no const slice.
 var promises = []string{
 	"Authority", "Choices", "Command line", "Documents",
 	"Domain", "Generation record", "Sheet", "Transcription",
@@ -385,14 +382,10 @@ const (
 )
 
 // aHolding is a test holding aRule.
-//
-//nolint:gochecknoglobals // a test fixture, and Go has no const slice.
 var aHolding = []holding{{aRule, "pkg.TestF", false}}
 
 // mapBreakages is each set of markers that cannot make a map, and what the
 // failure must name.
-//
-//nolint:gochecknoglobals // a test table too long for its function.
 var mapBreakages = map[string]struct {
 	found    markers
 	mentions string
@@ -442,8 +435,6 @@ func TestAMarkerOutOfPlaceOrOutOfShape(t *testing.T) {
 
 // markerBreakages is each file that carries a marker it must not, at the
 // path it is written to, and what the failure must name.
-//
-//nolint:gochecknoglobals // a test table too long for its function.
 var markerBreakages = map[string]struct {
 	path, source, mentions string
 }{

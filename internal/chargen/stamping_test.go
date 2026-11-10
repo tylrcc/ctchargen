@@ -12,7 +12,7 @@ import (
 
 // The stamping predicates, and the checks that the roster reaches every
 // choice point. They read the character each fixture generates, as the
-// engine makes it now - its log and its stamped errata. The note is written
+// engine makes it now - its record and its stamped errata. The note is written
 // from the same character, and TestGoldens holds the note to the checked-in
 // goldens; the two are siblings, so reading the character fresh lets an
 // engine change be named here by what it did (#373).
@@ -22,7 +22,7 @@ import (
 // greater".
 const nobility = 11
 
-// The step names the engine logs its dice under, throws and rolls alike. They
+// The step names the engine records its dice under, throws and rolls alike. They
 // are the generation record's own words, so these checks are coupled to them - a
 // rewording breaks it loudly and names the reading, which is the half of that
 // worth having.

@@ -10,7 +10,7 @@ import (
 )
 
 // Ruleset names the text this tool implements. All page cites in a record's
-// generation log are to these three books and nothing else.
+// generation record are to these three books and nothing else.
 //
 // Implements: The note names its ruleset and the build that wrote it [ADR
 // 0002].
@@ -41,7 +41,7 @@ func WithRoller(roller Roller) Option {
 //
 // Implements: The procedure is shown between the questions [Generation record].
 func WithObserver(watch func(traveller.Event)) Option {
-	return func(r *run) { r.log.watch = watch }
+	return func(r *run) { r.record.watch = watch }
 }
 
 // WithBuild names the build that writes the record (ADR 0002). Only the
@@ -90,31 +90,29 @@ func generate(in Inputs, decider Decider, policy *Policy, options []Option) (*Ch
 		return nil, fmt.Errorf("loading the rules: %w", err)
 	}
 
-	record := newLog()
-
-	run := &run{
+	r := &run{
 		tables: tables,
 		roll:   dice.New(),
-		log:    record,
+		record: newRecord(),
 		char:   &Character{Inputs: in, Policy: policy},
 		atAge:  traveller.NewAge(traveller.StartingAge),
 	}
 
 	for _, option := range options {
-		option(run)
+		option(r)
 	}
 
-	run.decide = logging{to: decider, log: record}
+	r.decide = logging{to: decider, into: r.record}
 
-	err = run.generate()
+	err = r.generate()
 	if err != nil {
 		return nil, err
 	}
 
-	run.char.Events = record.events
-	run.char.Errata = record.stamped()
+	r.char.Events = r.record.events
+	r.char.Errata = r.record.stamped()
 
-	return run.char, nil
+	return r.char, nil
 }
 
 // dead reports whether the character died, read off his departure rather
@@ -125,12 +123,12 @@ func (r *run) dead() bool { return traveller.Fatal(r.departure) }
 // service, read off his enlistment by the fold ServedIn uses (#368). Every
 // caller is past enlistment.
 func (r *run) drafted() bool {
-	var codec serviceCodec
+	var fold serviceFold
 
-	// A fold over a codec cannot fail: every case only assigns.
-	_ = r.enlistment.Fold(&codec)
+	// This fold cannot fail: every case only assigns.
+	_ = r.enlistment.Fold(&fold)
 
-	return codec.drafted
+	return fold.drafted
 }
 
 // run is one generation in progress.
@@ -138,7 +136,7 @@ type run struct {
 	tables *rules.Rules
 	roll   Roller
 	decide Decider
-	log    *log
+	record *record
 	char   *Character
 
 	service  rules.Service
@@ -147,7 +145,7 @@ type run struct {
 	// profile and skills are the character as the procedure has him so far,
 	// which every DM and the gambling modifier read mid-run. They are the
 	// engine's working state and not the record: each change to them is
-	// logged as a fact carrying the value it left, and the finished
+	// recorded as a fact carrying the value it left, and the finished
 	// Character's Profile and Skills are read from those facts (#441).
 	profile traveller.Profile
 	skills  []traveller.Skill
@@ -162,7 +160,7 @@ type run struct {
 
 	// benefits is what mustering out has delivered so far, which the running
 	// cash total, a repeat Travellers' Aid, a repeat weapon and a repeat ship
-	// read. It is working state, as profile is: each change to it is logged
+	// read. It is working state, as profile is: each change to it is recorded
 	// as a fact carrying the value it left, and the finished Character's
 	// Benefits are read from those facts (#441).
 	benefits Benefits
@@ -171,8 +169,8 @@ type run struct {
 	// which the commission and promotion throws, mustering out, the pension
 	// and the check for death read mid-run, and from which each age is
 	// advanced. They are working state, as profile is: each change to them is
-	// logged as a fact carrying the value it left, or for terms as the step
-	// that opens one, and the finished Character's are read from the log
+	// recorded as a fact carrying the value it left, or for terms as the step
+	// that opens one, and the finished Character's are read from the record
 	// (#441).
 	enlistment traveller.Enlistment
 	terms      int
@@ -228,7 +226,7 @@ func (r *run) generate() error {
 //
 // Implements: Six 2D rolls, in order: values 2–12 initially [1:4].
 func (r *run) rollProfile() {
-	r.log.step("characteristics", "p. 4")
+	r.record.step("characteristics", "p. 4")
 
 	for _, c := range traveller.Characteristics {
 		first, second := twoDice(r.roll)
@@ -239,15 +237,15 @@ func (r *run) rollProfile() {
 			r.rolledSocial = r.profile[c]
 		}
 
-		seq := r.log.dice(c.String(), first, second)
-		r.log.fact(seq, nil, traveller.RolledFact{Characteristic: c, Value: r.profile[c]})
+		seq := r.record.dice(c.String(), first, second)
+		r.record.fact(seq, nil, traveller.RolledFact{Characteristic: c, Value: r.profile[c]})
 	}
 
-	r.log.fact(0, nil, traveller.StartedFact{Profile: r.profile, Age: r.atAge})
+	r.record.fact(0, nil, traveller.StartedFact{Profile: r.profile, Age: r.atAge})
 }
 
 // addSkill records a skill, raising its level if it is already held, and
-// returns the level it reached, which the fact logging it carries. P. 12:
+// returns the level it reached, which the fact recording it carries. P. 12:
 // "Each time an already acquired skill is again acquired, the level of the
 // skill is increased by 1."
 //
