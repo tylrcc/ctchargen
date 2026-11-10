@@ -581,11 +581,13 @@ var readings = [...]Reading{
 			"Low Psg, row 2 +1 Intel, row 3 +1 Educ, row 4 Gun, row 5 Blade, row 6 Low\n" +
 			"Psg, row 7 Merchant. No row of that column prints a Middle Passage.\n" +
 			"\n" +
-			"P. 25 musters Jamison out with six rolls on Table 1, each carrying the +1 his\n" +
-			"rank of 5 allows: \"he rolls 5 (+1=6) = +1 education; 6 (+1=7) = merchant\n" +
-			"ship; 2 (+1=3) = one middle passage; 6 (+1=7) = merchant ship; 6 (+1=7)\n" +
-			"=merchant ship; 6 (+1=7) = merchant ship\". Its summary then says \"He also has\n" +
-			"one middle passage, worth about CR 8,000.\"",
+			"P. 25 musters Jamison out with \"six rolls on Table 2\", each carrying the +1\n" +
+			"his rank of 5 allows: \"_he rolls 5 (+1=6) = +1 education; 6 (+1=7) =\n" +
+			"merchant ship; 2 (+1=3) = one middle passage; 6 (+1=7) = merchant ship;\n" +
+			"6 (+1=7) =merchant ship; 6 (+1=7) = merchant ship_\". The six are Table 1's, whatever\n" +
+			"the sentence names: the page allows the +1 \"on all rolls on Table 1\", and\n" +
+			"what they deliver are Table 1's benefits, not cash. Its summary then says\n" +
+			"\"He also has one middle passage, worth about CR 8,000.\"",
 		Gap: "Two of those six results are not what the table prints for the\n" +
 			"row the roll reaches. A 6 reaches row 6, which is Low Psg, not +1 Education;\n" +
 			"a 3 reaches row 3, which is +1 Educ, not a Middle Passage. And the Merchant\n" +
@@ -598,9 +600,10 @@ var readings = [...]Reading{
 		Why: "The tables are the rules; the example is prose about them, and the\n" +
 			"same example is elsewhere explicit that it takes liberties — it batches two\n" +
 			"aging rounds \"for simplicity\" and says so on the same page. The narration\n" +
-			"also mislabels the Acquired Skills tables twice on p. 24, calling the\n" +
-			"Personal Development table \"Table 7\". An illustration that has already\n" +
-			"miscited two tables is not evidence against a third.\n" +
+			"also miscites two tables, one on each page: on p. 24 it calls the Personal\n" +
+			"Development table \"Table 7\", and on p. 25 it calls Mustering Out Table 1\n" +
+			"\"Table 2\". An illustration that has already miscited two tables is not\n" +
+			"evidence against a third.\n" +
 			"\n" +
 			"This reading applies E002's principle to a table rather than to an order:\n" +
 			"where the exposition and the example disagree, the exposition governs.",

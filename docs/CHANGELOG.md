@@ -5,6 +5,11 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- E015 places each of the worked example's table miscitations on its own
+  page: "Table 7" on p. 24, and "Table 2" for Mustering Out Table 1 on p. 25.
+  Its quotation of p. 25, and the Jamison test's, now say "Table 2" as printed
+  and give the correction in their own words. E015's decision and stamping
+  are unchanged (#462).
 - The readings are the authority's record, not the referee's (ADR 0007):
   the `readings` subcommand and `new --readings` are removed, a note names no
   erratum, and a reading can no longer be withdrawn. The readings, their

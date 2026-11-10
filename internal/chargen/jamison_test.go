@@ -86,8 +86,10 @@ var jamisonDice = slices.Concat(
 	throws(8, 6, 11),
 
 	// "Jamison elects to make one roll on Table 2 [he rolls 4= CR 20,000]
-	// and six rolls on Table 1 [he rolls 5 (+1=6); 6 (+1=7); 2 (+1=3);
-	// 6 (+1=7); 6 (+1=7); 6 (+1=7)]".
+	// and six rolls on Table 2 [he rolls 5 (+1=6) = +1 education; 6 (+1=7) =
+	// merchant ship; 2 (+1=3) = one middle passage; 6 (+1=7) = merchant ship;
+	// 6 (+1=7) =merchant ship; 6 (+1=7) = merchant ship]". The six are on
+	// Table 1 (E015).
 	[]int{4},
 	[]int{5, 6, 2, 6, 6, 6},
 )
@@ -218,10 +220,10 @@ func reproduceJamison(t *testing.T) *chargen.Character {
 
 	chosen := &decisions{
 		t: t,
-		// P. 24 calls the four Acquired Skills tables 1 through 4, and in
-		// term 4 mislabels the first as "Table 7". The results it states -
-		// +1 strength, blade combat, +1 endurance - are the Personal
-		// Development column either way.
+		// The example calls the four Acquired Skills tables 1 through 4
+		// (pp. 24-25), and in term 4, on p. 24, mislabels the first as
+		// "Table 7". The results it states - +1 strength, blade combat,
+		// +1 endurance - are the Personal Development column either way.
 		tables: []traveller.SkillTable{
 			traveller.PersonalDevelopment, traveller.PersonalDevelopment,
 			traveller.ServiceSkills, traveller.ServiceSkills,
