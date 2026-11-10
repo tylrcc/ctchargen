@@ -5,6 +5,10 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- E001 introduces The Draft as the paragraph after the one it quotes, where it
+  said "two paragraphs later", and its Pages and Why name the last paragraph
+  under Enlistment and the first under The Draft, where they said "the
+  Enlistment paragraph". E001's decision and stamping are unchanged (#465).
 - The readings no longer cite the removed PRD. E004, E008, E009 and E014,
   and the readings' doc comment, cite where each point lives now: CLAUDE.md's
   Authority section, the note's `age`, `status` and `departure` properties,

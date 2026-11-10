@@ -65,11 +65,11 @@ var readings = [...]Reading{
 	{
 		ID:    traveller.E001,
 		Title: "The draft is _may_, not _must_",
-		Pages: "Book 1 p. 5, both the Enlistment and The Draft paragraphs.",
+		Pages: "Book 1 p. 5, the last paragraph under Enlistment and the first under The Draft.",
 		PageSays: "Enlistment: \"Only one enlistment attempt is permitted\n" +
 			"per character. If rejected for enlistment, he may submit to the draft.\n" +
-			"Enlistment or draft is not allowed after age 18.\" The Draft, two paragraphs\n" +
-			"later: \"Should an attempt at enlistment fail, the character must submit\n" +
+			"Enlistment or draft is not allowed after age 18.\" The Draft, the next\n" +
+			"paragraph: \"Should an attempt at enlistment fail, the character must submit\n" +
 			"to the draft.\"",
 		Gap: "The same page states both modalities for the same step. One of\n" +
 			"them has to lose.",
@@ -77,10 +77,10 @@ var readings = [...]Reading{
 			"and may decline it. Declining ends generation immediately with a complete\n" +
 			"record: an 18-year-old civilian, no service, no terms, no skills, no\n" +
 			"benefits.",
-		Why: "The Enlistment paragraph is where the procedure states what the\n" +
-			"character does next; The Draft paragraph opens the section that explains the\n" +
-			"draft's mechanism, and its \"must\" is that section's framing sentence rather\n" +
-			"than a second statement of the choice. The permissive reading also loses\n" +
+		Why: "The last paragraph under Enlistment is where the procedure states\n" +
+			"what the character does next; the first under The Draft opens the section\n" +
+			"that explains the draft's mechanism, and its \"must\" is that section's\n" +
+			"framing sentence rather than a second statement of the choice. The permissive reading also loses\n" +
 			"nothing the restrictive one keeps — a character may always submit — while\n" +
 			"the restrictive reading deletes a state the rules describe elsewhere as\n" +
 			"ordinary (p. 5, opening ACQUIRING SKILLS AND EXPERTISE: \"In order to acquire\n" +

@@ -38,11 +38,11 @@ func TestTheReadings(t *testing.T) {
 
 	for field, tc := range map[string]struct{ got, prefix, suffix string }{
 		"title":   {e001.Title, "The draft is _may_", "not _must_"},
-		"pages":   {e001.Pages, "Book 1 p. 5", "Draft paragraphs."},
+		"pages":   {e001.Pages, "Book 1 p. 5", "first under The Draft."},
 		"says":    {e001.PageSays, "Enlistment: \"Only one", "submit\nto the draft.\""},
 		"gap":     {e001.Gap, "The same page", "has to lose."},
 		"reading": {e001.Reading, "_May._", "benefits."},
-		"why":     {e001.Why, "The Enlistment paragraph", "not\nrequired)."},
+		"why":     {e001.Why, "The last paragraph under Enlistment", "not\nrequired)."},
 		"stamped": {e001.StampedOn, "Records where the enlistment throw", "and those that declined."},
 	} {
 		if !strings.HasPrefix(tc.got, tc.prefix) || !strings.HasSuffix(tc.got, tc.suffix) {
