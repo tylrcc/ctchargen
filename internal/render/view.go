@@ -146,8 +146,9 @@ func viewOf(character *chargen.Character) view {
 
 		// Generation gives every served character a departure, and the view
 		// reads one: a nil one is a generation defect, and panics here, as a
-		// nil enlistment does (#393, #445). A civilian departed nothing, and
-		// his zero departure is never read.
+		// nil enlistment does (#393, #445). A civilian departed nothing: his
+		// departure is the zero value, which writes no property and reads as
+		// alive.
 		out.Departure = foldDeparture(character.Departure)
 	}
 

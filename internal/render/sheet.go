@@ -186,10 +186,9 @@ func serviceLines(r view) []string {
 
 	entered := fmt.Sprintf("%s, %s", r.Enlistment.Service, r.Enlistment.How)
 
-	var terms []termView
-
 	entered = joinNonEmpty("; ", entered, strings.Join(r.History.OnEntering, ", "))
-	terms = r.History.Terms
+
+	terms := r.History.Terms
 
 	lines := []string{entered}
 

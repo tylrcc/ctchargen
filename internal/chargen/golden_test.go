@@ -145,7 +145,8 @@ func pathsReached(character *chargen.Character, reached map[string]bool) {
 	}
 
 	// A lost ship is said only by the record (p. 23; #444), so the mark reads
-	// it there, in the words the record is typed with.
+	// it there, by the outcome's prose, typed out here rather than shared with
+	// the engine so a reworded outcome fails the roster.
 	mark(slices.ContainsFunc(character.Events, func(event traveller.Event) bool {
 		outcome, ok := event.(traveller.OutcomeEvent)
 
