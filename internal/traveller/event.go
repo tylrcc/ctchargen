@@ -94,7 +94,7 @@ func total(dice []int, modifier int) int {
 
 // ChoiceEvent records a choice point: which one, what the alternatives were,
 // and what was chosen. Who answered is not the event's to say: a run has one
-// answerer, and the record names it once.
+// answerer, and the note says it on each choice's line, from the run.
 type ChoiceEvent struct {
 	Seq          int
 	Point        ChoicePoint

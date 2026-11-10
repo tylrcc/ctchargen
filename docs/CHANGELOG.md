@@ -5,6 +5,12 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Comments and config the rc.5 snapshots found still describing the tree
+  before this release now say what holds: the policy's strategies and
+  versions, the service history's mustering out, the answerer on each
+  choice's line, the build, a DM's sources by name with p. 10's threshold,
+  and `.prettierignore` without the JSON files #405 removed (#537, #538,
+  #539, #540).
 - `task setup` installs every tool the gate runs, from the repository alone:
   the Brewfile now lists each Homebrew tool the gate uses, and the task
   installs NilAway with `go install`, since Homebrew has no formula for it.
@@ -36,7 +42,8 @@ release turns out to be.
   one item each (#475), and `ctchargen`, the version of the build that wrote
   the note (#476). The README lists each property's type (#481).
 - The record and the session say where each number comes from (#487). A
-  throw's DM names the characteristics it is earned by, as p. 10 prints them:
+  throw's DM names the characteristics it is earned by, with the thresholds
+  p. 10 prints for them:
   `rolled 3+4 +3 (Dexterity 6+, Endurance 5+) = 10`, and the session's
   questions and enlistment menu say `DM +3 for Dexterity 6+, Endurance 5+`
   where the menu said `and you earn +3`. An outcome names its cause as

@@ -181,9 +181,8 @@ func MusterChoices() string { return choices(musterStrategies) }
 
 // DefaultPolicy is what an auto run applies when it names no strategy. The
 // command's flag defaults read it rather than naming strategies of their own
-// (#367). A
-// record names its strategies either way, so no record is silent about the
-// policy that made it.
+// (#367). Each choice's line in the record credits the policy; the note does
+// not name the strategies.
 func DefaultPolicy() Policy {
 	return Policy{Career: CareerServe, Skills: SkillsAdvanced, Muster: MusterCash}
 }
@@ -239,7 +238,7 @@ func prefer[T comparable](offered, ranked []T) T {
 // against it.
 //
 // All three strategies draw the service from the offer, uniformly, with the
-// run's own dice, as Weapon draws a weapon (#420). Version 3 took the
+// run's own dice, as Weapon draws a weapon. Before #420 the policy took the
 // likeliest enlistment every time, and a referee's 120-member batch came out
 // 109 Army: an auto run could not make a ship's crew without --service. The
 // page gives no basis for preferring one service, and the draft that follows
@@ -339,12 +338,12 @@ func (p Policy) ReenlistIntent(from []traveller.Intent, _ traveller.Odds) (trave
 // It is engine-computed and never recorded, so this weighs where he is thin
 // without reaching into him (#34).
 //
-// Version 2 followed the ranking alone, so advanced designated Advanced
-// Education every time it was offered and Personal Development never - ninety
-// times to none over thirty characters - and a character generated under the
-// default never raised a characteristic, though p. 11's first table is how
-// that is done. A first designation, when every count is zero, is still
-// exactly what the ranking says.
+// Before #34 the policy followed the ranking alone, so advanced designated
+// Advanced Education every time it was offered and Personal Development
+// never - ninety times to none over thirty characters - and a character
+// generated under the default never raised a characteristic, though p. 11's
+// first table is how that is done. A first designation, when every count is
+// zero, is still exactly what the ranking says.
 //
 // Where Weapon admits that the page gives no basis, this one does not need
 // to: the page gives a basis, in that a character trains where he is thin,
@@ -413,10 +412,10 @@ func thinnest(from []traveller.SkillTableOffer) []traveller.SkillTable {
 // term count, the page supplies something to decide on and the policy decides
 // on it. Here the page supplies a list in printed order, and printed order is
 // not a preference: taking the first is as invented as drawing, and drawing
-// admits it. Version 1 took the first every time, and thirty auto-generated
-// characters carried twenty-two Body Pistols and seventeen Daggers and nothing
-// else, though every name on both lists was offered (#34). No strategy reached
-// past it, so no flag could change it either.
+// admits it. Before #34 the policy took the first every time, and thirty
+// auto-generated characters carried twenty-two Body Pistols and seventeen
+// Daggers and nothing else, though every name on both lists was offered. No
+// strategy reached past it, so no flag could change it either.
 //
 // A later combat result draws again, and a draw that names a weapon he
 // already has raises its level (p. 12: "Additional acquisitions of expertise

@@ -113,8 +113,8 @@ func throwLine(event entry) string {
 		line += fmt.Sprintf(" %+d", event.DM)
 	}
 
-	// The characteristics the DM is earned by, as the page prints them, so it
-	// can be checked against p. 10 (#487).
+	// The characteristics the DM is earned by, with the thresholds p. 10
+	// prints for them, so it can be checked against the page (#487).
 	if event.DMFrom != "" {
 		line += " (" + event.DMFrom + ")"
 	}

@@ -177,8 +177,8 @@ func build() string {
 }
 
 // noteBuild is the build a note names: the version alone, since the note
-// names the tool already, in its ctchargen property and in "by ctchargen"
-// (#476). Nothing where no build information is embedded.
+// names the tool already, in its ctchargen property (#476). Nothing where no
+// build information is embedded.
 //
 // Implements: A note's ctchargen property is the build's version
 // [Command line].

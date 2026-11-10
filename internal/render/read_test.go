@@ -146,10 +146,10 @@ func TestAMusteringOutGainIsOnTheServiceRecord(t *testing.T) {
 	}
 }
 
-// A throw's DM names the characteristics it is earned by, as the page prints
-// them, so a referee can check it against p. 10 (#487); and an outcome names
-// the step it came from as a step, since "(from 2)" read as a characteristic
-// that had been 2.
+// A throw's DM names the characteristics it is earned by, with the thresholds
+// p. 10 prints for them, so a referee can check it against the page (#487);
+// and an outcome names the step it came from as a step, since "(from 2)" read
+// as a characteristic that had been 2.
 //
 // Holds: A throw's DM names what earned it.
 func TestAThrowsDMNamesWhatEarnedIt(t *testing.T) {

@@ -9,8 +9,8 @@ import "fmt"
 // read from the generation record rather than kept beside it. An outcome's
 // prose is its fact's String, so the two cannot say different things. A
 // result applied at mustering out carries one too, naming its source, and the
-// service history leaves it out; an outcome nothing is read from - a
-// characteristic that holds, a benefit wasted or lost - carries none.
+// service history files it after the terms (#490); an outcome nothing is read
+// from - a characteristic that holds, a benefit wasted or lost - carries none.
 type Fact interface {
 	Fold(cases FactCases) error
 	String() string

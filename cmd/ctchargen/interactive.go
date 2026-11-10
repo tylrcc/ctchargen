@@ -123,7 +123,8 @@ func (p *player) AttemptPromotion(odds traveller.Odds) (bool, error) {
 }
 
 // oddsText is a throw as the questions show it: its target, its DM, and the
-// characteristics the DM is earned by, as the page prints them (#487).
+// characteristics the DM is earned by, with the thresholds p. 10 prints for
+// them (#487).
 func oddsText(odds traveller.Odds) string {
 	text := fmt.Sprintf("%v, DM %+d", odds.Target, odds.DM)
 

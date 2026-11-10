@@ -3,10 +3,3 @@
 # reformatting one breaks the gate with a diff that looks like the dice
 # stream moved when it has not.
 **/testdata/
-
-# Records in the shape the engine emits, validated against the schema.
-docs/character.complete.json
-docs/character.minimal.json
-
-# Hand-formatted (CLAUDE.md, "Working conventions").
-docs/character.schema.json

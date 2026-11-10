@@ -171,10 +171,11 @@ type Prerequisite struct {
 	Threshold      Target
 }
 
-// String is the prerequisite as the page prints it: Intelligence 8+.
+// String is the prerequisite by the characteristic's name and the threshold
+// the page prints for it: Intelligence 8+, where p. 10 prints Intel 8+.
 func (p Prerequisite) String() string { return fmt.Sprintf("%v %v", p.Characteristic, p.Threshold) }
 
-// Prerequisites is the prerequisites met, as the page prints them, joined:
+// Prerequisites is the prerequisites met, each as String writes it, joined:
 // Dexterity 6+, Endurance 5+. The record and the session both say a DM's
 // sources this way.
 func Prerequisites(met []Prerequisite) string {
