@@ -5,6 +5,18 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `task setup` installs every tool the gate runs, from the repository alone:
+  the Brewfile now lists each Homebrew tool the gate uses, and the task
+  installs NilAway with `go install`, since Homebrew has no formula for it.
+  The README's gate section names it (#492).
+- Comments give reasons rather than history: `character.go` points to #441
+  once rather than at each of its accessors, and the comments that told what
+  a batch, a bound or a transcription used to do now say what holds (#504).
+- The help names what `-o` takes: `-o file` for `new`, `-o folder` for
+  `batch`, where both said `string` (#517).
+- `CODING_STANDARDS.md` says where a quotation marks the page's emphasis: in a
+  reading's values, as `_…_`, and not in a Go comment, which quotes the same
+  words plain (#526).
 - The fixtures that walk career serve, skills advanced and muster goods name
   that policy once, `servesMustersGoods`, where each spelled it out (#531).
 - A die's six faces are still said twice, in `dice` and in `rules`, since

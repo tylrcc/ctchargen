@@ -228,8 +228,8 @@ func TestTheCtchargenPropertyIsTheBuildsVersion(t *testing.T) {
 
 // An auto run applies the strategies given, all the way to the record: under
 // --career oneterm the policy leaves after the first term, where the default
-// would continue. The footer used to show the strategies; with it gone (#474's
-// PR), the choice they decide is what shows them.
+// would continue. The note does not name the strategies, so the choice they
+// decide is what shows them.
 //
 // The dice are live, and a character can die before the end of the first term
 // is asked about, so runs are made until one reaches it.

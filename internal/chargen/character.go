@@ -147,7 +147,7 @@ func servedIn(enlistment traveller.Enlistment) (traveller.ServiceName, bool) {
 }
 
 // Enlistment is how the character entered a service, or that he declined the
-// draft and never did (p. 5), read from the record (#441): an enlistment throw
+// draft and never did (p. 5), read from the record: an enlistment throw
 // he made, the service the draft put him in, or the draft declined. Nil for
 // a record that holds none of the three.
 func (c *Character) Enlistment() traveller.Enlistment {
@@ -158,7 +158,7 @@ func (c *Character) Enlistment() traveller.Enlistment {
 	return fold.enlistment
 }
 
-// Terms is how many terms the character began, read from the record (#441): the
+// Terms is how many terms the character began, read from the record: the
 // number of the last term a step opened, the fatal one included (E004).
 func (c *Character) Terms() int {
 	terms := 0
@@ -173,7 +173,7 @@ func (c *Character) Terms() int {
 }
 
 // Rank is the character's place in his service's Table of Ranks (p. 10),
-// read from the record (#441): the rank the last commission or promotion
+// read from the record: the rank the last commission or promotion
 // conferred, which the fact carries, or zero if none did.
 func (c *Character) Rank() traveller.Rank {
 	var fold sheetFold
@@ -184,7 +184,7 @@ func (c *Character) Rank() traveller.Rank {
 }
 
 // RankName is what the Table of Ranks calls that rank (p. 10), read from the
-// last commission or promotion's fact (#441), or empty if none was conferred.
+// last commission or promotion's fact, or empty if none was conferred.
 func (c *Character) RankName() string {
 	var fold sheetFold
 
@@ -193,12 +193,12 @@ func (c *Character) RankName() string {
 	return fold.rankName
 }
 
-// Age is the age generation left the character at, read from the record
-// (#441). The UPP rolled at the start carries the age he began at, and every
-// fact that moves it carries the age it left him at - the reenlistment
+// Age is the age generation left the character at, read from the record.
+// The UPP rolled at the start carries the starting age, and every fact that
+// moves it carries the age it left the character at - the reenlistment
 // throw's outcome at the end of each term, the fatal term's death, a crisis's
-// months of recovery - so the last is his age, and the fold adds nothing to
-// it.
+// months of recovery - so the last is the character's age, and the fold adds
+// nothing to it.
 func (c *Character) Age() traveller.Age {
 	var fold sheetFold
 
@@ -207,7 +207,7 @@ func (c *Character) Age() traveller.Age {
 	return fold.age
 }
 
-// Departure is how the service ended, read from the record (#441): the last
+// Departure is how the service ended, read from the record: the last
 // fact that ends it, since a crisis can kill a character the term's
 // reenlistment throw has already retired. It is nil for a civilian, who
 // never joined a service.
@@ -220,7 +220,7 @@ func (c *Character) Departure() traveller.Departure {
 }
 
 // Profile is the six characteristics as generation left them, read from the
-// record (#441): each starts at the value p. 4 rolled, and each change after it
+// record: each starts at the value p. 4 rolled, and each change after it
 // - a table's, an aging round's, a crisis's recovery - carries the value it
 // left, so the last fact for a characteristic is its value.
 func (c *Character) Profile() traveller.Profile {
@@ -232,7 +232,7 @@ func (c *Character) Profile() traveller.Profile {
 }
 
 // Skills is every skill the character holds, at the level it reached, read
-// from the record (#441), in name order, so a record reads the same way twice.
+// from the record, in name order, so a record reads the same way twice.
 // Each fact that gives a skill carries the level the engine reached, so the
 // last for a name is its level; the fold applies no rule of p. 12's.
 //
@@ -249,7 +249,7 @@ func (c *Character) Skills() []traveller.Skill {
 	return fold.skills
 }
 
-// Benefits is what mustering out delivered, read from the record (#441). A
+// Benefits is what mustering out delivered, read from the record. A
 // passage, a weapon or a first ship is appended in the order received; the
 // cash fact carries the running total and a repeat Free Trader the ship as it
 // stands, so for those the last is the value. Which result is a repeat is
@@ -262,7 +262,7 @@ func (c *Character) Benefits() Benefits {
 	return fold.benefits
 }
 
-// Pension is the annual retirement pay, read from the record (#441); zero for a
+// Pension is the annual retirement pay, read from the record; zero for a
 // character who draws none.
 func (c *Character) Pension() traveller.Credits {
 	var fold sheetFold
@@ -273,7 +273,7 @@ func (c *Character) Pension() traveller.Credits {
 }
 
 // Nobility is what a final Social Standing of 11 or greater confers, assessed
-// once at the end of generation (E011), read from the record (#441).
+// once at the end of generation (E011), read from the record.
 func (c *Character) Nobility() Nobility {
 	var fold sheetFold
 

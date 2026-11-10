@@ -18,6 +18,12 @@ tasks:
       - task: test
       - task: docs
 
+  setup:
+    desc: Install every tool the gate runs - the Brewfile's, and NilAway, which has no formula
+    cmds:
+      - brew bundle --file=Brewfile
+      - go install go.uber.org/nilaway/cmd/nilaway@latest
+
   tidy:
     desc: go.mod and go.sum are current
     cmds:

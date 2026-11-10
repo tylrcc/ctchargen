@@ -394,8 +394,8 @@ func TestTheHelpNamesEachFlagsKind(t *testing.T) {
 	t.Parallel()
 
 	for command, want := range map[string][]string{
-		cmdNew:   {"--name string", "-o string", "--service string", "--career strategy"},
-		cmdBatch: {"--count int", "-o string"},
+		cmdNew:   {"--name string", "-o file", "--service string", "--career strategy"},
+		cmdBatch: {"--count int", "-o folder"},
 	} {
 		var help strings.Builder
 

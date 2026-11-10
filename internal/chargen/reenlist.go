@@ -47,8 +47,7 @@ func (r *run) reenlist(term traveller.Term) (traveller.Intent, error) {
 			// nothing about a second 12; E003 reads the rule as recurring.
 			// A 12 at the end of term 7 is the case p. 7 prints in its own
 			// words, so the reading is stamped only from term 8 on, which is
-			// what E003's reading says it is stamped on. The roster's goldens
-			// never reached term 7's 12 until #205, and this bound was one term low.
+			// what E003's reading says it is stamped on.
 			errata = append(errata, traveller.E003)
 		}
 

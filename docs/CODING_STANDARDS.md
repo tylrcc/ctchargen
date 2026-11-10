@@ -31,8 +31,10 @@ own.
 
 Comments and documents quote Book 1 to 3 to show where a rule comes from. A
 quotation moved, rewrapped or retyped must match its source word for word,
-punctuation and emphasis included; compare it against the same quotation
-elsewhere in the tree. A reading's stamped-on prose is quoted from its value
+punctuation included; compare it against the same quotation elsewhere in the
+tree. The page's emphasis is marked where the text is Markdown and not
+elsewhere: a reading's values mark italics as `_…_`, as the `Reading` type
+says, and a Go comment quotes the same words plain (#526). A reading's stamped-on prose is quoted from its value
 (`rules.Readings`), never by a copy beside the predicate.
 
 ## A stamping predicate is written from the prose

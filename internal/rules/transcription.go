@@ -318,9 +318,9 @@ var transcribedMustering = musteringTranscription{
 	},
 
 	// Book 1 p. 9. The two optional DMs the page prints, and the skill that
-	// earns the second. The roll counts and rank thresholds that used to sit
-	// here are bare procedural bounds indexing no printed table, so they are
-	// constants beside the code that applies them (#43).
+	// earns the second. The roll counts and rank thresholds are bare
+	// procedural bounds indexing no printed table, so they are constants
+	// beside the code that applies them (CLAUDE.md, Authority rule 6; #43).
 	table1DMFromRank5or6: 1,
 	table2DMFromGambling: 1,
 	table2ModifierFrom:   "Gambling",

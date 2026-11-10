@@ -22,8 +22,9 @@ import (
 // generated, so every member written is one the dice made. What changes is
 // who fills a slot, not what any member means (#33).
 //
-// It always says what it did. A run that wrote seventy-four corpses, in the
-// days a batch wrote the dead, and printed nothing was the trap #33 named.
+// It says what it did, on standard error: how many notes it wrote, and how
+// many characters it passed over for dying where it passed over any, so the
+// operator is not left to count (#33).
 //
 // A batch is always an auto run: it has nobody to ask, so it declares no
 // --auto, and a command line passing one is refused by the flag package as a
@@ -119,7 +120,7 @@ func declareBatchFlags() batchFlagSet {
 		}),
 		count: &count,
 		output: set.String("o", "",
-			"a folder of the batch's own to write one note per character into, made inside one that exists; "+
+			"a `folder` of the batch's own to write one note per character into, made inside one that exists; "+
 				"absent or -, the notes to standard output"),
 	}
 

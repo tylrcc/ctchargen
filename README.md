@@ -219,6 +219,11 @@ documents' links. The tests hold what `v1.0.0` freezes: each command's flags,
 defaults and exit status, and the note's property names. There
 is no CI (#149); a change is checked when this is run, and not otherwise.
 
+On a fresh machine, `brew install go-task && task setup` installs every tool
+the gate runs: the Brewfile's, and NilAway with `go install`, since Homebrew
+has no formula for it. NilAway lands in Go's bin directory (`go env GOPATH`'s
+`bin`), which must be on your `PATH`.
+
 Every implemented rule carries an `Implements:` marker with its cite, and the
 test that holds it a `Holds:` marker; the tests refuse a rule with only one,
 and a cite that names nothing. The map they make is printed on demand and

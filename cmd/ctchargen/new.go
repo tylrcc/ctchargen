@@ -71,7 +71,7 @@ func declareNewFlags() newFlagSet {
 		}),
 		auto:   set.Bool("auto", false, "decide by the policy at every choice, rather than asking"),
 		name:   set.String("name", "", "the character's name"),
-		output: set.String("o", "", "write to this file rather than to standard output, which - also names"),
+		output: set.String("o", "", "write to this `file` rather than to standard output, which - also names"),
 		force:  set.Bool("force", false, "overwrite the output file in place if it already exists"),
 	}
 
