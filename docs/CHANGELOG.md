@@ -5,6 +5,9 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `task test` fails when the tests leave a file in the tree, and the coding
+  standards say where a test writes and how it matches an expected line.
+
 ## 1.0.0-rc.5
 
 The fifth release candidate for `v1.0.0`, and the one that settles what

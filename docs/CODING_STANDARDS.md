@@ -13,7 +13,25 @@ tells the old story is a finding: a Go comment, a doc comment, a test's failure
 message, a document. Grep for the words the code and documents used to describe
 the thing — what it did, what it promised, what held it ("the gate", "the
 document", "row", "decision table") — not only its identifiers and paths. A
-name-only sweep left stale prose in every ticket of #203 and #204.
+name-only sweep left stale prose in every ticket of #203 and #204. spec-review's
+`removed-names.sh` lists the removed names the tree still mentions; that list is where the sweep
+starts, and the words that described them are where it goes on.
+
+## A test writes only into its own temporary folder
+
+A test that writes a file writes it under `t.TempDir()`: a path it names
+there, `-o` pointed there, or `t.Chdir` into it before a relative path. A
+relative path writes into the package folder on every run, and a red run
+skips the cleanup that hides it. `task test` fails on a new untracked file in
+the tree; it cannot see a file overwritten, or one written outside the tree.
+
+## An expected line is matched as a whole line
+
+A test that expects a line of a note or a record matches it from the line's
+start to its end: a `(?m)^…$` pattern, or the line split out of the note and
+compared whole. A substring also matches the same line padded with a leading
+space, or a longer one such as `"14. "`, so the test passes on the output it
+was written to refuse.
 
 ## A comment claims no more than the code does
 

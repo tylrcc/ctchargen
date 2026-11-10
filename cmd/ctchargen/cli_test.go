@@ -204,6 +204,8 @@ func TestCountIsDecimal(t *testing.T) {
 func TestAnEmptyOrRepeatedFlagIsRefused(t *testing.T) {
 	t.Parallel()
 
+	dir := t.TempDir()
+
 	for _, named := range []string{flagService, flagCareer, flagSkills, flagMuster, flagName, flagOutput} {
 		err := run([]string{cmdNew, flagAuto, named, ""}, nil, io.Discard, io.Discard)
 		usageRefusal(t, "new "+named+" ''", err, named, "empty")
@@ -217,7 +219,7 @@ func TestAnEmptyOrRepeatedFlagIsRefused(t *testing.T) {
 	for name, args := range map[string][]string{
 		"--service twice": {cmdNew, flagAuto, flagService, navy, flagService, "army"},
 		"--auto twice":    {cmdNew, flagAuto, flagAuto},
-		"-o twice":        {cmdNew, flagAuto, flagOutput, "a.md", flagOutput, "b.md"},
+		"-o twice":        {cmdNew, flagAuto, flagOutput, filepath.Join(dir, "a.md"), flagOutput, filepath.Join(dir, "b.md")},
 		"--count twice":   {cmdBatch, flagCount, "1", flagCount, "2"},
 	} {
 		err := run(args, nil, io.Discard, io.Discard)
@@ -263,8 +265,11 @@ func TestDashIsStandardOutput(t *testing.T) { //nolint:paralleltest // t.Chdir c
 // refused rather than ignored (#473).
 //
 // Holds: --force without an -o file is refused.
+//
+// Not parallel: it changes into an empty folder, so a regression that writes
+// a file named - writes it there and not into the package.
 func TestForceWithoutAFileIsRefused(t *testing.T) {
-	t.Parallel()
+	t.Chdir(t.TempDir())
 
 	for name, args := range map[string][]string{
 		"no -o": {cmdNew, flagAuto, flagForce},

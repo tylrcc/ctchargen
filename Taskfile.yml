@@ -64,9 +64,26 @@ tasks:
       - govulncheck ./...
 
   test:
-    desc: The suite, with the race detector
+    desc: The suite, with the race detector, and no new untracked file in the tree
     cmds:
-      - go test -race ./...
+      # A test that writes outside its t.TempDir() leaves a file in the tree.
+      # The untracked files before and after are compared, so a new file of
+      # the author's own passes; comm runs in byte order, the order git lists
+      # them in. Both lists are plain assignments, where a git failure stops
+      # the task, as it would not inside <( ).
+      - |
+        before=$(git ls-files --others --exclude-standard)
+        # The shell stops at a failing command, so the status is caught
+        # with || and the leftovers are still read after a red run.
+        status=0
+        go test -race ./... || status=$?
+        after=$(git ls-files --others --exclude-standard)
+        left=$(LC_ALL=C comm -13 <(printf '%s\n' "$before") <(printf '%s\n' "$after"))
+        if [ -n "$left" ]; then
+          printf 'the tests left files in the tree:\n%s\n' "$left" >&2
+          exit 1
+        fi
+        exit "$status"
 
   docs:
     desc: Markdown, JSON and YAML are formatted, and no link points at nothing
