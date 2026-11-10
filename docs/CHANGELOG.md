@@ -5,6 +5,9 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- `CLAUDE.md` names the branch the release snapshots are written on: the
+  release plan's `prep_branch`, which the tag step finds the prep merge by.
+
 ## 1.0.0-rc.4
 
 The fourth release candidate for `v1.0.0`, and the one that changes what

@@ -262,7 +262,10 @@ go run ./cmd/ctchargen new --auto
 - **Release snapshots.** `docs/THEORY.md` and `docs/WALKTHROUGH.md` describe the
   release they were written for, not `main`, and each opens with a stamp
   naming that tag. The release prep PR regenerates them with `/code-theory`
-  and `/code-walkthrough`, overwriting the last release's copies. Between
+  and `/code-walkthrough`, overwriting the last release's copies, on the
+  release plan's `prep_branch` (`release/<version>`, from
+  `release-plan.sh <version>`); the tag step finds the prep merge by that
+  branch. Between
   releases they are ignored: no change reads, sweeps or updates them, drift
   in them is never a finding, and nothing in the gate holds them.
 
