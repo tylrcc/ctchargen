@@ -50,18 +50,13 @@ func Reading(r rules.Reading) string {
 
 // writeReadings writes each reading the generation record names, in full,
 // in id order. Every erratum a character carries is one this build declares,
-// so every one has a reading.
+// so every one has a reading, and every generation stamps at least one, so the
+// section is never empty (#446).
 //
 // Implements: A note asked for with its readings carries each reading its
 // generation record names, in full, before its closing lines [Command line].
 func writeReadings(out *strings.Builder, errata []traveller.Erratum) {
 	out.WriteString("## Readings\n\n")
-
-	if len(errata) == 0 {
-		out.WriteString("The generation record names no reading.\n\n")
-
-		return
-	}
 
 	for _, erratum := range slices.Sorted(slices.Values(errata)) {
 		out.WriteString(Reading(rules.Readings()[erratum-1]) + "\n")
@@ -77,11 +72,21 @@ var ErrNoReading = errors.New("names no reading")
 // Implements: The readings are listed, and those asked for are written in full
 // [Command line].
 func ReadingsIndex() string {
+	all := rules.Readings()
+
+	return IndexOf(all[:])
+}
+
+// IndexOf is the index of the readings given, in the order given. It is
+// ReadingsIndex's body, taking the readings as an argument so a test can
+// hold the withdrawn row ADR 0004 promises, which no real reading has yet
+// (#446).
+func IndexOf(readings []rules.Reading) string {
 	var out strings.Builder
 
 	out.WriteString("# Readings\n\n| Erratum | Title | Status |\n| --- | --- | --- |\n")
 
-	for _, r := range rules.Readings() {
+	for _, r := range readings {
 		status := "in force"
 		if r.Withdrawn() {
 			status = "withdrawn"

@@ -21,8 +21,8 @@ type view struct {
 	Skills     []skillView
 	Benefits   benefitsView
 	Pension    int64
-	History    *historyView
-	Departure  *departureView
+	History    historyView
+	Departure  departureView
 	Nobility   *nobilityView
 	Attempt    attemptView
 	Errata     []traveller.Erratum
@@ -143,16 +143,16 @@ func viewOf(character *chargen.Character) view {
 	if service, served := character.ServedIn(); served {
 		out.Service = service.String()
 		out.History = projectHistory(character.History())
+
+		// Generation gives every served character a departure, and the view
+		// reads one: a nil one is a generation defect, and panics here, as a
+		// nil enlistment does (#393, #445). A civilian departed nothing, and
+		// his zero departure is never read.
+		out.Departure = foldDeparture(character.Departure)
 	}
 
 	for _, skill := range character.Skills {
 		out.Skills = append(out.Skills, skillView{Name: string(skill.Name), Level: skill.Level})
-	}
-
-	if character.Departure != nil {
-		departure := foldDeparture(character.Departure)
-
-		out.Departure = &departure
 	}
 
 	if character.Nobility.Eligible {

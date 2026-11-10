@@ -61,9 +61,7 @@ func writeProperties(out *strings.Builder, r view) {
 	property(out, "rank", r.RankName)
 	fmt.Fprintf(out, "terms: %d\nstatus: %s\n", r.Terms, strconv.Quote(status(r)))
 
-	if r.Departure != nil {
-		property(out, "departure", r.Departure.How)
-	}
+	property(out, "departure", r.Departure.How)
 
 	if len(r.Skills) == 0 {
 		out.WriteString("skills: []\n")
@@ -94,7 +92,7 @@ func property(out *strings.Builder, key, value string) {
 
 // status is whether the character lived, said outright (#418).
 func status(r view) string {
-	if r.Departure != nil && r.Departure.Fatal {
+	if r.Departure.Fatal {
 		return "dead"
 	}
 

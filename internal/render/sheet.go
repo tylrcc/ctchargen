@@ -53,11 +53,7 @@ func headline(r view) string {
 		parts = append(parts, r.Nobility.Title)
 	}
 
-	if r.Departure != nil {
-		parts = append(parts, r.Departure.How)
-	}
-
-	return strings.Join(parts, ", ")
+	return strings.Join(append(parts, r.Departure.How), ", ")
 }
 
 // terms is the count and the word, so a one-term character does not read
@@ -192,10 +188,8 @@ func serviceLines(r view) []string {
 
 	var terms []termView
 
-	if r.History != nil {
-		entered = joinNonEmpty("; ", entered, strings.Join(r.History.OnEntering, ", "))
-		terms = r.History.Terms
-	}
+	entered = joinNonEmpty("; ", entered, strings.Join(r.History.OnEntering, ", "))
+	terms = r.History.Terms
 
 	lines := []string{entered}
 
@@ -206,10 +200,6 @@ func serviceLines(r view) []string {
 		}
 
 		lines = append(lines, fmt.Sprintf("Term %d: %s", term.Term, told))
-	}
-
-	if r.Departure == nil {
-		return lines
 	}
 
 	switch {

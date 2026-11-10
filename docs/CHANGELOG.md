@@ -78,6 +78,10 @@ release turns out to be.
   the run's own dice, where it took the likeliest enlistment every time and a
   batch came out nearly all Army. `PolicyVersion` is 4; `--career` no longer
   touches the service attempted.
+- State and branches no note reaches are gone (#444, #445, #446): the count of
+  lost scout ships nothing read, the summary's and sheet's handling of a served
+  character with no departure, the service record's history check, and the
+  readings section's "names no reading" line. No note changes.
 - A character with no enlistment, which only a generation defect could
   produce, now fails loudly in the renderer rather than reading as one who
   never served, as #377 decided for the engine (#393).

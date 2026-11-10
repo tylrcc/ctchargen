@@ -32,11 +32,6 @@ func summary(r view) string {
 	var sentences []string
 
 	switch {
-	case r.Departure == nil:
-		// Generation gives every served character a departure; the sheet
-		// reads one without it all the same, and so does this.
-		sentences = append(sentences, fmt.Sprintf("%s, %s, aged %d.",
-			serving(r), terms(r.Terms), r.Age.Years))
 	case r.Departure.Fatal:
 		sentences = append(sentences, fmt.Sprintf("%s, %s in term %d, aged %d.",
 			serving(r), r.Departure.How, r.Terms, r.Age.Years))

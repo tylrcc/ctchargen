@@ -34,8 +34,8 @@ type raiseView struct {
 }
 
 // projectHistory is the service history as the sheet tells it.
-func projectHistory(history chargen.ServiceHistory) *historyView {
-	out := &historyView{
+func projectHistory(history chargen.ServiceHistory) historyView {
+	out := historyView{
 		OnEntering: gainWords(history.OnEntering),
 		Terms:      make([]termView, 0, len(history.Terms)),
 	}

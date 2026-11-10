@@ -379,7 +379,6 @@ func (r *run) receiveShipAgain(because, at int) error {
 	ship := &r.char.Benefits.Ships[at]
 
 	if ship.Kind == traveller.ScoutShip {
-		r.char.DuplicateShips++
 		r.log.outcomef(because, nil, "a second scout ship, which is lost")
 
 		return nil

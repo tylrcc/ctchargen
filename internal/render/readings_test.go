@@ -81,7 +81,6 @@ func TestANoteWithItsReadingsEndsWithThem(t *testing.T) {
 			[]traveller.Erratum{traveller.E001, traveller.E011},
 			"## Readings\n\n" + render.Reading(e001) + "\n" + render.Reading(e011) + "\n",
 		},
-		"none": {nil, "## Readings\n\nThe generation record names no reading.\n\n"},
 		"out of order": {
 			[]traveller.Erratum{traveller.E011, traveller.E001},
 			"## Readings\n\n" + render.Reading(e001) + "\n" + render.Reading(e011) + "\n",
@@ -121,7 +120,8 @@ func TestANoteWithItsReadingsEndsWithThem(t *testing.T) {
 }
 
 // The index is every reading's erratum, title and status, one row each in
-// erratum order. No real reading is withdrawn, so every row is in force.
+// erratum order. No real reading is withdrawn, so every real row is in force;
+// a stand-in shows a withdrawn one is marked so, as ADR 0004 promises (#446).
 //
 // Holds: The readings are listed, and those asked for are written in full.
 func TestTheIndexListsEveryReading(t *testing.T) {
@@ -137,6 +137,16 @@ func TestTheIndexListsEveryReading(t *testing.T) {
 
 	if got := render.ReadingsIndex(); got != want.String() {
 		t.Errorf("got\n%s\nwant\n%s", got, want.String())
+	}
+
+	standIn := rules.Readings()[0]
+
+	standIn.Withdrawal = rules.Withdrawal{Why: "A later decision replaced it."}
+
+	const row = " | withdrawn |\n"
+
+	if got := render.IndexOf([]rules.Reading{standIn}); !strings.HasSuffix(got, row) {
+		t.Errorf("a withdrawn reading's row does not end %q:\n%s", row, got)
 	}
 }
 

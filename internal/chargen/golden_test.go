@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -143,7 +144,13 @@ func pathsReached(character *chargen.Character, reached map[string]bool) {
 		mark(ship.Kind == traveller.FreeTrader && ship.Years > 0, "a Free Trader received twice")
 	}
 
-	mark(character.DuplicateShips > 0, "a scout ship received twice")
+	// A lost ship is said only by the record (p. 23; #444), so the mark reads
+	// it there, in the words the record is typed with.
+	mark(slices.ContainsFunc(character.Events, func(event traveller.Event) bool {
+		outcome, ok := event.(traveller.OutcomeEvent)
+
+		return ok && outcome.Description == "a second scout ship, which is lost"
+	}), "a scout ship received twice")
 
 	for _, erratum := range character.Errata {
 		// A slice and not a map keyed by Erratum: a map keyed by the enum

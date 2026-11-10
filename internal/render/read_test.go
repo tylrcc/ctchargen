@@ -12,10 +12,13 @@ import (
 
 // noteOf is the note of the least character the sheet reads, with change
 // applied, so a test can pin one detail without carrying a whole character.
+// He served, so he has a departure, as generation gives every one who did
+// (#445).
 func noteOf(change func(c *chargen.Character)) string {
 	character := &chargen.Character{
 		Age:        traveller.NewAge(18),
 		Enlistment: traveller.Enlisted{Service: traveller.Navy},
+		Departure:  traveller.Discharged{},
 	}
 
 	change(character)
