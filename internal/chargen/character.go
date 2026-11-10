@@ -14,8 +14,9 @@ import (
 // birthdate rules, so the record carries an age and a count of terms, not a
 // date. That is the books, not an omission.
 //
-// Its characteristics and skills are not kept on it but read from its log
-// (#441): Profile and Skills fold the facts the outcomes carry.
+// Its characteristics, skills, benefits, pension and title are not kept on it
+// but read from its log (#441): Profile, Skills, Benefits, Pension and
+// Nobility fold the facts the outcomes carry.
 type Character struct {
 	Age   traveller.Age
 	Terms int
@@ -26,17 +27,9 @@ type Character struct {
 	Rank       traveller.Rank
 	RankName   string
 
-	Benefits Benefits
-
-	Pension traveller.Credits
-
 	// Departure is how the service ended. It is nil for a civilian, who
 	// never joined one.
 	Departure traveller.Departure
-
-	// Nobility is what a final Social Standing of 11 or greater confers,
-	// assessed once at the end of generation (E011).
-	Nobility Nobility
 
 	Inputs Inputs
 
@@ -71,29 +64,13 @@ type Nobility struct {
 	Assumed  bool
 }
 
-// Ship is a starship received as a mustering out benefit (pp. 22-23).
-type Ship struct {
-	Kind traveller.ShipKind
-
-	// Tons is the hull the ship is built on (Book 2 pp. 18-19).
-	Tons int
-
-	// Years is the ship's age. A Free Trader arrives new and ages ten years
-	// with each further receipt; a Scout ship's age the page does not give.
-	Years int
-
-	// PaymentYears is how many years of payments remain on a Free Trader.
-	// A Scout ship is held without title and carries none.
-	PaymentYears int
-}
-
 // Benefits is what mustering out delivered (p. 9, pp. 21-23).
 type Benefits struct {
 	Cash          traveller.Credits
 	Passages      []traveller.PassageClass
 	TravellersAid bool
 	Weapons       []traveller.WeaponName
-	Ships         []Ship
+	Ships         []traveller.Ship
 }
 
 // Inputs is what a generation was given besides who answers it, so that a
@@ -204,6 +181,39 @@ func (c *Character) Skills() []traveller.Skill {
 	return fold.skills
 }
 
+// Benefits is what mustering out delivered, read from the log (#441). A
+// passage, a weapon or a first ship is appended in the order received; the
+// cash fact carries the running total and a repeat Free Trader the ship as it
+// stands, so for those the last is the value. Which result is a repeat is
+// the fact's to say, so the fold applies no rule of pp. 21-23.
+func (c *Character) Benefits() Benefits {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.benefits
+}
+
+// Pension is the annual retirement pay, read from the log (#441); zero for a
+// character who draws none.
+func (c *Character) Pension() traveller.Credits {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.pension
+}
+
+// Nobility is what a final Social Standing of 11 or greater confers, assessed
+// once at the end of generation (E011), read from the log (#441).
+func (c *Character) Nobility() Nobility {
+	var fold sheetFold
+
+	c.fold(&fold)
+
+	return fold.nobility
+}
+
 // fold walks the log's outcomes' facts through cases.
 func (c *Character) fold(cases traveller.FactCases) {
 	for _, event := range c.Events {
@@ -218,10 +228,14 @@ func (c *Character) fold(cases traveller.FactCases) {
 	}
 }
 
-// sheetFold reads the characteristics and the skills out of the log's facts.
+// sheetFold reads the sheet's facts out of the log: the characteristics, the
+// skills, the benefits, the pension and the title.
 type sheetFold struct {
-	profile traveller.Profile
-	skills  []traveller.Skill
+	profile  traveller.Profile
+	skills   []traveller.Skill
+	benefits Benefits
+	pension  traveller.Credits
+	nobility Nobility
 }
 
 func (s *sheetFold) Rolled(f traveller.RolledFact) error {
@@ -269,6 +283,63 @@ func (s *sheetFold) Aged(f traveller.AgedFact) error {
 
 func (s *sheetFold) Recovered(f traveller.RecoveredFact) error {
 	s.profile[f.Characteristic] = f.To
+
+	return nil
+}
+
+func (s *sheetFold) Cash(f traveller.CashFact) error {
+	s.benefits.Cash = f.Total
+
+	return nil
+}
+
+func (s *sheetFold) Passage(f traveller.PassageFact) error {
+	s.benefits.Passages = append(s.benefits.Passages, f.Class)
+
+	return nil
+}
+
+func (s *sheetFold) TravellersAid(traveller.TravellersAidFact) error {
+	s.benefits.TravellersAid = true
+
+	return nil
+}
+
+func (s *sheetFold) WeaponReceived(f traveller.WeaponReceivedFact) error {
+	s.benefits.Weapons = append(s.benefits.Weapons, f.Weapon)
+
+	return nil
+}
+
+// ShipReceived holds a ship as the fact says it stands, in place of the one
+// of its kind already held.
+func (s *sheetFold) ShipReceived(f traveller.ShipReceivedFact) error {
+	s.benefits.Ships = append(s.benefits.Ships, f.Ship)
+
+	return nil
+}
+
+// FreeTraderAgain replaces the Free Trader already received with the fact's,
+// which stands as the engine left it; the fact, not the fold, says it is a
+// repeat.
+func (s *sheetFold) FreeTraderAgain(f traveller.FreeTraderAgainFact) error {
+	for i := range s.benefits.Ships {
+		if s.benefits.Ships[i].Kind == traveller.FreeTrader {
+			s.benefits.Ships[i] = f.Ship
+		}
+	}
+
+	return nil
+}
+
+func (s *sheetFold) Pension(f traveller.PensionFact) error {
+	s.pension = f.Pay
+
+	return nil
+}
+
+func (s *sheetFold) Titled(f traveller.TitledFact) error {
+	s.nobility = Nobility{Eligible: true, Title: f.Title, Assumed: f.Assumed}
 
 	return nil
 }

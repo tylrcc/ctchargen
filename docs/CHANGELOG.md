@@ -78,6 +78,10 @@ release turns out to be.
   record (#441): each initial roll and each expertise taken at mustering out
   now carries a typed fact, and both are read from the log rather than kept
   beside it. No note changes.
+- The benefits, the pension and the title are stated once, in the generation
+  record (#441): each outcome that delivers one carries a typed fact with the
+  value the engine reached, and all three are read from the log rather than
+  kept beside it. No note changes.
 - **The auto policy draws the service** (#420), uniformly among the six, with
   the run's own dice, where it took the likeliest enlistment every time and a
   batch came out nearly all Army. `PolicyVersion` is 4; `--career` no longer

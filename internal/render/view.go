@@ -132,8 +132,8 @@ func viewOf(character *chargen.Character) view {
 		Enlistment: foldEnlistment(character.Enlistment),
 		RankName:   character.RankName,
 		Skills:     make([]skillView, 0, len(skills)),
-		Benefits:   projectBenefits(character.Benefits),
-		Pension:    int64(character.Pension),
+		Benefits:   projectBenefits(character.Benefits()),
+		Pension:    int64(character.Pension()),
 		Attempt:    projectAttempt(character),
 		Errata:     character.Errata,
 		Ruleset:    chargen.Ruleset,
@@ -158,10 +158,8 @@ func viewOf(character *chargen.Character) view {
 		out.Skills = append(out.Skills, skillView{Name: string(skill.Name), Level: skill.Level})
 	}
 
-	if character.Nobility.Eligible {
-		out.Nobility = &nobilityView{
-			Title: character.Nobility.Title.String(), Assumed: character.Nobility.Assumed,
-		}
+	if nobility := character.Nobility(); nobility.Eligible {
+		out.Nobility = &nobilityView{Title: nobility.Title.String(), Assumed: nobility.Assumed}
 	}
 
 	return out

@@ -88,8 +88,8 @@ func (r *run) benefit(table traveller.MusterTable) error {
 	}
 
 	if table == traveller.TableTwo {
-		r.char.Benefits.Cash += cash
-		r.log.outcomef(seq, nil, "%v, bringing the total to %v", cash, r.char.Benefits.Cash)
+		r.benefits.Cash += cash
+		r.log.fact(seq, nil, traveller.CashFact{Cash: cash, Total: r.benefits.Cash})
 
 		return nil
 	}
@@ -194,11 +194,8 @@ func (r *run) assessTitle() error {
 
 	r.log.step("titles", "p. 5; Book 3 p. 22")
 
-	r.char.Nobility = Nobility{Eligible: true, Title: rank}
-
 	if r.dead() {
-		r.log.outcomef(0, errata,
-			"held a social standing of %d at death, which is %v", social, rank)
+		r.log.fact(0, errata, traveller.TitledFact{SocialStanding: social, Title: rank, AtDeath: true})
 
 		return nil
 	}
@@ -208,11 +205,7 @@ func (r *run) assessTitle() error {
 		return fmt.Errorf("assuming a title: %w", err)
 	}
 
-	r.char.Nobility.Assumed = assume
-
-	r.log.outcomef(0, errata,
-		"social standing %d confers %v, %s assumed", social, rank,
-		map[bool]string{true: "and it is", false: "and it is not"}[assume])
+	r.log.fact(0, errata, traveller.TitledFact{SocialStanding: social, Title: rank, Assumed: assume})
 
 	return nil
 }
@@ -227,8 +220,7 @@ type applyBenefit struct {
 }
 
 func (a *applyBenefit) Passage(class traveller.PassageClass) error {
-	a.run.char.Benefits.Passages = append(a.run.char.Benefits.Passages, class)
-	a.run.log.outcomef(a.because, nil, "a %v", class)
+	a.run.log.fact(a.because, nil, traveller.PassageFact{Class: class})
 
 	return nil
 }
@@ -262,14 +254,14 @@ func (a *applyBenefit) TravellersAid() error {
 	// P. 22: membership "may be achieved only once per character. If a die
 	// roll indicates membership after it has already been achieved, the die
 	// roll is wasted, and the character receives nothing for it."
-	if a.run.char.Benefits.TravellersAid {
+	if a.run.benefits.TravellersAid {
 		a.run.log.outcomef(a.because, nil, "Travellers' Aid again, which is wasted")
 
 		return nil
 	}
 
-	a.run.char.Benefits.TravellersAid = true
-	a.run.log.outcomef(a.because, nil, "Travellers' Aid Society membership")
+	a.run.benefits.TravellersAid = true
+	a.run.log.fact(a.because, nil, traveller.TravellersAidFact{})
 
 	return nil
 }
@@ -303,7 +295,7 @@ func (r *run) receivedIn(category traveller.WeaponCategory) []traveller.WeaponNa
 
 	var received []traveller.WeaponName
 
-	for _, held := range r.char.Benefits.Weapons {
+	for _, held := range r.benefits.Weapons {
 		if slices.Contains(list, held) && !slices.Contains(received, held) {
 			received = append(received, held)
 		}
@@ -326,8 +318,8 @@ type takeWeapon struct {
 }
 
 func (t *takeWeapon) TakeWeapon(weapon traveller.WeaponName) error {
-	t.run.char.Benefits.Weapons = append(t.run.char.Benefits.Weapons, weapon)
-	t.run.log.outcomef(t.because, nil, "a %s", weapon)
+	t.run.benefits.Weapons = append(t.run.benefits.Weapons, weapon)
+	t.run.log.fact(t.because, nil, traveller.WeaponReceivedFact{Weapon: weapon})
 
 	return nil
 }
@@ -353,19 +345,19 @@ const (
 
 // receiveShip takes a starship benefit (pp. 22-23).
 func (r *run) receiveShip(because int, kind traveller.ShipKind) error {
-	for i := range r.char.Benefits.Ships {
-		if r.char.Benefits.Ships[i].Kind == kind {
+	for i := range r.benefits.Ships {
+		if r.benefits.Ships[i].Kind == kind {
 			return r.receiveShipAgain(because, i)
 		}
 	}
 
-	ship := Ship{Kind: kind, Tons: r.tables.Hull(kind)}
+	ship := traveller.Ship{Kind: kind, Tons: r.tables.Hull(kind)}
 	if kind == traveller.FreeTrader {
 		ship.PaymentYears = freeTraderPaymentYears
 	}
 
-	r.char.Benefits.Ships = append(r.char.Benefits.Ships, ship)
-	r.log.outcomef(because, nil, "a %v", kind)
+	r.benefits.Ships = append(r.benefits.Ships, ship)
+	r.log.fact(because, nil, traveller.ShipReceivedFact{Ship: ship})
 
 	return nil
 }
@@ -378,7 +370,7 @@ func (r *run) receiveShip(because int, kind traveller.ShipKind) error {
 // Implements: Free Trader: 40 years of payments, 10 off per repeat [1:22–23].
 // Implements: Scout ship: duplicates lost [1:23].
 func (r *run) receiveShipAgain(because, at int) error {
-	ship := &r.char.Benefits.Ships[at]
+	ship := &r.benefits.Ships[at]
 
 	if ship.Kind == traveller.ScoutShip {
 		r.log.outcomef(because, nil, "a second scout ship, which is lost")
@@ -390,9 +382,7 @@ func (r *run) receiveShipAgain(because, at int) error {
 
 	ship.PaymentYears = max(0, ship.PaymentYears-freeTraderYearsPerRoll)
 
-	r.log.outcomef(because, nil,
-		"the Free Trader again: %d years old, with %d years of payments left",
-		ship.Years, ship.PaymentYears)
+	r.log.fact(because, nil, traveller.FreeTraderAgainFact{Ship: *ship})
 
 	return nil
 }

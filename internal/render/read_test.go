@@ -56,7 +56,7 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 		"a scout ship":      {traveller.ScoutShip, "held in constructive possession", "owned free and clear"},
 	} {
 		note := noteOf(func(c *chargen.Character) {
-			c.Benefits.Ships = []chargen.Ship{{Kind: tc.kind, Tons: 200}}
+			c.Events = logged(traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: tc.kind, Tons: 200}})
 		})
 
 		if !strings.Contains(note, tc.want) {
@@ -467,14 +467,14 @@ func TestANoteOpensWithItsProperties(t *testing.T) {
 			func(c *chargen.Character) {
 				c.Inputs.Name = "Kira Vance"
 				c.Events = logged(rolled(7, 9, 3, 7, 4, 11),
-					skilled(traveller.Skill{Name: "Brawling", Level: 1}, traveller.Skill{Name: "Rifle", Level: 2}))
+					skilled(traveller.Skill{Name: "Brawling", Level: 1}, traveller.Skill{Name: "Rifle", Level: 2}),
+					traveller.CashFact{Cash: 30000, Total: 30000},
+					traveller.TitledFact{SocialStanding: 11, Title: traveller.Knight, Assumed: true})
 				c.Age = traveller.NewAge(26)
 				c.Terms = 2
 				c.Enlistment = traveller.Enlisted{Service: traveller.Army}
 				c.RankName = captain
 				c.Departure = traveller.ForcedOut{}
-				c.Benefits.Cash = 30000
-				c.Nobility = chargen.Nobility{Eligible: true, Title: traveller.Knight, Assumed: true}
 			},
 			"---\nname: \"Kira Vance\"\naliases:\n  - \"Kira Vance\"\nupp: \"79374B\"\n" +
 				"strength: 7\ndexterity: 9\nendurance: 3\nintelligence: 7\neducation: 4\nsocial: 11\n" +
@@ -571,8 +571,7 @@ func summaryCases() map[string]noteCase {
 					traveller.Skill{Name: "Medical", Level: 1},
 					traveller.Skill{Name: "Rifle", Level: 2},
 					traveller.Skill{Name: "Tactics", Level: 1},
-				))
-				c.Benefits.Cash = 30000
+				), traveller.CashFact{Cash: 30000, Total: 30000})
 			},
 			"Army Captain, 2 terms, forced out at 26. Known for Rifle-2. " +
 				"Musters out with CR 30000.",
@@ -583,9 +582,9 @@ func summaryCases() map[string]noteCase {
 				c.Terms = 7
 				c.Enlistment = traveller.Enlisted{Service: traveller.Merchants}
 				c.Departure = traveller.Retired{}
-				c.Events = logged(skilled(traveller.Skill{Name: pilot, Level: 1}))
-				c.Benefits.TravellersAid = true
-				c.Benefits.Ships = []chargen.Ship{{Kind: traveller.FreeTrader, Tons: 200}}
+				c.Events = logged(skilled(traveller.Skill{Name: pilot, Level: 1}),
+					traveller.TravellersAidFact{},
+					traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.FreeTrader, Tons: 200}})
 			},
 			"Merchants, 7 terms, retired at 46. " +
 				"Musters out with Travellers' Aid Society membership and a Free Trader, Type A.",
@@ -600,8 +599,8 @@ func summaryCases() map[string]noteCase {
 				c.Terms = 7
 				c.Enlistment = traveller.Enlisted{Service: traveller.Scouts}
 				c.Departure = traveller.Retired{}
-				c.Events = logged(skilled(traveller.Skill{Name: pilot, Level: 2}, traveller.Skill{Name: "Electronic", Level: 3}))
-				c.Benefits.Ships = []chargen.Ship{{Kind: traveller.ScoutShip, Tons: 100}}
+				c.Events = logged(skilled(traveller.Skill{Name: pilot, Level: 2}, traveller.Skill{Name: "Electronic", Level: 3}),
+					traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.ScoutShip, Tons: 100}})
 			},
 			"Scouts, 7 terms, retired at 46. Known for Electronic-3 and Pilot-2. " +
 				"Musters out with a Scout ship, Type S, held in constructive possession.",

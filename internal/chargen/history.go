@@ -130,6 +130,17 @@ func (*historyFold) Enlisted(traveller.EnlistedFact) error { return nil }
 func (*historyFold) Rolled(traveller.RolledFact) error       { return nil }
 func (*historyFold) Expertise(traveller.ExpertiseFact) error { return nil }
 
+// What mustering out delivered and the title assessed at the end are the
+// sheet's possessions, not the service's.
+func (*historyFold) Cash(traveller.CashFact) error                       { return nil }
+func (*historyFold) Passage(traveller.PassageFact) error                 { return nil }
+func (*historyFold) TravellersAid(traveller.TravellersAidFact) error     { return nil }
+func (*historyFold) WeaponReceived(traveller.WeaponReceivedFact) error   { return nil }
+func (*historyFold) ShipReceived(traveller.ShipReceivedFact) error       { return nil }
+func (*historyFold) FreeTraderAgain(traveller.FreeTraderAgainFact) error { return nil }
+func (*historyFold) Pension(traveller.PensionFact) error                 { return nil }
+func (*historyFold) Titled(traveller.TitledFact) error                   { return nil }
+
 // gained files a gain where its source says the sheet tells it. A benefit
 // is on the sheet's possessions and characteristics, not its service record.
 func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {

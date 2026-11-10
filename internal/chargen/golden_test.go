@@ -128,17 +128,17 @@ func pathsReached(character *chargen.Character, reached map[string]bool) {
 	mark(!served, "civilian")
 	mark(drafted, "draftee")
 	mark(dead, "death")
-	mark(character.Nobility.Eligible, "title")
+	mark(character.Nobility().Eligible, "title")
 	mark(character.Age.Months() > 0, "months on an age")
-	mark(len(character.Benefits.Weapons) > 0, "a weapon benefit")
-	mark(len(character.Benefits.Weapons) > 1, "a second weapon benefit")
+	mark(len(character.Benefits().Weapons) > 0, "a weapon benefit")
+	mark(len(character.Benefits().Weapons) > 1, "a second weapon benefit")
 	mark(character.Rank.Commissioned(), "a commission")
 	mark(drafted && character.Rank.Commissioned(), "a draftee commissioned later")
 	mark(character.Rank > 1, "a promotion")
 	mark(character.RankName != "", "a rank title")
-	mark(character.Pension > 0, "retirement pay")
+	mark(character.Pension() > 0, "retirement pay")
 
-	for _, ship := range character.Benefits.Ships {
+	for _, ship := range character.Benefits().Ships {
 		mark(ship.Kind == traveller.FreeTrader, "a Free Trader")
 		mark(ship.Kind == traveller.ScoutShip, "a scout ship")
 		mark(ship.Kind == traveller.FreeTrader && ship.Years > 0, "a Free Trader received twice")

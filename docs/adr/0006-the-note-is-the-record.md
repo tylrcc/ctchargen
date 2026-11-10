@@ -48,3 +48,14 @@ fold applies no rule. The engine keeps its own working copy while it runs,
 since every DM reads it, but the finished character does not. Benefits,
 pension, nobility, enlistment, rank, terms, age and departure are still kept
 on the character beside the record's prose.
+
+Extended again on 2026-11-09 (#441): the benefits, the pension and the title
+are read from the log too. Each outcome that delivers a benefit - cash,
+a passage, Travellers' Aid, a weapon, a ship - and the retirement pay and a
+title conferred at the end now carries a typed fact. Each carries the value
+the engine reached: the cash total after the roll, a Free Trader as it stands
+after a repeat. An outcome that changes nothing - a benefit wasted or lost, a
+row the table prints as a dash, a title the end took away - carries none.
+The engine keeps its benefits so far as working state, since a repeat and the
+cash total read them. Enlistment, rank, terms, age and departure are still
+kept on the character beside the record's prose.

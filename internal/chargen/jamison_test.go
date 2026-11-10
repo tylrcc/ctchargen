@@ -329,11 +329,11 @@ func TestTheWorkedExamplesPossessions(t *testing.T) {
 
 	jamison := reproduceJamison(t)
 
-	if len(jamison.Benefits.Ships) != 1 {
-		t.Fatalf("owns %d ships, want one", len(jamison.Benefits.Ships))
+	if len(jamison.Benefits().Ships) != 1 {
+		t.Fatalf("owns %d ships, want one", len(jamison.Benefits().Ships))
 	}
 
-	ship := jamison.Benefits.Ships[0]
+	ship := jamison.Benefits().Ships[0]
 	if ship.Kind != traveller.FreeTrader || ship.Years != 30 || ship.PaymentYears != 10 {
 		t.Errorf("owns a %v, %d years old, with %d years of payments; want a Free Trader, 30 and 10",
 			ship.Kind, ship.Years, ship.PaymentYears)
@@ -344,16 +344,16 @@ func TestTheWorkedExamplesPossessions(t *testing.T) {
 		t.Errorf("the ship is %d tons, want 200", ship.Tons)
 	}
 
-	if jamison.Benefits.Cash != 20000 {
-		t.Errorf("holds %v, want CR 20000", jamison.Benefits.Cash)
+	if jamison.Benefits().Cash != 20000 {
+		t.Errorf("holds %v, want CR 20000", jamison.Benefits().Cash)
 	}
 
-	if jamison.Pension != 4000 {
-		t.Errorf("draws %v a year, want CR 4000", jamison.Pension)
+	if jamison.Pension() != 4000 {
+		t.Errorf("draws %v a year, want CR 4000", jamison.Pension())
 	}
 
 	// The balance the page reports is the cash plus the first year drawn.
-	if want := jamison.Benefits.Cash + jamison.Pension; want != 24000 {
+	if want := jamison.Benefits().Cash + jamison.Pension(); want != 24000 {
 		t.Errorf("cash and the first year's pension come to %v, want CR 24000", want)
 	}
 }
@@ -375,11 +375,11 @@ func TestTheWorkedExamplesDepartures(t *testing.T) {
 	// this one passage. P. 25 says "one middle passage, worth about CR
 	// 8,000", but a roll of 3 reaches Merchant row 3, which prints +1 Educ,
 	// and no row of that column prints a Middle Passage at all.
-	if len(jamison.Benefits.Passages) != 1 {
-		t.Fatalf("holds %d passages, want one", len(jamison.Benefits.Passages))
+	if len(jamison.Benefits().Passages) != 1 {
+		t.Fatalf("holds %d passages, want one", len(jamison.Benefits().Passages))
 	}
 
-	if got := jamison.Benefits.Passages[0]; got != traveller.LowPassage {
+	if got := jamison.Benefits().Passages[0]; got != traveller.LowPassage {
 		t.Errorf("holds a %v; Table 1's Merchant row 6 prints Low Psg, and the table governs (E015)", got)
 	}
 

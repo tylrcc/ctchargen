@@ -173,6 +173,5 @@ func (r *run) pension() {
 		return
 	}
 
-	r.char.Pension = pay
-	r.log.outcomef(0, nil, "retirement pay of %v a year", r.char.Pension)
+	r.log.fact(0, nil, traveller.PensionFact{Pay: pay})
 }

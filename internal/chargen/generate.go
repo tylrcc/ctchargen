@@ -161,6 +161,13 @@ type run struct {
 	// from that.
 	rolledSocial int
 
+	// benefits is what mustering out has delivered so far, which the running
+	// cash total, a repeat Travellers' Aid, a repeat weapon and a repeat ship
+	// read. It is working state, as profile is: each change to it is logged
+	// as a fact carrying the value it left, and the finished Character's
+	// Benefits are read from those facts (#441).
+	benefits Benefits
+
 	// trained counts the results taken off each skills table, which the
 	// decider is handed so it can see where the character is thin. It is
 	// not on the Character: it is a decision aid, not part of the record.
