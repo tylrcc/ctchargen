@@ -62,6 +62,10 @@ release turns out to be.
   aging under it at the next level. The record opens by saying that a line's
   `(from step N)` names the step it came from, most often the roll it was read
   off, and not every cause behind it.
+- The README says no skill is listed below level 1, so a match on `skills`
+  finds every character with that skill at level 1 or better (#573), and that
+  the 1977 rules have no level 0: an unlisted skill is no expertise, and p. 32
+  gives player characters ½ in every weapon.
 
 ## 1.0.0-rc.5
 

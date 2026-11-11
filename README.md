@@ -104,7 +104,10 @@ one: a text property with no value is left empty, and a list with none is
 
 Each skill and possession is an exact item, so "which crew have Pilot?" is an
 exact match: `econtains(skills, "Pilot")` in Dataview, and
-`skills.contains("Pilot")` in Bases.
+`skills.contains("Pilot")` in Bases. No skill is listed below level 1, so
+the match is every character with Pilot-1 or better. The 1977 rules have no
+level 0: a skill not listed is no expertise, and Book 1 p. 32 gives player
+characters ½ in every weapon, enough to avoid the untrained penalty.
 
 Under the heading, **a one-paragraph summary** says who the character is in
 words a referee can read aloud: "Army Captain, 2 terms, denied reenlistment at 26. Known for Rifle-2. Musters out with CR 30000."
