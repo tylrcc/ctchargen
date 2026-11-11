@@ -105,7 +105,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 22. commission: rolled 2+3 +1 (Social Standing 9+) = 6 against 10+, missed
 23. not commissioned this term (from step 22)
 
-**24. skills and training (pp. 6, 11)**
+**24. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 26. Advanced Education Table (education 8+): rolled 2
@@ -128,7 +128,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 41. promotion: rolled 3+2 +1 (Education 8+) = 6 against 8+, missed
 42. not promoted this term (from step 41)
 
-**43. skills and training (pp. 6, 11)**
+**43. skills and training, 2 rolls: 1 for the term, 1 for the commission (pp. 6, 11)**
 
 44. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 45. Service Skills Table: rolled 1
@@ -148,7 +148,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 57. promotion: rolled 5+3 +1 (Education 8+) = 9 against 8+, made
 58. promoted: Lieutenant (from step 57)
 
-**59. skills and training (pp. 6, 11)**
+**59. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 61. Advanced Education Table (education 8+): rolled 2
@@ -168,7 +168,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 73. promotion: rolled 6+6 +1 (Education 8+) = 13 against 8+, made
 74. promoted: Lt Cmdr (from step 73)
 
-**75. skills and training (pp. 6, 11)**
+**75. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 77. Service Skills Table: rolled 3
@@ -197,7 +197,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 96. promotion: rolled 5+6 +1 (Education 8+) = 12 against 8+, made
 97. promoted: Commander (from step 96)
 
-**98. skills and training (pp. 6, 11)**
+**98. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 99. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 100. Advanced Education Table (education 8+): rolled 5
@@ -226,7 +226,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 119. promotion: rolled 1+2 +1 (Education 8+) = 4 against 8+, missed
 120. not promoted this term (from step 119)
 
-**121. skills and training (pp. 6, 11)**
+**121. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 122. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 123. Service Skills Table: rolled 1
@@ -253,7 +253,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 140. promoted: Captain (from step 139)
 141. Social Standing +1, 13 to 14 (from step 139)
 
-**142. skills and training (pp. 6, 11)**
+**142. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 143. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 144. Personal Development Table: rolled 6
@@ -273,7 +273,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 156. aging, Endurance: rolled 4+2 = 6 against 8+, missed
 157. Endurance -1, 7 to 6 (from step 156)
 
-**158. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**158. mustering out, 9 rolls: 7 for the terms, 2 for rank 5 (pp. 7, 9, 21-23)**
 
 159. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 160. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose no from yes, no

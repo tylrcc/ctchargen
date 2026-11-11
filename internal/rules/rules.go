@@ -428,7 +428,7 @@ const (
 	minRankForTwoExtraRolls = 3
 )
 
-// Rolls is how many benefit rolls a character has earned.
+// Rolls is how many benefit rolls a character has earned, and by what.
 //
 // P. 9 states it in one sentence and reaches every rank: "Characters are
 // allowed one roll per term of service; rank 1 or 2 is allowed one extra
@@ -437,15 +437,18 @@ const (
 // rolls, and may add 1 to his die roll when consulting Table 1" - which is
 // why the test expects seven rolls for Jamison at five terms and rank 5.
 //
+// The two parts are kept apart, so the record can say what earned the rolls
+// from the sum the procedure spends, rather than working it out again.
+//
 // Implements: One roll per term, plus rank extras [1:7, 9].
-func (m Muster) Rolls(terms int, rank traveller.Rank) int {
-	rolls := terms * rollsPerTerm
+func (m Muster) Rolls(terms int, rank traveller.Rank) traveller.BenefitRolls {
+	rolls := traveller.BenefitRolls{ForTerms: terms * rollsPerTerm, Rank: rank}
 
 	switch {
 	case int(rank) >= minRankForTwoExtraRolls:
-		rolls += extraRollsForRank3Plus
+		rolls.ForRank = extraRollsForRank3Plus
 	case int(rank) >= minRankForOneExtraRoll:
-		rolls += extraRollsForRank1or2
+		rolls.ForRank = extraRollsForRank1or2
 	}
 
 	return rolls

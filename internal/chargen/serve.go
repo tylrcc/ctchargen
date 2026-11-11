@@ -157,8 +157,13 @@ func (r *run) grantEligibility(term traveller.Term) {
 // asked as one of the term's whole count, and nothing carries into the next
 // term.
 //
+// The step says how many rolls the term gave and what gave them, from the
+// same tally the rolls are spent from.
+//
 // Implements: The skills question says which roll of how many, and why
 // [Choices].
+// Implements: The skills step says how many rolls the term gave, and what
+// gave them [Generation record].
 func (r *run) trainSkills() error {
 	earned := r.eligible
 
@@ -168,7 +173,8 @@ func (r *run) trainSkills() error {
 		return nil
 	}
 
-	r.record.step("skills and training", "pp. 6, 11")
+	r.record.step(fmt.Sprintf("skills and training, %d %s: %v", earned.Rolls(), rollsWord(earned.Rolls()), earned),
+		"pp. 6, 11")
 
 	for n := 1; n <= earned.Rolls(); n++ {
 		err := r.trainOnce(traveller.SkillRoll{N: n, Of: earned})
@@ -184,9 +190,23 @@ func (r *run) trainSkills() error {
 // its six results from the service's column, so it is designated knowing
 // what each result gives.
 //
+// The first designation after Education reaches the fourth table's threshold
+// says so before the table is designated, pointing at the change that took it
+// there, so the offer that has grown by a table is read as the page's doing.
+//
 // Implements: The skills table is designated before the die [1:11].
 // Implements: A skills table offered shows its six results [Choices].
+// Implements: The first designation that offers the fourth table says the
+// Education that opened it [Generation record].
 func (r *run) trainOnce(roll traveller.SkillRoll) error {
+	if r.fourthTableOpenedBy != 0 {
+		gate := r.tables.Education()
+		r.record.outcomef(r.fourthTableOpenedBy, nil, "%v %d, so this designation offers the %v",
+			gate.Characteristic, r.profile[gate.Characteristic], gate.Table)
+
+		r.fourthTableOpenedBy = 0
+	}
+
 	tables := r.offeredTables()
 
 	offered := make([]traveller.SkillTableOffer, 0, len(tables))

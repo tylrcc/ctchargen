@@ -28,30 +28,49 @@ func rollsWord(n int) string {
 
 // musterOut spends the benefit rolls the service earned (pp. 7, 9).
 //
+// The step says how many rolls there are and what gave them, from the same
+// count the rolls are spent from. Where the third roll on Table 2 leaves
+// rolls still to take, the record says those must go on Table 1: they are
+// taken there without a question, and a record that only switched tables
+// would leave its reader to find the cap.
+//
 // Implements: Its ship, cash and pension [1:25].
+// Implements: The mustering out step says how many rolls there are, and what
+// gave them [Generation record].
+// Implements: The record says when the cap sends the remaining rolls to Table
+// 1 [Generation record].
 func (r *run) musterOut() error {
-	rolls := r.tables.Muster().Rolls(r.terms, r.rank)
+	entitled := r.tables.Muster().Rolls(r.terms, r.rank)
+
+	rolls := entitled.Rolls()
 	if rolls == 0 {
 		return nil
 	}
 
-	r.record.step(fmt.Sprintf("mustering out, %d %s", rolls, rollsWord(rolls)), "pp. 7, 9, 21-23")
+	r.record.step(fmt.Sprintf("mustering out, %d %s: %v", rolls, rollsWord(rolls), entitled), "pp. 7, 9, 21-23")
 
 	onTableTwo := 0
 
-	for range rolls {
+	for n := range rolls {
 		table, err := r.chooseMusterTable(onTableTwo)
 		if err != nil {
 			return err
 		}
 
-		if table == traveller.TableTwo {
-			onTableTwo++
-		}
-
-		err = r.benefit(table)
+		seq, err := r.benefit(table)
 		if err != nil {
 			return err
+		}
+
+		if table != traveller.TableTwo {
+			continue
+		}
+
+		onTableTwo++
+
+		if left := rolls - n - 1; onTableTwo == maxRollsOnTableTwo && left > 0 {
+			r.record.outcomef(seq, nil, "%d rolls on Table 2, the most allowed: the remaining %d %s must be on Table 1",
+				maxRollsOnTableTwo, left, rollsWord(left))
 		}
 	}
 
@@ -79,11 +98,11 @@ func (r *run) chooseMusterTable(onTableTwo int) (traveller.MusterTable, error) {
 	return table, nil
 }
 
-// benefit takes one roll on the designated table.
-func (r *run) benefit(table traveller.MusterTable) error {
+// benefit takes one roll on the designated table, and returns the roll's number.
+func (r *run) benefit(table traveller.MusterTable) (int, error) {
 	modifier, err := r.musterModifier(table)
 	if err != nil {
-		return err
+		return 0, err
 	}
 
 	face := r.roll.Die()
@@ -93,24 +112,24 @@ func (r *run) benefit(table traveller.MusterTable) error {
 
 	benefit, cash, err := r.service.Row(row)
 	if err != nil {
-		return fmt.Errorf("consulting %v: %w", table, err)
+		return 0, fmt.Errorf("consulting %v: %w", table, err)
 	}
 
 	if table == traveller.TableTwo {
 		r.benefits.Cash += cash
 		r.record.fact(seq, nil, traveller.CashFact{Cash: cash, Total: r.benefits.Cash})
 
-		return nil
+		return seq, nil
 	}
 
 	applied := &applyBenefit{run: r, because: seq}
 
 	err = benefit.Fold(applied)
 	if err != nil {
-		return fmt.Errorf("taking a benefit: %w", err)
+		return 0, fmt.Errorf("taking a benefit: %w", err)
 	}
 
-	return nil
+	return seq, nil
 }
 
 // musterModifier offers the +1 each table allows, where the character has

@@ -98,7 +98,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 22. commission: rolled 2+3 +1 (Social Standing 9+) = 6 against 10+, missed
 23. not commissioned this term (from step 22)
 
-**24. skills and training (pp. 6, 11)**
+**24. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 26. Advanced Education Table (education 8+): rolled 2
@@ -121,7 +121,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 41. promotion: rolled 3+2 +1 (Education 8+) = 6 against 8+, missed
 42. not promoted this term (from step 41)
 
-**43. skills and training (pp. 6, 11)**
+**43. skills and training, 2 rolls: 1 for the term, 1 for the commission (pp. 6, 11)**
 
 44. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 45. Service Skills Table: rolled 1
@@ -141,7 +141,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 57. promotion: rolled 5+3 +1 (Education 8+) = 9 against 8+, made
 58. promoted: Lieutenant (from step 57)
 
-**59. skills and training (pp. 6, 11)**
+**59. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 61. Advanced Education Table (education 8+): rolled 2
@@ -161,7 +161,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 73. promotion: rolled 6+6 +1 (Education 8+) = 13 against 8+, made
 74. promoted: Lt Cmdr (from step 73)
 
-**75. skills and training (pp. 6, 11)**
+**75. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 77. Service Skills Table: rolled 3
@@ -190,7 +190,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 96. promotion: rolled 5+6 +1 (Education 8+) = 12 against 8+, made
 97. promoted: Commander (from step 96)
 
-**98. skills and training (pp. 6, 11)**
+**98. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 99. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 100. Advanced Education Table (education 8+): rolled 5
@@ -219,7 +219,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 119. promotion: rolled 1+2 +1 (Education 8+) = 4 against 8+, missed
 120. not promoted this term (from step 119)
 
-**121. skills and training (pp. 6, 11)**
+**121. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 122. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 123. Service Skills Table: rolled 1
@@ -246,7 +246,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 140. promoted: Captain (from step 139)
 141. Social Standing +1, 13 to 14 (from step 139)
 
-**142. skills and training (pp. 6, 11)**
+**142. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 143. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 144. Personal Development Table: rolled 6
@@ -266,7 +266,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 156. aging, Endurance: rolled 4+2 = 6 against 8+, missed
 157. Endurance -1, 7 to 6 (from step 156)
 
-**158. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**158. mustering out, 9 rolls: 7 for the terms, 2 for rank 5 (pp. 7, 9, 21-23)**
 
 159. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 160. Table 2, Cash Allowances: rolled 5
@@ -277,27 +277,28 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 165. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 166. Table 2, Cash Allowances: rolled 3
 167. CR 5000, bringing the total to CR 35000 (from step 166)
-168. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-169. Table 1, Material Benefits: rolled 2 +1 = 3
-170. Education +2, 11 to 13 (from step 169)
-171. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-172. Table 1, Material Benefits: rolled 5 +1 = 6
-173. a High Passage (from step 172)
-174. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-175. Table 1, Material Benefits: rolled 6 +1 = 7
-176. Social Standing +2, 14 to 15 (from step 175)
-177. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-178. Table 1, Material Benefits: rolled 4 +1 = 5
-179. Travellers' Aid Society membership (from step 178)
-180. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-181. Table 1, Material Benefits: rolled 4 +1 = 5
-182. Travellers' Aid again, which is wasted (from step 181)
-183. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-184. Table 1, Material Benefits: rolled 1 +1 = 2
-185. Intelligence +1, 10 to 11 (from step 184)
-186. retirement pay of CR 8000 a year
+168. 3 rolls on Table 2, the most allowed: the remaining 6 rolls must be on Table 1 (from step 166)
+169. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+170. Table 1, Material Benefits: rolled 2 +1 = 3
+171. Education +2, 11 to 13 (from step 170)
+172. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+173. Table 1, Material Benefits: rolled 5 +1 = 6
+174. a High Passage (from step 173)
+175. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+176. Table 1, Material Benefits: rolled 6 +1 = 7
+177. Social Standing +2, 14 to 15 (from step 176)
+178. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+179. Table 1, Material Benefits: rolled 4 +1 = 5
+180. Travellers' Aid Society membership (from step 179)
+181. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+182. Table 1, Material Benefits: rolled 4 +1 = 5
+183. Travellers' Aid again, which is wasted (from step 182)
+184. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+185. Table 1, Material Benefits: rolled 1 +1 = 2
+186. Intelligence +1, 10 to 11 (from step 185)
+187. retirement pay of CR 8000 a year
 
-**187. titles (p. 5; Book 3 p. 22)**
+**188. titles (p. 5; Book 3 p. 22)**
 
-188. assume the hereditary title (p. 5): policy chose yes from yes, no
-189. social standing 15 confers duke/duchess, and it is assumed
+189. assume the hereditary title (p. 5): policy chose yes from yes, no
+190. social standing 15 confers duke/duchess, and it is assumed

@@ -89,7 +89,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 22. survival: rolled 3+4 +2 (Intelligence 7+) = 9 against 5+, made
 23. survived term 1 (from step 22)
 
-**24. skills and training (pp. 6, 11)**
+**24. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 26. Advanced Education Table: rolled 2
@@ -112,7 +112,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 41. promotion: rolled 5+6 = 11 against 10+, made
 42. promoted: 3rd Officer (from step 41)
 
-**43. skills and training (pp. 6, 11)**
+**43. skills and training, 3 rolls: 1 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)**
 
 44. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 45. Personal Development Table: rolled 1
@@ -135,7 +135,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 60. promotion: rolled 3+4 = 7 against 10+, missed
 61. not promoted this term (from step 60)
 
-**62. skills and training (pp. 6, 11)**
+**62. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 63. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 64. Personal Development Table: rolled 5
@@ -153,7 +153,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 74. promotion: rolled 4+1 = 5 against 10+, missed
 75. not promoted this term (from step 74)
 
-**76. skills and training (pp. 6, 11)**
+**76. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 78. Advanced Education Table: rolled 6
@@ -170,7 +170,7 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 87. aging, Endurance: rolled 3+6 = 9 against 8+, made
 88. Endurance holds (from step 87)
 
-**89. mustering out, 5 rolls (pp. 7, 9, 21-23)**
+**89. mustering out, 5 rolls: 4 for the terms, 1 for rank 2 (pp. 7, 9, 21-23)**
 
 90. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 91. Table 2, Cash Allowances: rolled 4
@@ -181,7 +181,8 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 96. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 97. Table 2, Cash Allowances: rolled 3
 98. CR 10000, bringing the total to CR 50000 (from step 97)
-99. Table 1, Material Benefits: rolled 6
-100. a Low Passage (from step 99)
-101. Table 1, Material Benefits: rolled 6
-102. a Low Passage (from step 101)
+99. 3 rolls on Table 2, the most allowed: the remaining 2 rolls must be on Table 1 (from step 97)
+100. Table 1, Material Benefits: rolled 6
+101. a Low Passage (from step 100)
+102. Table 1, Material Benefits: rolled 6
+103. a Low Passage (from step 102)

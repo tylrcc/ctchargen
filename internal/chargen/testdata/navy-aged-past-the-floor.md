@@ -108,7 +108,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 25. promotion: rolled 4+6 +1 (Education 8+) = 11 against 8+, made
 26. promoted: Lieutenant (from step 25)
 
-**27. skills and training (pp. 6, 11)**
+**27. skills and training, 4 rolls: 2 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)**
 
 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 29. Advanced Education Table (education 8+): rolled 6
@@ -134,7 +134,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 47. promotion: rolled 6+6 +1 (Education 8+) = 13 against 8+, made
 48. promoted: Lt Cmdr (from step 47)
 
-**49. skills and training (pp. 6, 11)**
+**49. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 50. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 51. Advanced Education Table (education 8+): rolled 6
@@ -153,7 +153,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 62. promotion: rolled 6+6 +1 (Education 8+) = 13 against 8+, made
 63. promoted: Commander (from step 62)
 
-**64. skills and training (pp. 6, 11)**
+**64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 66. Service Skills Table: rolled 1
@@ -174,7 +174,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 79. promoted: Captain (from step 78)
 80. Social Standing +1, 8 to 9 (from step 78)
 
-**81. skills and training (pp. 6, 11)**
+**81. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 83. Advanced Education Table (education 8+): rolled 6
@@ -203,7 +203,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 102. promoted: Admiral (from step 101)
 103. Social Standing +1, 9 to 10 (from step 101)
 
-**104. skills and training (pp. 6, 11)**
+**104. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 105. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 106. Service Skills Table: rolled 6
@@ -230,7 +230,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 123. survived term 6 (from step 122)
 124. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 6
 
-**125. skills and training (pp. 6, 11)**
+**125. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 126. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 127. Advanced Education Table (education 8+): rolled 6
@@ -254,7 +254,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 141. survived term 7 (from step 140)
 142. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 7
 
-**143. skills and training (pp. 6, 11)**
+**143. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 144. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 145. Advanced Education Table: rolled 6
@@ -277,7 +277,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 158. survived term 8 (from step 157)
 159. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 8
 
-**160. skills and training (pp. 6, 11)**
+**160. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 161. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 162. Service Skills Table: rolled 6
@@ -300,7 +300,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 175. survived term 9 (from step 174)
 176. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 9
 
-**177. skills and training (pp. 6, 11)**
+**177. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 178. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 179. Personal Development Table: rolled 5
@@ -323,7 +323,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 192. survived term 10 (from step 191)
 193. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 10
 
-**194. skills and training (pp. 6, 11)**
+**194. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 195. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 196. Advanced Education Table (education 8+): rolled 6
@@ -346,7 +346,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 209. survived term 11 (from step 208)
 210. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 11
 
-**211. skills and training (pp. 6, 11)**
+**211. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 212. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 213. Advanced Education Table: rolled 2
@@ -369,7 +369,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 226. survived term 12 (from step 225)
 227. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 12
 
-**228. skills and training (pp. 6, 11)**
+**228. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 229. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 230. Service Skills Table: rolled 6
@@ -394,7 +394,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 245. survived term 13 (from step 244)
 246. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 13
 
-**247. skills and training (pp. 6, 11)**
+**247. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 248. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 249. Personal Development Table: rolled 2
@@ -419,7 +419,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 264. survived term 14 (from step 263)
 265. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 14
 
-**266. skills and training (pp. 6, 11)**
+**266. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 267. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 268. Advanced Education Table (education 8+): rolled 6
@@ -441,7 +441,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 282. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 283. Intelligence holds (from step 282)
 
-**284. mustering out, 16 rolls (pp. 7, 9, 21-23)**
+**284. mustering out, 16 rolls: 14 for the terms, 2 for rank 6 (pp. 7, 9, 21-23)**
 
 285. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 286. Table 2, Cash Allowances: rolled 4
@@ -452,50 +452,51 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 291. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 292. Table 2, Cash Allowances: rolled 6
 293. CR 50000, bringing the total to CR 80000 (from step 292)
-294. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-295. Table 1, Material Benefits: rolled 6 +1 = 7
-296. Social Standing +2, 10 to 12 (from step 295)
-297. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-298. Table 1, Material Benefits: rolled 6 +1 = 7
-299. Social Standing +2, 12 to 14 (from step 298)
-300. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-301. Table 1, Material Benefits: rolled 6 +1 = 7
-302. Social Standing +2, 14 to 15 (from step 301)
-303. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-304. Table 1, Material Benefits: rolled 6 +1 = 7
-305. Social Standing +2, 15 to 15 (from step 304)
-306. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-307. Table 1, Material Benefits: rolled 2 +1 = 3
-308. Education +2, 13 to 15 (from step 307)
-309. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-310. Table 1, Material Benefits: rolled 4 +1 = 5
-311. Travellers' Aid Society membership (from step 310)
-312. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-313. Table 1, Material Benefits: rolled 6 +1 = 7
-314. Social Standing +2, 15 to 15 (from step 313)
-315. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-316. Table 1, Material Benefits: rolled 5 +1 = 6
-317. a High Passage (from step 316)
-318. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-319. Table 1, Material Benefits: rolled 3 +1 = 4
-320. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-321. a Dagger (from step 319)
-322. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-323. Table 1, Material Benefits: rolled 6 +1 = 7
-324. Social Standing +2, 15 to 15 (from step 323)
-325. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-326. Table 1, Material Benefits: rolled 6 +1 = 7
-327. Social Standing +2, 15 to 15 (from step 326)
-328. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-329. Table 1, Material Benefits: rolled 6 +1 = 7
-330. Social Standing +2, 15 to 15 (from step 329)
-331. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-332. Table 1, Material Benefits: rolled 3 +1 = 4
-333. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-334. expertise instead: Dagger-1 (from step 332)
-335. retirement pay of CR 22000 a year
+294. 3 rolls on Table 2, the most allowed: the remaining 13 rolls must be on Table 1 (from step 292)
+295. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+296. Table 1, Material Benefits: rolled 6 +1 = 7
+297. Social Standing +2, 10 to 12 (from step 296)
+298. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+299. Table 1, Material Benefits: rolled 6 +1 = 7
+300. Social Standing +2, 12 to 14 (from step 299)
+301. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+302. Table 1, Material Benefits: rolled 6 +1 = 7
+303. Social Standing +2, 14 to 15 (from step 302)
+304. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+305. Table 1, Material Benefits: rolled 6 +1 = 7
+306. Social Standing +2, 15 to 15 (from step 305)
+307. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+308. Table 1, Material Benefits: rolled 2 +1 = 3
+309. Education +2, 13 to 15 (from step 308)
+310. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+311. Table 1, Material Benefits: rolled 4 +1 = 5
+312. Travellers' Aid Society membership (from step 311)
+313. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+314. Table 1, Material Benefits: rolled 6 +1 = 7
+315. Social Standing +2, 15 to 15 (from step 314)
+316. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+317. Table 1, Material Benefits: rolled 5 +1 = 6
+318. a High Passage (from step 317)
+319. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+320. Table 1, Material Benefits: rolled 3 +1 = 4
+321. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+322. a Dagger (from step 320)
+323. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+324. Table 1, Material Benefits: rolled 6 +1 = 7
+325. Social Standing +2, 15 to 15 (from step 324)
+326. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+327. Table 1, Material Benefits: rolled 6 +1 = 7
+328. Social Standing +2, 15 to 15 (from step 327)
+329. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+330. Table 1, Material Benefits: rolled 6 +1 = 7
+331. Social Standing +2, 15 to 15 (from step 330)
+332. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+333. Table 1, Material Benefits: rolled 3 +1 = 4
+334. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
+335. expertise instead: Dagger-1 (from step 333)
+336. retirement pay of CR 22000 a year
 
-**336. titles (p. 5; Book 3 p. 22)**
+**337. titles (p. 5; Book 3 p. 22)**
 
-337. assume the hereditary title (p. 5): policy chose yes from yes, no
-338. social standing 15 confers duke/duchess, and it is assumed
+338. assume the hereditary title (p. 5): policy chose yes from yes, no
+339. social standing 15 confers duke/duchess, and it is assumed

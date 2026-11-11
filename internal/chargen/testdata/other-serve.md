@@ -79,7 +79,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 19. survival: rolled 5+3 = 8 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 23. Advanced Education Table: rolled 4
@@ -95,7 +95,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 31. survival: rolled 1+4 = 5 against 5+, made
 32. survived term 2 (from step 31)
 
-**33. skills and training (pp. 6, 11)**
+**33. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 34. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 35. Personal Development Table: rolled 3
@@ -109,7 +109,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 41. survival: rolled 5+6 = 11 against 5+, made
 42. survived term 3 (from step 41)
 
-**43. skills and training (pp. 6, 11)**
+**43. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 44. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 45. Advanced Education Table: rolled 1
@@ -123,7 +123,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 51. survival: rolled 4+6 = 10 against 5+, made
 52. survived term 4 (from step 51)
 
-**53. skills and training (pp. 6, 11)**
+**53. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 54. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 55. Service Skills Table: rolled 5
@@ -147,7 +147,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 69. survival: rolled 4+1 = 5 against 5+, made
 70. survived term 5 (from step 69)
 
-**71. skills and training (pp. 6, 11)**
+**71. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 72. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 73. Personal Development Table: rolled 6
@@ -164,7 +164,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 82. aging, Endurance: rolled 3+6 = 9 against 8+, made
 83. Endurance holds (from step 82)
 
-**84. mustering out, 5 rolls (pp. 7, 9, 21-23)**
+**84. mustering out, 5 rolls: 5 for the terms (pp. 7, 9, 21-23)**
 
 85. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 86. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
@@ -178,7 +178,8 @@ UPP 644776, age 38, Other, 5 terms, retired
 94. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
 95. Table 2, Cash Allowances: rolled 3 +1 = 4
 96. CR 10000, bringing the total to CR 30000 (from step 95)
-97. Table 1, Material Benefits: rolled 6
-98. nothing: the table prints a dash for this service (from step 97)
-99. Table 1, Material Benefits: rolled 6
-100. nothing: the table prints a dash for this service (from step 99)
+97. 3 rolls on Table 2, the most allowed: the remaining 2 rolls must be on Table 1 (from step 95)
+98. Table 1, Material Benefits: rolled 6
+99. nothing: the table prints a dash for this service (from step 98)
+100. Table 1, Material Benefits: rolled 6
+101. nothing: the table prints a dash for this service (from step 100)

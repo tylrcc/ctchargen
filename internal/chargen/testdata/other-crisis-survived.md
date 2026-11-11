@@ -86,7 +86,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 19. survival: rolled 6+4 = 10 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 3
@@ -103,7 +103,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 32. survival: rolled 3+2 = 5 against 5+, made
 33. survived term 2 (from step 32)
 
-**34. skills and training (pp. 6, 11)**
+**34. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 36. Service Skills Table: rolled 5
@@ -118,7 +118,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 43. survival: rolled 1+4 = 5 against 5+, made
 44. survived term 3 (from step 43)
 
-**45. skills and training (pp. 6, 11)**
+**45. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 47. Personal Development Table: rolled 5
@@ -132,7 +132,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 53. survival: rolled 5+2 = 7 against 5+, made
 54. survived term 4 (from step 53)
 
-**55. skills and training (pp. 6, 11)**
+**55. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 57. Advanced Education Table (education 8+): rolled 3
@@ -155,7 +155,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 70. survival: rolled 5+1 = 6 against 5+, made
 71. survived term 5 (from step 70)
 
-**72. skills and training (pp. 6, 11)**
+**72. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 73. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 74. Advanced Education Table: rolled 2
@@ -178,7 +178,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 87. survival: rolled 5+1 = 6 against 5+, made
 88. survived term 6 (from step 87)
 
-**89. skills and training (pp. 6, 11)**
+**89. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 90. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 91. Service Skills Table: rolled 1
@@ -201,7 +201,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 104. survival: rolled 2+6 = 8 against 5+, made
 105. survived term 7 (from step 104)
 
-**106. skills and training (pp. 6, 11)**
+**106. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 107. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 108. Personal Development Table: rolled 6
@@ -221,7 +221,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 120. aging, Endurance: rolled 2+5 = 7 against 8+, missed
 121. Endurance -1, 7 to 6 (from step 120)
 
-**122. mustering out, 7 rolls (pp. 7, 9, 21-23)**
+**122. mustering out, 7 rolls: 7 for the terms (pp. 7, 9, 21-23)**
 
 123. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 124. Table 2, Cash Allowances: rolled 1
@@ -232,11 +232,12 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 129. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 130. Table 2, Cash Allowances: rolled 2
 131. CR 5000, bringing the total to CR 16000 (from step 130)
-132. Table 1, Material Benefits: rolled 2
-133. Intelligence +1, 4 to 5 (from step 132)
-134. Table 1, Material Benefits: rolled 3
-135. Education +1, 8 to 9 (from step 134)
-136. Table 1, Material Benefits: rolled 2
-137. Intelligence +1, 5 to 6 (from step 136)
-138. Table 1, Material Benefits: rolled 2
-139. Intelligence +1, 6 to 7 (from step 138)
+132. 3 rolls on Table 2, the most allowed: the remaining 4 rolls must be on Table 1 (from step 130)
+133. Table 1, Material Benefits: rolled 2
+134. Intelligence +1, 4 to 5 (from step 133)
+135. Table 1, Material Benefits: rolled 3
+136. Education +1, 8 to 9 (from step 135)
+137. Table 1, Material Benefits: rolled 2
+138. Intelligence +1, 5 to 6 (from step 137)
+139. Table 1, Material Benefits: rolled 2
+140. Intelligence +1, 6 to 7 (from step 139)

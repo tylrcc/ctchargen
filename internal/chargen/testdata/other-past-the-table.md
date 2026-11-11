@@ -86,7 +86,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 19. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 1
@@ -102,7 +102,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 31. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 32. survived term 2 (from step 31)
 
-**33. skills and training (pp. 6, 11)**
+**33. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 35. Service Skills Table: rolled 1
@@ -115,7 +115,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 40. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 41. survived term 3 (from step 40)
 
-**42. skills and training (pp. 6, 11)**
+**42. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 43. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 44. Personal Development Table: rolled 1
@@ -128,7 +128,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 49. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 50. survived term 4 (from step 49)
 
-**51. skills and training (pp. 6, 11)**
+**51. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 52. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 53. Advanced Education Table (education 8+): rolled 1
@@ -150,7 +150,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 65. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 66. survived term 5 (from step 65)
 
-**67. skills and training (pp. 6, 11)**
+**67. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 69. Advanced Education Table: rolled 1
@@ -172,7 +172,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 81. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 82. survived term 6 (from step 81)
 
-**83. skills and training (pp. 6, 11)**
+**83. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 84. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 85. Service Skills Table: rolled 1
@@ -194,7 +194,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 97. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 98. survived term 7 (from step 97)
 
-**99. skills and training (pp. 6, 11)**
+**99. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Personal Development Table: rolled 1
@@ -216,7 +216,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 113. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 114. survived term 8 (from step 113)
 
-**115. skills and training (pp. 6, 11)**
+**115. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 116. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 117. Advanced Education Table (education 8+): rolled 1
@@ -238,7 +238,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 129. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 130. survived term 9 (from step 129)
 
-**131. skills and training (pp. 6, 11)**
+**131. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 132. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 133. Advanced Education Table: rolled 1
@@ -260,7 +260,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 145. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 146. survived term 10 (from step 145)
 
-**147. skills and training (pp. 6, 11)**
+**147. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 148. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 149. Service Skills Table: rolled 1
@@ -282,7 +282,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 161. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 162. survived term 11 (from step 161)
 
-**163. skills and training (pp. 6, 11)**
+**163. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 164. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 165. Personal Development Table: rolled 1
@@ -304,7 +304,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 177. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 178. survived term 12 (from step 177)
 
-**179. skills and training (pp. 6, 11)**
+**179. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 180. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 181. Advanced Education Table (education 8+): rolled 1
@@ -328,7 +328,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 195. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 196. survived term 13 (from step 195)
 
-**197. skills and training (pp. 6, 11)**
+**197. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 198. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 199. Advanced Education Table: rolled 1
@@ -352,7 +352,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 213. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 214. survived term 14 (from step 213)
 
-**215. skills and training (pp. 6, 11)**
+**215. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 216. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 217. Service Skills Table: rolled 1
@@ -376,7 +376,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 231. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 232. survived term 15 (from step 231)
 
-**233. skills and training (pp. 6, 11)**
+**233. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 234. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 235. Personal Development Table: rolled 1
@@ -400,7 +400,7 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 249. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 250. survived term 16 (from step 249)
 
-**251. skills and training (pp. 6, 11)**
+**251. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 252. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 253. Advanced Education Table (education 8+): rolled 1

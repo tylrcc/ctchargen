@@ -114,7 +114,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 28. promotion: rolled 2+1 +1 (Education 7+) = 4 against 6+, missed
 29. not promoted this term (from step 28)
 
-**30. skills and training (pp. 6, 11)**
+**30. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)**
 
 31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 32. Advanced Education Table (education 8+): rolled 3
@@ -139,7 +139,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 49. promotion: rolled 3+5 +1 (Education 7+) = 9 against 6+, made
 50. promoted: Captain (from step 49)
 
-**51. skills and training (pp. 6, 11)**
+**51. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 52. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 53. Personal Development Table: rolled 4
@@ -159,7 +159,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 65. promotion: rolled 6+4 +1 (Education 7+) = 11 against 6+, made
 66. promoted: Major (from step 65)
 
-**67. skills and training (pp. 6, 11)**
+**67. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 69. Advanced Education Table: rolled 3
@@ -179,7 +179,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 81. promotion: rolled 4+5 +1 (Education 7+) = 10 against 6+, made
 82. promoted: Lt Colonel (from step 81)
 
-**83. skills and training (pp. 6, 11)**
+**83. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 84. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 85. Personal Development Table: rolled 6
@@ -208,7 +208,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 104. promotion: rolled 1+6 +1 (Education 7+) = 8 against 6+, made
 105. promoted: Colonel (from step 104)
 
-**106. skills and training (pp. 6, 11)**
+**106. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 107. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 108. Advanced Education Table: rolled 3
@@ -237,7 +237,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 127. promotion: rolled 4+2 +1 (Education 7+) = 7 against 6+, made
 128. promoted: General (from step 127)
 
-**129. skills and training (pp. 6, 11)**
+**129. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 6
@@ -264,7 +264,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 148. survived term 7 (from step 147)
 149. already General, the highest rank the Army print, so no promotion is thrown for in term 7
 
-**150. skills and training (pp. 6, 11)**
+**150. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 151. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 152. Advanced Education Table: rolled 2
@@ -281,7 +281,7 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 161. aging, Endurance: rolled 2+5 = 7 against 8+, missed
 162. Endurance -1, 6 to 5 (from step 161)
 
-**163. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**163. mustering out, 9 rolls: 7 for the terms, 2 for rank 6 (pp. 7, 9, 21-23)**
 
 164. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 165. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
@@ -295,27 +295,28 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 173. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
 174. Table 2, Cash Allowances: rolled 2 +1 = 3
 175. CR 10000, bringing the total to CR 30000 (from step 174)
-176. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-177. Table 1, Material Benefits: rolled 5 +1 = 6
-178. a Middle Passage (from step 177)
-179. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-180. Table 1, Material Benefits: rolled 6 +1 = 7
-181. Social Standing +1, 12 to 13 (from step 180)
-182. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-183. Table 1, Material Benefits: rolled 4 +1 = 5
-184. a High Passage (from step 183)
-185. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-186. Table 1, Material Benefits: rolled 4 +1 = 5
-187. a High Passage (from step 186)
-188. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-189. Table 1, Material Benefits: rolled 1 +1 = 2
-190. Intelligence +1, 10 to 11 (from step 189)
-191. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-192. Table 1, Material Benefits: rolled 4 +1 = 5
-193. a High Passage (from step 192)
-194. retirement pay of CR 8000 a year
+176. 3 rolls on Table 2, the most allowed: the remaining 6 rolls must be on Table 1 (from step 174)
+177. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+178. Table 1, Material Benefits: rolled 5 +1 = 6
+179. a Middle Passage (from step 178)
+180. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+181. Table 1, Material Benefits: rolled 6 +1 = 7
+182. Social Standing +1, 12 to 13 (from step 181)
+183. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+184. Table 1, Material Benefits: rolled 4 +1 = 5
+185. a High Passage (from step 184)
+186. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+187. Table 1, Material Benefits: rolled 4 +1 = 5
+188. a High Passage (from step 187)
+189. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+190. Table 1, Material Benefits: rolled 1 +1 = 2
+191. Intelligence +1, 10 to 11 (from step 190)
+192. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+193. Table 1, Material Benefits: rolled 4 +1 = 5
+194. a High Passage (from step 193)
+195. retirement pay of CR 8000 a year
 
-**195. titles (p. 5; Book 3 p. 22)**
+**196. titles (p. 5; Book 3 p. 22)**
 
-196. assume the hereditary title (p. 5): policy chose yes from yes, no
-197. social standing 13 confers marquis/marchioness, and it is assumed
+197. assume the hereditary title (p. 5): policy chose yes from yes, no
+198. social standing 13 confers marquis/marchioness, and it is assumed

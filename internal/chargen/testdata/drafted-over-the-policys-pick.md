@@ -91,7 +91,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused enlistme
 25. survival: rolled 5+4 = 9 against 6+, made
 26. survived term 1 (from step 25)
 
-**27. skills and training (pp. 6, 11)**
+**27. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 29. Advanced Education Table (education 8+): rolled 6
@@ -111,7 +111,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused enlistme
 41. commission: rolled 3+3 +1 (Education 7+) = 7 against 9+, missed
 42. not commissioned this term (from step 41)
 
-**43. skills and training (pp. 6, 11)**
+**43. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 44. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 45. Service Skills Table: rolled 4
@@ -129,7 +129,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused enlistme
 55. commission: rolled 1+1 +1 (Education 7+) = 3 against 9+, missed
 56. not commissioned this term (from step 55)
 
-**57. skills and training (pp. 6, 11)**
+**57. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 58. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 59. Personal Development Table: rolled 4
@@ -150,7 +150,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused enlistme
 72. promotion: rolled 5+1 = 6 against 9+, missed
 73. not promoted this term (from step 72)
 
-**74. skills and training (pp. 6, 11)**
+**74. skills and training, 2 rolls: 1 for the term, 1 for the commission (pp. 6, 11)**
 
 75. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 76. Advanced Education Table (education 8+): rolled 6
@@ -179,7 +179,7 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused enlistme
 95. promotion: rolled 2+5 = 7 against 9+, missed
 96. not promoted this term (from step 95)
 
-**97. skills and training (pp. 6, 11)**
+**97. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 98. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 99. Service Skills Table: rolled 4

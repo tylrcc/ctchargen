@@ -176,6 +176,12 @@ type run struct {
 	// decider is handed so it can see where the character is thin. It is
 	// not on the Character: it is a decision aid, not part of the record.
 	trained map[traveller.SkillTable]int
+
+	// fourthTableOpenedBy is the event that took Education to the fourth
+	// skills table's threshold (p. 11), until the next designation says so,
+	// and zero otherwise. It is working state, as trained is: the record
+	// carries the change, and the line that names it.
+	fourthTableOpenedBy int
 }
 
 // generate walks one character through the procedure, from the six rolls to

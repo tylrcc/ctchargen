@@ -77,7 +77,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 19. survival: rolled 6+4 = 10 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 3
@@ -94,7 +94,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 32. survival: rolled 3+2 = 5 against 5+, made
 33. survived term 2 (from step 32)
 
-**34. skills and training (pp. 6, 11)**
+**34. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 36. Service Skills Table: rolled 5
@@ -109,7 +109,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 43. survival: rolled 1+4 = 5 against 5+, made
 44. survived term 3 (from step 43)
 
-**45. skills and training (pp. 6, 11)**
+**45. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 47. Personal Development Table: rolled 5
@@ -123,7 +123,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 53. survival: rolled 5+2 = 7 against 5+, made
 54. survived term 4 (from step 53)
 
-**55. skills and training (pp. 6, 11)**
+**55. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 57. Advanced Education Table (education 8+): rolled 3
@@ -146,7 +146,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 70. survival: rolled 5+1 = 6 against 5+, made
 71. survived term 5 (from step 70)
 
-**72. skills and training (pp. 6, 11)**
+**72. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 73. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 74. Advanced Education Table: rolled 2

@@ -116,7 +116,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 28. promotion: rolled 2+5 +1 (Social Standing 8+) = 8 against 9+, missed
 29. not promoted this term (from step 28)
 
-**30. skills and training (pp. 6, 11)**
+**30. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)**
 
 31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 32. Advanced Education Table: rolled 2
@@ -140,7 +140,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 48. promotion: rolled 3+1 +1 (Social Standing 8+) = 5 against 9+, missed
 49. not promoted this term (from step 48)
 
-**50. skills and training (pp. 6, 11)**
+**50. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 51. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 52. Advanced Education Table: rolled 5
@@ -158,7 +158,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 62. promotion: rolled 4+5 +1 (Social Standing 8+) = 10 against 9+, made
 63. promoted: Captain (from step 62)
 
-**64. skills and training (pp. 6, 11)**
+**64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 66. Service Skills Table: rolled 6
@@ -179,7 +179,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 79. promotion: rolled 1+4 +1 (Social Standing 8+) = 6 against 9+, missed
 80. not promoted this term (from step 79)
 
-**81. skills and training (pp. 6, 11)**
+**81. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 83. Advanced Education Table: rolled 2
@@ -205,7 +205,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 99. promotion: rolled 4+3 +1 (Social Standing 8+) = 8 against 9+, missed
 100. not promoted this term (from step 99)
 
-**101. skills and training (pp. 6, 11)**
+**101. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 102. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 103. Service Skills Table: rolled 4
@@ -232,7 +232,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 120. promotion: rolled 6+6 +1 (Social Standing 8+) = 13 against 9+, made
 121. promoted: Force Cmdr (from step 120)
 
-**122. skills and training (pp. 6, 11)**
+**122. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 123. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 124. Personal Development Table: rolled 2
@@ -261,7 +261,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 143. promotion: rolled 3+3 +1 (Social Standing 8+) = 7 against 9+, missed
 144. not promoted this term (from step 143)
 
-**145. skills and training (pp. 6, 11)**
+**145. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 146. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 147. Service Skills Table: rolled 2
@@ -278,7 +278,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 156. aging, Endurance: rolled 1+4 = 5 against 8+, missed
 157. Endurance -1, 9 to 8 (from step 156)
 
-**158. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**158. mustering out, 9 rolls: 7 for the terms, 2 for rank 3 (pp. 7, 9, 21-23)**
 
 159. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 160. Table 2, Cash Allowances: rolled 6
@@ -289,17 +289,18 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 165. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 166. Table 2, Cash Allowances: rolled 1
 167. CR 2000, bringing the total to CR 37000 (from step 166)
-168. Table 1, Material Benefits: rolled 2
-169. Intelligence +2, 8 to 10 (from step 168)
-170. Table 1, Material Benefits: rolled 1
-171. a Low Passage (from step 170)
-172. Table 1, Material Benefits: rolled 3
-173. Education +1, 7 to 8 (from step 172)
-174. Table 1, Material Benefits: rolled 4
-175. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-176. a Dagger (from step 174)
-177. Table 1, Material Benefits: rolled 6
-178. a High Passage (from step 177)
-179. Table 1, Material Benefits: rolled 1
-180. a Low Passage (from step 179)
-181. retirement pay of CR 8000 a year
+168. 3 rolls on Table 2, the most allowed: the remaining 6 rolls must be on Table 1 (from step 166)
+169. Table 1, Material Benefits: rolled 2
+170. Intelligence +2, 8 to 10 (from step 169)
+171. Table 1, Material Benefits: rolled 1
+172. a Low Passage (from step 171)
+173. Table 1, Material Benefits: rolled 3
+174. Education +1, 7 to 8 (from step 173)
+175. Table 1, Material Benefits: rolled 4
+176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+177. a Dagger (from step 175)
+178. Table 1, Material Benefits: rolled 6
+179. a High Passage (from step 178)
+180. Table 1, Material Benefits: rolled 1
+181. a Low Passage (from step 180)
+182. retirement pay of CR 8000 a year

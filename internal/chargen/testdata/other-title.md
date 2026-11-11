@@ -73,7 +73,7 @@ UPP A68AAC, age 22, Other, 1 term, baron/baroness, denied reenlistment
 19. survival: rolled 2+5 +2 (Intelligence 9+) = 9 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 2
@@ -84,7 +84,7 @@ UPP A68AAC, age 22, Other, 1 term, baron/baroness, denied reenlistment
 28. reenlistment: rolled 2+1 = 3 against 5+, missed
 29. left the service after term 1: reenlistment denied (from step 28)
 
-**30. mustering out, 1 roll (pp. 7, 9, 21-23)**
+**30. mustering out, 1 roll: 1 for the term (pp. 7, 9, 21-23)**
 
 31. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 32. Table 2, Cash Allowances: rolled 3

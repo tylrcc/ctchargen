@@ -198,6 +198,63 @@ type Earned struct {
 // Rolls is how many skills rolls the term has given in all.
 func (e Earned) Rolls() int { return e.Term + e.Commission + e.Promotion }
 
+// String says what gave the term its skills rolls, leaving out a source that
+// gave none: 1 for the term, 1 for the commission. The skills question and
+// the record both say it this way.
+func (e Earned) String() string {
+	return gaveRolls([]rollSource{
+		{e.Term, "the term"},
+		{e.Commission, "the commission"},
+		{e.Promotion, "the promotion"},
+	})
+}
+
+// BenefitRolls is how many benefit rolls mustering out has given, by what
+// gave them: the terms served, and the extra rolls the rank held at the end
+// earns (p. 9).
+type BenefitRolls struct {
+	ForTerms, ForRank int
+
+	// Rank is the rank the extra rolls were earned at.
+	Rank Rank
+}
+
+// Rolls is how many benefit rolls mustering out has given in all.
+func (b BenefitRolls) Rolls() int { return b.ForTerms + b.ForRank }
+
+// String says what gave the benefit rolls, leaving out a source that gave
+// none: 3 for the terms, 2 for rank 4.
+func (b BenefitRolls) String() string {
+	terms := "the terms"
+	if b.ForTerms == 1 {
+		terms = "the term"
+	}
+
+	return gaveRolls([]rollSource{
+		{b.ForTerms, terms},
+		{b.ForRank, fmt.Sprintf("rank %d", b.Rank)},
+	})
+}
+
+// rollSource is one thing that gave rolls, and how many it gave.
+type rollSource struct {
+	rolls int
+	what  string
+}
+
+// gaveRolls joins the sources that gave any rolls, each as "N for what".
+func gaveRolls(from []rollSource) string {
+	var parts []string
+
+	for _, source := range from {
+		if source.rolls > 0 {
+			parts = append(parts, fmt.Sprintf("%d for %s", source.rolls, source.what))
+		}
+	}
+
+	return strings.Join(parts, ", ")
+}
+
 // SkillRoll is one skills roll as the chooser is asked it: which of the
 // term's rolls it is, counting from 1, and what gave the term its rolls.
 type SkillRoll struct {

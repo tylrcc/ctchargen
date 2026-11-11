@@ -108,7 +108,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 24. commission: rolled 3+4 +1 (Education 7+) = 8 against 9+, missed
 25. not commissioned this term (from step 24)
 
-**26. skills and training (pp. 6, 11)**
+**26. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 28. Advanced Education Table (education 8+): rolled 4
@@ -132,7 +132,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 44. promotion: rolled 6+5 +1 (Social Standing 8+) = 12 against 9+, made
 45. promoted: Captain (from step 44)
 
-**46. skills and training (pp. 6, 11)**
+**46. skills and training, 3 rolls: 1 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)**
 
 47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 48. Service Skills Table: rolled 2
@@ -156,7 +156,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 64. promotion: rolled 6+6 +1 (Social Standing 8+) = 13 against 9+, made
 65. promoted: Force Cmdr (from step 64)
 
-**66. skills and training (pp. 6, 11)**
+**66. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 67. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 68. Advanced Education Table: rolled 3
@@ -176,7 +176,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 80. promotion: rolled 6+6 +1 (Social Standing 8+) = 13 against 9+, made
 81. promoted: Lt Colonel (from step 80)
 
-**82. skills and training (pp. 6, 11)**
+**82. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 83. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 84. Personal Development Table: rolled 2
@@ -205,7 +205,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 103. promotion: rolled 5+4 +1 (Social Standing 8+) = 10 against 9+, made
 104. promoted: Colonel (from step 103)
 
-**105. skills and training (pp. 6, 11)**
+**105. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 106. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 107. Advanced Education Table: rolled 6
@@ -235,7 +235,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 127. promotion: rolled 2+2 +1 (Social Standing 8+) = 5 against 9+, missed
 128. not promoted this term (from step 127)
 
-**129. skills and training (pp. 6, 11)**
+**129. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 4
@@ -261,7 +261,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 147. promotion: rolled 3+1 +1 (Social Standing 8+) = 5 against 9+, missed
 148. not promoted this term (from step 147)
 
-**149. skills and training (pp. 6, 11)**
+**149. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 150. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 151. Advanced Education Table (education 8+): rolled 1
@@ -278,7 +278,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 160. aging, Endurance: rolled 3+6 = 9 against 8+, made
 161. Endurance holds (from step 160)
 
-**162. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**162. mustering out, 9 rolls: 7 for the terms, 2 for rank 5 (pp. 7, 9, 21-23)**
 
 163. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 164. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
@@ -292,27 +292,28 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 172. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
 173. Table 2, Cash Allowances: rolled 4 +1 = 5
 174. CR 20000, bringing the total to CR 35000 (from step 173)
-175. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-176. Table 1, Material Benefits: rolled 4 +1 = 5
-177. Travellers' Aid Society membership (from step 176)
-178. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-179. Table 1, Material Benefits: rolled 1 +1 = 2
-180. Intelligence +2, 9 to 11 (from step 179)
-181. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-182. Table 1, Material Benefits: rolled 6 +1 = 7
-183. Social Standing +2, 8 to 10 (from step 182)
-184. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-185. Table 1, Material Benefits: rolled 5 +1 = 6
-186. a High Passage (from step 185)
-187. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-188. Table 1, Material Benefits: rolled 4 +1 = 5
-189. Travellers' Aid again, which is wasted (from step 188)
-190. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-191. Table 1, Material Benefits: rolled 6 +1 = 7
-192. Social Standing +2, 10 to 12 (from step 191)
-193. retirement pay of CR 8000 a year
+175. 3 rolls on Table 2, the most allowed: the remaining 6 rolls must be on Table 1 (from step 173)
+176. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+177. Table 1, Material Benefits: rolled 4 +1 = 5
+178. Travellers' Aid Society membership (from step 177)
+179. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+180. Table 1, Material Benefits: rolled 1 +1 = 2
+181. Intelligence +2, 9 to 11 (from step 180)
+182. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+183. Table 1, Material Benefits: rolled 6 +1 = 7
+184. Social Standing +2, 8 to 10 (from step 183)
+185. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+186. Table 1, Material Benefits: rolled 5 +1 = 6
+187. a High Passage (from step 186)
+188. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+189. Table 1, Material Benefits: rolled 4 +1 = 5
+190. Travellers' Aid again, which is wasted (from step 189)
+191. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+192. Table 1, Material Benefits: rolled 6 +1 = 7
+193. Social Standing +2, 10 to 12 (from step 192)
+194. retirement pay of CR 8000 a year
 
-**194. titles (p. 5; Book 3 p. 22)**
+**195. titles (p. 5; Book 3 p. 22)**
 
-195. assume the hereditary title (p. 5): policy chose yes from yes, no
-196. social standing 12 confers baron/baroness, and it is assumed
+196. assume the hereditary title (p. 5): policy chose yes from yes, no
+197. social standing 12 confers baron/baroness, and it is assumed

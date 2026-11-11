@@ -80,7 +80,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 19. survival: rolled 1+2 +2 (Intelligence 9+) = 5 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 3
@@ -97,7 +97,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 32. survival: rolled 6+4 +2 (Intelligence 9+) = 12 against 5+, made
 33. survived term 2 (from step 32)
 
-**34. skills and training (pp. 6, 11)**
+**34. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 36. Service Skills Table: rolled 1
@@ -111,7 +111,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 42. survival: rolled 6+5 +2 (Intelligence 9+) = 13 against 5+, made
 43. survived term 3 (from step 42)
 
-**44. skills and training (pp. 6, 11)**
+**44. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 46. Personal Development Table: rolled 6
@@ -125,7 +125,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 52. survival: rolled 5+3 +2 (Intelligence 9+) = 10 against 5+, made
 53. survived term 4 (from step 52)
 
-**54. skills and training (pp. 6, 11)**
+**54. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 55. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 56. Advanced Education Table (education 8+): rolled 6
@@ -142,7 +142,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 65. aging, Endurance: rolled 5+6 = 11 against 8+, made
 66. Endurance holds (from step 65)
 
-**67. mustering out, 4 rolls (pp. 7, 9, 21-23)**
+**67. mustering out, 4 rolls: 4 for the terms (pp. 7, 9, 21-23)**
 
 68. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 69. Table 2, Cash Allowances: rolled 1
@@ -153,9 +153,10 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 74. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 75. Table 2, Cash Allowances: rolled 3
 76. CR 10000, bringing the total to CR 16000 (from step 75)
-77. Table 1, Material Benefits: rolled 6
-78. nothing: the table prints a dash for this service (from step 77)
+77. 3 rolls on Table 2, the most allowed: the remaining 1 roll must be on Table 1 (from step 75)
+78. Table 1, Material Benefits: rolled 6
+79. nothing: the table prints a dash for this service (from step 78)
 
-**79. titles (p. 5; Book 3 p. 22)**
+**80. titles (p. 5; Book 3 p. 22)**
 
-80. social standing 10 at the end, from 11 at 18: no title, where the rolled value allowed one
+81. social standing 10 at the end, from 11 at 18: no title, where the rolled value allowed one

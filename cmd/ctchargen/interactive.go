@@ -145,7 +145,7 @@ func oddsText(odds traveller.Odds) string {
 // Implements: A skills table offered shows its six results [Choices].
 func (p *player) SkillTable(from []traveller.SkillTableOffer, roll traveller.SkillRoll) (traveller.SkillTable, error) {
 	question := fmt.Sprintf("Which skills table? Roll %d of %d: %s. It is designated before the die (p. 11)",
-		roll.N, roll.Of.Rolls(), earnedText(roll.Of))
+		roll.N, roll.Of.Rolls(), roll.Of)
 
 	offer, err := pick(p, question, from, func(o traveller.SkillTableOffer) string {
 		results := make([]string, 0, len(o.Results))
@@ -157,27 +157,6 @@ func (p *player) SkillTable(from []traveller.SkillTableOffer, roll traveller.Ski
 	})
 
 	return offer.Table, err
-}
-
-// earnedText says what gave the term its skills rolls, leaving out a source
-// that gave none.
-func earnedText(earned traveller.Earned) string {
-	var parts []string
-
-	for _, source := range []struct {
-		rolls int
-		what  string
-	}{
-		{earned.Term, "the term"},
-		{earned.Commission, "the commission"},
-		{earned.Promotion, "the promotion"},
-	} {
-		if source.rolls > 0 {
-			parts = append(parts, fmt.Sprintf("%d for %s", source.rolls, source.what))
-		}
-	}
-
-	return strings.Join(parts, ", ")
 }
 
 // resultText is one table result as the skills menu shows it: a

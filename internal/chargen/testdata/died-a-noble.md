@@ -79,7 +79,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused enlistment), 5 terms, 
 22. survival: rolled 5+2 +2 (Intelligence 9+) = 9 against 5+, made
 23. survived term 1 (from step 22)
 
-**24. skills and training (pp. 6, 11)**
+**24. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 26. Advanced Education Table: rolled 5
@@ -96,7 +96,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused enlistment), 5 terms, 
 35. survival: rolled 4+3 +2 (Intelligence 9+) = 9 against 5+, made
 36. survived term 2 (from step 35)
 
-**37. skills and training (pp. 6, 11)**
+**37. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 39. Personal Development Table: rolled 5
@@ -110,7 +110,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused enlistment), 5 terms, 
 45. survival: rolled 1+6 +2 (Intelligence 9+) = 9 against 5+, made
 46. survived term 3 (from step 45)
 
-**47. skills and training (pp. 6, 11)**
+**47. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 49. Advanced Education Table: rolled 6
@@ -124,7 +124,7 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused enlistment), 5 terms, 
 55. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 56. survived term 4 (from step 55)
 
-**57. skills and training (pp. 6, 11)**
+**57. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 58. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 59. Service Skills Table: rolled 6

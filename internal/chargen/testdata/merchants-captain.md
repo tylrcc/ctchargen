@@ -105,7 +105,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 25. promotion: rolled 5+3 +1 (Intelligence 9+) = 9 against 10+, missed
 26. not promoted this term (from step 25)
 
-**27. skills and training (pp. 6, 11)**
+**27. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)**
 
 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 29. Advanced Education Table (education 8+): rolled 3
@@ -128,7 +128,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 44. promotion: rolled 2+4 +1 (Intelligence 9+) = 7 against 10+, missed
 45. not promoted this term (from step 44)
 
-**46. skills and training (pp. 6, 11)**
+**46. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 47. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 48. Personal Development Table: rolled 1
@@ -145,7 +145,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 57. promotion: rolled 6+3 +1 (Intelligence 9+) = 10 against 10+, made
 58. promoted: 3rd Officer (from step 57)
 
-**59. skills and training (pp. 6, 11)**
+**59. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 60. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 61. Advanced Education Table (education 8+): rolled 2
@@ -165,7 +165,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 73. promotion: rolled 6+3 +1 (Intelligence 9+) = 10 against 10+, made
 74. promoted: 2nd Officer (from step 73)
 
-**75. skills and training (pp. 6, 11)**
+**75. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 76. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 77. Service Skills Table: rolled 4
@@ -195,7 +195,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 97. promotion: rolled 1+4 +1 (Intelligence 9+) = 6 against 10+, missed
 98. not promoted this term (from step 97)
 
-**99. skills and training (pp. 6, 11)**
+**99. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Advanced Education Table (education 8+): rolled 2
@@ -222,7 +222,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 118. promoted: 1st Officer (from step 117)
 119. Pilot-1 (from step 117)
 
-**120. skills and training (pp. 6, 11)**
+**120. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 121. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 122. Advanced Education Table: rolled 2
@@ -252,7 +252,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 142. promotion: rolled 5+5 +1 (Intelligence 9+) = 11 against 10+, made
 143. promoted: Captain (from step 142)
 
-**144. skills and training (pp. 6, 11)**
+**144. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 145. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 146. Personal Development Table: rolled 4
@@ -272,7 +272,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 158. aging, Endurance: rolled 2+3 = 5 against 8+, missed
 159. Endurance -1, 6 to 5 (from step 158)
 
-**160. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**160. mustering out, 9 rolls: 7 for the terms, 2 for rank 5 (pp. 7, 9, 21-23)**
 
 161. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 162. Table 2, Cash Allowances: rolled 2
@@ -283,30 +283,31 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 167. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 168. Table 2, Cash Allowances: rolled 5
 169. CR 20000, bringing the total to CR 45000 (from step 168)
-170. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-171. Table 1, Material Benefits: rolled 6 +1 = 7
-172. a Free Trader, Type A (from step 171)
-173. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-174. Table 1, Material Benefits: rolled 4 +1 = 5
-175. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-176. a Dagger (from step 174)
-177. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-178. Table 1, Material Benefits: rolled 6 +1 = 7
-179. the Free Trader again: 10 years old, with 30 years of payments left (from step 178)
-180. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-181. Table 1, Material Benefits: rolled 4 +1 = 5
-182. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-183. expertise instead: Dagger-1 (from step 181)
-184. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-185. Table 1, Material Benefits: rolled 1 +1 = 2
-186. Intelligence +1, 9 to 10 (from step 185)
-187. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
-188. Table 1, Material Benefits: rolled 4 +1 = 5
-189. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-190. expertise instead: Dagger-2 (from step 188)
-191. retirement pay of CR 8000 a year
+170. 3 rolls on Table 2, the most allowed: the remaining 6 rolls must be on Table 1 (from step 168)
+171. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+172. Table 1, Material Benefits: rolled 6 +1 = 7
+173. a Free Trader, Type A (from step 172)
+174. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+175. Table 1, Material Benefits: rolled 4 +1 = 5
+176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+177. a Dagger (from step 175)
+178. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+179. Table 1, Material Benefits: rolled 6 +1 = 7
+180. the Free Trader again: 10 years old, with 30 years of payments left (from step 179)
+181. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+182. Table 1, Material Benefits: rolled 4 +1 = 5
+183. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
+184. expertise instead: Dagger-1 (from step 182)
+185. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+186. Table 1, Material Benefits: rolled 1 +1 = 2
+187. Intelligence +1, 9 to 10 (from step 186)
+188. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
+189. Table 1, Material Benefits: rolled 4 +1 = 5
+190. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
+191. expertise instead: Dagger-2 (from step 189)
+192. retirement pay of CR 8000 a year
 
-**192. titles (p. 5; Book 3 p. 22)**
+**193. titles (p. 5; Book 3 p. 22)**
 
-193. assume the hereditary title (p. 5): policy chose yes from yes, no
-194. social standing 11 confers knight/dame, and it is assumed
+194. assume the hereditary title (p. 5): policy chose yes from yes, no
+195. social standing 11 confers knight/dame, and it is assumed

@@ -384,8 +384,16 @@ func TestMusteringOutNotes(t *testing.T) {
 		// rolls, "in addition to the 5 rolls (for 5 terms of service)".
 		{5, 5, 7},
 	} {
-		if got := r.Muster().Rolls(tc.terms, tc.rank); got != tc.want {
-			t.Errorf("%d terms at rank %d: %d rolls, want %d", tc.terms, tc.rank, got, tc.want)
+		got := r.Muster().Rolls(tc.terms, tc.rank)
+		if got.Rolls() != tc.want {
+			t.Errorf("%d terms at rank %d: %d rolls, want %d", tc.terms, tc.rank, got.Rolls(), tc.want)
+		}
+
+		// One per term, and whatever is over that the rank earned, so the
+		// record's account of the rolls is the page's.
+		if got.ForTerms != tc.terms || got.ForRank != tc.want-tc.terms || got.Rank != tc.rank {
+			t.Errorf("%d terms at rank %d: %+v, want %d for the terms and %d for rank %d",
+				tc.terms, tc.rank, got, tc.terms, tc.want-tc.terms, tc.rank)
 		}
 	}
 

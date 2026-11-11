@@ -89,7 +89,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 24. commission: rolled 2+3 +1 (Education 7+) = 6 against 9+, missed
 25. not commissioned this term (from step 24)
 
-**26. skills and training (pp. 6, 11)**
+**26. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 28. Advanced Education Table (education 8+): rolled 2
@@ -113,7 +113,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 44. promotion: rolled 3+2 +1 (Social Standing 8+) = 6 against 9+, missed
 45. not promoted this term (from step 44)
 
-**46. skills and training (pp. 6, 11)**
+**46. skills and training, 2 rolls: 1 for the term, 1 for the commission (pp. 6, 11)**
 
 47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 48. Service Skills Table: rolled 1
@@ -133,7 +133,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 60. promotion: rolled 5+3 +1 (Social Standing 8+) = 9 against 9+, made
 61. promoted: Captain (from step 60)
 
-**62. skills and training (pp. 6, 11)**
+**62. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 64. Advanced Education Table (education 8+): rolled 2
@@ -145,7 +145,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 70. reenlistment: rolled 3+1 = 4 against 6+, missed
 71. left the service after term 3: reenlistment denied (from step 70)
 
-**72. mustering out, 4 rolls (pp. 7, 9, 21-23)**
+**72. mustering out, 4 rolls: 3 for the terms, 1 for rank 2 (pp. 7, 9, 21-23)**
 
 73. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 74. Table 2, Cash Allowances: rolled 4
@@ -156,10 +156,11 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 79. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 80. Table 2, Cash Allowances: rolled 6
 81. CR 30000, bringing the total to CR 70000 (from step 80)
-82. Table 1, Material Benefits: rolled 3
-83. Education +1, 10 to 11 (from step 82)
+82. 3 rolls on Table 2, the most allowed: the remaining 1 roll must be on Table 1 (from step 80)
+83. Table 1, Material Benefits: rolled 3
+84. Education +1, 10 to 11 (from step 83)
 
-**84. titles (p. 5; Book 3 p. 22)**
+**85. titles (p. 5; Book 3 p. 22)**
 
-85. assume the hereditary title (p. 5): policy chose yes from yes, no
-86. social standing 12 confers baron/baroness, and it is assumed
+86. assume the hereditary title (p. 5): policy chose yes from yes, no
+87. social standing 12 confers baron/baroness, and it is assumed

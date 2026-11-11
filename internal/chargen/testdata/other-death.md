@@ -78,7 +78,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 19. survival: rolled 3+6 = 9 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 4
@@ -95,7 +95,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 32. survival: rolled 5+1 = 6 against 5+, made
 33. survived term 2 (from step 32)
 
-**34. skills and training (pp. 6, 11)**
+**34. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 36. Service Skills Table: rolled 3
@@ -109,7 +109,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 42. survival: rolled 1+6 = 7 against 5+, made
 43. survived term 3 (from step 42)
 
-**44. skills and training (pp. 6, 11)**
+**44. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 46. Personal Development Table: rolled 4
@@ -124,7 +124,7 @@ UPP 8346C5, age 38, Other, 5 terms, killed by the survival throw
 53. survival: rolled 1+5 = 6 against 5+, made
 54. survived term 4 (from step 53)
 
-**55. skills and training (pp. 6, 11)**
+**55. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 57. Advanced Education Table (education 8+): rolled 1

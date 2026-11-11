@@ -20,6 +20,12 @@ release turns out to be.
   and expertise taken at mustering out instead of a repeat weapon, on the
   mustering-out line. The `departure` property is unchanged, and a crisis that
   kills a character after he retires still ends the record in the death.
+- The generation record says what earned each count of rolls (#565): a
+  term's skills step says how many rolls the term, a commission and a
+  promotion gave, and the mustering out step how many the terms and the rank
+  gave. After the third roll on Table 2, a line says the remaining rolls must
+  be on Table 1, and the first designation after Education reaches 8 says it
+  offers the fourth skills table. Neither line is a choice: nothing was asked.
 
 ## 1.0.0-rc.5
 

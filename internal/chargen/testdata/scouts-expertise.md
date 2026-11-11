@@ -101,7 +101,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 21. survival: rolled 2+5 = 7 against 7+, made
 22. survived term 1 (from step 21)
 
-**23. skills and training (pp. 6, 11)**
+**23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 24. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 25. Advanced Education Table (education 8+): rolled 2
@@ -118,7 +118,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 34. survival: rolled 3+5 = 8 against 7+, made
 35. survived term 2 (from step 34)
 
-**36. skills and training (pp. 6, 11)**
+**36. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 37. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 38. Service Skills Table: rolled 4
@@ -131,7 +131,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 43. survival: rolled 6+3 = 9 against 7+, made
 44. survived term 3 (from step 43)
 
-**45. skills and training (pp. 6, 11)**
+**45. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 47. Personal Development Table: rolled 2
@@ -145,7 +145,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 53. survival: rolled 5+4 = 9 against 7+, made
 54. survived term 4 (from step 53)
 
-**55. skills and training (pp. 6, 11)**
+**55. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 57. Advanced Education Table (education 8+): rolled 6
@@ -168,7 +168,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 70. survival: rolled 4+6 = 10 against 7+, made
 71. survived term 5 (from step 70)
 
-**72. skills and training (pp. 6, 11)**
+**72. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 73. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 74. Advanced Education Table: rolled 6
@@ -191,7 +191,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 87. survival: rolled 4+3 = 7 against 7+, made
 88. survived term 6 (from step 87)
 
-**89. skills and training (pp. 6, 11)**
+**89. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 90. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 91. Service Skills Table: rolled 5
@@ -214,7 +214,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 104. survival: rolled 2+6 = 8 against 7+, made
 105. survived term 7 (from step 104)
 
-**106. skills and training (pp. 6, 11)**
+**106. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 107. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 108. Personal Development Table: rolled 6
@@ -231,7 +231,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 117. aging, Endurance: rolled 1+4 = 5 against 8+, missed
 118. Endurance -1, 6 to 5 (from step 117)
 
-**119. mustering out, 7 rolls (pp. 7, 9, 21-23)**
+**119. mustering out, 7 rolls: 7 for the terms (pp. 7, 9, 21-23)**
 
 120. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 121. Table 1, Material Benefits: rolled 2

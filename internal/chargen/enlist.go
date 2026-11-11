@@ -171,10 +171,19 @@ type applyResult struct {
 // Implements: A held change keeps the table's change [Generation record].
 func (a *applyResult) Alteration(characteristic traveller.Characteristic, delta int) error {
 	before := a.run.profile[characteristic]
+	gate := a.run.tables.Education()
+	wasOpen := gate.Open(a.run.profile)
 
 	a.run.profile = a.run.profile.Alter(characteristic, delta)
 
 	after := a.run.profile[characteristic]
+
+	// The change that opens the fourth skills table is what the next
+	// designation says opened it (p. 11). Nothing closes the table again:
+	// no table lowers Education, and aging leaves it alone (p. 9).
+	if !wasOpen && gate.Open(a.run.profile) {
+		a.run.fourthTableOpenedBy = a.run.record.next()
+	}
 
 	a.run.record.fact(a.because, a.errata, traveller.AppliedFact{
 		Gain:   traveller.Change{Characteristic: characteristic, From: before, To: after, Delta: delta},

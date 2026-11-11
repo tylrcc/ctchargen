@@ -73,7 +73,7 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 21. survival: rolled 1+6 = 7 against 7+, made
 22. survived term 1 (from step 21)
 
-**23. skills and training (pp. 6, 11)**
+**23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 24. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 25. Service Skills Table: rolled 1

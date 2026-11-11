@@ -73,7 +73,7 @@ UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, d
 20. survival: rolled 3+4 +2 (Intelligence 9+) = 9 against 5+, made
 21. survived term 1 (from step 20)
 
-**22. skills and training (pp. 6, 11)**
+**22. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 23. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 24. Personal Development Table: rolled 6
@@ -85,7 +85,7 @@ UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, d
 30. leave the service or remain for another term (pp. 6-7, 21): policy chose discharge from continue, discharge
 31. left the service after term 1: discharge (from step 29)
 
-**32. mustering out, 1 roll (pp. 7, 9, 21-23)**
+**32. mustering out, 1 roll: 1 for the term (pp. 7, 9, 21-23)**
 
 33. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 34. Table 1, Material Benefits: rolled 1

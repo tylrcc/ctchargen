@@ -89,7 +89,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 25. promotion: rolled 4+1 = 5 against 10+, missed
 26. not promoted this term (from step 25)
 
-**27. skills and training (pp. 6, 11)**
+**27. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)**
 
 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 29. Advanced Education Table: rolled 2
@@ -113,7 +113,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 45. promotion: rolled 4+2 = 6 against 10+, missed
 46. not promoted this term (from step 45)
 
-**47. skills and training (pp. 6, 11)**
+**47. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 49. Advanced Education Table: rolled 6
@@ -130,7 +130,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 58. promotion: rolled 4+6 = 10 against 10+, made
 59. promoted: 3rd Officer (from step 58)
 
-**60. skills and training (pp. 6, 11)**
+**60. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 61. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 62. Service Skills Table: rolled 2
@@ -150,7 +150,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 74. promotion: rolled 5+6 = 11 against 10+, made
 75. promoted: 2nd Officer (from step 74)
 
-**76. skills and training (pp. 6, 11)**
+**76. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 78. Advanced Education Table: rolled 3
@@ -180,7 +180,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 98. promoted: 1st Officer (from step 97)
 99. Pilot-1 (from step 97)
 
-**100. skills and training (pp. 6, 11)**
+**100. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
 
 101. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 102. Personal Development Table: rolled 4

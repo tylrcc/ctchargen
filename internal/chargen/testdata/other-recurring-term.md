@@ -95,7 +95,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 19. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training (pp. 6, 11)**
+**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 1
@@ -111,7 +111,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 31. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 32. survived term 2 (from step 31)
 
-**33. skills and training (pp. 6, 11)**
+**33. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 35. Service Skills Table: rolled 1
@@ -124,7 +124,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 40. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 41. survived term 3 (from step 40)
 
-**42. skills and training (pp. 6, 11)**
+**42. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 43. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 44. Personal Development Table: rolled 1
@@ -137,7 +137,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 49. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 50. survived term 4 (from step 49)
 
-**51. skills and training (pp. 6, 11)**
+**51. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 52. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 53. Advanced Education Table (education 8+): rolled 1
@@ -159,7 +159,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 65. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 66. survived term 5 (from step 65)
 
-**67. skills and training (pp. 6, 11)**
+**67. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 68. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 69. Advanced Education Table: rolled 1
@@ -181,7 +181,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 81. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 82. survived term 6 (from step 81)
 
-**83. skills and training (pp. 6, 11)**
+**83. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 84. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 85. Service Skills Table: rolled 1
@@ -203,7 +203,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 97. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 98. survived term 7 (from step 97)
 
-**99. skills and training (pp. 6, 11)**
+**99. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 100. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 101. Personal Development Table: rolled 1
@@ -225,7 +225,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 113. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 114. survived term 8 (from step 113)
 
-**115. skills and training (pp. 6, 11)**
+**115. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 116. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 117. Advanced Education Table (education 8+): rolled 1
@@ -247,7 +247,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 129. survival: rolled 6+6 +2 (Intelligence 9+) = 14 against 5+, made
 130. survived term 9 (from step 129)
 
-**131. skills and training (pp. 6, 11)**
+**131. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
 
 132. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 133. Advanced Education Table: rolled 1
@@ -264,7 +264,7 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 142. aging, Endurance: rolled 1+1 = 2 against 9+, missed
 143. Endurance -1, 12 to 11 (from step 142)
 
-**144. mustering out, 9 rolls (pp. 7, 9, 21-23)**
+**144. mustering out, 9 rolls: 9 for the terms (pp. 7, 9, 21-23)**
 
 145. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 146. Table 2, Cash Allowances: rolled 1
@@ -275,20 +275,21 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 151. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 152. Table 2, Cash Allowances: rolled 1
 153. CR 1000, bringing the total to CR 3000 (from step 152)
-154. Table 1, Material Benefits: rolled 1
-155. a Low Passage (from step 154)
-156. Table 1, Material Benefits: rolled 1
-157. a Low Passage (from step 156)
-158. Table 1, Material Benefits: rolled 1
-159. a Low Passage (from step 158)
-160. Table 1, Material Benefits: rolled 1
-161. a Low Passage (from step 160)
-162. Table 1, Material Benefits: rolled 1
-163. a Low Passage (from step 162)
-164. Table 1, Material Benefits: rolled 1
-165. a Low Passage (from step 164)
+154. 3 rolls on Table 2, the most allowed: the remaining 6 rolls must be on Table 1 (from step 152)
+155. Table 1, Material Benefits: rolled 1
+156. a Low Passage (from step 155)
+157. Table 1, Material Benefits: rolled 1
+158. a Low Passage (from step 157)
+159. Table 1, Material Benefits: rolled 1
+160. a Low Passage (from step 159)
+161. Table 1, Material Benefits: rolled 1
+162. a Low Passage (from step 161)
+163. Table 1, Material Benefits: rolled 1
+164. a Low Passage (from step 163)
+165. Table 1, Material Benefits: rolled 1
+166. a Low Passage (from step 165)
 
-**166. titles (p. 5; Book 3 p. 22)**
+**167. titles (p. 5; Book 3 p. 22)**
 
-167. assume the hereditary title (p. 5): policy chose yes from yes, no
-168. social standing 12 confers baron/baroness, and it is assumed
+168. assume the hereditary title (p. 5): policy chose yes from yes, no
+169. social standing 12 confers baron/baroness, and it is assumed
