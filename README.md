@@ -261,6 +261,18 @@ The toolchain is unpinned on purpose, and golangci-lint runs with
 `gofumpt`, run _inside_ golangci-lint rather than beside it, so there is one
 definition of formatted rather than two that can disagree.
 
+## Traveller
+
+This is an unofficial fan-made tool. It is not affiliated with, endorsed
+by, or supported by Mongoose Publishing.
+
+> The Traveller game in all forms is owned by Mongoose Publishing. Copyright 1977–2026 Mongoose Publishing. Traveller is a registered trademark of Mongoose Publishing. Mongoose Publishing permits web sites and fanzines for this game, provided it contains this notice, that Mongoose Publishing is notified, and subject to a withdrawal of permission on 90 days notice. The contents of this site are for personal, non-commercial use only. Any use of Mongoose Publishing's copyrighted material or trademarks anywhere on this web site and its files should not be viewed as a challenge to those copyrights or trademarks. In addition, any program/articles/file on this site cannot be republished or distributed without the consent of the author who contributed it.
+
+The MIT licence below covers this repository's own code. The Traveller
+material this tool implements — the Classic Traveller rules and their
+tables, and the Traveller name — stays under Mongoose Publishing's
+non-commercial permission above.
+
 ## Licence
 
 [MIT](LICENSE).
