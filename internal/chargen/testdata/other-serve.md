@@ -27,9 +27,9 @@ ctchargen:
 
 # Other 644776
 
-Other, 5 terms, retired at 38. Known for Gambling-2. Musters out with CR 30000.
+UPP 644776, age 38, Other (enlisted), 5 terms, retired
 
-UPP 644776, age 38, Other, 5 terms, retired
+Skills include Gambling-2, Automatic Pistol-1 and Streetwise-1. Musters out with CR 30000.
 
 ## Skills
 
@@ -37,7 +37,7 @@ UPP 644776, age 38, Other, 5 terms, retired
 - Gambling-2
 - Streetwise-1
 
-## Possessions
+## Benefits
 
 - CR 30000
 
@@ -83,10 +83,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 23. Advanced Education Table: rolled 4
 24. Gambling-1 (from step 23)
-25. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+25. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 26. Service Skills Table: rolled 2
 27. Gambling-2 (from step 26)
 28. reenlistment: rolled 6+6 = 12 against 5+, made
@@ -99,7 +99,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 33. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-34. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+34. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (0, against 1 and 1), from Personal Development Table, Service Skills Table, Advanced Education Table
 35. Personal Development Table: rolled 3
 36. Endurance +1, 4 to 5 (from step 35)
 37. reenlistment: rolled 2+5 = 7 against 5+, made
@@ -113,7 +113,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 43. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-44. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+44. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (1) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 45. Advanced Education Table: rolled 1
 46. Streetwise-1 (from step 45)
 47. reenlistment: rolled 2+5 = 7 against 5+, made
@@ -127,9 +127,9 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 53. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-54. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+54. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (1) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 55. Service Skills Table: rolled 5
-56. weapon of expertise, specified immediately (p. 11): policy chose Automatic Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+56. weapon of expertise, specified immediately (p. 11): policy drew Automatic Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
 57. Gun Combat: Automatic Pistol-1 (from step 55)
 58. reenlistment: rolled 3+4 = 7 against 5+, made
 59. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
@@ -151,7 +151,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 71. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-72. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+72. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (1, against 2 and 2), from Personal Development Table, Service Skills Table, Advanced Education Table
 73. Personal Development Table: rolled 6
 74. Social Standing -1, 7 to 6 (from step 73)
 75. reenlistment: rolled 1+2 = 3 against 5+, missed

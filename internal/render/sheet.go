@@ -9,14 +9,18 @@ import (
 )
 
 // writeSheet writes the sheet the way Book 1 summarises a character: the
-// UPP line, then skills and possessions, as p. 25 does for Jamison, and the
-// service a term at a time.
+// profile line, then skills and benefits, as p. 25 does for Jamison, and the
+// service a term at a time. The summary follows the profile line, and is
+// left out where it has nothing to say.
 func writeSheet(out *strings.Builder, r view) {
-	fmt.Fprintf(out, "# %s\n\n%s\n\n", heading(r), summary(r))
-	fmt.Fprintf(out, "%s\n\n", headline(r))
+	fmt.Fprintf(out, "# %s\n\n%s\n\n", heading(r), profileLine(r))
+
+	if told := summary(r); told != "" {
+		fmt.Fprintf(out, "%s\n\n", told)
+	}
 
 	writeSection(out, "Skills", skillLines(r))
-	writeSection(out, "Possessions", possessionLines(r))
+	writeSection(out, "Benefits", benefitLines(r))
 	writeSection(out, "Service record", serviceLines(r))
 }
 
@@ -30,16 +34,16 @@ func age(a ageView) string {
 	return fmt.Sprintf("%d years %d months", a.Years, a.Months)
 }
 
-// headline is the line the book itself leads with: the UPP, the age, and
+// profileLine is the line the book itself leads with: the UPP, the age, and
 // what the character is.
-func headline(r view) string {
+func profileLine(r view) string {
 	parts := []string{"UPP " + r.UPP, "age " + age(r.Age)}
 
 	if r.Service == "" {
 		return strings.Join(append(parts, "civilian, no prior service"), ", ")
 	}
 
-	parts = append(parts, serving(r)+whoseService(r)+", "+terms(r.Terms))
+	parts = append(parts, serving(r)+entered(r)+", "+terms(r.Terms))
 
 	if r.Nobility != nil && r.Nobility.Assumed {
 		parts = append(parts, r.Nobility.Title)
@@ -63,34 +67,24 @@ func terms(count int) string {
 // oneTerm is the only count the plural is wrong for.
 const oneTerm = 1
 
-// whoseService says, where it is not obvious, that the service on the
-// headline is not the one that was attempted.
+// entered says on the profile line how the character entered the service:
+// enlisted, or drafted after the service attempted refused enlistment (p. 5),
+// which may be the service the draft gave.
 //
-// The service record four sections down has always been honest - it says
-// "drafted" - but the headline is the line a referee reads, and a character
-// who typed --service marines and got a Navy man had nothing there to explain
-// it.
+// The service record four sections down has always said so, but the profile
+// line is the line a referee reads first, and a character who typed --service
+// marines and got a Navy man had nothing there to explain it. Who named the
+// service attempted, the policy or the player, is not this line's to say: the
+// record's choice line says it (#583).
 //
-// Everything turns on the service that was ATTEMPTED, which is not the same
-// question as who named it. A policy that picks Other and sees the throw fail
-// gets whatever the draft hands him, and saying "chosen by the policy" over
-// that service credits the policy with a choice it never made - in exactly
-// the case this exists to expose.
-//
-// Implements: The headline names the service attempted, not the one the draft
-// gave [1:5].
-func whoseService(r view) string {
-	attempted, byPolicy := r.Attempt.Service, r.Attempt.ByPolicy
-
-	switch {
-	case attempted != r.Service:
-		return fmt.Sprintf(" (%s after the %s refused enlistment)", r.Enlistment.How, attempted)
-	case byPolicy:
-		return " (service chosen by the policy)"
-	default:
-		// He asked for this service and is in it. He knows.
-		return ""
+// Implements: The profile line says how the character entered the service
+// [1:5].
+func entered(r view) string {
+	if r.Enlistment.Drafted {
+		return fmt.Sprintf(" (drafted after the %s refused enlistment)", r.Attempted)
 	}
+
+	return " (" + r.Enlistment.How + ")"
 }
 
 func writeSection(out *strings.Builder, heading string, lines []string) {
@@ -116,7 +110,10 @@ func skillLines(r view) []string {
 	return lines
 }
 
-func possessionLines(r view) []string {
+// benefitLines is what mustering out gave, one list under the sheet's
+// Benefits heading: the possessions property's items with the cash and the
+// retirement pay beside them.
+func benefitLines(r view) []string {
 	var lines []string
 
 	if r.Benefits.Cash > 0 {
@@ -136,7 +133,7 @@ func possessionLines(r view) []string {
 	}
 
 	if r.Pension > 0 {
-		lines = append(lines, credits(r.Pension)+" a year in retirement pay")
+		lines = append(lines, retirementPay(r.Pension))
 	}
 
 	return lines
@@ -176,6 +173,13 @@ func passageLines(passages []string) []string {
 }
 
 func credits(amount int64) string { return fmt.Sprintf("CR %d", amount) }
+
+// retirementPay is the pension in the one wording the summary and the sheet's
+// benefits both write (#557).
+//
+// Implements: Retirement pay reads the same in the summary and the benefits
+// [Sheet].
+func retirementPay(pension int64) string { return credits(pension) + " a year retirement pay" }
 
 // shipLine reads a ship's terms off its kind, which is what the terms turn
 // on: a scout ship is held without title (p. 23) whatever its age, and a
@@ -307,8 +311,8 @@ func joinNonEmpty(separator string, parts ...string) string {
 	return strings.Join(kept, separator)
 }
 
-// serving is the service and the rank held in it, as the headline says them
-// and a batch member's note is named by them.
+// serving is the service and the rank held in it, as the profile line says
+// them and a batch member's note is named by them.
 func serving(r view) string {
 	if r.RankName == "" {
 		return r.Service

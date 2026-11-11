@@ -25,9 +25,9 @@ ctchargen:
 
 # Scouts 673735
 
-Scouts, killed by the survival throw in term 1, aged 22.
+UPP 673735, age 22, Scouts (enlisted), 1 term, killed by the survival throw
 
-UPP 673735, age 22, Scouts, 1 term, killed by the survival throw
+Killed by the survival throw in term 1, aged 22. Skills include Pilot-1.
 
 ## Skills
 

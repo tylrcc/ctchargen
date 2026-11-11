@@ -554,7 +554,7 @@ func TestTheQuestionsStayOutOfTheNote(t *testing.T) {
 		t.Fatal("the note holds no choice the player made, so it asserts nothing about who answered")
 	}
 
-	if strings.Contains(note, "policy chose") {
+	if strings.Contains(note, ": policy ") {
 		t.Errorf("a guided note credits the policy with a choice:\n%s", note)
 	}
 }
@@ -720,7 +720,7 @@ type armed struct {
 	chosen      string
 }
 
-// armedBy reads the note: the weapons among its possessions, whether
+// armedBy reads the note: the weapons among its benefits, whether
 // Dagger-1 is among its skills, and the last weapon-benefit choice on its
 // generation record, in the record's own wording.
 func armedBy(t *testing.T, note string) armed {
@@ -746,7 +746,7 @@ func armedBy(t *testing.T, note string) armed {
 		switch {
 		case section == "Skills" && item == dagger+"-1":
 			found.daggerSkill = true
-		case section == "Possessions" && isItem && isWeapon(item):
+		case section == "Benefits" && isItem && isWeapon(item):
 			found.weapons = append(found.weapons, item)
 		case strings.Contains(line, weaponBenefit):
 			_, chosen, _ := strings.Cut(line, weaponBenefit)
@@ -758,12 +758,12 @@ func armedBy(t *testing.T, note string) armed {
 	return found
 }
 
-// isWeapon is whether a possession is a weapon received as a benefit: the
-// sheet lists those by name alone, where every other possession is money, a
-// passage, a membership, a pension or a ship.
-func isWeapon(possession string) bool {
+// isWeapon is whether a line of the sheet's benefits is a weapon received as
+// a benefit: the sheet lists those by name alone, where every other line is
+// money, a passage, a membership, a pension or a ship.
+func isWeapon(benefit string) bool {
 	for _, other := range []string{"CR ", "Passage", "Travellers' Aid", "retirement pay", " tons"} {
-		if strings.Contains(possession, other) {
+		if strings.Contains(benefit, other) {
 			return false
 		}
 	}

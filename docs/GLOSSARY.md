@@ -6,9 +6,16 @@ A Classic Traveller character generator holding to the © 1977 text of Books
 ## Language
 
 **Note**:
-The markdown the tool writes for one character: its properties, its heading
-and summary, the sheet, then the generation record, which ends it (ADR 0006).
+The markdown the tool writes for one character: its properties, its heading,
+the sheet, which opens with the profile line and the summary, then the
+generation record, which ends it (ADR 0006).
 _Avoid_: Output, result, file
+
+**Profile line**:
+The sheet's first line: the UPP, the age, the service and rank with how the
+service was entered, the terms, any title assumed, and how the service ended.
+The summary follows it, and repeats only a death.
+_Avoid_: Headline, UPP line
 
 **Record**:
 The note's generation record: every die thrown and every choice made, step

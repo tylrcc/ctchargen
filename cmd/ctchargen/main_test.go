@@ -51,8 +51,8 @@ func TestRunRejectsBadCommandLines(t *testing.T) {
 		"a list of answers": {[]string{cmdNew, "--answers", "1,2,1"}, wantUsage},
 		"no such service":   {[]string{cmdNew, flagAuto, flagService, "navvy"}, "no service is called"},
 		// A name is one line, on both commands that take one (#128).
-		"a name with a newline": {[]string{cmdNew, flagAuto, flagName, "Jamison\n\n## Possessions"}, wantOneLine},
-		"a name with a return":  {[]string{cmdNew, flagAuto, flagName, "Jamison\r## Possessions"}, wantOneLine},
+		"a name with a newline": {[]string{cmdNew, flagAuto, flagName, "Jamison\n\n## Benefits"}, wantOneLine},
+		"a name with a return":  {[]string{cmdNew, flagAuto, flagName, "Jamison\r## Benefits"}, wantOneLine},
 		// A name reaches the note's properties as YAML, which reads a byte
 		// that is not UTF-8 back as another letter.
 		"a name that is not UTF-8": {[]string{cmdNew, flagAuto, flagName, "Jami\xffson"}, "not UTF-8"},
@@ -228,8 +228,8 @@ func TestTheCtchargenPropertyIsTheBuildsVersion(t *testing.T) {
 
 // An auto run applies the strategies given, all the way to the record: under
 // --career oneterm the policy leaves after the first term, where the default
-// would continue. The note does not name the strategies, so the choice they
-// decide is what shows them.
+// would continue. The note names no career strategy, so the choice it decides
+// is what shows it.
 //
 // The dice are live, and a character can die before the end of the first term
 // is asked about, so runs are made until one reaches it.

@@ -38,9 +38,9 @@ ctchargen:
 
 # Marines Force Cmdr 3B8A89
 
-Marines Force Cmdr, 7 terms, retired at 46. Known for Mechanical-2. Musters out with CR 37000.
+UPP 3B8A89, age 46, Marines Force Cmdr (enlisted), 7 terms, retired
 
-UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
+Skills include Mechanical-2, Bayonet-1 and Brawling-1. Musters out with CR 37000 and CR 8000 a year retirement pay.
 
 ## Skills
 
@@ -55,13 +55,13 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 - Tactics-1
 - Vacc Suit-1
 
-## Possessions
+## Benefits
 
 - CR 37000
 - Low Passage ×2
 - High Passage
 - Sword
-- CR 8000 a year in retirement pay
+- CR 8000 a year retirement pay
 
 ## Service record
 
@@ -119,14 +119,14 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 30. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)
 
-31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 32. Advanced Education Table: rolled 2
 33. Mechanical-1 (from step 32)
-34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+34. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 35. Service Skills Table: rolled 3
-36. weapon of expertise, specified immediately (p. 11): policy chose Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+36. weapon of expertise, specified immediately (p. 11): policy drew Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
 37. Blade Combat: Sword-1 (from step 35)
-38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (0, against 1 and 1), from Personal Development Table, Service Skills Table, Advanced Education Table
 39. Personal Development Table: rolled 3
 40. Endurance +1, 8 to 9 (from step 39)
 41. reenlistment: rolled 4+6 = 10 against 6+, made
@@ -143,9 +143,9 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 50. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-51. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+51. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (1) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 52. Advanced Education Table: rolled 5
-53. weapon of expertise, specified immediately (p. 11): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+53. weapon of expertise, specified immediately (p. 11): policy drew Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
 54. Blade Combat: Dagger-1 (from step 52)
 55. reenlistment: rolled 6+3 = 9 against 6+, made
 56. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
@@ -161,11 +161,11 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
-65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (1) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 66. Service Skills Table: rolled 6
-67. weapon of expertise, specified immediately (p. 11): policy chose Shotgun from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+67. weapon of expertise, specified immediately (p. 11): policy drew Shotgun from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
 68. Gun Combat: Shotgun-1 (from step 66)
-69. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+69. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (1, against 2 and 2), from Personal Development Table, Service Skills Table, Advanced Education Table
 70. Personal Development Table: rolled 5
 71. Brawling-1 (from step 70)
 72. reenlistment: rolled 5+3 = 8 against 6+, made
@@ -182,7 +182,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 81. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (2) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 83. Advanced Education Table: rolled 2
 84. Mechanical-2 (from step 83)
 85. reenlistment: rolled 4+2 = 6 against 6+, made
@@ -208,9 +208,9 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 101. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-102. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+102. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (2) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 103. Service Skills Table: rolled 4
-104. weapon of expertise, specified immediately (p. 11): policy chose Bayonet from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+104. weapon of expertise, specified immediately (p. 11): policy drew Bayonet from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
 105. Blade Combat: Bayonet-1 (from step 103)
 106. reenlistment: rolled 4+3 = 7 against 6+, made
 107. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
@@ -235,10 +235,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 122. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
-123. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+123. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (2, against 3 and 3), from Personal Development Table, Service Skills Table, Advanced Education Table
 124. Personal Development Table: rolled 2
 125. Dexterity +1, 11 to 12 (from step 124)
-126. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+126. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (3) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 127. Advanced Education Table: rolled 4
 128. Tactics-1 (from step 127)
 129. reenlistment: rolled 2+5 = 7 against 6+, made
@@ -264,7 +264,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 145. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-146. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+146. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (3) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 147. Service Skills Table: rolled 2
 148. Vacc Suit-1 (from step 147)
 149. reenlistment: rolled 5+5 = 10 against 6+, made
@@ -298,7 +298,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 173. Table 1, Material Benefits: rolled 3
 174. Education +1, 7 to 8 (from step 173)
 175. Table 1, Material Benefits: rolled 4
-176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+176. weapon benefit, or +1 expertise in lieu (p. 22): policy drew Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
 177. a Sword (from step 175)
 178. Table 1, Material Benefits: rolled 6
 179. a High Passage (from step 178)

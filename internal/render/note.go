@@ -1,6 +1,6 @@
 // Package render writes a generated character as the note a referee keeps:
-// its properties, its heading and summary, the sheet and the generation
-// record, in markdown (ADR 0006).
+// its properties, its heading, the sheet, which opens with the profile line
+// and the summary, and the generation record, in markdown (ADR 0006).
 //
 // It names no erratum. The readings are the authority's record, not the
 // referee's (ADR 0007), so it does not import rules, where they are declared.
@@ -23,9 +23,9 @@ import (
 )
 
 // Note is the character as a referee keeps it: its properties, its heading
-// and summary and the sheet, then the generation record, which is every die
-// thrown and every choice made and the only way back to the character (ADR
-// 0006). It ends with the record. The build that wrote it is a property, who
+// and the sheet, which opens with the profile line and the summary, then the
+// generation record, which is every die thrown and every choice made and the
+// only way back to the character (ADR 0006). It ends with the record. The build that wrote it is a property, who
 // made each choice is on that choice's line, and the ruleset is the same on
 // every note, so nothing follows the record to say them again.
 //
@@ -43,10 +43,10 @@ func Note(character *chargen.Character) string {
 	return strings.TrimRight(out.String(), "\n") + "\n"
 }
 
-// Title is what a batch names a character's note by: his service and the
-// rank he holds, as the headline says them, or "Civilian", and his UPP
-// (#400). A batch has no name to give him (#406); a referee names him in
-// the vault by his note's name and aliases properties.
+// Title is what a batch names a character's note by: his service and the rank
+// he holds, as the profile line says them, or "Civilian", and his UPP (#400).
+// A batch has no name to give him (#406); a referee names him in the vault by
+// his note's name and aliases properties.
 //
 // Implements: A batch member's note is named for its character [Command line].
 func Title(character *chargen.Character) string { return titleOf(viewOf(character)) }

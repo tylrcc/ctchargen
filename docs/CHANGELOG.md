@@ -5,6 +5,29 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- The profile line comes first under a note's heading, and the summary
+  follows it without repeating its service, rank, terms, departure or age
+  (#557). A dead character's summary opens with the death, as "Killed by the
+  survival throw in term 3, aged 30.", and a civilian's keeps its sentence.
+  The profile line says how the service was entered, `(enlisted)` or
+  `(drafted after the Marines refused enlistment)`, and no longer
+  `(service chosen by the policy)`: who chose is on the record's choice line
+  (#583). The summary's skills are "Skills include" the three highest at any
+  level, ties in the sheet's order, where "Known for" named only level 2 and
+  up (#558, #559), and its assets add retirement pay, after the cash. A
+  title assumed is on the profile line alone, not repeated in the summary.
+  The sheet's "Possessions" heading is "Benefits"; the `possessions`
+  property is unchanged. The summary and the benefits both say
+  `CR 8000 a year retirement pay`, where the benefits said "a year in
+  retirement pay".
+- The generation record says what the policy's answers were decided on
+  (#564). The three it draws read `policy drew`: the service, a combat
+  result's weapon and a benefit's weapon, where expertise is not taken. A
+  skills table says it was least trained on, with the others' counts
+  (`least trained on (1, against 2 and 2)`), or how a tie was broken
+  (`tied least trained on (0) with three others, the advanced strategy's
+first`). A player's choices, and the policy's fixed answers, read as
+  before.
 - Every career strategy submits to the draft, `oneterm` included (#566): a
   character who declines has served no term, so `oneterm` had not done the one
   term it names. A civilian now comes only from `new` without `--auto`, where

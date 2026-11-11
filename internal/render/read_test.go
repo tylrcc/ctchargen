@@ -2,6 +2,7 @@ package render_test
 
 import (
 	"fmt"
+	"maps"
 	"regexp"
 	"slices"
 	"strings"
@@ -25,13 +26,13 @@ func noteOf(change func(c *chargen.Character)) string {
 	return render.Note(character)
 }
 
-// headlineOf is the line the sheet leads with, the one every headline case
-// is about. Searching the whole note is too loose: "(" would find a
-// parenthesis anywhere in the note.
-func headlineOf(note string) string {
+// profileLineOf is the line the sheet leads with, the one every profile line
+// case is about, without its newline. Searching the whole note is too loose:
+// "(" would find a parenthesis anywhere in the note.
+func profileLineOf(note string) string {
 	for line := range strings.Lines(note) {
 		if strings.HasPrefix(line, "UPP ") {
-			return line
+			return strings.TrimSuffix(line, "\n")
 		}
 	}
 
@@ -359,21 +360,20 @@ func TestAChoiceIsNamedInThePagesWords(t *testing.T) {
 	}
 }
 
-// The headline says whose service it is, where that is not obvious.
+// The profile line says how the character entered the service: enlisted, or
+// drafted after the service attempted refused enlistment (#583).
 //
-// The service record further down has always been honest. The headline is
-// the line a referee reads, and a character who was typed as a Marine and
-// came back a Navy man had nothing there to explain it.
+// The service record further down has always said so. The profile line is
+// the line a referee reads first, and a character typed as a Marine who came
+// back a Navy man had nothing there to explain it. Who named the service
+// attempted is the record's choice line's to say, so the profile line names
+// neither the policy nor the player.
 //
-// Everything turns on the service ATTEMPTED, not on who named it. The draft
-// can override either decider, and crediting one with an outcome it did not
-// pick is worse than saying nothing.
-//
-// Holds: The headline names the service attempted, not the one the draft gave.
-func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
+// Holds: The profile line says how the character entered the service.
+func TestTheProfileLineSaysHowTheCharacterEntered(t *testing.T) {
 	t.Parallel()
 
-	for name, tc := range headlineCases() {
+	for name, tc := range profileLineCases() {
 		note := noteOf(func(character *chargen.Character) {
 			// The enlistment throw's outcome is where the service attempted is
 			// read from, whoever named it (#397); the draft's, where he served.
@@ -390,60 +390,57 @@ func TestTheHeadlineSaysWhoseServiceItIs(t *testing.T) {
 			}
 		})
 
-		lead := headlineOf(note)
-		if !strings.Contains(lead, tc.wants) {
-			t.Errorf("%s: the headline does not read %q: %q", name, tc.wants, lead)
-		}
-
-		if tc.does != "" && strings.Contains(lead, tc.does) {
-			t.Errorf("%s: the headline reads %q and should not: %q", name, tc.does, lead)
+		want := "UPP 000000, age 18, " + tc.wants + ", 0 terms, discharged"
+		if lead := profileLineOf(note); lead != want {
+			t.Errorf("%s: the profile line reads %q, want %q", name, lead, want)
 		}
 	}
 }
 
-// headlineCase is a service attempted, how it was named, and the outcomes
-// that entered him in a service: what the headline should read, and what it
-// should not.
-type headlineCase struct {
-	entered     []traveller.Fact
-	forced      bool
-	chose       traveller.ServiceName
-	byPolicy    bool
-	wants, does string
+// profileLineCase is a service attempted, how it was named, and the outcomes
+// that entered him in a service: what the profile line should say of his
+// service.
+type profileLineCase struct {
+	entered  []traveller.Fact
+	forced   bool
+	chose    traveller.ServiceName
+	byPolicy bool
+	wants    string
 }
 
-func headlineCases() map[string]headlineCase {
-	const unchanged = "Navy, "
+func profileLineCases() map[string]profileLineCase {
+	const enlistedInTheNavy = "Navy (enlisted)"
 
-	return map[string]headlineCase{
+	return map[string]profileLineCase{
 		"asked for one service and got another": {
 			entered: draftedAfter(traveller.Marines, traveller.Navy), forced: true, chose: traveller.Marines,
 			wants: "Navy (drafted after the Marines refused enlistment)",
 		},
 		"asked for a service and got it": {
 			entered: []traveller.Fact{enlisted(traveller.Navy)}, forced: true, chose: traveller.Navy,
-			wants: unchanged, does: "refused",
+			wants: enlistedInTheNavy,
 		},
-		"asked for nothing and the policy picked": {
+		"asked for nothing and the policy drew": {
 			entered: []traveller.Fact{enlisted(traveller.Navy)}, chose: traveller.Navy, byPolicy: true,
-			wants: "Navy (service chosen by the policy)",
+			wants: enlistedInTheNavy,
 		},
-		// A player who named it himself is told nothing he does not know.
 		"asked for nothing and the player picked": {
 			entered: []traveller.Fact{enlisted(traveller.Navy)}, chose: traveller.Navy,
-			wants: unchanged, does: "chosen by",
+			wants: enlistedInTheNavy,
 		},
-		// The draft overrides the attempt. Saying "chosen by the policy"
-		// over a draft's outcome credits the policy with a choice it never
-		// made, in the case this exists to expose.
-		"the policy picked one and the draft gave another": {
+		"the policy drew one and the draft gave another": {
 			entered: draftedAfter(traveller.Navy, traveller.Marines), chose: traveller.Navy, byPolicy: true,
-			wants: "Marines (drafted after the Navy refused enlistment)", does: "chosen by the policy",
+			wants: "Marines (drafted after the Navy refused enlistment)",
 		},
-		// And after a draft the player does not know either: he chose Navy.
 		"the player picked one and the draft gave another": {
 			entered: draftedAfter(traveller.Navy, traveller.Marines), chose: traveller.Navy,
 			wants: "Marines (drafted after the Navy refused enlistment)",
+		},
+		// The draft is a throw over all six (p. 5), so it can hand him the
+		// service that refused him. He was drafted all the same.
+		"the draft gave the service that refused him": {
+			entered: draftedAfter(traveller.Navy, traveller.Navy), chose: traveller.Navy, byPolicy: true,
+			wants: "Navy (drafted after the Navy refused enlistment)",
 		},
 	}
 }
@@ -465,17 +462,17 @@ func TestOneTermIsSingular(t *testing.T) {
 		"two":  {2, "2 terms", ""},
 		"none": {0, "0 terms", ""},
 	} {
-		lead := headlineOf(noteOf(func(c *chargen.Character) {
+		lead := profileLineOf(noteOf(func(c *chargen.Character) {
 			c.Events = recorded(enlisted(traveller.Navy), opened(tc.terms),
 				traveller.DischargedFact{After: traveller.Term(tc.terms), Age: traveller.NewAge(18)})
 		}))
 
 		if !strings.Contains(lead, tc.wants) {
-			t.Errorf("%s: the headline does not read %q: %q", name, tc.wants, lead)
+			t.Errorf("%s: the profile line does not read %q: %q", name, tc.wants, lead)
 		}
 
 		if tc.does != "" && strings.Contains(lead, tc.does) {
-			t.Errorf("%s: the headline reads %q: %q", name, tc.does, lead)
+			t.Errorf("%s: the profile line reads %q: %q", name, tc.does, lead)
 		}
 	}
 }
@@ -766,27 +763,203 @@ func TestPossessionsAreOneItemEach(t *testing.T) {
 	}
 }
 
-// A note's heading is followed by a paragraph a referee can read aloud
-// (#425): the service and rank, terms, how he left and at what age, his two
-// or three best skills, and what he mustered out with that matters - credits,
-// a ship, Travellers' Aid. The dead are told how and when they died (#418);
-// a civilian, that he declined the draft. The words are typed out here, not
-// read from the code that writes them.
+// A choice's line says what the answer was decided on, where the record
+// carries it (#564). An answer drawn reads "drew", not "chose": the service,
+// the weapon a combat result names, and the weapon a benefit names. A skills
+// table the policy chose says it was the one least trained on, with the
+// counts against the others, or, where several tied, how many and that the
+// skills strategy's ranking took the first of them. A player's table has no
+// policy reason, and a fixed answer gives none. The lines are typed out here,
+// not read from the code that writes them.
 //
-// Holds: A note opens with a summary a referee can read aloud.
-func TestANoteOpensWithASummary(t *testing.T) {
+// Holds: A choice's line says what a drawn or least-trained answer was
+// decided on.
+func TestAChoiceSaysWhatItWasDecidedOn(t *testing.T) {
+	t.Parallel()
+
+	for name, tc := range decidedOnCases() {
+		note := noteOf(func(c *chargen.Character) {
+			if !tc.guided {
+				policy := chargen.DefaultPolicy()
+
+				policy.Skills = tc.skills
+				c.Policy = &policy
+			}
+
+			answered := tc.answered
+
+			answered.Seq = 4
+			c.Events = recorded(answered, aDischargedSailor())
+		})
+
+		if want := "4. " + tc.want; !slices.Contains(strings.Split(note, "\n"), want) {
+			t.Errorf("%s: the record has no line %q:\n%s", name, want, note)
+		}
+	}
+}
+
+// A policy designates only among the tables trained on least, so a policy's
+// table that was not is a generation defect. The note fails on it rather than
+// word a reason the policy did not have.
+func TestAPolicyTableNotLeastTrainedOnIsADefect(t *testing.T) {
+	t.Parallel()
+
+	defer func() {
+		if recover() == nil {
+			t.Error("a policy's table trained on most was written as though it had a reason")
+		}
+	}()
+
+	noteOf(func(c *chargen.Character) {
+		policy := chargen.DefaultPolicy()
+
+		c.Policy = &policy
+		c.Events = recorded(traveller.ChoiceEvent{
+			Seq: 1, Point: traveller.ChoiceSkillTable, Alternatives: []string{"a", "b"}, Chosen: "b",
+			Taken: []int{0, 1},
+		}, aDischargedSailor())
+	})
+}
+
+// decidedOnCase is a choice as the record carries it, the skills strategy of
+// the policy that answered it, or a player, and its line in the note.
+type decidedOnCase struct {
+	answered traveller.ChoiceEvent
+	skills   chargen.Skills
+	guided   bool
+	want     string
+}
+
+// decidedOnCases are every choice whose line is held, each with its line.
+func decidedOnCases() map[string]decidedOnCase {
+	cases := answerCases()
+	maps.Copy(cases, tableCases())
+
+	return cases
+}
+
+// answerCases are the draws, a weapon benefit taken as expertise, and a
+// fixed answer.
+func answerCases() map[string]decidedOnCase {
+	const (
+		blade   = "Blade"
+		benefit = "weapon benefit, or +1 expertise in lieu (p. 22): "
+	)
+
+	weapons := []string{dagger, blade, "expertise in Dagger"}
+
+	return map[string]decidedOnCase{
+		"a service drawn": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceService, Alternatives: []string{"Navy", "Marines"}, Chosen: "Navy", Drawn: true,
+			},
+			want: "service to enlist in (pp. 5, 10): policy drew Navy from Navy, Marines",
+		},
+		"a benefit weapon drawn": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceMusterWeapon, Alternatives: weapons, Chosen: blade, Drawn: true,
+			},
+			want: benefit + "policy drew Blade from Dagger, Blade, expertise in Dagger",
+		},
+		"expertise taken, not drawn": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceMusterWeapon, Alternatives: weapons, Chosen: "expertise in Dagger",
+			},
+			want: benefit + "policy chose expertise in Dagger from Dagger, Blade, expertise in Dagger",
+		},
+		"a fixed answer": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceAttemptPromotion, Alternatives: []string{"yes", "no"}, Chosen: "yes",
+			},
+			want: "attempt promotion (p. 6): policy chose yes from yes, no",
+		},
+	}
+}
+
+// tableCases are a table least trained on, two ties, and a player's table.
+func tableCases() map[string]decidedOnCase {
+	const (
+		personal  = "Personal Development Table"
+		service   = "Service Skills Table"
+		advanced  = "Advanced Education Table"
+		education = "Advanced Education Table (education 8+)"
+		tables    = "acquired skills table to consult (pp. 6, 11): "
+	)
+
+	three := []string{personal, service, advanced}
+	four := []string{personal, service, advanced, education}
+
+	return map[string]decidedOnCase{
+		"the one table least trained on": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceSkillTable, Alternatives: three, Chosen: service, Taken: []int{2, 1, 2},
+			},
+			want: tables + "policy chose Service Skills Table, least trained on (1, against 2 and 2), " +
+				"from Personal Development Table, Service Skills Table, Advanced Education Table",
+		},
+		"four tables tied": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceSkillTable, Alternatives: four, Chosen: education, Taken: []int{0, 0, 0, 0},
+			},
+			skills: chargen.SkillsAdvanced,
+			want: tables + "policy chose Advanced Education Table (education 8+), tied least trained on (0) " +
+				"with three others, the advanced strategy's first, from Personal Development Table, " +
+				"Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)",
+		},
+		"two tables tied": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceSkillTable, Alternatives: three, Chosen: personal, Taken: []int{1, 2, 1},
+			},
+			skills: chargen.SkillsPersonal,
+			want: tables + "policy chose Personal Development Table, tied least trained on (1) " +
+				"with one other, the personal strategy's first, " +
+				"from Personal Development Table, Service Skills Table, Advanced Education Table",
+		},
+		// A person may designate any table offered, the one trained on most
+		// included, and the line says nothing of why.
+		"a player's table": {
+			answered: traveller.ChoiceEvent{
+				Point: traveller.ChoiceSkillTable, Alternatives: three, Chosen: advanced, Taken: []int{0, 0, 1},
+			},
+			guided: true,
+			want: tables + "player chose Advanced Education Table " +
+				"from Personal Development Table, Service Skills Table, Advanced Education Table",
+		},
+	}
+}
+
+// A note's heading is followed by the profile line, and the profile line by a
+// paragraph a referee can read aloud (#557): the death first, for the dead,
+// then the three highest-level skills, and what he mustered out with that
+// matters - credits, retirement pay, Travellers' Aid and a ship. It does not
+// repeat the service, rank, terms, title, departure or age the profile line
+// just gave, but for the death. A civilian is told he declined the draft
+// (#418), and a character with nothing to tell gets no paragraph. The words
+// are typed out here, not read from the code that writes them.
+//
+// Holds: The profile line opens the sheet, and a summary a referee can read
+// aloud follows it.
+func TestTheProfileLineIsFollowedByASummary(t *testing.T) {
 	t.Parallel()
 
 	for name, tc := range summaryCases() {
 		note := noteOf(tc.change)
 
-		// The summary is the paragraph between the heading line and the UPP
-		// line, whatever the heading is.
+		// The profile line is the paragraph after the heading line, whatever
+		// the heading is, and the summary the paragraph after that, up to the
+		// sheet's first section.
 		_, afterHeading, _ := strings.Cut(note, "\n# ")
 		_, body, _ := strings.Cut(afterHeading, "\n\n")
 
-		if got, _, _ := strings.Cut(body, "\n\nUPP "); got != tc.want {
-			t.Errorf("%s: the summary reads %q, want %q", name, got, tc.want)
+		if !strings.HasPrefix(body, "UPP ") {
+			t.Errorf("%s: the heading is not followed by the profile line: %q", name, body)
+
+			continue
+		}
+
+		_, afterProfile, _ := strings.Cut(body, "\n\n")
+		if got, _, _ := strings.Cut(afterProfile, "\n\n"); got != tc.want {
+			t.Errorf("%s: the profile line is followed by %q, want %q", name, got, tc.want)
 		}
 	}
 }
@@ -798,9 +971,18 @@ type noteCase struct {
 	want   string
 }
 
-// summaryCases are an officer, a merchant with a ship, a civilian and a dead
-// Scout, each with the summary its note should open with.
+// summaryCases are the characters whose summary is held, each with what its
+// note should read after the profile line.
 func summaryCases() map[string]noteCase {
+	cases := musteredSummaryCases()
+	maps.Copy(cases, endedSummaryCases())
+
+	return cases
+}
+
+// musteredSummaryCases are an officer, a merchant with a ship, a Scout with
+// his ship and a retired noble.
+func musteredSummaryCases() map[string]noteCase {
 	return map[string]noteCase{
 		"an officer": {
 			func(c *chargen.Character) {
@@ -814,8 +996,7 @@ func summaryCases() map[string]noteCase {
 						traveller.Skill{Name: "Tactics", Level: 1},
 					), traveller.CashFact{Cash: 30000, Total: 30000})
 			},
-			"Army Captain, 2 terms, denied reenlistment at 26. Known for Rifle-2. " +
-				"Musters out with CR 30000.",
+			"Skills include Rifle-2, Brawling-1 and Medical-1. Musters out with CR 30000.",
 		},
 		"a merchant with a ship": {
 			func(c *chargen.Character) {
@@ -825,12 +1006,8 @@ func summaryCases() map[string]noteCase {
 					traveller.TravellersAidFact{},
 					traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.FreeTrader, Tons: 200}})
 			},
-			"Merchants, 7 terms, retired at 46. " +
+			"Skills include Pilot-1. " +
 				"Musters out with Travellers' Aid Society membership and a Free Trader, Type A.",
-		},
-		"a civilian": {
-			func(c *chargen.Character) { c.Events = recorded(civilian()) },
-			"A civilian who declined the draft at 18.",
 		},
 		"a Scout with his ship": {
 			func(c *chargen.Character) {
@@ -839,16 +1016,54 @@ func summaryCases() map[string]noteCase {
 					skilled(traveller.Skill{Name: pilot, Level: 2}, traveller.Skill{Name: "Electronic", Level: 3}),
 					traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.ScoutShip, Tons: 100}})
 			},
-			"Scouts, 7 terms, retired at 46. Known for Electronic-3 and Pilot-2. " +
+			"Skills include Electronic-3 and Pilot-2. " +
 				"Musters out with a Scout ship, Type S, held in constructive possession.",
 		},
-		"a dead Scout": {
+		// The pay follows the cash, so the ship's ", Type A" comes last and
+		// never splits the list. The title assumed is on the profile line
+		// alone, so the summary says nothing of it.
+		"a retired noble with a ship": {
+			func(c *chargen.Character) { c.Events = recorded(aRetiredNobleWithAShip()) },
+			"Skills include Admin-1, Gunnery-1 and Pilot-1. " +
+				"Musters out with CR 10000, CR 4000 a year retirement pay and a Free Trader, Type A.",
+		},
+	}
+}
+
+// endedSummaryCases are a civilian, the dead and one with nothing to tell:
+// the characters whose summary is not mostly what they mustered out with.
+func endedSummaryCases() map[string]noteCase {
+	return map[string]noteCase{
+		"a civilian": {
+			func(c *chargen.Character) { c.Events = recorded(civilian()) },
+			"A civilian who declined the draft at 18.",
+		},
+		// The dead are assessed for a title but not asked (E011). The summary
+		// names no title, assumed or not.
+		"a dead Scout with a title not assumed": {
 			func(c *chargen.Character) {
 				c.Events = recorded(enlisted(traveller.Scouts), opened(3),
 					traveller.DiedFact{Term: 3, Age: traveller.NewAge(30)},
-					skilled(traveller.Skill{Name: pilot, Level: 1}))
+					skilled(traveller.Skill{Name: pilot, Level: 1}),
+					traveller.TitledFact{SocialStanding: 11, Title: traveller.Knight, AtDeath: true})
 			},
-			"Scouts, killed by the survival throw in term 3, aged 30.",
+			"Killed by the survival throw in term 3, aged 30. Skills include Pilot-1.",
+		},
+		"one killed by a medical crisis": {
+			func(c *chargen.Character) {
+				c.Events = recorded(traveller.StartedFact{Age: traveller.NewAge(46)}, enlisted(traveller.Other), opened(7),
+					traveller.DiedOfCrisisFact{Term: 7, Characteristic: traveller.Strength})
+			},
+			"Killed by a medical crisis in term 7, aged 46.",
+		},
+		// No skill, no benefit, no title: the profile line says it all, and
+		// the sheet follows it.
+		"one with nothing to tell": {
+			func(c *chargen.Character) {
+				c.Events = recorded(enlisted(traveller.Other), opened(1),
+					traveller.DischargedFact{After: 1, Age: traveller.NewAge(22)})
+			},
+			"## Service record",
 		},
 	}
 }
@@ -1002,9 +1217,54 @@ func TestPassagesOfOneClassAreOneLineWithACount(t *testing.T) {
 			traveller.PassageFact{Class: traveller.LowPassage})
 	})
 
-	want := regexp.MustCompile(`(?m)^## Possessions\n\n- Low Passage ×2\n- Middle Passage\n\n`)
+	want := regexp.MustCompile(`(?m)^## Benefits\n\n- Low Passage ×2\n- Middle Passage\n\n`)
 	if !want.MatchString(note) {
-		t.Errorf("the sheet has no possessions matching %s:\n%s", want, note)
+		t.Errorf("the sheet has no benefits matching %s:\n%s", want, note)
+	}
+}
+
+// Retirement pay reads the same in the summary and in the sheet's benefits:
+// "CR 4000 a year retirement pay", the wording #557 decided, and no other.
+//
+// Holds: Retirement pay reads the same in the summary and the benefits.
+func TestRetirementPayReadsTheSameOnTheSheet(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) { c.Events = recorded(aRetiredNobleWithAShip()) })
+
+	const pay = "CR 4000 a year retirement pay"
+
+	want := regexp.MustCompile(`(?m)^## Benefits\n\n- CR 10000\n- Free Trader, Type A, 200 tons, 0 years old, ` +
+		`owned free and clear\n- ` + pay + `\n\n`)
+	if !want.MatchString(note) {
+		t.Errorf("the sheet has no benefits matching %s:\n%s", want, note)
+	}
+
+	// The generation record words the pension its own way, so only the sheet
+	// is counted.
+	sheet, _, _ := strings.Cut(note, "## Generation record")
+
+	if strings.Count(sheet, pay) != 2 || strings.Count(sheet, "retirement pay") != 2 {
+		t.Errorf("the summary and the benefits do not both read %q, and only it:\n%s", pay, sheet)
+	}
+}
+
+// aRetiredNobleWithAShip is a career that musters out with cash, retirement
+// pay and a ship, and assumes a title.
+func aRetiredNobleWithAShip() []any {
+	return []any{
+		enlisted(traveller.Merchants), opened(5),
+		traveller.RetiredFact{After: 5, Age: traveller.NewAge(38)},
+		skilled(
+			traveller.Skill{Name: "Vacc Suit", Level: 1},
+			traveller.Skill{Name: pilot, Level: 1},
+			traveller.Skill{Name: "Gunnery", Level: 1},
+			traveller.Skill{Name: "Admin", Level: 1},
+		),
+		traveller.CashFact{Cash: 10000, Total: 10000},
+		traveller.ShipReceivedFact{Ship: traveller.Ship{Kind: traveller.FreeTrader, Tons: 200}},
+		traveller.PensionFact{Pay: 4000},
+		traveller.TitledFact{SocialStanding: 11, Title: traveller.Knight, Assumed: true},
 	}
 }
 

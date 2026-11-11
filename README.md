@@ -72,14 +72,16 @@ the shell's `>` empties its file before the command starts, whatever then
 happens. The questions go to standard error, so `>` and a pipe carry only the
 note, from `new` with or without `--auto`.
 
-**A character is written as one markdown note**: the sheet — the UPP line,
-skills, possessions and the service a term at a time, as Book 1 summarises a
-character — and under it the generation record, every die thrown and every
+**A character is written as one markdown note**: the sheet — the profile
+line, skills, benefits and the service a term at a time, as Book 1 summarises
+a character — and under it the generation record, every die thrown and every
 choice made, step by step with its page cite, each choice saying whether the
-policy or the player made it. Each step is a heading, with a term's skills and
-aging under the term's, so a vault's outline shows where in the record you
-are. The note ends with the record, and drops into a notes vault as it is; its
-`ctchargen` property names the build that wrote it.
+policy or the player made it. Where the policy drew an answer the line says
+"drew", and where it designated a skills table the line says which table it
+had trained on least, or how it broke a tie. Each step is a heading, with a
+term's skills and aging under the term's, so a vault's outline shows where in
+the record you are. The note ends with the record, and drops into a notes
+vault as it is; its `ctchargen` property names the build that wrote it.
 
 **A note opens with properties** a vault can query. Every note carries every
 one: a text property with no value is left empty, and a list with none is
@@ -109,8 +111,14 @@ the match is every character with Pilot-1 or better. The 1977 rules have no
 level 0: a skill not listed is no expertise, and Book 1 p. 32 gives player
 characters ½ in every weapon, enough to avoid the untrained penalty.
 
-Under the heading, **a one-paragraph summary** says who the character is in
-words a referee can read aloud: "Army Captain, 2 terms, denied reenlistment at 26. Known for Rifle-2. Musters out with CR 30000."
+Under the heading, **the profile line** gives the UPP, the age, the service
+and rank and how the service was entered, the terms, any title and how the
+service ended: "UPP 965BCD, age 46, Army General (enlisted), 7 terms,
+marquis/marchioness, retired". **A one-paragraph summary** follows it, in
+words a referee can read aloud: how a dead character died, the three
+highest-level skills, and what mustering out gave that matters: "Skills
+include Tactics-3, ATV-2 and Electronic-2. Musters out with CR 30000 and
+CR 8000 a year retirement pay."
 
 **A reading is how the tool decides where the page is silent or contradicts
 itself.** The readings are the tool's own record of its authority, kept in
@@ -169,10 +177,11 @@ Answered 1, 2, 1; the session is lost and nothing was written.
 
 **Without `--service` the tool picks one**, and on an auto run (`new --auto`,
 or any batch) the policy draws one of the six at random, so a batch mixes
-them rather than filling with whichever is easiest to join. The sheet says so
-on its headline. Naming a service does not guarantee you get it either: a
-failed enlistment throw sends the character to the draft, which may put the
-character somewhere else entirely — the sheet says that too.
+them rather than filling with whichever is easiest to join. The generation
+record says so on the service's choice line. Naming a service does not
+guarantee you get it either: a failed enlistment throw sends the character to
+the draft, which may put the character somewhere else entirely — the profile
+line says so.
 
 **Three flags steer the policy** where the procedure offers a choice, on
 `new --auto` and on `batch`: `--career`, `--skills` and `--muster`. Each

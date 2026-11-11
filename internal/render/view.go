@@ -24,10 +24,13 @@ type view struct {
 	History    historyView
 	Departure  departureView
 	Nobility   *nobilityView
-	Attempt    attemptView
-	ByPolicy   bool
-	Events     []entry
-	Build      string
+
+	// Attempted is the service enlistment was attempted in. Only a served
+	// character's is projected (#454); a civilian's is empty, never read.
+	Attempted string
+	Answerer  answerer
+	Events    []entry
+	Build     string
 }
 
 type ageView struct {
@@ -38,6 +41,7 @@ type ageView struct {
 type enlistmentView struct {
 	How     string
 	Service string
+	Drafted bool
 }
 
 type skillView struct {
@@ -73,24 +77,25 @@ type nobilityView struct {
 	Assumed bool
 }
 
-// attemptView is the service enlistment was attempted in, as chargen reads it
-// from the record, and whether the policy named it (#397). Only a served
-// character's is projected (#454); a civilian's is the zero value, never read.
-type attemptView struct {
-	Service  string
+// answerer is who answered every choice, and, on an auto run, the skills
+// strategy whose ranking broke a tie between tables (#564). The record says
+// who on each choice's line, and names the strategy where a tie was broken.
+type answerer struct {
+	Who      string
 	ByPolicy bool
+	Skills   string
 }
 
-// answerer names who answered every choice: the policy on an auto run, the
-// player on a guided one. The record says it on each choice's line.
+// answererOf names who answered every choice: the policy on an auto run, the
+// player on a guided one, where no policy decided anything.
 //
 // Implements: A note says who made each choice [Generation record].
-func (r view) answerer() string {
-	if r.ByPolicy {
-		return "policy"
+func answererOf(policy *chargen.Policy) answerer {
+	if policy == nil {
+		return answerer{Who: "player"}
 	}
 
-	return "player"
+	return answerer{Who: "policy", ByPolicy: true, Skills: policy.Skills.String()}
 }
 
 // viewOf is the character as the note reads it.
@@ -108,7 +113,7 @@ func viewOf(character *chargen.Character) view {
 		Skills:     make([]skillView, 0, len(skills)),
 		Benefits:   projectBenefits(character.Benefits()),
 		Pension:    int64(character.Pension()),
-		ByPolicy:   character.Policy != nil,
+		Answerer:   answererOf(character.Policy),
 		Events:     entries(character.Events),
 		Build:      character.Build,
 	}
@@ -123,7 +128,7 @@ func viewOf(character *chargen.Character) view {
 		// departure is the zero value, which writes no property and reads as
 		// alive.
 		out.Departure = foldDeparture(character.Departure())
-		out.Attempt = projectAttempt(character)
+		out.Attempted = projectAttempt(character)
 	}
 
 	for _, skill := range skills {
@@ -142,15 +147,13 @@ func viewOf(character *chargen.Character) view {
 // served character without is a generation defect, and fails here rather than
 // reading as one who asked for his service and got it (#454), as #393 and
 // #445 decided for the enlistment and the departure.
-func projectAttempt(character *chargen.Character) attemptView {
-	attempt, attempted := character.Attempted()
+func projectAttempt(character *chargen.Character) string {
+	service, attempted := character.Attempted()
 	if !attempted {
 		panic("render: a served character with no enlistment throw in its record")
 	}
 
-	return attemptView{
-		Service: attempt.Service.String(), ByPolicy: attempt.ByPolicy,
-	}
+	return service.String()
 }
 
 func projectBenefits(b chargen.Benefits) benefitsView {

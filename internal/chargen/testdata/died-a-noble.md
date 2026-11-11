@@ -28,9 +28,9 @@ ctchargen:
 
 # Other 335C6C
 
-Other, killed by the survival throw in term 5, aged 38. Known for Brawling-2.
-
 UPP 335C6C, age 38, Other (drafted after the Navy refused enlistment), 5 terms, killed by the survival throw
+
+Killed by the survival throw in term 5, aged 38. Skills include Brawling-2, Bribery-1 and Forgery-1.
 
 ## Skills
 
@@ -83,10 +83,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 24. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 26. Advanced Education Table: rolled 5
 27. Brawling-1 (from step 26)
-28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 29. Service Skills Table: rolled 2
 30. Gambling-1 (from step 29)
 31. reenlistment: rolled 1+6 = 7 against 5+, made
@@ -100,7 +100,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 37. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+38. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (0, against 1 and 1), from Personal Development Table, Service Skills Table, Advanced Education Table
 39. Personal Development Table: rolled 5
 40. Brawling-2 (from step 39)
 41. reenlistment: rolled 6+3 = 9 against 5+, made
@@ -114,7 +114,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 47. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (1) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 49. Advanced Education Table: rolled 6
 50. Forgery-1 (from step 49)
 51. reenlistment: rolled 6+2 = 8 against 5+, made
@@ -128,7 +128,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 57. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-58. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+58. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (1) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 59. Service Skills Table: rolled 6
 60. Bribery-1 (from step 59)
 61. reenlistment: rolled 3+6 = 9 against 5+, made

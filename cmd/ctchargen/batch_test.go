@@ -237,7 +237,7 @@ func TestABatchIsAlwaysAuto(t *testing.T) {
 	given := []string{cmdBatch, flagCount, "1", flagCareer, "retire", flagSkills, "service", flagMuster, "goods"}
 
 	out, _ := mustRun(t, given, nil)
-	if !strings.Contains(out, ": policy chose ") || strings.Contains(out, ": player chose ") {
+	if !strings.Contains(out, ": policy chose ") || strings.Contains(out, ": player ") {
 		t.Errorf("a batch's note does not credit its choices to the policy:\n%s", out)
 	}
 

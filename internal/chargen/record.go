@@ -99,13 +99,13 @@ func (r *record) dice(step string, faces ...int) int {
 	return seq
 }
 
-// choice records a choice point: which one, what was offered, and what was
-// chosen. Who answered is the run's, not the event's: one run has one
-// answerer.
-func (r *record) choice(point traveller.ChoicePoint, from []string, chosen string) {
-	r.add(traveller.ChoiceEvent{
-		Seq: r.next(), Point: point, Alternatives: from, Chosen: chosen,
-	})
+// choice records a choice point: which one, what was offered, what was
+// chosen, and what it was decided on, numbered next. Who answered is the
+// run's, not the event's: one run has one answerer.
+func (r *record) choice(answered traveller.ChoiceEvent) {
+	answered.Seq = r.next()
+
+	r.add(answered)
 }
 
 // outcomef records a consequence and the event that caused it, and stamps the

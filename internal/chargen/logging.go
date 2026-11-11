@@ -76,12 +76,16 @@ func (l logging) Service(from []traveller.EnlistmentOffer, vary Vary) (traveller
 		return 0, err
 	}
 
-	chosen, err := l.to.Service(own(from), vary)
+	watched := &watchedVary{vary: vary}
+
+	chosen, err := l.to.Service(own(from), watched)
 	if err != nil {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceService, offer, chosen.String())
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceService, Alternatives: offer, Chosen: chosen.String(), Drawn: watched.drew,
+	})
 }
 
 func (l logging) SubmitToDraft() (bool, error) {
@@ -100,8 +104,19 @@ func (l logging) AttemptPromotion(odds traveller.Odds) (bool, error) {
 	})
 }
 
+// SkillTable records, beside the tables offered, how many results the
+// character had already had off each: the counts a decider weighs, which
+// the note words as the policy's reason (#564).
+//
+// Implements: A skills table choice records what each table offered had
+// given [Generation record].
 func (l logging) SkillTable(from []traveller.SkillTableOffer, roll traveller.SkillRoll) (traveller.SkillTable, error) {
 	offer := names(from, func(o traveller.SkillTableOffer) string { return o.Table.String() })
+
+	taken := make([]int, 0, len(from))
+	for _, o := range from {
+		taken = append(taken, o.Taken)
+	}
 
 	err := asked(traveller.ChoiceSkillTable, offer)
 	if err != nil {
@@ -121,7 +136,11 @@ func (l logging) SkillTable(from []traveller.SkillTableOffer, roll traveller.Ski
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceSkillTable, offer, chosen.String())
+	// The counts are named before the decider is asked, as the offer is, so
+	// what is recorded is what it was shown.
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceSkillTable, Alternatives: offer, Chosen: chosen.String(), Taken: taken,
+	})
 }
 
 func (l logging) Weapon(
@@ -134,12 +153,16 @@ func (l logging) Weapon(
 		return "", err
 	}
 
-	chosen, err := l.to.Weapon(category, own(from), vary)
+	watched := &watchedVary{vary: vary}
+
+	chosen, err := l.to.Weapon(category, own(from), watched)
 	if err != nil {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceWeapon, offer, string(chosen))
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceWeapon, Alternatives: offer, Chosen: string(chosen), Drawn: watched.drew,
+	})
 }
 
 func (l logging) ReenlistIntent(from []traveller.Intent, survival traveller.Odds) (traveller.Intent, error) {
@@ -155,7 +178,9 @@ func (l logging) ReenlistIntent(from []traveller.Intent, survival traveller.Odds
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceReenlistIntent, offer, chosen.String())
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceReenlistIntent, Alternatives: offer, Chosen: chosen.String(),
+	})
 }
 
 func (l logging) MusterTable(from []traveller.MusterTable) (traveller.MusterTable, error) {
@@ -171,7 +196,9 @@ func (l logging) MusterTable(from []traveller.MusterTable) (traveller.MusterTabl
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceMusterTable, offer, chosen.String())
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceMusterTable, Alternatives: offer, Chosen: chosen.String(),
+	})
 }
 
 func (l logging) MusterTable1DM() (bool, error) {
@@ -199,7 +226,9 @@ func (l logging) MusterWeapon(
 		return nil, err
 	}
 
-	chosen, err := l.to.MusterWeapon(category, own(from), own(received), vary)
+	watched := &watchedVary{vary: vary}
+
+	chosen, err := l.to.MusterWeapon(category, own(from), own(received), watched)
 	if err != nil {
 		return chosen, err
 	}
@@ -211,7 +240,31 @@ func (l logging) MusterWeapon(
 		return chosen, fmt.Errorf("describing the weapon benefit: %w", err)
 	}
 
-	return chosen, l.record(traveller.ChoiceMusterWeapon, alternatives, described.text)
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceMusterWeapon, Alternatives: alternatives, Chosen: described.text, Drawn: watched.drew,
+	})
+}
+
+// watchedVary is the Vary a decider is handed through the gate: it passes
+// every draw on, and remembers that one was made, so the record says an
+// answer was drawn because the decider drew it (#564), and not because of
+// which choice point asked or who answered. A policy taking expertise in a
+// weapon it has received draws nothing, and a player draws nothing.
+//
+// It holds the Vary the engine handed in, never the Roller, so it narrows
+// as that one does (#136).
+//
+// Implements: An answer is recorded as drawn only where the decider drew it
+// [Generation record].
+type watchedVary struct {
+	vary Vary
+	drew bool
+}
+
+func (w *watchedVary) Among(n int) int {
+	w.drew = true
+
+	return w.vary.Among(n)
 }
 
 func (l logging) AssumeTitle(title traveller.Title) (bool, error) {
@@ -220,7 +273,9 @@ func (l logging) AssumeTitle(title traveller.Title) (bool, error) {
 		return chosen, err
 	}
 
-	return chosen, l.record(traveller.ChoiceAssumeTitle, offered(), yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceEvent{
+		Point: traveller.ChoiceAssumeTitle, Alternatives: offered(), Chosen: yesNo(chosen),
+	})
 }
 
 // own is a copy of a slice for the decider to keep: an offer, or what it is
@@ -283,7 +338,7 @@ func (l logging) yesOrNo(point traveller.ChoicePoint, ask func() (bool, error)) 
 		return chosen, err
 	}
 
-	return chosen, l.record(point, offered(), yesNo(chosen))
+	return chosen, l.record(traveller.ChoiceEvent{Point: point, Alternatives: offered(), Chosen: yesNo(chosen)})
 }
 
 // record writes the answer into the generation record, and refuses one that
@@ -312,13 +367,13 @@ func (l logging) yesOrNo(point traveller.ChoicePoint, ask func() (bool, error)) 
 //
 // Implements: An answer outside the offered set is refused, not applied
 // [Choices].
-func (l logging) record(point traveller.ChoicePoint, from []string, chosen string) error {
-	if !slices.Contains(from, chosen) {
+func (l logging) record(answered traveller.ChoiceEvent) error {
+	if !slices.Contains(answered.Alternatives, answered.Chosen) {
 		return fmt.Errorf("%w: %v offered %v, and was answered %q",
-			errNotOffered, point, from, chosen)
+			errNotOffered, answered.Point, answered.Alternatives, answered.Chosen)
 	}
 
-	l.into.choice(point, from, chosen)
+	l.into.choice(answered)
 
 	return nil
 }

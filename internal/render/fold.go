@@ -16,7 +16,7 @@ func (e *enlistmentFold) Enlisted(service traveller.ServiceName) error {
 }
 
 func (e *enlistmentFold) Drafted(service traveller.ServiceName) error {
-	e.out = enlistmentView{How: "drafted", Service: service.String()}
+	e.out = enlistmentView{How: "drafted", Service: service.String(), Drafted: true}
 
 	return nil
 }
@@ -119,6 +119,8 @@ type entry struct {
 	Point        traveller.ChoicePoint
 	Alternatives []string
 	Chosen       string
+	Drawn        bool
+	Taken        []int
 	Because      int
 	Description  string
 	DMFrom       string
@@ -170,7 +172,7 @@ func (e *entryFold) Roll(from traveller.RollEvent) error {
 func (e *entryFold) Choice(from traveller.ChoiceEvent) error {
 	e.out = entry{
 		Seq: from.Seq, Kind: kindChoice, Point: from.Point,
-		Alternatives: from.Alternatives, Chosen: from.Chosen,
+		Alternatives: from.Alternatives, Chosen: from.Chosen, Drawn: from.Drawn, Taken: from.Taken,
 	}
 
 	return nil

@@ -267,10 +267,10 @@ type SkillRoll struct {
 // character has already had off it, and its six results by die face from
 // the character's service column (p. 11).
 //
-// Taken is engine-computed and never recorded, so a decider can weigh where
-// the character is under-trained without reaching into the character, and
-// rewording nothing can change one. Results is what a person choosing needs
-// to see.
+// Taken is engine-computed, so a decider can weigh where the character is
+// under-trained without reaching into the character, and rewording nothing
+// can change one. The record keeps it on the choice, where the note says what
+// a policy weighed (#564). Results is what a person choosing needs to see.
 type SkillTableOffer struct {
 	Table   SkillTable
 	Taken   int

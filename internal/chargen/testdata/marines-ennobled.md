@@ -36,9 +36,9 @@ ctchargen:
 
 # Marines Colonel 73AB8C
 
-Marines Colonel, 7 terms, retired at 46. Known for Vacc Suit-3, Computer-2 and Revolver-2. Musters out with CR 35000 and Travellers' Aid Society membership.
+UPP 73AB8C, age 46, Marines Colonel (enlisted), 7 terms, baron/baroness, retired
 
-UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
+Skills include Vacc Suit-3, Computer-2 and Revolver-2. Musters out with CR 35000, CR 8000 a year retirement pay and Travellers' Aid Society membership.
 
 ## Skills
 
@@ -53,12 +53,12 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 - Tactics-1
 - Vacc Suit-3
 
-## Possessions
+## Benefits
 
 - CR 35000
 - High Passage
 - Travellers' Aid Society membership
-- CR 8000 a year in retirement pay
+- CR 8000 a year retirement pay
 
 ## Service record
 
@@ -112,10 +112,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 26. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (0) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 28. Advanced Education Table (education 8+): rolled 4
 29. Computer-1 (from step 28)
-30. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+30. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 31. Advanced Education Table: rolled 4
 32. Tactics-1 (from step 31)
 33. reenlistment: rolled 4+5 = 9 against 6+, made
@@ -136,14 +136,14 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 46. skills and training, 3 rolls: 1 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)
 
-47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 48. Service Skills Table: rolled 2
 49. Vacc Suit-1 (from step 48)
-50. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+50. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (0, against 1, 1 and 1), from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 51. Personal Development Table: rolled 6
-52. weapon of expertise, specified immediately (p. 11): policy chose Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+52. weapon of expertise, specified immediately (p. 11): policy drew Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
 53. Blade Combat: Cudgel-1 (from step 51)
-54. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+54. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (1) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 55. Advanced Education Table (education 8+): rolled 5
 56. Leader-1 (from step 55)
 57. reenlistment: rolled 6+5 = 11 against 6+, made
@@ -160,10 +160,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 66. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
-67. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+67. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (1) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 68. Advanced Education Table: rolled 3
 69. Electronic-1 (from step 68)
-70. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+70. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (1) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 71. Service Skills Table: rolled 2
 72. Vacc Suit-2 (from step 71)
 73. reenlistment: rolled 6+2 = 8 against 6+, made
@@ -180,10 +180,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 82. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
-83. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+83. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (1, against 2, 2 and 2), from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 84. Personal Development Table: rolled 2
 85. Dexterity +1, 4 to 5 (from step 84)
-86. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+86. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (2) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 87. Advanced Education Table (education 8+): rolled 4
 88. Computer-2 (from step 87)
 89. reenlistment: rolled 5+4 = 9 against 6+, made
@@ -209,11 +209,11 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 105. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
-106. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+106. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (2) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 107. Advanced Education Table: rolled 6
-108. weapon of expertise, specified immediately (p. 11): policy chose Revolver from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+108. weapon of expertise, specified immediately (p. 11): policy drew Revolver from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
 109. Gun Combat: Revolver-2 (from step 107)
-110. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+110. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (2) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 111. Service Skills Table: rolled 2
 112. Vacc Suit-3 (from step 111)
 113. reenlistment: rolled 3+6 = 9 against 6+, made
@@ -239,7 +239,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 129. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (2, against 3, 3 and 3), from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 4
 132. Gambling-1 (from step 131)
 133. reenlistment: rolled 4+4 = 8 against 6+, made
@@ -265,7 +265,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 149. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
-150. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+150. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (3) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 151. Advanced Education Table (education 8+): rolled 1
 152. Medical-1 (from step 151)
 153. reenlistment: rolled 1+2 = 3 against 6+, missed

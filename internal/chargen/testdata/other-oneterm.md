@@ -26,15 +26,15 @@ ctchargen:
 
 # Other 64499B
 
-Other, 1 term, discharged at 22.
+UPP 64499B, age 22, Other (enlisted), 1 term, knight/dame, discharged
 
-UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, discharged
+Skills include Brawling-1.
 
 ## Skills
 
 - Brawling-1
 
-## Possessions
+## Benefits
 
 - Low Passage
 
@@ -66,7 +66,7 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 ### 15. enlistment (pp. 5, 10)
 
-16. service to enlist in (pp. 5, 10): policy chose Other from Navy, Marines, Army, Scouts, Merchants, Other
+16. service to enlist in (pp. 5, 10): policy drew Other from Navy, Marines, Army, Scouts, Merchants, Other
 17. enlistment, Other: rolled 5+4 = 9 against 3+, made
 18. enlisted in the Other (from step 17)
 
@@ -77,10 +77,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 22. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-23. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+23. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, tied least trained on (0) with three others, the personal strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 24. Personal Development Table: rolled 6
 25. Social Standing -1, 12 to 11 (from step 24)
-26. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+26. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with two others, the personal strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 27. Service Skills Table: rolled 3
 28. Brawling-1 (from step 27)
 29. reenlistment: rolled 4+6 = 10 against 5+, made

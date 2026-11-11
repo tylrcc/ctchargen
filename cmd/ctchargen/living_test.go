@@ -160,7 +160,7 @@ func TestAFailedSearchCountsOnce(t *testing.T) {
 type census struct{ members, dead int }
 
 // livingCount reads a stream of notes: how many members it holds, and how
-// many of them died, which a note's headline says as the departure that
+// many of them died, which a note's profile line says as the departure that
 // killed him.
 func livingCount(t *testing.T, notes string) census {
 	t.Helper()
@@ -180,7 +180,7 @@ func livingCount(t *testing.T, notes string) census {
 	}
 
 	if found.members != strings.Count(notes, eachNote) {
-		t.Fatalf("%d headlines for %d notes", found.members, strings.Count(notes, eachNote))
+		t.Fatalf("%d profile lines for %d notes", found.members, strings.Count(notes, eachNote))
 	}
 
 	return found
@@ -258,10 +258,10 @@ func TestANoteSaysWhoMadeEachChoice(t *testing.T) {
 		made, notMade string
 	}{
 		"the policy answered": {
-			[]string{cmdNew, flagAuto, flagService, other}, nil, otherByPolicy, ": policy chose ", ": player chose ",
+			[]string{cmdNew, flagAuto, flagService, other}, nil, otherByPolicy, ": policy chose ", ": player ",
 		},
 		"the player answered": {
-			[]string{cmdNew, flagService, other}, answers("1", 300), otherWalked, ": player chose ", ": policy chose ",
+			[]string{cmdNew, flagService, other}, answers("1", 300), otherWalked, ": player chose ", ": policy ",
 		},
 	} {
 		var out strings.Builder

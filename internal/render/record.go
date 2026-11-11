@@ -2,6 +2,7 @@ package render
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -38,7 +39,7 @@ func writeGenerationRecord(out *strings.Builder, r view) {
 		"it was read off, and not every cause behind it.\n")
 
 	for _, event := range r.Events {
-		writeEvent(out, event, r.answerer())
+		writeEvent(out, event, r.Answerer)
 	}
 
 	out.WriteString("\n")
@@ -55,7 +56,7 @@ func writeGenerationRecord(out *strings.Builder, r view) {
 //
 // Implements: The generation record heads each step, a term's phases under the
 // term [Generation record].
-func writeEvent(out *strings.Builder, event entry, answerer string) {
+func writeEvent(out *strings.Builder, event entry, answeredBy answerer) {
 	switch event.Kind {
 	case kindStep:
 		level := "###"
@@ -69,7 +70,7 @@ func writeEvent(out *strings.Builder, event entry, answerer string) {
 		// is exactly what throwLine already prints.
 		fmt.Fprintln(out, throwLine(event))
 	case kindChoice:
-		fmt.Fprintln(out, choiceLine(event, answerer))
+		fmt.Fprintln(out, choiceLine(event, answeredBy))
 	case kindOutcome:
 		fmt.Fprintln(out, outcomeLine(event))
 	}
@@ -77,12 +78,73 @@ func writeEvent(out *strings.Builder, event entry, answerer string) {
 
 // choiceLine is a choice's line. It names who answered, which is the run's to
 // say and not the event's; the live view, which is watched by the person
-// answering, prints its own.
-func choiceLine(event entry, answerer string) string {
-	return fmt.Sprintf("%d. %s: %s chose %s from %s",
-		event.Seq, choiceWords(event.Point), answerer, event.Chosen,
-		strings.Join(event.Alternatives, ", "))
+// answering, prints its own. An answer drawn reads "drew" (#564): the event
+// says it was, because the decider drew it.
+//
+// Implements: A choice's line says what a drawn or least-trained answer was
+// decided on [Generation record].
+func choiceLine(event entry, answeredBy answerer) string {
+	verb := "chose"
+	if event.Drawn {
+		verb = "drew"
+	}
+
+	return fmt.Sprintf("%d. %s: %s %s %s%s from %s",
+		event.Seq, choiceWords(event.Point), answeredBy.Who, verb, event.Chosen,
+		leastTrained(event, answeredBy), strings.Join(event.Alternatives, ", "))
 }
+
+// leastTrained is the policy's reason for a skills table, from the counts
+// the record carries (#564): the one table least trained on, with the
+// counts of the others in the order offered, "least trained on (1, against
+// 2 and 2)"; or, where several tie, how many others and that the skills
+// strategy's ranking took the first of them, "tied least trained on (0)
+// with three others, the advanced strategy's first". Each clause is set off
+// by commas before the alternatives.
+//
+// It is empty for a player, whose choice has no policy reason, and for every
+// choice without counts. A policy's table that was not least trained on is
+// a generation defect, since the policy designates among those only, and
+// fails here rather than being worded as a reason it was not.
+func leastTrained(event entry, answeredBy answerer) string {
+	if !answeredBy.ByPolicy || len(event.Taken) == 0 {
+		return ""
+	}
+
+	chosen := slices.Index(event.Alternatives, event.Chosen)
+	fewest := slices.Min(event.Taken)
+
+	if chosen < 0 || len(event.Taken) != len(event.Alternatives) || event.Taken[chosen] != fewest {
+		panic(fmt.Sprintf("render: the policy designated %q, not least trained on, from %v with %v taken",
+			event.Chosen, event.Alternatives, event.Taken))
+	}
+
+	others := make([]string, 0, len(event.Taken)-1)
+	tied := 0
+
+	for i, taken := range event.Taken {
+		if i == chosen {
+			continue
+		}
+
+		others = append(others, strconv.Itoa(taken))
+
+		if taken == fewest {
+			tied++
+		}
+	}
+
+	if tied == 0 {
+		return fmt.Sprintf(", least trained on (%d, against %s),", fewest, listed(others))
+	}
+
+	return fmt.Sprintf(", tied least trained on (%d) with %s, the %s strategy's first,",
+		fewest, othersInWords[tied], answeredBy.Skills)
+}
+
+// othersInWords is how many other tables tied, in words, by the count: one
+// to three, since p. 11 prints four tables.
+var othersInWords = [...]string{1: "one other", 2: "two others", 3: "three others"}
 
 // choiceWords is each choice in the words of the page that poses it, with
 // that page. A switch rather than a map, so that a choice point added to

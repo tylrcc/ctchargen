@@ -9,21 +9,22 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// bestSkills is how many skills a summary names at most: enough to say what he
-// is known for, few enough to read aloud.
+// bestSkills is how many skills a summary names at most: enough to say what
+// the character can do, few enough to read aloud.
 const bestSkills = 3
 
-// standsOut is the level a skill must reach for a summary to name it: a
-// skill held at level 1 is one most characters have, and says little.
-const standsOut = 2
-
-// summary is the paragraph under a note's heading, which a referee can read
-// aloud (#425): the service and rank, the terms, how he left and at what age,
-// his best skills, and what he mustered out with that matters. The dead are
-// told how and when they died (#418); a civilian, that he declined the
-// draft. It says nothing the sheet below it doesn't.
+// summary is the paragraph under the profile line, which a referee can read
+// aloud (#425, #557). The profile line has just given the service, rank,
+// terms, any title assumed, departure and age, so this repeats them only for
+// the dead, who are told first how and when they died (#418); the title is
+// the profile line's alone. Then it names the highest-level skills, then
+// what was mustered out with that matters: cash, retirement pay, Travellers'
+// Aid and a ship. A civilian is told he declined the draft. It says nothing
+// the sheet doesn't, and a character with nothing to tell gets no summary at
+// all.
 //
-// Implements: A note opens with a summary a referee can read aloud [Sheet].
+// Implements: The profile line opens the sheet, and a summary a referee can
+// read aloud follows it [Sheet].
 func summary(r view) string {
 	if r.Service == "" {
 		return fmt.Sprintf("A civilian who declined the draft at %d.", r.Age.Years)
@@ -31,32 +32,37 @@ func summary(r view) string {
 
 	var sentences []string
 
-	switch {
-	case r.Departure.Fatal:
-		sentences = append(sentences, fmt.Sprintf("%s, %s in term %d, aged %d.",
-			serving(r), r.Departure.How, r.Terms, r.Age.Years))
-	default:
-		sentences = append(sentences, fmt.Sprintf("%s, %s, %s at %d.",
-			serving(r), terms(r.Terms), r.Departure.How, r.Age.Years))
+	if r.Departure.Fatal {
+		sentences = append(sentences, fmt.Sprintf("%s in term %d, aged %d.",
+			capitalised(r.Departure.How), r.Terms, r.Age.Years))
 	}
 
 	if known := best(r.Skills); len(known) > 0 {
-		sentences = append(sentences, "Known for "+listed(known)+".")
+		sentences = append(sentences, "Skills include "+listed(known)+".")
 	}
 
-	if musters := notable(r.Benefits); len(musters) > 0 {
+	if musters := notable(r.Benefits, r.Pension); len(musters) > 0 {
 		sentences = append(sentences, "Musters out with "+listed(musters)+".")
 	}
 
 	return strings.Join(sentences, " ")
 }
 
-// best is the highest-level skills at standsOut or above, in the book's
-// notation, at most bestSkills of them; skills of one level keep the sheet's
-// order. A character with none above level 1 is known for nothing in
-// particular, and the summary says nothing of his skills.
+// capitalised is a departure's words opening a sentence. Every departure is
+// worded in lower case ASCII, so the first byte is the first letter.
+func capitalised(words string) string {
+	if words == "" {
+		return words
+	}
+
+	return strings.ToUpper(words[:1]) + words[1:]
+}
+
+// best is the highest-level skills, at any level, in the book's notation, at
+// most bestSkills of them; skills of one level keep the sheet's order (#558).
+// A character with no skills has none named.
 func best(skills []skillView) []string {
-	ranked := slices.DeleteFunc(slices.Clone(skills), func(s skillView) bool { return s.Level < standsOut })
+	ranked := slices.Clone(skills)
 	slices.SortStableFunc(ranked, func(a, b skillView) int { return cmp.Compare(b.Level, a.Level) })
 
 	named := make([]string, 0, bestSkills)
@@ -67,20 +73,26 @@ func best(skills []skillView) []string {
 	return named
 }
 
-// notable is what a mustered-out character is known to carry: his credits,
-// Travellers' Aid, and any ship. Passages and weapons are on the sheet.
-func notable(b benefitsView) []string {
+// notable is what a mustered-out character is known to carry: credits,
+// retirement pay, Travellers' Aid and any ship. Passages and weapons are on
+// the sheet. The pay follows the cash, so a ship's ", Type A" comes last and
+// never splits the list.
+func notable(benefits benefitsView, pension int64) []string {
 	var named []string
 
-	if b.Cash > 0 {
-		named = append(named, credits(b.Cash))
+	if benefits.Cash > 0 {
+		named = append(named, credits(benefits.Cash))
 	}
 
-	if b.TravellersAid {
+	if pension > 0 {
+		named = append(named, retirementPay(pension))
+	}
+
+	if benefits.TravellersAid {
 		named = append(named, "Travellers' Aid Society membership")
 	}
 
-	for _, ship := range b.Ships {
+	for _, ship := range benefits.Ships {
 		named = append(named, shipWords(ship))
 	}
 

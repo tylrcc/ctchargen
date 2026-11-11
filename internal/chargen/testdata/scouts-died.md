@@ -26,9 +26,9 @@ ctchargen:
 
 # Scouts 7C8669
 
-Scouts, killed by the survival throw in term 2, aged 26. Known for Air/Raft-2.
+UPP 7C8669, age 26, Scouts (enlisted), 2 terms, killed by the survival throw
 
-UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
+Killed by the survival throw in term 2, aged 26. Skills include Air/Raft-2 and Pilot-1.
 
 ## Skills
 
@@ -77,10 +77,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-24. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+24. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with two others, the service strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 25. Service Skills Table: rolled 1
 26. Air/Raft-1 (from step 25)
-27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
+27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with one other, the service strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 28. Advanced Education Table: rolled 1
 29. Air/Raft-2 (from step 28)
 30. reenlistment: rolled 3+2 = 5 against 3+, made

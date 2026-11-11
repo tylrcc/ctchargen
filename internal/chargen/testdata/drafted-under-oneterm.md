@@ -26,15 +26,15 @@ ctchargen:
 
 # Other 76C348
 
-Other, 1 term, denied reenlistment at 22.
-
 UPP 76C348, age 22, Other (drafted after the Scouts refused enlistment), 1 term, denied reenlistment
+
+Skills include Brawling-1.
 
 ## Skills
 
 - Brawling-1
 
-## Possessions
+## Benefits
 
 - High Passage
 
@@ -79,10 +79,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 24. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-25. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
+25. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, tied least trained on (0) with two others, the personal strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 26. Personal Development Table: rolled 3
 27. Endurance +1, 11 to 12 (from step 26)
-28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
+28. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with one other, the personal strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table
 29. Service Skills Table: rolled 3
 30. Brawling-1 (from step 29)
 31. reenlistment: rolled 1+2 = 3 against 5+, missed

@@ -100,11 +100,25 @@ func total(dice []int, modifier int) int {
 // ChoiceEvent records a choice point: which one, what the alternatives were,
 // and what was chosen. Who answered is not the event's to say: a run has one
 // answerer, and the note says it on each choice's line, from the run.
+//
+// It also carries what the answer was decided on, as data, for the note to
+// word (#564): whether the answer was drawn, and what the alternatives of a
+// skills table choice had already given.
 type ChoiceEvent struct {
 	Seq          int
 	Point        ChoicePoint
 	Alternatives []string
 	Chosen       string
+
+	// Drawn is whether the decider drew the answer among what it was offered,
+	// through the Vary it was handed, rather than choosing it.
+	Drawn bool
+
+	// Taken is, for a skills table choice, how many results the character
+	// had already had off each table offered, in the order of Alternatives:
+	// each SkillTableOffer's Taken, the count a decider weighs. It is nil for
+	// every other choice point.
+	Taken []int
 }
 
 // OutcomeEvent records a consequence — a skill gained, a characteristic

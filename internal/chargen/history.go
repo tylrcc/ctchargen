@@ -191,7 +191,7 @@ func (*historyFold) Enlisted(traveller.EnlistedFact) error { return nil }
 func (*historyFold) Rolled(traveller.RolledFact) error { return nil }
 
 // What mustering out delivered and the title assessed at the end are the
-// sheet's possessions, not the service's.
+// sheet's benefits, not the service's.
 func (*historyFold) Cash(traveller.CashFact) error                       { return nil }
 func (*historyFold) Passage(traveller.PassageFact) error                 { return nil }
 func (*historyFold) TravellersAid(traveller.TravellersAidFact) error     { return nil }

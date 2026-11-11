@@ -29,9 +29,9 @@ ctchargen:
 
 # Marines Captain A69ABC
 
-Marines Captain, 3 terms, denied reenlistment at 30. Known for ATV-2 and Tactics-2. Musters out with CR 70000.
+UPP A69ABC, age 30, Marines Captain (enlisted), 3 terms, baron/baroness, denied reenlistment
 
-UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistment
+Skills include ATV-2, Tactics-2 and Cutlass-1. Musters out with CR 70000.
 
 ## Skills
 
@@ -41,7 +41,7 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 - Revolver-1
 - Tactics-2
 
-## Possessions
+## Benefits
 
 - CR 70000
 
@@ -93,10 +93,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 26. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (0) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 28. Advanced Education Table (education 8+): rolled 2
 29. Tactics-1 (from step 28)
-30. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+30. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 31. Advanced Education Table: rolled 1
 32. ATV-1 (from step 31)
 33. reenlistment: rolled 3+5 = 8 against 6+, made
@@ -117,10 +117,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 46. skills and training, 2 rolls: 1 for the term, 1 for the commission (pp. 6, 11)
 
-47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table, tied least trained on (0) with one other, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 48. Service Skills Table: rolled 1
 49. ATV-2 (from step 48)
-50. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+50. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table, least trained on (0, against 1, 1 and 1), from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 51. Personal Development Table: rolled 3
 52. Endurance +1, 8 to 9 (from step 51)
 53. reenlistment: rolled 5+4 = 9 against 6+, made
@@ -137,12 +137,12 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 62. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
-63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+63. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (1) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 64. Advanced Education Table (education 8+): rolled 2
 65. Tactics-2 (from step 64)
-66. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+66. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (1) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 67. Advanced Education Table: rolled 6
-68. weapon of expertise, specified immediately (p. 11): policy chose Laser Rifle from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+68. weapon of expertise, specified immediately (p. 11): policy drew Laser Rifle from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
 69. Gun Combat: Laser Rifle-1 (from step 67)
 70. reenlistment: rolled 3+1 = 4 against 6+, missed
 71. left the service after term 3: reenlistment denied (from step 70)

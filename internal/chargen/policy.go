@@ -254,8 +254,9 @@ func (m Muster) does() string {
 
 // DefaultPolicy is what an auto run applies when it names no strategy. The
 // command's flag defaults read it rather than naming strategies of their own
-// (#367). Each choice's line in the record credits the policy; the note does
-// not name the strategies.
+// (#367). Each choice's line in the record credits the policy; the note names
+// a strategy only where the skills strategy's ranking broke a tie between
+// tables (#564).
 func DefaultPolicy() Policy {
 	return Policy{Career: CareerServe, Skills: SkillsAdvanced, Muster: MusterCash}
 }
@@ -410,8 +411,10 @@ func (p Policy) ReenlistIntent(from []traveller.Intent, _ traveller.Odds) (trave
 //     Advanced Education.
 //
 // Each offer's Taken is how many results he has already had off that table.
-// It is engine-computed and never recorded, so this weighs where he is thin
-// without reaching into him (#34).
+// It is engine-computed, so this weighs where he is thin without reaching
+// into him (#34), and the record keeps the counts on the choice, where the
+// note says which table was least trained on and how a tie was broken
+// (#564).
 //
 // Before #34 the policy followed the ranking alone, so advanced designated
 // Advanced Education every time it was offered and Personal Development

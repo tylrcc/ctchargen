@@ -26,16 +26,16 @@ ctchargen:
 
 # Other A68AAC
 
-Other, 1 term, denied reenlistment at 22. Musters out with CR 10000.
+UPP A68AAC, age 22, Other (enlisted), 1 term, baron/baroness, denied reenlistment
 
-UPP A68AAC, age 22, Other, 1 term, baron/baroness, denied reenlistment
+Skills include Electronic-1 and Forgery-1. Musters out with CR 10000.
 
 ## Skills
 
 - Electronic-1
 - Forgery-1
 
-## Possessions
+## Benefits
 
 - CR 10000
 
@@ -77,10 +77,10 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 
 #### 21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
-22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+), tied least trained on (0) with three others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 2
 24. Forgery-1 (from step 23)
-25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
+25. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table, tied least trained on (0) with two others, the advanced strategy's first, from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 26. Advanced Education Table: rolled 3
 27. Electronic-1 (from step 26)
 28. reenlistment: rolled 2+1 = 3 against 5+, missed

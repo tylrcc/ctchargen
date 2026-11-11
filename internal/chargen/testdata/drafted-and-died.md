@@ -24,9 +24,9 @@ ctchargen:
 
 # Other 8777A8
 
-Other, killed by the survival throw in term 1, aged 22.
-
 UPP 8777A8, age 22, Other (drafted after the Navy refused enlistment), 1 term, killed by the survival throw
+
+Killed by the survival throw in term 1, aged 22.
 
 ## Service record
 

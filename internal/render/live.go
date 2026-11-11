@@ -44,7 +44,7 @@ func EventLine(event traveller.Event) string {
 
 	var out strings.Builder
 
-	writeEvent(&out, lined, "")
+	writeEvent(&out, lined, answerer{})
 
 	return out.String()
 }
