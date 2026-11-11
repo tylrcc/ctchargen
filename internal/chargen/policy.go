@@ -9,11 +9,10 @@ import (
 )
 
 // Policy is the auto run's decider (new --auto, and every batch): it answers
-// every question the procedure asks,
-// under three named strategies, each over one group of choice points, and
-// draws the service under all three (#420). Career (--career) answers
-// SubmitToDraft, AttemptCommission, AttemptPromotion, ReenlistIntent and
-// AssumeTitle; Skills (--skills) answers
+// every question the procedure asks, under three named strategies, each over
+// one group of choice points, and draws the service under all three (#420).
+// Career (--career) answers SubmitToDraft, AttemptCommission,
+// AttemptPromotion, ReenlistIntent and AssumeTitle; Skills (--skills) answers
 // SkillTable and Weapon; Muster (--muster) answers MusterTable,
 // MusterTable1DM, MusterTable2DM and MusterWeapon. Each method's doc says when
 // the engine asks it and what each strategy answers, and those are the whole
@@ -21,17 +20,18 @@ import (
 //
 // It is total - it answers every method of Decider - and every strategy is a
 // pure function of what it is handed. Three answers draw - the service, the
-// weapon a combat result names, and the weapon a benefit names - and they draw
-// only through the Vary they are handed, which is the run's own dice, so a run
-// is determined by its dice and nothing else. Where a strategy needs to know
-// that an option is legal, the engine supplies that by what it puts in the
-// offered set, never by the strategy reaching into the character.
+// weapon a combat result names, and the weapon a benefit names, where
+// expertise is not taken - and they draw only through the Vary they are
+// handed, which is the run's own dice, so a run is determined by its dice and
+// nothing else. Where a strategy needs to know that an option is legal, the
+// engine supplies that by what it puts in the offered set, never by the
+// strategy reaching into the character.
 //
-// Ranked preferences are written best-first. A strategy takes the first of its
-// ranking that is on offer; where its ranking is silent, the tie-break is
-// first-listed order in Book 1 - the Acquired Skills Table's block order for
-// skill tables (p. 11) - which is the order the engine builds an offered set
-// in. No strategy ranks services: the service is drawn (#420).
+// Ranked preferences are written best-first, and a strategy takes the first
+// of its ranking that is on offer. Every ranking lists every alternative of
+// its alphabet, so the ranking alone decides, and a skills tie among the
+// tables least trained on goes to the skills strategy's ranking (#564). No
+// strategy ranks services: the service is drawn (#420).
 //
 // It never returns an error. An offered set it cannot answer from would mean
 // the engine offered something the rules do not contain, which is an engine
@@ -44,8 +44,8 @@ import (
 // attempt and suppresses Service, and --name is not a choice point - and
 // nothing after generation: selling a passage back (p. 22), buying
 // Travellers' Aid membership for CR 1,000,000 (p. 22) and flying the ship are
-// play, and the record carries the assets and stops.
-// Interactive mode implements the same Decider and asks the player instead.
+// play, and the record carries the assets and stops. Interactive mode
+// implements the same Decider and asks the player instead.
 type Policy struct {
 	Career Career
 	Skills Skills
@@ -286,13 +286,13 @@ func choices[T fmt.Stringer](all []T) string {
 	return strings.Join(names(all, T.String), ", ")
 }
 
-// prefer picks the first of a ranked preference that is on offer, and falls
-// back to the first thing offered - which is book order, because that is the
-// order the engine builds an offered set in.
+// prefer picks the first of a ranked preference that is on offer.
 //
-// The switches below are exhaustive over closed types, so a ranked slice is
-// always populated and the fallback means only what it says: nothing
-// preferred was offered.
+// The switches below are exhaustive over closed types, and each ranking lists
+// every alternative of its alphabet, so with a non-empty offer some ranked
+// alternative is always on offer. A ranking that holds nothing on offer is
+// incomplete, which is a defect of the policy, and fails here rather than
+// being answered by an order no strategy chose.
 func prefer[T comparable](offered, ranked []T) T {
 	for _, want := range ranked {
 		if slices.Contains(offered, want) {
@@ -300,7 +300,8 @@ func prefer[T comparable](offered, ranked []T) T {
 		}
 	}
 
-	return offered[0]
+	panic(fmt.Sprintf("chargen: the ranking %v holds nothing on offer from %v, so the ranking is incomplete",
+		ranked, offered))
 }
 
 // Service is asked when no --service flag was given. With --service the

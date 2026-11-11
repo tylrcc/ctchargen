@@ -93,6 +93,18 @@ first`). A player's choices, and the policy's fixed answers, read as
   in which a character dies (#563, from #556), and the README says a level
   threshold such as Gun-2 or better is read off the sheet, not a property
   (#573).
+- The help says every strategy draws each weapon it takes, where it said each
+  weapon a skill or a benefit names (#589): `cash` and `goods` take expertise
+  on a repeated weapon benefit without drawing. The README names a batch
+  member a batch can write, `02 Merchants 3rd Officer CA76C7.md`, where it
+  named a civilian, and says `serve` re-enlists up to seven terms, where it
+  said until the service refuses (#588). An auto policy whose ranking holds
+  nothing on offer now fails rather than taking the first thing offered; no
+  strategy's does (#586).
+- The command line's baseline holds the values `--career`, `--skills`,
+  `--muster` and `--service` take, as it holds the flags: a value removed or
+  renamed fails the gate, where nothing noticed `spartan` becoming `arsenal`
+  (#591).
 
 ## 1.0.0-rc.5
 

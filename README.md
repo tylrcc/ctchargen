@@ -138,10 +138,10 @@ note, a picture, a subfolder — refuses the batch before anyone is generated,
 so a batch never mixes with your notes and never removes anything. To run a
 batch again, remove its folder or name another. Each member's note is named
 for its position and the character in it — `01 Army Captain 938788.md`,
-`02 Civilian 87665B.md` — the position padded to the width of the batch.
-A batch names nobody: each note is headed by its title, `# Army Captain
-938788`, and you name a member in your vault by setting the note's `name`
-and `aliases` properties, and its heading if you like.
+`02 Merchants 3rd Officer CA76C7.md` — the position padded to the width of
+the batch. A batch names nobody: each note is headed by its title, `# Army
+Captain 938788`, and you name a member in your vault by setting the note's
+`name` and `aliases` properties, and its heading if you like.
 
 **`batch` with no `-o`, or `-o -`, writes the notes to standard output**, one after
 another, and it streams, so the first note arrives before the run finishes
@@ -151,12 +151,12 @@ rather than after.
 it takes no `--auto`.
 
 **A batch writes only the living.** The rules kill a good many characters —
-the default `serve` strategy re-enlists until the service refuses reenlistment, so
-the survival throw gets most Scouts in the end — and a batch passes over the
-dead and generates another until it has the number asked for. It doesn't
-reroll anybody: a dead character is written nowhere and another is generated
-to fill that slot, so every note in the batch is one the dice made. A batch says
-what it did on standard error, so it never lands among the notes:
+the default `serve` strategy re-enlists whenever the throw allows, up to seven
+terms, so the survival throw gets most Scouts in the end — and a batch passes
+over the dead and generates another until it has the number asked for. It
+doesn't reroll anybody: a dead character is written nowhere and another is
+generated to fill that slot, so every note in the batch is one the dice made.
+A batch says what it did on standard error, so it never lands among the notes:
 
 ```sh
 $ ctchargen batch --count 20 --service scouts -o scouts/

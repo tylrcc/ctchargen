@@ -29,6 +29,12 @@ const (
 	navy           = "navy"
 	merchants      = "merchants"
 	serve          = "serve"
+	oneTerm        = "oneterm"
+	advanced       = "advanced"
+	cash           = "cash"
+	goods          = "goods"
+	retire         = "retire"
+	serviceSkills  = "service"
 )
 
 func TestRunRejectsBadCommandLines(t *testing.T) {
@@ -154,7 +160,7 @@ func TestAnAutoRunNamingNoStrategyAppliesTheDefault(t *testing.T) {
 	}
 
 	if got := []string{policy.Career.String(), policy.Skills.String(), policy.Muster.String()}; !slices.Equal(
-		got, []string{"serve", "advanced", "cash"},
+		got, []string{serve, advanced, cash},
 	) {
 		t.Errorf("an auto run naming no strategy applies %v, want serve, advanced and cash", got)
 	}
@@ -242,7 +248,7 @@ func TestAnAutoRunAppliesTheStrategiesGiven(t *testing.T) {
 	)
 
 	for range attempts {
-		note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagCareer, "oneterm"}, nil)
+		note, _ := mustRun(t, []string{cmdNew, flagAuto, flagService, other, flagCareer, oneTerm}, nil)
 
 		for line := range strings.Lines(note) {
 			if !strings.Contains(line, asked) {

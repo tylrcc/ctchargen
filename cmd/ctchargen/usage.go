@@ -139,8 +139,8 @@ type commandHelp struct{ service, death string }
 // three, and the forced term of p. 6.
 const strategiesShare = "The strategies are intent, and the throws decide. Every strategy submits to\n" +
 	"the draft, attempts every commission and promotion, takes both mustering-out\n" +
-	"DMs, assumes any title, and draws each weapon a skill or a benefit names. A\n" +
-	"12 on reenlistment forces another term whatever the strategy.\n"
+	"DMs, assumes any title, and draws each weapon it takes. A 12 on reenlistment\n" +
+	"forces another term whatever the strategy.\n"
 
 // strategyHelp says what each strategy does (#563): under each flag a heading
 // saying what it decides, then each value the flag takes and its line, read

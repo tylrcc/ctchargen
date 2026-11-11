@@ -62,8 +62,9 @@ type ThrowEvent struct {
 	DMFrom []Prerequisite
 }
 
-// RollEvent records a roll with nothing to meet: the draft die, a skills
-// table, a mustering out table, the months of recovery.
+// RollEvent records a roll with nothing to meet: the six characteristics of
+// p. 4, the draft die, a skills table, a mustering out table, the months of
+// recovery.
 //
 // It keeps the modifier, because p. 9's two mustering out DMs are the only
 // ones a one-die roll takes and a record printing the face alone would send

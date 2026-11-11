@@ -234,7 +234,7 @@ func TestADirectoryInTheWayIsNamedAsOne(t *testing.T) {
 func TestABatchIsAlwaysAuto(t *testing.T) {
 	t.Parallel()
 
-	given := []string{cmdBatch, flagCount, "1", flagCareer, "retire", flagSkills, "service", flagMuster, "goods"}
+	given := []string{cmdBatch, flagCount, "1", flagCareer, retire, flagSkills, serviceSkills, flagMuster, goods}
 
 	out, _ := mustRun(t, given, nil)
 	if !strings.Contains(out, ": policy chose ") || strings.Contains(out, ": player ") {
@@ -254,7 +254,7 @@ func TestABatchIsAlwaysAuto(t *testing.T) {
 	}
 
 	if got := []string{policy.Career.String(), policy.Skills.String(), policy.Muster.String()}; !slices.Equal(
-		got, []string{"retire", "service", "goods"},
+		got, []string{retire, serviceSkills, goods},
 	) {
 		t.Errorf("batch with all three strategies applies %v", got)
 	}
@@ -278,7 +278,7 @@ func TestABatchIsAlwaysAuto(t *testing.T) {
 func TestABatchNamesEachNoteForItsCharacter(t *testing.T) {
 	t.Parallel()
 
-	oneterm := []string{flagService, navy, flagCareer, "oneterm"}
+	oneterm := []string{flagService, navy, flagCareer, oneTerm}
 
 	for name, tc := range map[string]struct {
 		walk  walk

@@ -352,6 +352,70 @@ func TestAWordThatNamesNoStrategyIsNotOne(t *testing.T) {
 	}
 }
 
+// Every ranking lists every alternative of its alphabet, so the ranking alone
+// decides (#586): each strategy, offered any one alternative alone, takes it.
+// A ranking missing one would fail on the offer of it, where no generation
+// test need reach.
+func TestEveryRankingListsEveryAlternative(t *testing.T) {
+	t.Parallel()
+
+	for _, career := range []chargen.Career{
+		chargen.CareerServe, chargen.CareerRetire, chargen.CareerOneTerm,
+	} {
+		for _, want := range traveller.Intents {
+			got, err := chargen.Policy{Career: career}.ReenlistIntent([]traveller.Intent{want}, traveller.Odds{})
+			if err != nil || got != want {
+				t.Errorf("career %s, offered %s alone, answered %s (%v)", career, want, got, err)
+			}
+		}
+	}
+
+	for _, skills := range []chargen.Skills{
+		chargen.SkillsAdvanced, chargen.SkillsService, chargen.SkillsPersonal,
+	} {
+		for _, want := range traveller.SkillTables {
+			got, err := chargen.Policy{Skills: skills}.SkillTable(
+				[]traveller.SkillTableOffer{{Table: want}}, traveller.SkillRoll{},
+			)
+			if err != nil || got != want {
+				t.Errorf("skills %s, offered %s alone, answered %s (%v)", skills, want, got, err)
+			}
+		}
+	}
+
+	for _, muster := range []chargen.Muster{
+		chargen.MusterCash, chargen.MusterGoods, chargen.MusterArsenal,
+	} {
+		for _, want := range traveller.MusterTables {
+			got, err := chargen.Policy{Muster: muster}.MusterTable([]traveller.MusterTable{want})
+			if err != nil || got != want {
+				t.Errorf("muster %s, offered %s alone, answered %s (%v)", muster, want, got, err)
+			}
+		}
+	}
+}
+
+// Every ranking lists every alternative of its alphabet, so a ranking that
+// holds nothing on offer is incomplete: a defect of the policy, which fails
+// rather than being answered by the first thing offered (#586). The parser
+// makes no such strategy; a value outside the three is the one way to write
+// a ranking that holds nothing.
+func TestARankingThatHoldsNothingOnOfferIsADefect(t *testing.T) {
+	t.Parallel()
+
+	defer func() {
+		failure := recover()
+		if message, _ := failure.(string); failure != nil && !strings.Contains(message, "holds nothing on offer") {
+			t.Errorf("an incomplete ranking failed without naming it: %v", failure)
+		}
+	}()
+
+	policy := chargen.Policy{Career: chargen.CareerOneTerm + 1}
+
+	intent, err := policy.ReenlistIntent(traveller.Intents[:], traveller.Odds{})
+	t.Errorf("an incomplete ranking answered %v (%v)", intent, err)
+}
+
 // Every strategy parses, and parses back to its own spelling. The round trip
 // is what holds the parser to String: the record writes the one and the flag
 // reads the other, and a disagreement would make a record name a strategy the

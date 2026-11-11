@@ -25,9 +25,10 @@ import (
 // Note is the character as a referee keeps it: its properties, its heading
 // and the sheet, which opens with the profile line and the summary, then the
 // generation record, which is every die thrown and every choice made and the
-// only way back to the character (ADR 0006). It ends with the record. The build that wrote it is a property, who
-// made each choice is on that choice's line, and the ruleset is the same on
-// every note, so nothing follows the record to say them again.
+// only way back to the character (ADR 0006). It ends with the record. The
+// build that wrote it is a property, who made each choice is on that choice's
+// line, and the ruleset is the same on every note, so nothing follows the
+// record to say them again.
 //
 // Implements: A note ends with its generation record [Generation record].
 func Note(character *chargen.Character) string {
@@ -44,7 +45,7 @@ func Note(character *chargen.Character) string {
 }
 
 // Title is what a batch names a character's note by: his service and the rank
-// he holds, as the profile line says them, or "Civilian", and his UPP (#400).
+// he holds, as the profile line says them, and his UPP (#400).
 // A batch has no name to give him (#406); a referee names him in the vault by
 // his note's name and aliases properties.
 //

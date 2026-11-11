@@ -17,12 +17,12 @@ govern how a report gets answered. The current release is the README's
 
 **What `v1.0.0` means, decided in #74 and narrowed in #398.** A referee can
 trust what the tool prints at the table, and the command line he types is
-held: its flags, types, defaults and exit status (#126), and so are the note's
-property names and their meanings, which vault queries stand on (#399). The
-rest of the note's shape is not frozen; it may keep moving after `v1.0.0`, as
-the playtests ask (ADR 0006). The `v1` label carries which issues that covers
-today — this paragraph states the bar and never the list, because a list here
-goes stale every time one closes.
+held: its flags, types, defaults, the values each takes, and exit status
+(#126, #591), and so are the note's property names and their meanings, which
+vault queries stand on (#399). The rest of the note's shape is not frozen; it
+may keep moving after `v1.0.0`, as the playtests ask (ADR 0006). The `v1`
+label carries which issues that covers today — this paragraph states the bar
+and never the list, because a list here goes stale every time one closes.
 
 ## Authority — read this before implementing any rule
 
@@ -219,10 +219,10 @@ go run ./cmd/ctchargen new --auto -o "$(mktemp -d)/c.md"  # a note saved, outsid
   diff after a change to consumption is read before it is regenerated, or the
   fixture is silently re-pathed.
 - **Goldens are regenerated, never hand-edited.**
-- **The CLI is held to a baseline (#126).** Its flags, types and defaults are
-  typed out in
-  `cmd/ctchargen/cli_test.go` and held one way, because a new flag breaks
-  nobody; the exit status beside them is 0 or 1.
+- **The CLI is held to a baseline (#126).** Its flags, types and defaults,
+  and the words each flag that takes one of a set accepts (#591), are typed
+  out in `cmd/ctchargen/cli_test.go` and held one way, because a new flag or
+  value breaks nobody; the exit status beside them is 0 or 1.
 - **A new invariant is not done until a deliberate mutation has been shown to
   kill it**, and the failure names what was broken. Show it with
   `go run ./internal/mutate`, which makes the edit in a scratch copy and never

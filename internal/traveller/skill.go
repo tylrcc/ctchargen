@@ -15,7 +15,7 @@ const (
 	AdvancedEducationEight
 )
 
-// SkillTables is the four in book order, for iteration and tie-breaking.
+// SkillTables is the four in book order, for iteration.
 var SkillTables = [...]SkillTable{
 	PersonalDevelopment, ServiceSkills, AdvancedEducation, AdvancedEducationEight,
 }

@@ -7,6 +7,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"slices"
 	"strings"
 	"testing"
 
@@ -54,6 +55,66 @@ var cliBaseline = map[string][]string{
 	// v1.0.0 with the JSON record they read and chose between (#398). The
 	// note is the one thing written, so there is nothing to render back and
 	// no second shape to ask for.
+}
+
+// The words v1.0.0 holds each flag that takes one of a set to (#591), on
+// both commands, which take the same four. A script typing --muster arsenal
+// breaks on a renamed value just as one breaks on a renamed flag, and nothing
+// noticed spartan becoming arsenal (#570) while these were not listed.
+//
+// One direction, as the flags are: a value here that the flag no longer
+// parses, or the help no longer lists, fails; a value the flag gained breaks
+// nobody. Typed out rather than read from chargen's alphabets or the service
+// names, which would hold the code to itself.
+var valueBaseline = map[string][]string{
+	flagCareer:  {serve, retire, oneTerm},
+	flagSkills:  {advanced, serviceSkills, "personal"},
+	flagMuster:  {cash, goods, "arsenal"},
+	flagService: {navy, "marines", "army", "scouts", merchants, other},
+}
+
+func TestEveryBaselineValueIsStillTaken(t *testing.T) {
+	t.Parallel()
+
+	for command, given := range map[string][]string{
+		cmdNew:   {cmdNew, flagAuto},
+		cmdBatch: {cmdBatch, flagCount, "1"},
+	} {
+		help, _ := mustRun(t, []string{command, flagHelp}, nil)
+
+		for named, values := range valueBaseline {
+			listed := listedValues(help, named)
+
+			for _, value := range values {
+				if !slices.Contains(listed, value) {
+					t.Errorf("%s --help no longer lists %s %s; it lists %v", command, named, value, listed)
+				}
+
+				err := run(append(slices.Clone(given), named, value), nil, io.Discard, io.Discard)
+				if err != nil {
+					t.Errorf("%s %s %s is no longer taken: %v", command, named, value, err)
+				}
+			}
+		}
+	}
+}
+
+// listedValues is the words the help's line for a flag lists after its
+// colon, "  --muster strategy  the ... strategy: cash, goods, arsenal
+// (default cash)", without the default.
+func listedValues(help, named string) []string {
+	for line := range strings.Lines(help) {
+		if !strings.HasPrefix(line, "  "+named+" ") {
+			continue
+		}
+
+		_, listed, _ := strings.Cut(line, ": ")
+		values, _, _ := strings.Cut(listed, " (default")
+
+		return strings.Split(strings.TrimSpace(values), ", ")
+	}
+
+	return nil
 }
 
 func TestEveryBaselineFlagIsStillDeclared(t *testing.T) {
