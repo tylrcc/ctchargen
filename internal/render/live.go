@@ -12,7 +12,7 @@ import (
 //
 // Throws, rolls and outcomes go through the same writeEvent the generation
 // record does, from the same entry, so those lines cannot come to differ. A
-// step is a plain numbered line here, where the note marks it bold.
+// step is a plain numbered line here, where the note makes it a heading.
 //
 // A choice is written here instead, and deliberately does differ. It is one
 // the player has just answered; leaving it out would leave a gap a watcher
@@ -36,7 +36,7 @@ func EventLine(event traveller.Event) string {
 		return fmt.Sprintf("%d. you chose %s\n", lined.Seq, lined.Chosen)
 	}
 
-	// A step is a plain numbered line here: the note marks it bold, and a
+	// A step is a plain numbered line here: the note makes it a heading, and a
 	// terminal would print the marks rather than render them (#422).
 	if lined.Kind == kindStep {
 		return "\n" + stepLine(lined) + "\n\n"

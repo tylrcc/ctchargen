@@ -49,6 +49,12 @@ func (r *record) step(name, pages string) {
 	r.add(traveller.StepEvent{Seq: r.next(), Step: name, Pages: pages})
 }
 
+// phase records a step that is part of a term without opening it, with the
+// pages that govern it.
+func (r *record) phase(term traveller.Term, name, pages string) {
+	r.add(traveller.StepEvent{Seq: r.next(), Step: name, Pages: pages, Within: term})
+}
+
 // throw records a throw and returns its sequence number, so the consequence
 // can name what caused it.
 func (r *record) throw(step string, t throw) int {

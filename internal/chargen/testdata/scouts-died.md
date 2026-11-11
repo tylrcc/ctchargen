@@ -43,7 +43,9 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 6+1
 3. Strength 7 (from step 2)
@@ -59,21 +61,21 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 13. Social Standing 9 (from step 12)
 14. UPP 7C8669 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Scouts: rolled 3+3 +1 (Intelligence 6+) = 7 against 7+, made
 17. enlisted in the Scouts (from step 16)
 
-**18. rank and service skills (p. 23)**
+### 18. rank and service skills (p. 23)
 
 19. Pilot-1
 
-**20. term 1 (pp. 5-7)**
+### 20. term 1 (pp. 5-7)
 
 21. survival: rolled 1+6 = 7 against 7+, made
 22. survived term 1 (from step 21)
 
-**23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
+#### 23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
 24. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 25. Service Skills Table: rolled 1
@@ -85,7 +87,7 @@ UPP 7C8669, age 26, Scouts, 2 terms, killed by the survival throw
 31. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 32. reenlisted for term 2 (from step 30)
 
-**33. term 2 (pp. 5-7)**
+### 33. term 2 (pp. 5-7)
 
 34. survival: rolled 2+4 = 6 against 7+, missed
 35. died in term 2, aged 26 (from step 34)

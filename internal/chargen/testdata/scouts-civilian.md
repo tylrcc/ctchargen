@@ -34,7 +34,9 @@ UPP 76B348, age 18, civilian, no prior service
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 6+1
 3. Strength 7 (from step 2)
@@ -50,7 +52,7 @@ UPP 76B348, age 18, civilian, no prior service
 13. Social Standing 8 (from step 12)
 14. UPP 76B348 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Scouts: rolled 4+2 = 6 against 7+, missed
 17. rejected by the Scouts (from step 16)

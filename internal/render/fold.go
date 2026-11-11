@@ -122,6 +122,7 @@ type entry struct {
 	Because      int
 	Description  string
 	DMFrom       string
+	Within       traveller.Term
 }
 
 // entryOf folds a domain event into its entry.
@@ -137,7 +138,7 @@ func entryOf(event traveller.Event) entry {
 type entryFold struct{ out entry }
 
 func (e *entryFold) Step(from traveller.StepEvent) error {
-	e.out = entry{Seq: from.Seq, Kind: kindStep, Step: from.Step, Pages: from.Pages}
+	e.out = entry{Seq: from.Seq, Kind: kindStep, Step: from.Step, Pages: from.Pages, Within: from.Within}
 
 	return nil
 }

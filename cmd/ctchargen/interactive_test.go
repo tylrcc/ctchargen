@@ -740,8 +740,8 @@ func isWeapon(possession string) bool {
 }
 
 // The live view prints a step as a plain numbered line, without the note's
-// heading or bold marks: a terminal does not render them, and `###` or `**` would
-// reach the player as marks (#422).
+// heading marks or any bold: a terminal does not render them, and `###` or
+// `**` would reach the player as marks (#422).
 //
 // Holds: The live view marks a step with no markdown.
 func TestTheLiveViewMarksNothing(t *testing.T) {

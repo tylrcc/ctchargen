@@ -566,40 +566,72 @@ func TestARollClaimsNothingMet(t *testing.T) {
 	}
 }
 
-// The generation record sits under one heading, its steps as bold lines
-// rather than headings of their own, so a note's outline shows the sheet's
-// sections and one entry for the record (#422). Each step keeps its number
-// (#249).
+// The generation record heads each step, so a note's outline shows where a
+// reader is in it (#577): a step outside every term, and the step that opens
+// a term, at the third level, and a term's skills and training and its aging
+// at the fourth, under the term they belong to. Each heading keeps its step's
+// number, which a line's "from step N" can name (#249). A step marked bold
+// rather than headed is read as one, so it fails here too.
 //
-// Holds: The generation record is one heading, its steps bold lines.
-func TestTheGenerationRecordIsOneHeading(t *testing.T) {
+// Holds: The generation record heads each step, a term's phases under the
+// term.
+func TestTheGenerationRecordHeadsEachStep(t *testing.T) {
 	t.Parallel()
 
 	note := noteOf(func(c *chargen.Character) {
 		c.Events = recorded(
 			traveller.StepEvent{Seq: 1, Step: "characteristics", Pages: "p. 4"},
 			traveller.OutcomeEvent{Seq: 2, Description: "UPP 777777 at age 18"},
-			traveller.StepEvent{Seq: 3, Step: "enlistment", Pages: "pp. 5, 10"},
+			traveller.Term(1),
+			traveller.StepEvent{Seq: 4, Step: "skills and training, 1 roll: 1 for the term", Pages: "pp. 6, 11", Within: 1},
+			traveller.StepEvent{Seq: 5, Step: "aging, end of term 1", Pages: "pp. 7-9", Within: 1},
+			traveller.StepEvent{Seq: 6, Step: "titles", Pages: "p. 5; Book 3 p. 22"},
 			aDischargedSailor(),
 		)
 	})
 
 	_, record, _ := strings.Cut(note, "## Generation record\n")
 
+	var headings []string
+
 	for line := range strings.Lines(record) {
-		if strings.HasPrefix(line, "#") {
-			t.Errorf("the generation record carries a heading of its own: %q", line)
+		if strings.HasPrefix(line, "#") || strings.HasPrefix(line, "**") {
+			headings = append(headings, strings.TrimSuffix(line, "\n"))
 		}
 	}
 
-	for _, want := range []string{
-		"\n**1. characteristics (p. 4)**\n\n",
-		"\n2. UPP 777777 at age 18\n",
-		"\n**3. enlistment (pp. 5, 10)**\n\n",
-	} {
-		if !strings.Contains(record, want) {
-			t.Errorf("the generation record does not read %q:\n%s", want, record)
-		}
+	want := []string{
+		"### 1. characteristics (p. 4)",
+		"### 3. term 1 (pp. 5-7)",
+		"#### 4. skills and training, 1 roll: 1 for the term (pp. 6, 11)",
+		"#### 5. aging, end of term 1 (pp. 7-9)",
+		"### 6. titles (p. 5; Book 3 p. 22)",
+	}
+
+	if !slices.Equal(headings, want) {
+		t.Errorf("the generation record's headings are\n%s\nwant\n%s",
+			strings.Join(headings, "\n"), strings.Join(want, "\n"))
+	}
+}
+
+// The generation record says once, before its first step, what a line's
+// "from step N" names: the step it came from, which is not always its only
+// cause (#577, #552). A weapon gained also follows from the table designated
+// and the weapon chosen, and its line names the table's die alone.
+//
+// Holds: The generation record says what "from step N" names.
+func TestTheGenerationRecordSaysWhatFromStepNames(t *testing.T) {
+	t.Parallel()
+
+	_, record, _ := strings.Cut(noteOf(func(*chargen.Character) {}), "## Generation record\n")
+
+	first, _, _ := strings.Cut(strings.TrimPrefix(record, "\n"), "\n")
+
+	const want = "A line's `(from step N)` names the step it came from, most often the roll " +
+		"it was read off, and not every cause behind it."
+
+	if first != want {
+		t.Errorf("the generation record opens %q, want %q", first, want)
 	}
 }
 

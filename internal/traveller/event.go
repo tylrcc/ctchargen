@@ -32,6 +32,11 @@ type StepEvent struct {
 	// Opens is the term this step opens, and zero for every step that opens
 	// none, so a term a death ended is still read as a term served (#412).
 	Opens Term
+
+	// Within is the term a step is part of without opening it - the term's
+	// skills and training, and its aging - and zero for every other step, so
+	// the record can set a term's phases under the term (#577).
+	Within Term
 }
 
 // ThrowEvent records one throw against a target: the dice as rolled, the

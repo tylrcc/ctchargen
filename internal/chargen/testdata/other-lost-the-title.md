@@ -54,7 +54,9 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 2+4
 3. Strength 6 (from step 2)
@@ -70,17 +72,17 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 13. Social Standing 11 (from step 12)
 14. UPP 656ACB at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Other: rolled 1+4 = 5 against 3+, made
 17. enlisted in the Other (from step 16)
 
-**18. term 1 (pp. 5-7)**
+### 18. term 1 (pp. 5-7)
 
 19. survival: rolled 1+2 +2 (Intelligence 9+) = 5 against 5+, made
 20. survived term 1 (from step 19)
 
-**21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
+#### 21. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
 22. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 23. Advanced Education Table (education 8+): rolled 3
@@ -92,12 +94,12 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 29. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 30. reenlisted for term 2 (from step 28)
 
-**31. term 2 (pp. 5-7)**
+### 31. term 2 (pp. 5-7)
 
 32. survival: rolled 6+4 +2 (Intelligence 9+) = 12 against 5+, made
 33. survived term 2 (from step 32)
 
-**34. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 34. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 35. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 36. Service Skills Table: rolled 1
@@ -106,12 +108,12 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 40. reenlisted for term 3 (from step 38)
 
-**41. term 3 (pp. 5-7)**
+### 41. term 3 (pp. 5-7)
 
 42. survival: rolled 6+5 +2 (Intelligence 9+) = 13 against 5+, made
 43. survived term 3 (from step 42)
 
-**44. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 44. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 45. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 46. Personal Development Table: rolled 6
@@ -120,12 +122,12 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 49. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 50. reenlisted for term 4 (from step 48)
 
-**51. term 4 (pp. 5-7)**
+### 51. term 4 (pp. 5-7)
 
 52. survival: rolled 5+3 +2 (Intelligence 9+) = 10 against 5+, made
 53. survived term 4 (from step 52)
 
-**54. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 54. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 55. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 56. Advanced Education Table (education 8+): rolled 6
@@ -133,7 +135,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 58. reenlistment: rolled 2+2 = 4 against 5+, missed
 59. left the service after term 4: reenlistment denied (from step 58)
 
-**60. aging, end of term 4 (pp. 7-9)**
+#### 60. aging, end of term 4 (pp. 7-9)
 
 61. aging, Strength: rolled 2+4 = 6 against 8+, missed
 62. Strength -1, 6 to 5 (from step 61)
@@ -142,7 +144,7 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 65. aging, Endurance: rolled 5+6 = 11 against 8+, made
 66. Endurance holds (from step 65)
 
-**67. mustering out, 4 rolls: 4 for the terms (pp. 7, 9, 21-23)**
+### 67. mustering out, 4 rolls: 4 for the terms (pp. 7, 9, 21-23)
 
 68. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 69. Table 2, Cash Allowances: rolled 1
@@ -157,6 +159,6 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 78. Table 1, Material Benefits: rolled 6
 79. nothing: the table prints a dash for this service (from step 78)
 
-**80. titles (p. 5; Book 3 p. 22)**
+### 80. titles (p. 5; Book 3 p. 22)
 
 81. social standing 10 at the end, from 11 at 18: no title, where the rolled value allowed one

@@ -71,7 +71,9 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 5+5
 3. Strength 10 (from step 2)
@@ -87,21 +89,21 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 13. Social Standing 12 (from step 12)
 14. UPP A68AAC at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Scouts: rolled 5+1 +3 (Intelligence 6+, Strength 8+) = 9 against 7+, made
 17. enlisted in the Scouts (from step 16)
 
-**18. rank and service skills (p. 23)**
+### 18. rank and service skills (p. 23)
 
 19. Pilot-1
 
-**20. term 1 (pp. 5-7)**
+### 20. term 1 (pp. 5-7)
 
 21. survival: rolled 2+5 = 7 against 7+, made
 22. survived term 1 (from step 21)
 
-**23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
+#### 23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
 24. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 25. Advanced Education Table (education 8+): rolled 2
@@ -113,12 +115,12 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 31. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 32. reenlisted for term 2 (from step 30)
 
-**33. term 2 (pp. 5-7)**
+### 33. term 2 (pp. 5-7)
 
 34. survival: rolled 3+5 = 8 against 7+, made
 35. survived term 2 (from step 34)
 
-**36. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 36. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 37. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 38. Service Skills Table: rolled 4
@@ -126,12 +128,12 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 40. reenlistment: rolled 6+6 = 12 against 3+, made
 41. a 12 exactly: the service requires another term (from step 40)
 
-**42. term 3 (pp. 5-7)**
+### 42. term 3 (pp. 5-7)
 
 43. survival: rolled 6+3 = 9 against 7+, made
 44. survived term 3 (from step 43)
 
-**45. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 45. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 47. Personal Development Table: rolled 2
@@ -140,12 +142,12 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 50. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 51. reenlisted for term 4 (from step 49)
 
-**52. term 4 (pp. 5-7)**
+### 52. term 4 (pp. 5-7)
 
 53. survival: rolled 5+4 = 9 against 7+, made
 54. survived term 4 (from step 53)
 
-**55. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 55. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 56. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 57. Advanced Education Table (education 8+): rolled 6
@@ -154,7 +156,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 60. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 61. reenlisted for term 5 (from step 59)
 
-**62. aging, end of term 4 (pp. 7-9)**
+#### 62. aging, end of term 4 (pp. 7-9)
 
 63. aging, Strength: rolled 3+2 = 5 against 8+, missed
 64. Strength -1, 10 to 9 (from step 63)
@@ -163,12 +165,12 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 67. aging, Endurance: rolled 3+1 = 4 against 8+, missed
 68. Endurance -1, 8 to 7 (from step 67)
 
-**69. term 5 (pp. 5-7)**
+### 69. term 5 (pp. 5-7)
 
 70. survival: rolled 4+6 = 10 against 7+, made
 71. survived term 5 (from step 70)
 
-**72. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 72. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 73. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 74. Advanced Education Table: rolled 6
@@ -177,7 +179,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 77. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 78. reenlisted for term 6 (from step 76)
 
-**79. aging, end of term 5 (pp. 7-9)**
+#### 79. aging, end of term 5 (pp. 7-9)
 
 80. aging, Strength: rolled 5+6 = 11 against 8+, made
 81. Strength holds (from step 80)
@@ -186,12 +188,12 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 84. aging, Endurance: rolled 4+6 = 10 against 8+, made
 85. Endurance holds (from step 84)
 
-**86. term 6 (pp. 5-7)**
+### 86. term 6 (pp. 5-7)
 
 87. survival: rolled 4+3 = 7 against 7+, made
 88. survived term 6 (from step 87)
 
-**89. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 89. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 90. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 91. Service Skills Table: rolled 5
@@ -200,7 +202,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 94. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 95. reenlisted for term 7 (from step 93)
 
-**96. aging, end of term 6 (pp. 7-9)**
+#### 96. aging, end of term 6 (pp. 7-9)
 
 97. aging, Strength: rolled 6+5 = 11 against 8+, made
 98. Strength holds (from step 97)
@@ -209,12 +211,12 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 101. aging, Endurance: rolled 3+1 = 4 against 8+, missed
 102. Endurance -1, 7 to 6 (from step 101)
 
-**103. term 7 (pp. 5-7)**
+### 103. term 7 (pp. 5-7)
 
 104. survival: rolled 2+6 = 8 against 7+, made
 105. survived term 7 (from step 104)
 
-**106. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 106. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 107. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 108. Personal Development Table: rolled 6
@@ -222,7 +224,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 110. reenlistment: rolled 3+5 = 8 against 3+, made
 111. left the service after term 7 and is retired: retire (from step 110)
 
-**112. aging, end of term 7 (pp. 7-9)**
+#### 112. aging, end of term 7 (pp. 7-9)
 
 113. aging, Strength: rolled 2+5 = 7 against 8+, missed
 114. Strength -1, 9 to 8 (from step 113)
@@ -231,7 +233,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 117. aging, Endurance: rolled 1+4 = 5 against 8+, missed
 118. Endurance -1, 6 to 5 (from step 117)
 
-**119. mustering out, 7 rolls: 7 for the terms (pp. 7, 9, 21-23)**
+### 119. mustering out, 7 rolls: 7 for the terms (pp. 7, 9, 21-23)
 
 120. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 121. Table 1, Material Benefits: rolled 2
@@ -258,7 +260,7 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 142. Table 1, Material Benefits: rolled 1
 143. a Low Passage (from step 142)
 
-**144. titles (p. 5; Book 3 p. 22)**
+### 144. titles (p. 5; Book 3 p. 22)
 
 145. assume the hereditary title (p. 5): policy chose yes from yes, no
 146. social standing 12 confers baron/baroness, and it is assumed

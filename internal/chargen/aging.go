@@ -35,7 +35,7 @@ func (r *run) agingRound(term traveller.Term) error {
 		return nil
 	}
 
-	r.record.step(fmt.Sprintf("aging, end of term %d", term), "pp. 7-9")
+	r.record.phase(term, fmt.Sprintf("aging, end of term %d", term), "pp. 7-9")
 
 	for _, effect := range effects {
 		throw := roll(r.roll, effect.Saving, 0)

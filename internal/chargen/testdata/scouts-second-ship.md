@@ -75,7 +75,9 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 5+3
 3. Strength 8 (from step 2)
@@ -91,21 +93,21 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 13. Social Standing 9 (from step 12)
 14. UPP 8A9889 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Scouts: rolled 4+4 +3 (Intelligence 6+, Strength 8+) = 11 against 7+, made
 17. enlisted in the Scouts (from step 16)
 
-**18. rank and service skills (p. 23)**
+### 18. rank and service skills (p. 23)
 
 19. Pilot-1
 
-**20. term 1 (pp. 5-7)**
+### 20. term 1 (pp. 5-7)
 
 21. survival: rolled 2+6 +2 (Endurance 9+) = 10 against 7+, made
 22. survived term 1 (from step 21)
 
-**23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
+#### 23. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
 24. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 25. Advanced Education Table (education 8+): rolled 1
@@ -116,12 +118,12 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 30. reenlistment: rolled 6+6 = 12 against 3+, made
 31. a 12 exactly: the service requires another term (from step 30)
 
-**32. term 2 (pp. 5-7)**
+### 32. term 2 (pp. 5-7)
 
 33. survival: rolled 3+2 +2 (Endurance 9+) = 7 against 7+, made
 34. survived term 2 (from step 33)
 
-**35. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 35. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 36. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 37. Service Skills Table: rolled 6
@@ -130,12 +132,12 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 40. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 41. reenlisted for term 3 (from step 39)
 
-**42. term 3 (pp. 5-7)**
+### 42. term 3 (pp. 5-7)
 
 43. survival: rolled 2+3 +2 (Endurance 9+) = 7 against 7+, made
 44. survived term 3 (from step 43)
 
-**45. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 45. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 46. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 47. Personal Development Table: rolled 4
@@ -145,12 +147,12 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 51. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 52. reenlisted for term 4 (from step 50)
 
-**53. term 4 (pp. 5-7)**
+### 53. term 4 (pp. 5-7)
 
 54. survival: rolled 4+4 +2 (Endurance 9+) = 10 against 7+, made
 55. survived term 4 (from step 54)
 
-**56. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 56. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 57. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 58. Advanced Education Table (education 8+): rolled 2
@@ -159,7 +161,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 61. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 62. reenlisted for term 5 (from step 60)
 
-**63. aging, end of term 4 (pp. 7-9)**
+#### 63. aging, end of term 4 (pp. 7-9)
 
 64. aging, Strength: rolled 4+3 = 7 against 8+, missed
 65. Strength -1, 8 to 7 (from step 64)
@@ -168,12 +170,12 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 68. aging, Endurance: rolled 5+2 = 7 against 8+, missed
 69. Endurance -1, 9 to 8 (from step 68)
 
-**70. term 5 (pp. 5-7)**
+### 70. term 5 (pp. 5-7)
 
 71. survival: rolled 5+2 = 7 against 7+, made
 72. survived term 5 (from step 71)
 
-**73. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 73. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 74. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 75. Advanced Education Table: rolled 3
@@ -182,7 +184,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 78. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 79. reenlisted for term 6 (from step 77)
 
-**80. aging, end of term 5 (pp. 7-9)**
+#### 80. aging, end of term 5 (pp. 7-9)
 
 81. aging, Strength: rolled 2+1 = 3 against 8+, missed
 82. Strength -1, 7 to 6 (from step 81)
@@ -191,12 +193,12 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 85. aging, Endurance: rolled 4+1 = 5 against 8+, missed
 86. Endurance -1, 8 to 7 (from step 85)
 
-**87. term 6 (pp. 5-7)**
+### 87. term 6 (pp. 5-7)
 
 88. survival: rolled 6+3 = 9 against 7+, made
 89. survived term 6 (from step 88)
 
-**90. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 90. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 91. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 92. Service Skills Table: rolled 2
@@ -205,7 +207,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 95. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 96. reenlisted for term 7 (from step 94)
 
-**97. aging, end of term 6 (pp. 7-9)**
+#### 97. aging, end of term 6 (pp. 7-9)
 
 98. aging, Strength: rolled 5+4 = 9 against 8+, made
 99. Strength holds (from step 98)
@@ -214,12 +216,12 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 102. aging, Endurance: rolled 4+2 = 6 against 8+, missed
 103. Endurance -1, 7 to 6 (from step 102)
 
-**104. term 7 (pp. 5-7)**
+### 104. term 7 (pp. 5-7)
 
 105. survival: rolled 4+5 = 9 against 7+, made
 106. survived term 7 (from step 105)
 
-**107. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 107. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 108. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 109. Personal Development Table: rolled 1
@@ -227,7 +229,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 111. reenlistment: rolled 6+2 = 8 against 3+, made
 112. left the service after term 7 and is retired: retire (from step 111)
 
-**113. aging, end of term 7 (pp. 7-9)**
+#### 113. aging, end of term 7 (pp. 7-9)
 
 114. aging, Strength: rolled 3+6 = 9 against 8+, made
 115. Strength holds (from step 114)
@@ -236,7 +238,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 118. aging, Endurance: rolled 5+6 = 11 against 8+, made
 119. Endurance holds (from step 118)
 
-**120. mustering out, 7 rolls: 7 for the terms (pp. 7, 9, 21-23)**
+### 120. mustering out, 7 rolls: 7 for the terms (pp. 7, 9, 21-23)
 
 121. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 122. Table 1, Material Benefits: rolled 4

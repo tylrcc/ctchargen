@@ -15,10 +15,27 @@ import (
 // the page open; the sheet above it tells the service in brief, and this is
 // every step of it. It is also the only way back to the character (ADR 0006).
 //
+// It says once, before its first step, what a line's "from step N" names: the
+// one step it came from, which is not always its only cause (#577). A weapon
+// gained also follows from the table designated and the weapon chosen.
+//
+// The lines between two step headings are one Markdown ordered list, which a
+// viewer numbers from its first line's number up. Every event is one line, in
+// order, and every step a heading that ends the list before it, so the number
+// a viewer shows is the line's own.
+//
 // Implements: The kept generation record numbers every event, so no number is
 // skipped [Generation record].
+//
+// Implements: The generation record says what "from step N" names
+// [Generation record].
+//
+// Implements: No viewer renumbers the generation record's lines [Generation
+// record].
 func writeGenerationRecord(out *strings.Builder, r view) {
-	out.WriteString("## Generation record\n")
+	out.WriteString("## Generation record\n\n")
+	out.WriteString("A line's `(from step N)` names the step it came from, most often the roll " +
+		"it was read off, and not every cause behind it.\n")
 
 	for _, event := range r.Events {
 		writeEvent(out, event, r.answerer())
@@ -29,16 +46,24 @@ func writeGenerationRecord(out *strings.Builder, r view) {
 
 // writeEvent writes one entry of the generation record.
 //
-// A step line carries its number like every other line (#249): bare, it
-// made the numbers appear to skip, and a record kept for the table opened at
-// event 2.
+// A step is a heading, so a note's outline shows where a reader is in the
+// record (#577): a step outside every term, and the step that opens a term,
+// at the third level, and a term's skills and training and its aging at the
+// fourth, under that term. The heading carries the step's number like every
+// other line (#249): bare, it made the numbers appear to skip, and a "from
+// step N" naming the step would find nothing.
 //
-// Implements: The generation record is one heading, its steps bold lines
-// [Generation record].
+// Implements: The generation record heads each step, a term's phases under the
+// term [Generation record].
 func writeEvent(out *strings.Builder, event entry, answerer string) {
 	switch event.Kind {
 	case kindStep:
-		fmt.Fprintf(out, "\n**%s**\n\n", stepLine(event))
+		level := "###"
+		if event.Within != 0 {
+			level = "####"
+		}
+
+		fmt.Fprintf(out, "\n%s %s\n\n", level, stepLine(event))
 	case kindThrow, kindRoll:
 		// One line for both: a roll is a throw whose target is empty, which
 		// is exactly what throwLine already prints.
@@ -151,8 +176,8 @@ func outcomeLine(event entry) string {
 	return line
 }
 
-// stepLine is a step's number, name and pages: what the note marks bold and
-// the live view prints plain.
+// stepLine is a step's number, name and pages: the note's heading for the
+// step, and the live view's plain line.
 func stepLine(event entry) string {
 	return fmt.Sprintf("%d. %s (%s)", event.Seq, event.Step, event.Pages)
 }

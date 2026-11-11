@@ -37,6 +37,12 @@ release turns out to be.
 - The sheet's possessions show one line for each class of passage, with a
   count where there are more than one (`Low Passage ×2`) (#560). The
   `possessions` property still lists each passage.
+- Each step of the generation record is a heading, numbered as before, so a
+  note's outline shows where a reader is in it (#577):
+  `### 20. term 1 (pp. 5-7)`, with the term's skills and training and its
+  aging under it at the next level. The record opens by saying that a line's
+  `(from step N)` names the step it came from, most often the roll it was read
+  off, and not every cause behind it.
 
 ## 1.0.0-rc.5
 

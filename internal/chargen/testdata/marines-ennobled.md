@@ -75,7 +75,9 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 3+5
 3. Strength 8 (from step 2)
@@ -91,16 +93,16 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 13. Social Standing 8 (from step 12)
 14. UPP 84C988 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Marines: rolled 6+2 +3 (Intelligence 8+, Strength 8+) = 11 against 9+, made
 17. enlisted in the Marines (from step 16)
 
-**18. rank and service skills (p. 23)**
+### 18. rank and service skills (p. 23)
 
 19. Cutlass-1
 
-**20. term 1 (pp. 5-7)**
+### 20. term 1 (pp. 5-7)
 
 21. survival: rolled 3+3 +2 (Endurance 8+) = 8 against 6+, made
 22. survived term 1 (from step 21)
@@ -108,7 +110,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 24. commission: rolled 3+4 +1 (Education 7+) = 8 against 9+, missed
 25. not commissioned this term (from step 24)
 
-**26. skills and training, 2 rolls: 2 for the term (pp. 6, 11)**
+#### 26. skills and training, 2 rolls: 2 for the term (pp. 6, 11)
 
 27. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 28. Advanced Education Table (education 8+): rolled 4
@@ -120,7 +122,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 34. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 35. reenlisted for term 2 (from step 33)
 
-**36. term 2 (pp. 5-7)**
+### 36. term 2 (pp. 5-7)
 
 37. survival: rolled 5+1 +2 (Endurance 8+) = 8 against 6+, made
 38. survived term 2 (from step 37)
@@ -132,7 +134,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 44. promotion: rolled 6+5 +1 (Social Standing 8+) = 12 against 9+, made
 45. promoted: Captain (from step 44)
 
-**46. skills and training, 3 rolls: 1 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)**
+#### 46. skills and training, 3 rolls: 1 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)
 
 47. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 48. Service Skills Table: rolled 2
@@ -148,7 +150,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 58. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 59. reenlisted for term 3 (from step 57)
 
-**60. term 3 (pp. 5-7)**
+### 60. term 3 (pp. 5-7)
 
 61. survival: rolled 3+3 +2 (Endurance 8+) = 8 against 6+, made
 62. survived term 3 (from step 61)
@@ -156,7 +158,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 64. promotion: rolled 6+6 +1 (Social Standing 8+) = 13 against 9+, made
 65. promoted: Force Cmdr (from step 64)
 
-**66. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 66. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 67. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 68. Advanced Education Table: rolled 3
@@ -168,7 +170,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 74. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 75. reenlisted for term 4 (from step 73)
 
-**76. term 4 (pp. 5-7)**
+### 76. term 4 (pp. 5-7)
 
 77. survival: rolled 5+2 +2 (Endurance 8+) = 9 against 6+, made
 78. survived term 4 (from step 77)
@@ -176,7 +178,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 80. promotion: rolled 6+6 +1 (Social Standing 8+) = 13 against 9+, made
 81. promoted: Lt Colonel (from step 80)
 
-**82. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 82. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 83. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 84. Personal Development Table: rolled 2
@@ -188,7 +190,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 90. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 91. reenlisted for term 5 (from step 89)
 
-**92. aging, end of term 4 (pp. 7-9)**
+#### 92. aging, end of term 4 (pp. 7-9)
 
 93. aging, Strength: rolled 4+2 = 6 against 8+, missed
 94. Strength -1, 8 to 7 (from step 93)
@@ -197,7 +199,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 97. aging, Endurance: rolled 1+4 = 5 against 8+, missed
 98. Endurance -1, 12 to 11 (from step 97)
 
-**99. term 5 (pp. 5-7)**
+### 99. term 5 (pp. 5-7)
 
 100. survival: rolled 3+1 +2 (Endurance 8+) = 6 against 6+, made
 101. survived term 5 (from step 100)
@@ -205,7 +207,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 103. promotion: rolled 5+4 +1 (Social Standing 8+) = 10 against 9+, made
 104. promoted: Colonel (from step 103)
 
-**105. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 105. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 106. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 107. Advanced Education Table: rolled 6
@@ -218,7 +220,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 114. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 115. reenlisted for term 6 (from step 113)
 
-**116. aging, end of term 5 (pp. 7-9)**
+#### 116. aging, end of term 5 (pp. 7-9)
 
 117. aging, Strength: rolled 5+6 = 11 against 8+, made
 118. Strength holds (from step 117)
@@ -227,7 +229,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 121. aging, Endurance: rolled 6+1 = 7 against 8+, missed
 122. Endurance -1, 11 to 10 (from step 121)
 
-**123. term 6 (pp. 5-7)**
+### 123. term 6 (pp. 5-7)
 
 124. survival: rolled 6+5 +2 (Endurance 8+) = 13 against 6+, made
 125. survived term 6 (from step 124)
@@ -235,7 +237,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 127. promotion: rolled 2+2 +1 (Social Standing 8+) = 5 against 9+, missed
 128. not promoted this term (from step 127)
 
-**129. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 129. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 130. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 131. Personal Development Table: rolled 4
@@ -244,7 +246,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 134. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 135. reenlisted for term 7 (from step 133)
 
-**136. aging, end of term 6 (pp. 7-9)**
+#### 136. aging, end of term 6 (pp. 7-9)
 
 137. aging, Strength: rolled 5+4 = 9 against 8+, made
 138. Strength holds (from step 137)
@@ -253,7 +255,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 141. aging, Endurance: rolled 4+4 = 8 against 8+, made
 142. Endurance holds (from step 141)
 
-**143. term 7 (pp. 5-7)**
+### 143. term 7 (pp. 5-7)
 
 144. survival: rolled 4+1 +2 (Endurance 8+) = 7 against 6+, made
 145. survived term 7 (from step 144)
@@ -261,7 +263,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 147. promotion: rolled 3+1 +1 (Social Standing 8+) = 5 against 9+, missed
 148. not promoted this term (from step 147)
 
-**149. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 149. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 150. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 151. Advanced Education Table (education 8+): rolled 1
@@ -269,7 +271,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 153. reenlistment: rolled 1+2 = 3 against 6+, missed
 154. left the service after term 7 and is retired: reenlistment denied (from step 153)
 
-**155. aging, end of term 7 (pp. 7-9)**
+#### 155. aging, end of term 7 (pp. 7-9)
 
 156. aging, Strength: rolled 4+4 = 8 against 8+, made
 157. Strength holds (from step 156)
@@ -278,7 +280,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 160. aging, Endurance: rolled 3+6 = 9 against 8+, made
 161. Endurance holds (from step 160)
 
-**162. mustering out, 9 rolls: 7 for the terms, 2 for rank 5 (pp. 7, 9, 21-23)**
+### 162. mustering out, 9 rolls: 7 for the terms, 2 for rank 5 (pp. 7, 9, 21-23)
 
 163. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 164. DM +1 on Table 2 for gambling expertise (pp. 7, 9): policy chose yes from yes, no
@@ -313,7 +315,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 193. Social Standing +2, 10 to 12 (from step 192)
 194. retirement pay of CR 8000 a year
 
-**195. titles (p. 5; Book 3 p. 22)**
+### 195. titles (p. 5; Book 3 p. 22)
 
 196. assume the hereditary title (p. 5): policy chose yes from yes, no
 197. social standing 12 confers baron/baroness, and it is assumed

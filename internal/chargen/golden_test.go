@@ -232,8 +232,8 @@ func TestTheRosterReachesItsPaths(t *testing.T) {
 }
 
 // numbered is the sequence number a generation record line opens with: an event line
-// ("2. Strength: rolled 5+5") or a step line ("**17. term 3 (pp. 5-7)**").
-var numbered = regexp.MustCompile(`(?m)^(?:\*\*)?(\d+)\. `)
+// ("2. Strength: rolled 5+5") or a step heading ("### 17. term 3 (pp. 5-7)").
+var numbered = regexp.MustCompile(`(?m)^(?:#{3,4} )?(\d+)\. `)
 
 // No golden's generation record skips a number (#249).
 //
@@ -301,6 +301,135 @@ func TestNoNoteUsesAPronoun(t *testing.T) {
 			if found := pronoun.FindString(line); found != "" {
 				t.Errorf("%s says %q: %s", fixture.name, found, strings.TrimSpace(line))
 			}
+		}
+	}
+}
+
+// listItem is a line a Markdown viewer reads as an ordered list item, and its
+// number.
+var listItem = regexp.MustCompile(`^(\d+)\. `)
+
+// No viewer renumbers a golden's generation record (#577, #552 §4). A
+// Markdown viewer numbers an ordered list from its first item's number, one
+// up for each item after, whatever the later items say; a blank line does not
+// end the list, and a heading or a paragraph does. So a line numbered other
+// than one more than the item before it in the same list is shown with a
+// number the line does not carry, and a "from step N" naming it points at
+// the wrong line.
+//
+// Holds: No viewer renumbers the generation record's lines.
+func TestNoViewerRenumbersTheGenerationRecord(t *testing.T) {
+	t.Parallel()
+
+	for _, fixture := range fixtures {
+		_, record, found := strings.Cut(render.Note(fixture.generate(t)), "## Generation record\n")
+		if !found {
+			t.Fatalf("%s: the note has no generation record", fixture.name)
+		}
+
+		previous := 0
+
+		for line := range strings.Lines(record) {
+			line = strings.TrimSuffix(line, "\n")
+
+			// A line of spaces is blank to a viewer, and ends nothing.
+			if strings.TrimSpace(line) == "" {
+				continue
+			}
+
+			match := listItem.FindStringSubmatch(line)
+			if match == nil {
+				previous = 0
+
+				continue
+			}
+
+			n, err := strconv.Atoi(match[1])
+			if err != nil {
+				t.Fatalf("%s: %v", fixture.name, err)
+			}
+
+			if previous != 0 && n != previous+1 {
+				t.Errorf("%s: %q follows item %d in one list, so a viewer shows it as %d",
+					fixture.name, line, previous, previous+1)
+
+				break
+			}
+
+			previous = n
+		}
+	}
+}
+
+// heading is a heading of the generation record: its level, and the step it
+// heads.
+var heading = regexp.MustCompile(`^(#+) (\d+\. .*)$`)
+
+// phase is a step that is part of a term without opening it, with the term
+// an aging step names; termEntry is the step that opens a term, and its term.
+var (
+	phase     = regexp.MustCompile(`^\d+\. (?:skills and training|aging, end of term (\d+))`)
+	termEntry = regexp.MustCompile(`^\d+\. term (\d+) \(`)
+)
+
+// Every golden's generation record heads each step at the third level, and a
+// term's skills and training and its aging at the fourth, under the heading of
+// the term they belong to (#577), so a reader landing mid-record finds the
+// term in the outline and not by scrolling up.
+//
+// Holds: The generation record heads each step, a term's phases under the
+// term.
+func TestEveryGoldenSetsATermsPhasesUnderIt(t *testing.T) {
+	t.Parallel()
+
+	for _, fixture := range fixtures {
+		character := fixture.generate(t)
+		_, record, _ := strings.Cut(render.Note(character), "## Generation record\n")
+
+		term, headed := "", 0
+
+		for line := range strings.Lines(record) {
+			line = strings.TrimSuffix(line, "\n")
+
+			match := heading.FindStringSubmatch(line)
+			if match == nil {
+				continue
+			}
+
+			headed++
+
+			level, text := len(match[1]), match[2]
+
+			within := phase.FindStringSubmatch(text)
+			if within == nil {
+				if level != 3 {
+					t.Errorf("%s: %q is at level %d, want 3", fixture.name, line, level)
+				}
+
+				term = ""
+				if opens := termEntry.FindStringSubmatch(text); opens != nil {
+					term = opens[1]
+				}
+
+				continue
+			}
+
+			if level != 4 || term == "" || (within[1] != "" && within[1] != term) {
+				t.Errorf("%s: %q is at level %d under term %q, want level 4 under its own term",
+					fixture.name, line, level, term)
+			}
+		}
+
+		steps := 0
+
+		for _, event := range character.Events {
+			if _, isStep := event.(traveller.StepEvent); isStep {
+				steps++
+			}
+		}
+
+		if headed != steps {
+			t.Errorf("%s: %d headings for %d steps", fixture.name, headed, steps)
 		}
 	}
 }

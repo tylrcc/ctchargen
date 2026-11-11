@@ -59,7 +59,7 @@ func (r *run) term(term traveller.Term) (bool, error) {
 
 	r.grantEligibility(term)
 
-	err = r.trainSkills()
+	err = r.trainSkills(term)
 	if err != nil {
 		return false, err
 	}
@@ -164,7 +164,7 @@ func (r *run) grantEligibility(term traveller.Term) {
 // [Choices].
 // Implements: The skills step says how many rolls the term gave, and what
 // gave them [Generation record].
-func (r *run) trainSkills() error {
+func (r *run) trainSkills(term traveller.Term) error {
 	earned := r.eligible
 
 	r.eligible = traveller.Earned{}
@@ -173,7 +173,8 @@ func (r *run) trainSkills() error {
 		return nil
 	}
 
-	r.record.step(fmt.Sprintf("skills and training, %d %s: %v", earned.Rolls(), rollsWord(earned.Rolls()), earned),
+	r.record.phase(term,
+		fmt.Sprintf("skills and training, %d %s: %v", earned.Rolls(), rollsWord(earned.Rolls()), earned),
 		"pp. 6, 11")
 
 	for n := 1; n <= earned.Rolls(); n++ {

@@ -78,7 +78,9 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 1+4
 3. Strength 5 (from step 2)
@@ -94,16 +96,16 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 13. Social Standing 9 (from step 12)
 14. UPP 5B8879 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Marines: rolled 5+4 +1 (Intelligence 8+) = 10 against 9+, made
 17. enlisted in the Marines (from step 16)
 
-**18. rank and service skills (p. 23)**
+### 18. rank and service skills (p. 23)
 
 19. Cutlass-1
 
-**20. term 1 (pp. 5-7)**
+### 20. term 1 (pp. 5-7)
 
 21. survival: rolled 4+1 +2 (Endurance 8+) = 7 against 6+, made
 22. survived term 1 (from step 21)
@@ -115,7 +117,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 28. promotion: rolled 2+5 +1 (Social Standing 8+) = 8 against 9+, missed
 29. not promoted this term (from step 28)
 
-**30. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)**
+#### 30. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)
 
 31. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 32. Advanced Education Table: rolled 2
@@ -131,7 +133,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 42. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 43. reenlisted for term 2 (from step 41)
 
-**44. term 2 (pp. 5-7)**
+### 44. term 2 (pp. 5-7)
 
 45. survival: rolled 4+5 +2 (Endurance 8+) = 11 against 6+, made
 46. survived term 2 (from step 45)
@@ -139,7 +141,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 48. promotion: rolled 3+1 +1 (Social Standing 8+) = 5 against 9+, missed
 49. not promoted this term (from step 48)
 
-**50. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 50. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 51. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 52. Advanced Education Table: rolled 5
@@ -149,7 +151,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 56. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 57. reenlisted for term 3 (from step 55)
 
-**58. term 3 (pp. 5-7)**
+### 58. term 3 (pp. 5-7)
 
 59. survival: rolled 4+5 +2 (Endurance 8+) = 11 against 6+, made
 60. survived term 3 (from step 59)
@@ -157,7 +159,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 62. promotion: rolled 4+5 +1 (Social Standing 8+) = 10 against 9+, made
 63. promoted: Captain (from step 62)
 
-**64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 66. Service Skills Table: rolled 6
@@ -170,7 +172,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 73. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 74. reenlisted for term 4 (from step 72)
 
-**75. term 4 (pp. 5-7)**
+### 75. term 4 (pp. 5-7)
 
 76. survival: rolled 3+3 +2 (Endurance 8+) = 8 against 6+, made
 77. survived term 4 (from step 76)
@@ -178,7 +180,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 79. promotion: rolled 1+4 +1 (Social Standing 8+) = 6 against 9+, missed
 80. not promoted this term (from step 79)
 
-**81. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 81. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 83. Advanced Education Table: rolled 2
@@ -187,7 +189,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 86. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 87. reenlisted for term 5 (from step 85)
 
-**88. aging, end of term 4 (pp. 7-9)**
+#### 88. aging, end of term 4 (pp. 7-9)
 
 89. aging, Strength: rolled 1+3 = 4 against 8+, missed
 90. Strength -1, 5 to 4 (from step 89)
@@ -196,7 +198,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 93. aging, Endurance: rolled 5+5 = 10 against 8+, made
 94. Endurance holds (from step 93)
 
-**95. term 5 (pp. 5-7)**
+### 95. term 5 (pp. 5-7)
 
 96. survival: rolled 3+6 +2 (Endurance 8+) = 11 against 6+, made
 97. survived term 5 (from step 96)
@@ -204,7 +206,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 99. promotion: rolled 4+3 +1 (Social Standing 8+) = 8 against 9+, missed
 100. not promoted this term (from step 99)
 
-**101. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 101. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 102. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 103. Service Skills Table: rolled 4
@@ -214,7 +216,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 107. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 108. reenlisted for term 6 (from step 106)
 
-**109. aging, end of term 5 (pp. 7-9)**
+#### 109. aging, end of term 5 (pp. 7-9)
 
 110. aging, Strength: rolled 5+1 = 6 against 8+, missed
 111. Strength -1, 4 to 3 (from step 110)
@@ -223,7 +225,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 114. aging, Endurance: rolled 4+5 = 9 against 8+, made
 115. Endurance holds (from step 114)
 
-**116. term 6 (pp. 5-7)**
+### 116. term 6 (pp. 5-7)
 
 117. survival: rolled 1+5 +2 (Endurance 8+) = 8 against 6+, made
 118. survived term 6 (from step 117)
@@ -231,7 +233,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 120. promotion: rolled 6+6 +1 (Social Standing 8+) = 13 against 9+, made
 121. promoted: Force Cmdr (from step 120)
 
-**122. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 122. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 123. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 124. Personal Development Table: rolled 2
@@ -243,7 +245,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 130. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 131. reenlisted for term 7 (from step 129)
 
-**132. aging, end of term 6 (pp. 7-9)**
+#### 132. aging, end of term 6 (pp. 7-9)
 
 133. aging, Strength: rolled 3+5 = 8 against 8+, made
 134. Strength holds (from step 133)
@@ -252,7 +254,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 137. aging, Endurance: rolled 5+4 = 9 against 8+, made
 138. Endurance holds (from step 137)
 
-**139. term 7 (pp. 5-7)**
+### 139. term 7 (pp. 5-7)
 
 140. survival: rolled 3+4 +2 (Endurance 8+) = 9 against 6+, made
 141. survived term 7 (from step 140)
@@ -260,7 +262,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 143. promotion: rolled 3+3 +1 (Social Standing 8+) = 7 against 9+, missed
 144. not promoted this term (from step 143)
 
-**145. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 145. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 146. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 147. Service Skills Table: rolled 2
@@ -268,7 +270,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 149. reenlistment: rolled 5+5 = 10 against 6+, made
 150. left the service after term 7 and is retired: retire (from step 149)
 
-**151. aging, end of term 7 (pp. 7-9)**
+#### 151. aging, end of term 7 (pp. 7-9)
 
 152. aging, Strength: rolled 4+6 = 10 against 8+, made
 153. Strength holds (from step 152)
@@ -277,7 +279,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 156. aging, Endurance: rolled 1+4 = 5 against 8+, missed
 157. Endurance -1, 9 to 8 (from step 156)
 
-**158. mustering out, 9 rolls: 7 for the terms, 2 for rank 3 (pp. 7, 9, 21-23)**
+### 158. mustering out, 9 rolls: 7 for the terms, 2 for rank 3 (pp. 7, 9, 21-23)
 
 159. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 160. Table 2, Cash Allowances: rolled 6

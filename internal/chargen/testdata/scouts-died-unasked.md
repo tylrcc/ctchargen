@@ -40,7 +40,9 @@ UPP 673735, age 22, Scouts, 1 term, killed by the survival throw
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 1+5
 3. Strength 6 (from step 2)
@@ -56,16 +58,16 @@ UPP 673735, age 22, Scouts, 1 term, killed by the survival throw
 13. Social Standing 5 (from step 12)
 14. UPP 673735 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Scouts: rolled 5+2 +1 (Intelligence 6+) = 8 against 7+, made
 17. enlisted in the Scouts (from step 16)
 
-**18. rank and service skills (p. 23)**
+### 18. rank and service skills (p. 23)
 
 19. Pilot-1
 
-**20. term 1 (pp. 5-7)**
+### 20. term 1 (pp. 5-7)
 
 21. survival: rolled 1+3 = 4 against 7+, missed
 22. died in term 1, aged 22 (from step 21)

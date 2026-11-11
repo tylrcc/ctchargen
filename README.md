@@ -76,8 +76,10 @@ note, from `new` with or without `--auto`.
 skills, possessions and the service a term at a time, as Book 1 summarises a
 character — and under it the generation record, every die thrown and every
 choice made, step by step with its page cite, each choice saying whether the
-policy or the player made it. The note ends with the record, and drops into a
-notes vault as it is; its `ctchargen` property names the build that wrote it.
+policy or the player made it. Each step is a heading, with a term's skills and
+aging under the term's, so a vault's outline shows where in the record you
+are. The note ends with the record, and drops into a notes vault as it is; its
+`ctchargen` property names the build that wrote it.
 
 **A note opens with properties** a vault can query. Every note carries every
 one: a text property with no value is left empty, and a list with none is

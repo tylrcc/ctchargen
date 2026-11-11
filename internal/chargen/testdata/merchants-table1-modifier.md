@@ -57,7 +57,9 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 4+6
 3. Strength 10 (from step 2)
@@ -73,12 +75,12 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 13. Social Standing 9 (from step 12)
 14. UPP AC9469 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Merchants: rolled 3+3 +1 (Strength 7+) = 7 against 7+, made
 17. enlisted in the Merchants (from step 16)
 
-**18. term 1 (pp. 5-7)**
+### 18. term 1 (pp. 5-7)
 
 19. survival: rolled 1+6 = 7 against 5+, made
 20. survived term 1 (from step 19)
@@ -89,7 +91,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 25. promotion: rolled 4+1 = 5 against 10+, missed
 26. not promoted this term (from step 25)
 
-**27. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)**
+#### 27. skills and training, 3 rolls: 2 for the term, 1 for the commission (pp. 6, 11)
 
 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 29. Advanced Education Table: rolled 2
@@ -105,7 +107,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 39. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 40. reenlisted for term 2 (from step 38)
 
-**41. term 2 (pp. 5-7)**
+### 41. term 2 (pp. 5-7)
 
 42. survival: rolled 2+6 = 8 against 5+, made
 43. survived term 2 (from step 42)
@@ -113,7 +115,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 45. promotion: rolled 4+2 = 6 against 10+, missed
 46. not promoted this term (from step 45)
 
-**47. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 47. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 48. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 49. Advanced Education Table: rolled 6
@@ -122,7 +124,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 52. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 53. reenlisted for term 3 (from step 51)
 
-**54. term 3 (pp. 5-7)**
+### 54. term 3 (pp. 5-7)
 
 55. survival: rolled 2+4 = 6 against 5+, made
 56. survived term 3 (from step 55)
@@ -130,7 +132,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 58. promotion: rolled 4+6 = 10 against 10+, made
 59. promoted: 3rd Officer (from step 58)
 
-**60. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 60. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 61. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table
 62. Service Skills Table: rolled 2
@@ -142,7 +144,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 68. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 69. reenlisted for term 4 (from step 67)
 
-**70. term 4 (pp. 5-7)**
+### 70. term 4 (pp. 5-7)
 
 71. survival: rolled 2+6 = 8 against 5+, made
 72. survived term 4 (from step 71)
@@ -150,7 +152,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 74. promotion: rolled 5+6 = 11 against 10+, made
 75. promoted: 2nd Officer (from step 74)
 
-**76. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 76. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 77. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table
 78. Advanced Education Table: rolled 3
@@ -162,7 +164,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 84. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 85. reenlisted for term 5 (from step 83)
 
-**86. aging, end of term 4 (pp. 7-9)**
+#### 86. aging, end of term 4 (pp. 7-9)
 
 87. aging, Strength: rolled 3+4 = 7 against 8+, missed
 88. Strength -1, 11 to 10 (from step 87)
@@ -171,7 +173,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 91. aging, Endurance: rolled 6+3 = 9 against 8+, made
 92. Endurance holds (from step 91)
 
-**93. term 5 (pp. 5-7)**
+### 93. term 5 (pp. 5-7)
 
 94. survival: rolled 6+2 = 8 against 5+, made
 95. survived term 5 (from step 94)
@@ -180,7 +182,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 98. promoted: 1st Officer (from step 97)
 99. Pilot-1 (from step 97)
 
-**100. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 100. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 101. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table
 102. Personal Development Table: rolled 4
@@ -192,7 +194,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 108. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 109. reenlisted for term 6 (from step 107)
 
-**110. aging, end of term 5 (pp. 7-9)**
+#### 110. aging, end of term 5 (pp. 7-9)
 
 111. aging, Strength: rolled 4+1 = 5 against 8+, missed
 112. Strength -1, 11 to 10 (from step 111)
@@ -201,7 +203,7 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 115. aging, Endurance: rolled 6+6 = 12 against 8+, made
 116. Endurance holds (from step 115)
 
-**117. term 6 (pp. 5-7)**
+### 117. term 6 (pp. 5-7)
 
 118. survival: rolled 3+1 = 4 against 5+, missed
 119. died in term 6, aged 42 (from step 118)

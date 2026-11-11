@@ -76,7 +76,9 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
 ## Generation record
 
-**1. characteristics (p. 4)**
+A line's `(from step N)` names the step it came from, most often the roll it was read off, and not every cause behind it.
+
+### 1. characteristics (p. 4)
 
 2. Strength: rolled 4+6
 3. Strength 10 (from step 2)
@@ -92,12 +94,12 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 13. Social Standing 8 (from step 12)
 14. UPP AC7AA8 at age 18
 
-**15. enlistment (pp. 5, 10)**
+### 15. enlistment (pp. 5, 10)
 
 16. enlistment, Navy: rolled 5+6 +3 (Intelligence 8+, Education 9+) = 14 against 8+, made
 17. enlisted in the Navy (from step 16)
 
-**18. term 1 (pp. 5-7)**
+### 18. term 1 (pp. 5-7)
 
 19. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 20. survived term 1 (from step 19)
@@ -108,7 +110,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 25. promotion: rolled 4+6 +1 (Education 8+) = 11 against 8+, made
 26. promoted: Lieutenant (from step 25)
 
-**27. skills and training, 4 rolls: 2 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)**
+#### 27. skills and training, 4 rolls: 2 for the term, 1 for the commission, 1 for the promotion (pp. 6, 11)
 
 28. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 29. Advanced Education Table (education 8+): rolled 6
@@ -126,7 +128,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 41. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 42. reenlisted for term 2 (from step 40)
 
-**43. term 2 (pp. 5-7)**
+### 43. term 2 (pp. 5-7)
 
 44. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 45. survived term 2 (from step 44)
@@ -134,7 +136,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 47. promotion: rolled 6+6 +1 (Education 8+) = 13 against 8+, made
 48. promoted: Lt Cmdr (from step 47)
 
-**49. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 49. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 50. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 51. Advanced Education Table (education 8+): rolled 6
@@ -145,7 +147,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 56. reenlistment: rolled 6+6 = 12 against 6+, made
 57. a 12 exactly: the service requires another term (from step 56)
 
-**58. term 3 (pp. 5-7)**
+### 58. term 3 (pp. 5-7)
 
 59. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 60. survived term 3 (from step 59)
@@ -153,7 +155,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 62. promotion: rolled 6+6 +1 (Education 8+) = 13 against 8+, made
 63. promoted: Commander (from step 62)
 
-**64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 64. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 65. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 66. Service Skills Table: rolled 1
@@ -165,7 +167,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 72. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, discharge
 73. reenlisted for term 4 (from step 71)
 
-**74. term 4 (pp. 5-7)**
+### 74. term 4 (pp. 5-7)
 
 75. survival: rolled 2+1 +2 (Intelligence 7+) = 5 against 5+, made
 76. survived term 4 (from step 75)
@@ -174,7 +176,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 79. promoted: Captain (from step 78)
 80. Social Standing +1, 8 to 9 (from step 78)
 
-**81. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 81. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 82. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 83. Advanced Education Table (education 8+): rolled 6
@@ -185,7 +187,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 88. reenlistment: rolled 6+6 = 12 against 6+, made
 89. a 12 exactly: the service requires another term (from step 88)
 
-**90. aging, end of term 4 (pp. 7-9)**
+#### 90. aging, end of term 4 (pp. 7-9)
 
 91. aging, Strength: rolled 3+6 = 9 against 8+, made
 92. Strength holds (from step 91)
@@ -194,7 +196,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 95. aging, Endurance: rolled 6+6 = 12 against 8+, made
 96. Endurance holds (from step 95)
 
-**97. term 5 (pp. 5-7)**
+### 97. term 5 (pp. 5-7)
 
 98. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 99. survived term 5 (from step 98)
@@ -203,7 +205,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 102. promoted: Admiral (from step 101)
 103. Social Standing +1, 9 to 10 (from step 101)
 
-**104. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)**
+#### 104. skills and training, 2 rolls: 1 for the term, 1 for the promotion (pp. 6, 11)
 
 105. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 106. Service Skills Table: rolled 6
@@ -215,7 +217,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 112. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 113. reenlisted for term 6 (from step 111)
 
-**114. aging, end of term 5 (pp. 7-9)**
+#### 114. aging, end of term 5 (pp. 7-9)
 
 115. aging, Strength: rolled 1+6 = 7 against 8+, missed
 116. Strength -1, 10 to 9 (from step 115)
@@ -224,13 +226,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 119. aging, Endurance: rolled 2+5 = 7 against 8+, missed
 120. Endurance -1, 7 to 6 (from step 119)
 
-**121. term 6 (pp. 5-7)**
+### 121. term 6 (pp. 5-7)
 
 122. survival: rolled 4+6 +2 (Intelligence 7+) = 12 against 5+, made
 123. survived term 6 (from step 122)
 124. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 6
 
-**125. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 125. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 126. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 127. Advanced Education Table (education 8+): rolled 6
@@ -239,7 +241,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 130. leave the service or remain for another term (pp. 6-7, 21): policy chose continue from continue, retire
 131. reenlisted for term 7 (from step 129)
 
-**132. aging, end of term 6 (pp. 7-9)**
+#### 132. aging, end of term 6 (pp. 7-9)
 
 133. aging, Strength: rolled 2+6 = 8 against 8+, made
 134. Strength holds (from step 133)
@@ -248,13 +250,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 137. aging, Endurance: rolled 6+6 = 12 against 8+, made
 138. Endurance holds (from step 137)
 
-**139. term 7 (pp. 5-7)**
+### 139. term 7 (pp. 5-7)
 
 140. survival: rolled 6+5 +2 (Intelligence 7+) = 13 against 5+, made
 141. survived term 7 (from step 140)
 142. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 7
 
-**143. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 143. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 144. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 145. Advanced Education Table: rolled 6
@@ -262,7 +264,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 147. reenlistment: rolled 6+6 = 12 against 6+, made
 148. a 12 exactly: the service requires another term (from step 147)
 
-**149. aging, end of term 7 (pp. 7-9)**
+#### 149. aging, end of term 7 (pp. 7-9)
 
 150. aging, Strength: rolled 6+2 = 8 against 8+, made
 151. Strength holds (from step 150)
@@ -271,13 +273,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 154. aging, Endurance: rolled 4+3 = 7 against 8+, missed
 155. Endurance -1, 6 to 5 (from step 154)
 
-**156. term 8 (pp. 5-7)**
+### 156. term 8 (pp. 5-7)
 
 157. survival: rolled 2+6 +2 (Intelligence 7+) = 10 against 5+, made
 158. survived term 8 (from step 157)
 159. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 8
 
-**160. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 160. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 161. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 162. Service Skills Table: rolled 6
@@ -285,7 +287,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 164. reenlistment: rolled 6+6 = 12 against 6+, made
 165. a 12 exactly: the service requires another term (from step 164)
 
-**166. aging, end of term 8 (pp. 7-9)**
+#### 166. aging, end of term 8 (pp. 7-9)
 
 167. aging, Strength: rolled 1+1 = 2 against 9+, missed
 168. Strength -1, 9 to 8 (from step 167)
@@ -294,13 +296,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 171. aging, Endurance: rolled 6+6 = 12 against 9+, made
 172. Endurance holds (from step 171)
 
-**173. term 9 (pp. 5-7)**
+### 173. term 9 (pp. 5-7)
 
 174. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 175. survived term 9 (from step 174)
 176. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 9
 
-**177. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 177. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 178. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 179. Personal Development Table: rolled 5
@@ -308,7 +310,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 181. reenlistment: rolled 6+6 = 12 against 6+, made
 182. a 12 exactly: the service requires another term (from step 181)
 
-**183. aging, end of term 9 (pp. 7-9)**
+#### 183. aging, end of term 9 (pp. 7-9)
 
 184. aging, Strength: rolled 6+3 = 9 against 9+, made
 185. Strength holds (from step 184)
@@ -317,13 +319,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 188. aging, Endurance: rolled 6+6 = 12 against 9+, made
 189. Endurance holds (from step 188)
 
-**190. term 10 (pp. 5-7)**
+### 190. term 10 (pp. 5-7)
 
 191. survival: rolled 4+6 +2 (Intelligence 7+) = 12 against 5+, made
 192. survived term 10 (from step 191)
 193. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 10
 
-**194. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 194. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 195. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 196. Advanced Education Table (education 8+): rolled 6
@@ -331,7 +333,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 198. reenlistment: rolled 6+6 = 12 against 6+, made
 199. a 12 exactly: the service requires another term (from step 198)
 
-**200. aging, end of term 10 (pp. 7-9)**
+#### 200. aging, end of term 10 (pp. 7-9)
 
 201. aging, Strength: rolled 4+6 = 10 against 9+, made
 202. Strength holds (from step 201)
@@ -340,13 +342,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 205. aging, Endurance: rolled 3+1 = 4 against 9+, missed
 206. Endurance -1, 5 to 4 (from step 205)
 
-**207. term 11 (pp. 5-7)**
+### 207. term 11 (pp. 5-7)
 
 208. survival: rolled 1+2 +2 (Intelligence 7+) = 5 against 5+, made
 209. survived term 11 (from step 208)
 210. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 11
 
-**211. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 211. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 212. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 213. Advanced Education Table: rolled 2
@@ -354,7 +356,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 215. reenlistment: rolled 6+6 = 12 against 6+, made
 216. a 12 exactly: the service requires another term (from step 215)
 
-**217. aging, end of term 11 (pp. 7-9)**
+#### 217. aging, end of term 11 (pp. 7-9)
 
 218. aging, Strength: rolled 6+6 = 12 against 9+, made
 219. Strength holds (from step 218)
@@ -363,13 +365,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 222. aging, Endurance: rolled 6+2 = 8 against 9+, missed
 223. Endurance -1, 4 to 3 (from step 222)
 
-**224. term 12 (pp. 5-7)**
+### 224. term 12 (pp. 5-7)
 
 225. survival: rolled 5+6 +2 (Intelligence 7+) = 13 against 5+, made
 226. survived term 12 (from step 225)
 227. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 12
 
-**228. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 228. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 229. acquired skills table to consult (pp. 6, 11): policy chose Service Skills Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 230. Service Skills Table: rolled 6
@@ -377,7 +379,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 232. reenlistment: rolled 6+6 = 12 against 6+, made
 233. a 12 exactly: the service requires another term (from step 232)
 
-**234. aging, end of term 12 (pp. 7-9)**
+#### 234. aging, end of term 12 (pp. 7-9)
 
 235. aging, Strength: rolled 6+6 = 12 against 9+, made
 236. Strength holds (from step 235)
@@ -388,13 +390,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 241. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 242. Intelligence holds (from step 241)
 
-**243. term 13 (pp. 5-7)**
+### 243. term 13 (pp. 5-7)
 
 244. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 245. survived term 13 (from step 244)
 246. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 13
 
-**247. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 247. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 248. acquired skills table to consult (pp. 6, 11): policy chose Personal Development Table from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 249. Personal Development Table: rolled 2
@@ -402,7 +404,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 251. reenlistment: rolled 6+6 = 12 against 6+, made
 252. a 12 exactly: the service requires another term (from step 251)
 
-**253. aging, end of term 13 (pp. 7-9)**
+#### 253. aging, end of term 13 (pp. 7-9)
 
 254. aging, Strength: rolled 6+6 = 12 against 9+, made
 255. Strength holds (from step 254)
@@ -413,13 +415,13 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 260. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 261. Intelligence holds (from step 260)
 
-**262. term 14 (pp. 5-7)**
+### 262. term 14 (pp. 5-7)
 
 263. survival: rolled 6+6 +2 (Intelligence 7+) = 14 against 5+, made
 264. survived term 14 (from step 263)
 265. already Admiral, the highest rank the Navy print, so no promotion is thrown for in term 14
 
-**266. skills and training, 1 roll: 1 for the term (pp. 6, 11)**
+#### 266. skills and training, 1 roll: 1 for the term (pp. 6, 11)
 
 267. acquired skills table to consult (pp. 6, 11): policy chose Advanced Education Table (education 8+) from Personal Development Table, Service Skills Table, Advanced Education Table, Advanced Education Table (education 8+)
 268. Advanced Education Table (education 8+): rolled 6
@@ -427,7 +429,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 270. reenlistment: rolled 5+6 = 11 against 6+, made
 271. left the service after term 14 and is retired: retire (from step 270)
 
-**272. aging, end of term 14 (pp. 7-9)**
+#### 272. aging, end of term 14 (pp. 7-9)
 
 273. aging, Strength: rolled 6+6 = 12 against 9+, made
 274. Strength holds (from step 273)
@@ -441,7 +443,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 282. aging, Intelligence: rolled 6+6 = 12 against 9+, made
 283. Intelligence holds (from step 282)
 
-**284. mustering out, 16 rolls: 14 for the terms, 2 for rank 6 (pp. 7, 9, 21-23)**
+### 284. mustering out, 16 rolls: 14 for the terms, 2 for rank 6 (pp. 7, 9, 21-23)
 
 285. mustering out table to consult (pp. 7, 9): policy chose Table 2, Cash Allowances from Table 1, Material Benefits, Table 2, Cash Allowances
 286. Table 2, Cash Allowances: rolled 4
@@ -496,7 +498,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 335. expertise instead: Dagger-1 (from step 333)
 336. retirement pay of CR 22000 a year
 
-**337. titles (p. 5; Book 3 p. 22)**
+### 337. titles (p. 5; Book 3 p. 22)
 
 338. assume the hereditary title (p. 5): policy chose yes from yes, no
 339. social standing 15 confers duke/duchess, and it is assumed
