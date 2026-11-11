@@ -85,7 +85,8 @@ func declareNewFlags() newFlagSet {
 var newHelp = commandHelp{
 	service: "--service is an enlistment attempt, not a guarantee: a failed throw is the\n" +
 		"draft. Without it the player picks the service, or --auto draws it.\n",
-	death: "A character can die in service; new writes the note all the same, and exits 0.\n",
+	death: "A character can die in service; new writes the note all the same, and exits 0.\n" +
+		"terms counts every term begun, including the term in which a character dies.\n",
 }
 
 // newCharacter generates one character and writes its note.

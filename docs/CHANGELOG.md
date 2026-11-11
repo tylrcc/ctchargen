@@ -89,6 +89,10 @@ first`). A player's choices, and the policy's fixed answers, read as
   finds every character with that skill at level 1 or better (#573), and that
   the 1977 rules have no level 0: an unlisted skill is no expertise, and p. 32
   gives player characters ½ in every weapon.
+- `new --help` says that `terms` counts every term begun, including the term
+  in which a character dies (#563, from #556), and the README says a level
+  threshold such as Gun-2 or better is read off the sheet, not a property
+  (#573).
 
 ## 1.0.0-rc.5
 

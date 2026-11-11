@@ -502,7 +502,10 @@ func TestTheHelpSaysWhatTheThrowsDecide(t *testing.T) {
 	}
 
 	for command, own := range map[string][]string{
-		cmdNew:   {"the player picks the service", "--auto draws it", "writes the note all the same, and exits 0"},
+		cmdNew: {
+			"the player picks the service", "--auto draws it", "writes the note all the same, and exits 0",
+			"terms counts every term begun, including the term in which a character dies",
+		},
 		cmdBatch: {"each member's service is drawn", "writes only the living"},
 	} {
 		help, _ := mustRun(t, []string{command, flagHelp}, nil)
