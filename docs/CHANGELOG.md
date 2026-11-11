@@ -12,6 +12,14 @@ release turns out to be.
   change rewrites, comment or document, is wrapped evenly.
 - The README and `CLAUDE.md` show a note saved with `-o` beside one sent on
   with `>` or a pipe, and say which to use when (#544).
+- The service record tells what the generation record knew and it left out
+  (#561): a term a 12 on the reenlistment throw required
+  (`the service required another term`), a medical crisis recovery's value and
+  months (`Strength recovered from a medical crisis to 1 (3 months older)`), a
+  retirement the throw refused (`retired after term 7, reenlistment denied`),
+  and expertise taken at mustering out instead of a repeat weapon, on the
+  mustering-out line. The `departure` property is unchanged, and a crisis that
+  kills a character after he retires still ends the record in the death.
 
 ## 1.0.0-rc.5
 

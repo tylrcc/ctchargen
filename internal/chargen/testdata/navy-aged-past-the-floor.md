@@ -58,21 +58,21 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 
 - Navy, enlisted
 - Term 1: commissioned Ensign and promoted Lieutenant; Administration-1, Jack of all Trades-1, Gunnery-1, Education +1
-- Term 2: promoted Lt Cmdr; Administration-2, Jack of all Trades-2
+- Term 2: promoted Lt Cmdr; Administration-2, Jack of all Trades-2; the service required another term
 - Term 3: promoted Commander; Ship's Boat-1, Education +1
-- Term 4: promoted Captain (Social Standing +1); Administration-3, Jack of all Trades-3
+- Term 4: promoted Captain (Social Standing +1); Administration-3, Jack of all Trades-3; the service required another term
 - Term 5: promoted Admiral (Social Standing +1); Gunnery-2, Education +1; aging Strength -1, Endurance -1
 - Term 6: Administration-4
-- Term 7: Jack of all Trades-4; aging Endurance -1
-- Term 8: Gunnery-3; aging Strength -1
-- Term 9: Intelligence +1
-- Term 10: Administration-5; aging Endurance -1
-- Term 11: Mechanical-1; aging Endurance -1
-- Term 12: Gunnery-4; aging Endurance -2
-- Term 13: Dexterity +1; aging Dexterity -2
-- Term 14: Administration-6; aging Endurance -2 (held at 0); Endurance recovered from a medical crisis
+- Term 7: Jack of all Trades-4; the service required another term; aging Endurance -1
+- Term 8: Gunnery-3; the service required another term; aging Strength -1
+- Term 9: Intelligence +1; the service required another term
+- Term 10: Administration-5; the service required another term; aging Endurance -1
+- Term 11: Mechanical-1; the service required another term; aging Endurance -1
+- Term 12: Gunnery-4; the service required another term; aging Endurance -2
+- Term 13: Dexterity +1; the service required another term; aging Dexterity -2
+- Term 14: Administration-6; aging Endurance -2 (held at 0); Endurance recovered from a medical crisis to 1 (6 months older)
 - retired after term 14
-- mustered out with Social Standing +2, Social Standing +2, Social Standing +2 (held at 15), Social Standing +2 (held at 15), Education +2, Social Standing +2 (held at 15), Social Standing +2 (held at 15), Social Standing +2 (held at 15), Social Standing +2 (held at 15)
+- mustered out with Social Standing +2, Social Standing +2, Social Standing +2 (held at 15), Social Standing +2 (held at 15), Education +2, Social Standing +2 (held at 15), Social Standing +2 (held at 15), Social Standing +2 (held at 15), Social Standing +2 (held at 15), Dagger-1
 
 ## Generation record
 

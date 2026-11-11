@@ -19,9 +19,16 @@ type ServiceHistory struct {
 
 	Terms []TermServed
 
-	// MusteredOut is what mustering out changed in the character: a
-	// characteristic a Table 1 row altered (p. 9), "applied to the character
-	// immediately" (p. 23), in the order rolled (#490).
+	// RetiredDenied is a retirement the reenlistment throw refused: p. 21
+	// makes leaving at the end of the fifth term or later retirement either
+	// way, and the record says which (#561). It stays set when a crisis then
+	// kills him, and the death is the departure the sheet tells.
+	RetiredDenied bool
+
+	// MusteredOut is what mustering out changed in the character, in the
+	// order rolled: a characteristic a Table 1 row altered (p. 9), "applied
+	// to the character immediately" (p. 23, #490), and expertise taken
+	// instead of a repeat weapon (p. 22, #561).
 	MusteredOut []traveller.Gain
 }
 
@@ -38,11 +45,22 @@ type TermServed struct {
 	// they were rolled (pp. 6, 11).
 	Gained []traveller.Gain
 
+	// Retained is a 12 exactly on the term's reenlistment throw, which
+	// required another term "regardless of his desires" (p. 6, #561).
+	Retained bool
+
 	// Aged is what the aging round at the end of the term took (pp. 7-9),
 	// and Recovered each characteristic that reached zero and came back
 	// from the crisis (pp. 7-8).
 	Aged      []traveller.Change
-	Recovered []traveller.Characteristic
+	Recovered []Recovery
+}
+
+// Recovery is a characteristic come back from a medical crisis, the value it
+// came back to and the months of age the recovery added (pp. 7-8, #561).
+type Recovery struct {
+	Characteristic traveller.Characteristic
+	To, Months     int
 }
 
 // Raise is a commission or a promotion, the rank it conferred, and what the
@@ -122,18 +140,41 @@ func (h *historyFold) Aged(f traveller.AgedFact) error {
 }
 
 func (h *historyFold) Recovered(f traveller.RecoveredFact) error {
-	h.serving().Recovered = append(h.serving().Recovered, f.Characteristic)
+	h.serving().Recovered = append(h.serving().Recovered, Recovery{
+		Characteristic: f.Characteristic, To: f.To, Months: f.Months,
+	})
+
+	return nil
+}
+
+// Expertise taken instead of a weapon is a mustering-out gain: its skill is
+// on the sheet's skills, and nowhere else would the sheet say where it came
+// from (#561).
+//
+// Implements: Expertise taken at mustering out is on the service record
+// [Sheet].
+func (h *historyFold) Expertise(f traveller.ExpertiseFact) error {
+	h.gained(traveller.SkillGain(f), traveller.AtMusteringOut)
+
+	return nil
+}
+
+func (h *historyFold) Retained(traveller.RetainedFact) error {
+	h.serving().Retained = true
+
+	return nil
+}
+
+func (h *historyFold) Retired(f traveller.RetiredFact) error {
+	h.out.RetiredDenied = f.Denied
 
 	return nil
 }
 
 func (*historyFold) Enlisted(traveller.EnlistedFact) error { return nil }
 
-// A characteristic as rolled is the sheet's, not the service's, and expertise
-// taken instead of a weapon is on the sheet's skills, as the weapon would have
-// been on its possessions.
-func (*historyFold) Rolled(traveller.RolledFact) error       { return nil }
-func (*historyFold) Expertise(traveller.ExpertiseFact) error { return nil }
+// A characteristic as rolled is the sheet's, not the service's.
+func (*historyFold) Rolled(traveller.RolledFact) error { return nil }
 
 // What mustering out delivered and the title assessed at the end are the
 // sheet's possessions, not the service's.
@@ -153,9 +194,7 @@ func (*historyFold) Drafted(traveller.DraftedFact) error                       {
 func (*historyFold) Declined(traveller.DeclinedFact) error                     { return nil }
 func (*historyFold) Died(traveller.DiedFact) error                             { return nil }
 func (*historyFold) DiedOfCrisis(traveller.DiedOfCrisisFact) error             { return nil }
-func (*historyFold) Retained(traveller.RetainedFact) error                     { return nil }
 func (*historyFold) Reenlisted(traveller.ReenlistedFact) error                 { return nil }
-func (*historyFold) Retired(traveller.RetiredFact) error                       { return nil }
 func (*historyFold) DeniedReenlistment(traveller.DeniedReenlistmentFact) error { return nil }
 func (*historyFold) Discharged(traveller.DischargedFact) error                 { return nil }
 

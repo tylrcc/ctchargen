@@ -13,15 +13,19 @@ import (
 
 // The service history is the service a term at a time: the grants on
 // entering it (E005), each commission or promotion with what p. 23 granted at
-// its rank, what each term's skill rolls gave, what aging took, any medical
-// crisis survived (#401), and what mustering out changed in the character
-// (#490).
+// its rank, what each term's skill rolls gave, a term a 12 on the
+// reenlistment throw required, what aging took, any medical crisis survived
+// with the value and the months it left (#401, #561), a retirement the
+// reenlistment throw refused, and what mustering out changed in the character,
+// expertise taken instead of a weapon among it (#490, #561).
 //
-// The literals are typed from each fixture's generation record, which is what the
-// history has to agree with, and not from the code that fills it. Three
+// The literals are typed from each fixture's generation record, which is what
+// the history has to agree with, and not from the code that fills it. Four
 // fixtures between them reach every part: an Army career for the grant on
-// entering and a rank grant that is a skill, a Navy career for one that is a
-// characteristic, and an Other career for a crisis survived.
+// entering, a rank grant that is a skill and a retirement refused, a Navy
+// career for a rank grant that is a characteristic, an Other career for a
+// crisis survived, and a Scouts career for a term required and expertise at
+// mustering out.
 //
 // Holds: The service history records each term's rank, gains and aging.
 func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
@@ -31,6 +35,7 @@ func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 		"army-serve":            armyServeHistory(),
 		"navy-spartan-declines": navySpartanDeclinesHistory(),
 		"other-crisis-survived": otherCrisisSurvivedHistory(),
+		"scouts-second-ship":    scoutsSecondShipHistory(),
 	} {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
@@ -45,10 +50,12 @@ func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 
 // armyServeHistory is army-serve's generation record: Rifle-1 on entering, a
 // commission in the first term that grants Submachine Gun-1, a promotion in
-// each term to General, and none thrown for in the seventh (E013).
+// each term to General, none thrown for in the seventh (E013), and the
+// reenlistment throw refused after it.
 func armyServeHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
-		OnEntering: gains(skill("Rifle", 1)),
+		OnEntering:    gains(skill("Rifle", 1)),
+		RetiredDenied: true,
 		Terms: []chargen.TermServed{
 			{
 				Term: 1,
@@ -85,9 +92,11 @@ func armyServeHistory() chargen.ServiceHistory {
 
 // navySpartanDeclinesHistory is navy-spartan-declines' generation record: nothing on
 // entering the Navy, a commission in the second term, and a promotion to
-// Captain in the seventh whose p. 23 grant is Social Standing +1.
+// Captain in the seventh whose p. 23 grant is Social Standing +1, and the
+// reenlistment throw refused after it.
 func navySpartanDeclinesHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
+		RetiredDenied: true,
 		Terms: []chargen.TermServed{
 			{Term: 1, Gained: gains(skill("Navigation", 1), skill("Vacc Suit", 1))},
 			{
@@ -127,7 +136,7 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 
 // otherCrisisSurvivedHistory is other-crisis-survived's generation record: no ranks,
 // as the Other print none, and Strength taken to zero in the seventh term's
-// aging round and recovered from the crisis.
+// aging round and recovered from the crisis to 1, a month older.
 func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
 		Terms: []chargen.TermServed{
@@ -149,13 +158,43 @@ func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 			{
 				Term: 7, Gained: gains(change(traveller.SocialStanding, 10, 9)),
 				Aged:      []traveller.Change{change(traveller.Strength, 1, 0), change(traveller.Endurance, 7, 6)},
-				Recovered: []traveller.Characteristic{traveller.Strength},
+				Recovered: []chargen.Recovery{{Characteristic: traveller.Strength, To: 1, Months: 1}},
 			},
 		},
 		MusteredOut: gains(
 			change(traveller.Intelligence, 4, 5), change(traveller.Education, 8, 9),
 			change(traveller.Intelligence, 5, 6), change(traveller.Intelligence, 6, 7),
 		),
+	}
+}
+
+// scoutsSecondShipHistory is scouts-second-ship's generation record: Pilot-1
+// on entering the Scouts, a 12 on the first term's reenlistment throw, and
+// Body Pistol-1 at mustering out, taken instead of a second Body Pistol.
+func scoutsSecondShipHistory() chargen.ServiceHistory {
+	return chargen.ServiceHistory{
+		OnEntering: gains(skill("Pilot", 1)),
+		Terms: []chargen.TermServed{
+			{Term: 1, Gained: gains(skill("Medical", 1), skill("Mechanical", 1)), Retained: true},
+			{Term: 2, Gained: gains(skill("Jack of all Trades", 1))},
+			{Term: 3, Gained: gains(skill("Laser Carbine", 1))},
+			{
+				Term: 4, Gained: gains(skill("Navigation", 1)),
+				Aged: []traveller.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 9, 8)},
+			},
+			{
+				Term: 5, Gained: gains(skill("Electronic", 1)),
+				Aged: []traveller.Change{
+					change(traveller.Strength, 7, 6), change(traveller.Dexterity, 10, 9), change(traveller.Endurance, 8, 7),
+				},
+			},
+			{
+				Term: 6, Gained: gains(skill("Vacc Suit", 1)),
+				Aged: []traveller.Change{change(traveller.Dexterity, 9, 8), change(traveller.Endurance, 7, 6)},
+			},
+			{Term: 7, Gained: gains(change(traveller.Strength, 6, 7))},
+		},
+		MusteredOut: gains(change(traveller.Education, 8, 10), skill("Body Pistol", 1)),
 	}
 }
 
@@ -193,6 +232,7 @@ func historyText(history chargen.ServiceHistory) string {
 		fmt.Fprintf(&text, "\n  %+v", term)
 	}
 
+	fmt.Fprintf(&text, "\n  retired denied %v", history.RetiredDenied)
 	fmt.Fprintf(&text, "\n  mustered out %+v", history.MusteredOut)
 
 	return text.String()

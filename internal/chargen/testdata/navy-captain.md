@@ -64,7 +64,7 @@ UPP 766BDF, age 46, Navy Captain, 7 terms, duke/duchess, retired
 - Term 5: promoted Commander; Pilot-1, Vacc Suit-2; aging Strength -1
 - Term 6: Ship's Boat-2; aging Endurance -1
 - Term 7: promoted Captain (Social Standing +1); Education +1, Engineer-1; aging Strength -1, Endurance -1
-- retired after term 7
+- retired after term 7, reenlistment denied
 - mustered out with Education +2, Social Standing +2 (held at 15), Intelligence +1
 
 ## Generation record

@@ -69,7 +69,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 - Term 6: promoted 1st Officer (Pilot-1); Mechanical-2, Sword-1; aging Dexterity -1
 - Term 7: promoted Captain; Strength +1, Navigation-4; aging Endurance -1
 - retired after term 7
-- mustered out with Intelligence +1
+- mustered out with Dagger-1, Intelligence +1, Dagger-2
 
 ## Generation record
 

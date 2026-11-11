@@ -70,7 +70,7 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 - Term 5: promoted Colonel; Revolver-2, Vacc Suit-3; aging Dexterity -1, Endurance -1
 - Term 6: Gambling-1
 - Term 7: Medical-1; aging Dexterity -1
-- retired after term 7
+- retired after term 7, reenlistment denied
 - mustered out with Intelligence +2, Social Standing +2, Social Standing +2
 
 ## Generation record

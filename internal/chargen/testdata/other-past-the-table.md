@@ -40,22 +40,22 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 ## Service record
 
 - Other, enlisted
-- Term 1: Medical-1, Streetwise-1
-- Term 2: Forgery-1
-- Term 3: Strength +1
-- Term 4: Medical-2
-- Term 5: Streetwise-2
-- Term 6: Forgery-2
-- Term 7: Strength +1
-- Term 8: Medical-3
-- Term 9: Streetwise-3
-- Term 10: Forgery-3
-- Term 11: Strength +1
-- Term 12: Medical-4
-- Term 13: Streetwise-4
-- Term 14: Forgery-4
-- Term 15: Strength +1 (held at 15)
-- Term 16: Medical-5; aging Dexterity -2, Endurance -2, Intelligence -1
+- Term 1: Medical-1, Streetwise-1; the service required another term
+- Term 2: Forgery-1; the service required another term
+- Term 3: Strength +1; the service required another term
+- Term 4: Medical-2; the service required another term
+- Term 5: Streetwise-2; the service required another term
+- Term 6: Forgery-2; the service required another term
+- Term 7: Strength +1; the service required another term
+- Term 8: Medical-3; the service required another term
+- Term 9: Streetwise-3; the service required another term
+- Term 10: Forgery-3; the service required another term
+- Term 11: Strength +1; the service required another term
+- Term 12: Medical-4; the service required another term
+- Term 13: Streetwise-4; the service required another term
+- Term 14: Forgery-4; the service required another term
+- Term 15: Strength +1 (held at 15); the service required another term
+- Term 16: Medical-5; the service required another term; aging Dexterity -2, Endurance -2, Intelligence -1
 - killed by the survival throw in term 17
 
 ## Generation record

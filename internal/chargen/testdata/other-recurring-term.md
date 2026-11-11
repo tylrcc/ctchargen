@@ -56,16 +56,16 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 ## Service record
 
 - Other, enlisted
-- Term 1: Medical-1, Streetwise-1
-- Term 2: Forgery-1
-- Term 3: Strength +1
-- Term 4: Medical-2
-- Term 5: Streetwise-2
-- Term 6: Forgery-2
-- Term 7: Strength +1
-- Term 8: Medical-3
+- Term 1: Medical-1, Streetwise-1; the service required another term
+- Term 2: Forgery-1; the service required another term
+- Term 3: Strength +1; the service required another term
+- Term 4: Medical-2; the service required another term
+- Term 5: Streetwise-2; the service required another term
+- Term 6: Forgery-2; the service required another term
+- Term 7: Strength +1; the service required another term
+- Term 8: Medical-3; the service required another term
 - Term 9: Streetwise-3; aging Strength -1, Dexterity -1, Endurance -1
-- retired after term 9
+- retired after term 9, reenlistment denied
 
 ## Generation record
 

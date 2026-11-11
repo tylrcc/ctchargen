@@ -71,7 +71,7 @@ UPP 766BDE, age 46, Navy Captain, 7 terms, count/countess, retired
 - Term 5: promoted Commander; Pilot-1, Vacc Suit-2; aging Strength -1
 - Term 6: Ship's Boat-2; aging Endurance -1
 - Term 7: promoted Captain (Social Standing +1); Education +1, Engineer-1; aging Strength -1, Endurance -1
-- retired after term 7
+- retired after term 7, reenlistment denied
 - mustered out with Education +2, Intelligence +1
 
 ## Generation record

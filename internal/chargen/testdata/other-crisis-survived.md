@@ -54,7 +54,7 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 - Term 4: Electronic-2; aging Strength -1, Endurance -1
 - Term 5: Mechanical-1; aging Strength -1, Endurance -1
 - Term 6: Forgery-1; aging Dexterity -1, Endurance -1
-- Term 7: Social Standing -1; aging Strength -1, Endurance -1; Strength recovered from a medical crisis
+- Term 7: Social Standing -1; aging Strength -1, Endurance -1; Strength recovered from a medical crisis to 1 (1 month older)
 - retired after term 7
 - mustered out with Intelligence +1, Education +1, Intelligence +1, Intelligence +1
 

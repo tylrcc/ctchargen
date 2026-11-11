@@ -11,9 +11,10 @@ import (
 // time: what entering the service granted, and what each term conferred, gave
 // and took (#401). Each gain is already the words the sheet prints.
 type historyView struct {
-	OnEntering  []string
-	Terms       []termView
-	MusteredOut []string
+	OnEntering    []string
+	Terms         []termView
+	RetiredDenied bool
+	MusteredOut   []string
 }
 
 // termView is one term of service. The term a survival throw ended carries
@@ -22,6 +23,7 @@ type termView struct {
 	Term      int
 	Raised    []raiseView
 	Gained    []string
+	Retained  bool
 	Aged      []string
 	Recovered []string
 }
@@ -37,13 +39,14 @@ type raiseView struct {
 // projectHistory is the service history as the sheet tells it.
 func projectHistory(history chargen.ServiceHistory) historyView {
 	out := historyView{
-		OnEntering:  gainWords(history.OnEntering),
-		Terms:       make([]termView, 0, len(history.Terms)),
-		MusteredOut: gainWords(history.MusteredOut),
+		OnEntering:    gainWords(history.OnEntering),
+		Terms:         make([]termView, 0, len(history.Terms)),
+		RetiredDenied: history.RetiredDenied,
+		MusteredOut:   gainWords(history.MusteredOut),
 	}
 
 	for _, term := range history.Terms {
-		served := termView{Term: int(term.Term), Gained: gainWords(term.Gained)}
+		served := termView{Term: int(term.Term), Gained: gainWords(term.Gained), Retained: term.Retained}
 
 		for _, raise := range term.Raised {
 			served.Raised = append(served.Raised, raiseView{
@@ -55,8 +58,8 @@ func projectHistory(history chargen.ServiceHistory) historyView {
 			served.Aged = append(served.Aged, changeWords(change))
 		}
 
-		for _, characteristic := range term.Recovered {
-			served.Recovered = append(served.Recovered, characteristic.String())
+		for _, recovery := range term.Recovered {
+			served.Recovered = append(served.Recovered, recoveryWords(recovery))
 		}
 
 		out.Terms = append(out.Terms, served)
@@ -111,4 +114,19 @@ func changeWords(change traveller.Change) string {
 	}
 
 	return words
+}
+
+// recoveryWords is a crisis survived: the characteristic, the value it came
+// back to, and the months the recovery added to his age (#561).
+//
+// Implements: A medical crisis recovery on the service record says its value
+// and months [Sheet].
+func recoveryWords(recovery chargen.Recovery) string {
+	months := "months"
+	if recovery.Months == 1 {
+		months = "month"
+	}
+
+	return fmt.Sprintf("%v recovered from a medical crisis to %d (%d %s older)",
+		recovery.Characteristic, recovery.To, recovery.Months, months)
 }

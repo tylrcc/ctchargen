@@ -46,7 +46,7 @@ UPP 1A848A, age 42 years 3 months, Other, 6 terms, killed by the survival throw
 - Term 2: Automatic Rifle-1
 - Term 3: Brawling-2
 - Term 4: Electronic-2; aging Strength -1, Endurance -1
-- Term 5: Mechanical-1; aging Strength -1, Endurance -1; Strength recovered from a medical crisis
+- Term 5: Mechanical-1; aging Strength -1, Endurance -1; Strength recovered from a medical crisis to 1 (3 months older)
 - killed by the survival throw in term 6
 
 ## Generation record

@@ -172,6 +172,14 @@ func shipLine(ship shipView) string {
 //
 // Implements: A characteristic raised at mustering out is on the service
 // record [Sheet].
+//
+// Implements: Expertise taken at mustering out is on the service record
+// [Sheet].
+//
+// Implements: A retirement the reenlistment throw refused says so on the
+// service record [Sheet].
+//
+// Implements: A death after the service ended ends the service record [Sheet].
 func serviceLines(r view) []string {
 	if r.Service == "" {
 		return []string{r.Enlistment.How}
@@ -194,12 +202,17 @@ func serviceLines(r view) []string {
 		lines = append(lines, fmt.Sprintf("Term %d: %s", term.Term, told))
 	}
 
+	// The departure is the last that ended the service, so a crisis that
+	// kills a character the reenlistment throw has retired is told here, and
+	// the retirement it overtook is not.
 	switch {
 	case r.Departure.Characteristic != "":
 		lines = append(lines, fmt.Sprintf("%s in term %d (%s reached zero)",
 			r.Departure.How, r.Terms, r.Departure.Characteristic))
 	case r.Departure.Fatal:
 		lines = append(lines, fmt.Sprintf("%s in term %d", r.Departure.How, r.Terms))
+	case r.History.RetiredDenied:
+		lines = append(lines, fmt.Sprintf("%s after term %d, reenlistment denied", r.Departure.How, r.Terms))
 	default:
 		lines = append(lines, fmt.Sprintf("%s after term %d", r.Departure.How, r.Terms))
 	}
@@ -211,25 +224,31 @@ func serviceLines(r view) []string {
 	return lines
 }
 
-// termText is one term's rank, gains and aging, each part left out where the
-// term has none of it, so a term with nothing to tell is empty. A rank's
-// grants are in parentheses, so "; " only ever separates the parts.
+// termText is one term's rank, gains, a reenlistment throw that required
+// another term, aging and recovery, in the order the term ran, each part left
+// out where the term has none of it, so a term with nothing to tell is empty.
+// A rank's grants and a recovery's months are in parentheses, so "; " only
+// ever separates the parts.
+//
+// Implements: A term a 12 on the reenlistment throw required says so on the
+// service record [Sheet].
 func termText(term termView) string {
 	raised := make([]string, 0, len(term.Raised))
 	for _, raise := range term.Raised {
 		raised = append(raised, raise.How+" "+raise.Rank+labelled(" (", strings.Join(raise.Grants, ", "), ")"))
 	}
 
-	recovered := make([]string, 0, len(term.Recovered))
-	for _, characteristic := range term.Recovered {
-		recovered = append(recovered, characteristic+" recovered from a medical crisis")
+	retained := ""
+	if term.Retained {
+		retained = "the service required another term"
 	}
 
 	return joinNonEmpty("; ",
 		strings.Join(raised, " and "),
 		strings.Join(term.Gained, ", "),
+		retained,
 		labelled("aging ", strings.Join(term.Aged, ", "), ""),
-		strings.Join(recovered, ", "))
+		strings.Join(term.Recovered, ", "))
 }
 
 // labelled is text between its label and its close, or nothing where there

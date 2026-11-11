@@ -44,12 +44,12 @@ UPP 644776, age 38, Other, 5 terms, retired
 ## Service record
 
 - Other, enlisted
-- Term 1: Gambling-1, Gambling-2
+- Term 1: Gambling-1, Gambling-2; the service required another term
 - Term 2: Endurance +1
 - Term 3: Streetwise-1
 - Term 4: Automatic Pistol-1; aging Dexterity -1, Endurance -1
 - Term 5: Social Standing -1; aging Strength -1, Dexterity -1
-- retired after term 5
+- retired after term 5, reenlistment denied
 
 ## Generation record
 

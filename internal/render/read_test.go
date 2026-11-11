@@ -3,6 +3,7 @@ package render_test
 import (
 	"fmt"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -70,14 +71,19 @@ func TestAShipsTermsFollowItsKind(t *testing.T) {
 
 // The service record narrates the career a term at a time, as the Jamison
 // example does (pp. 24-25): the rank each term conferred and what it granted,
-// what the term's skill rolls gave in the order rolled, what aging took, and a
-// crisis survived. The grants on entering the service sit on the enlistment
+// what the term's skill rolls gave in the order rolled, a 12 on the
+// reenlistment throw that required another term, what aging took, and a
+// crisis survived with the value it came back to and the months it added
+// (#561). The grants on entering the service sit on the enlistment
 // line, where E005 puts them. A rank's grants are in parentheses and two ranks
 // in one term are joined by "and", so "; " only separates a term's parts. A
 // term with nothing to tell - the one a survival throw ended - has no line,
 // since the departure line says how it ended (#401).
 //
 // Holds: The service record narrates the career a term at a time.
+//
+// Holds: A term a 12 on the reenlistment throw required says so on the
+// service record.
 func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 	t.Parallel()
 
@@ -95,6 +101,7 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 			traveller.RaisedFact{How: traveller.Promoted, Rank: 2, Name: captain},
 			applied(skill("Tactics", 1), traveller.InTerm),
 			applied(skill("Halberd", 1), traveller.InTerm),
+			traveller.RetainedFact{Age: traveller.NewAge(22)},
 			traveller.Term(2),
 			traveller.RaisedFact{How: traveller.Promoted, Rank: 3, Name: "Major"},
 			applied(traveller.Change{Characteristic: traveller.SocialStanding, From: 9, To: 10, Delta: 1}, traveller.AtRank),
@@ -102,7 +109,9 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 			applied(skill("Tactics", 2), traveller.InTerm),
 			traveller.AgedFact{Change: traveller.Change{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -1}},
 			traveller.AgedFact{Change: traveller.Change{Characteristic: traveller.Endurance, From: 8, To: 7, Delta: -1}},
-			traveller.RecoveredFact{Characteristic: traveller.Strength, To: 1, Age: traveller.NewAge(26).PlusMonths(3)},
+			traveller.RecoveredFact{
+				Characteristic: traveller.Strength, To: 1, Months: 3, Age: traveller.NewAge(26).PlusMonths(3),
+			},
 			traveller.Term(3),
 			traveller.DiedFact{Term: 3, Age: traveller.NewAge(30).PlusMonths(3)},
 		)
@@ -110,9 +119,10 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 
 	want := "## Service record\n\n" +
 		"- Army, enlisted; Rifle-1\n" +
-		"- Term 1: commissioned Lieutenant (Submachine Gun-1) and promoted Captain; Tactics-1, Halberd-1\n" +
+		"- Term 1: commissioned Lieutenant (Submachine Gun-1) and promoted Captain; Tactics-1, Halberd-1; " +
+		"the service required another term\n" +
 		"- Term 2: promoted Major (Social Standing +1); Education +1, Tactics-2; " +
-		"aging Strength -1, Endurance -1; Strength recovered from a medical crisis\n" +
+		"aging Strength -1, Endurance -1; Strength recovered from a medical crisis to 1 (3 months older)\n" +
 		"- killed by the survival throw in term 3\n"
 	if !strings.Contains(note, want) {
 		t.Errorf("the service record does not read:\n%s\nin:\n%s", want, note)
@@ -143,6 +153,124 @@ func TestAMusteringOutGainIsOnTheServiceRecord(t *testing.T) {
 	want := "- mustered out with Education +1, Intelligence +1\n"
 	if !strings.Contains(note, want) {
 		t.Errorf("the service record does not read %q:\n%s", want, note)
+	}
+}
+
+// Expertise taken at mustering out instead of a repeat weapon (p. 22) is on
+// the service record's mustering-out line, in the order rolled, beside the
+// characteristics mustering out raised (#561). The skill was on the sheet and
+// nowhere the service record said where it came from.
+//
+// Holds: Expertise taken at mustering out is on the service record.
+func TestMusteringOutExpertiseIsOnTheServiceRecord(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = recorded(
+			enlisted(traveller.Army),
+			traveller.Term(1),
+			traveller.DischargedFact{After: 1, Age: traveller.NewAge(22)},
+			traveller.WeaponReceivedFact{Weapon: "Dagger"},
+			traveller.ExpertiseFact{Skill: traveller.Skill{Name: "Dagger", Level: 1}},
+			applied(traveller.Change{Characteristic: traveller.Education, From: 9, To: 10, Delta: 1},
+				traveller.AtMusteringOut),
+		)
+	})
+
+	want := regexp.MustCompile(`(?m)^- mustered out with Dagger-1, Education \+1$`)
+	if !want.MatchString(note) {
+		t.Errorf("the service record has no line matching %s:\n%s", want, note)
+	}
+}
+
+// A one-term recovery reads "1 month", not "1 months".
+//
+// Holds: A medical crisis recovery on the service record says its value and
+// months.
+func TestARecoveryOnTheServiceRecordSaysItsValueAndMonths(t *testing.T) {
+	t.Parallel()
+
+	for months, want := range map[int]string{
+		1: "- Term 1: aging Endurance -1; Endurance recovered from a medical crisis to 1 (1 month older)",
+		6: "- Term 1: aging Endurance -1; Endurance recovered from a medical crisis to 1 (6 months older)",
+	} {
+		note := noteOf(func(c *chargen.Character) {
+			c.Events = recorded(
+				enlisted(traveller.Navy),
+				traveller.Term(1),
+				traveller.AgedFact{Change: traveller.Change{
+					Characteristic: traveller.Endurance, From: 1, To: 0, Delta: -1,
+				}},
+				traveller.RecoveredFact{
+					Characteristic: traveller.Endurance, To: 1, Months: months,
+					Age: traveller.NewAge(22).PlusMonths(months),
+				},
+				traveller.DischargedFact{After: 1, Age: traveller.NewAge(22).PlusMonths(months)},
+			)
+		})
+
+		if !slices.Contains(strings.Split(note, "\n"), want) {
+			t.Errorf("%d months: the service record has no line %q:\n%s", months, want, note)
+		}
+	}
+}
+
+// A retirement the reenlistment throw refused says so on the departure line,
+// since p. 21 makes it retirement all the same (#561); one it did not reads
+// retired and no more, since at the end of the seventh term or later retiring
+// is the only answer offered, and calling it a choice would credit him with
+// one. A crisis that kills him after the throw has retired him ends the
+// service record in the death, with no word of the retirement it overtook
+// (#556).
+//
+// Holds: A retirement the reenlistment throw refused says so on the service
+// record.
+//
+// Holds: A death after the service ended ends the service record.
+func TestTheServiceRecordEndsInHowTheServiceEnded(t *testing.T) {
+	t.Parallel()
+
+	retiring := func(denied bool, after ...traveller.Fact) []any {
+		entries := append([]any{enlisted(traveller.Navy)}, opened(5)...)
+
+		entries = append(entries, traveller.RetiredFact{After: 5, Age: traveller.NewAge(38), Denied: denied})
+
+		for _, fact := range after {
+			entries = append(entries, fact)
+		}
+
+		return entries
+	}
+
+	for name, tc := range map[string]struct {
+		events []any
+		last   string
+	}{
+		"refused":     {retiring(true), "- retired after term 5, reenlistment denied"},
+		"not refused": {retiring(false), "- retired after term 5"},
+		"refused, then killed by a crisis": {
+			retiring(true,
+				traveller.AgedFact{Change: traveller.Change{
+					Characteristic: traveller.Endurance, From: 1, To: 0, Delta: -1,
+				}},
+				traveller.DiedOfCrisisFact{Term: 5, Characteristic: traveller.Endurance},
+			),
+			"- killed by a medical crisis in term 5 (Endurance reached zero)",
+		},
+	} {
+		note := noteOf(func(c *chargen.Character) { c.Events = recorded(tc.events...) })
+
+		_, record, _ := strings.Cut(note, "## Service record\n\n")
+		section, _, _ := strings.Cut(record, "\n\n")
+		lines := strings.Split(section, "\n")
+
+		if got := lines[len(lines)-1]; got != tc.last {
+			t.Errorf("%s: the service record ends %q, want %q:\n%s", name, got, tc.last, section)
+		}
+
+		if strings.HasPrefix(tc.last, "- killed") && strings.Contains(section, "retired") {
+			t.Errorf("%s: the service record tells a retirement the death overtook:\n%s", name, section)
+		}
 	}
 }
 
