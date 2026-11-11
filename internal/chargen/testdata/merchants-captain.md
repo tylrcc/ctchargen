@@ -61,15 +61,15 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 ## Service record
 
 - Merchants, enlisted
-- Term 1: commissioned 4th Officer; Engineer-1, Navigation-1, Vacc Suit-1
-- Term 2: Strength +1
-- Term 3: promoted 3rd Officer; Navigation-2, Mechanical-1
-- Term 4: promoted 2nd Officer; Laser Carbine-1, Bribery-1; aging Strength -1, Dexterity -1
-- Term 5: Navigation-3; aging Strength -1
-- Term 6: promoted 1st Officer (Pilot-1); Mechanical-2, Sword-1; aging Dexterity -1
-- Term 7: promoted Captain; Strength +1, Navigation-4; aging Endurance -1
+- Term 1: commissioned 4th Officer; Engineer 0→1, Navigation 0→1, Vacc Suit 0→1
+- Term 2: Strength 8→9
+- Term 3: promoted 3rd Officer; Navigation 1→2, Mechanical 0→1
+- Term 4: promoted 2nd Officer; Laser Carbine 0→1, Bribery 0→1; aging Strength 9→8, Dexterity 4→3
+- Term 5: Navigation 2→3; aging Strength 8→7
+- Term 6: promoted 1st Officer (Pilot 0→1); Mechanical 1→2, Sword 0→1; aging Dexterity 3→2
+- Term 7: promoted Captain; Strength 7→8, Navigation 3→4; aging Endurance 6→5
 - retired after term 7
-- mustered out with Dagger-1, Intelligence +1, Dagger-2
+- mustered out with Dagger 0→2, Intelligence 9→10
 
 ## Generation record
 

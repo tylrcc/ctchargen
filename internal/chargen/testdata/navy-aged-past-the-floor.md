@@ -57,22 +57,22 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 ## Service record
 
 - Navy, enlisted
-- Term 1: commissioned Ensign and promoted Lieutenant; Administration-1, Jack of all Trades-1, Gunnery-1, Education +1
-- Term 2: promoted Lt Cmdr; Administration-2, Jack of all Trades-2; the service required another term
-- Term 3: promoted Commander; Ship's Boat-1, Education +1
-- Term 4: promoted Captain (Social Standing +1); Administration-3, Jack of all Trades-3; the service required another term
-- Term 5: promoted Admiral (Social Standing +1); Gunnery-2, Education +1; aging Strength -1, Endurance -1
-- Term 6: Administration-4
-- Term 7: Jack of all Trades-4; the service required another term; aging Endurance -1
-- Term 8: Gunnery-3; the service required another term; aging Strength -1
-- Term 9: Intelligence +1; the service required another term
-- Term 10: Administration-5; the service required another term; aging Endurance -1
-- Term 11: Mechanical-1; the service required another term; aging Endurance -1
-- Term 12: Gunnery-4; the service required another term; aging Endurance -2
-- Term 13: Dexterity +1; the service required another term; aging Dexterity -2
-- Term 14: Administration-6; aging Endurance -2 (held at 0); Endurance recovered from a medical crisis to 1 (6 months older)
+- Term 1: commissioned Ensign and promoted Lieutenant; Administration 0→1, Jack of all Trades 0→1, Gunnery 0→1, Education 10→11
+- Term 2: promoted Lt Cmdr; Administration 1→2, Jack of all Trades 1→2; the service required another term
+- Term 3: promoted Commander; Ship's Boat 0→1, Education 11→12
+- Term 4: promoted Captain (Social Standing 8→9); Administration 2→3, Jack of all Trades 2→3; the service required another term
+- Term 5: promoted Admiral (Social Standing 9→10); Gunnery 1→2, Education 12→13; aging Strength 10→9, Endurance 7→6
+- Term 6: Administration 3→4
+- Term 7: Jack of all Trades 3→4; the service required another term; aging Endurance 6→5
+- Term 8: Gunnery 2→3; the service required another term; aging Strength 9→8
+- Term 9: Intelligence 10→11; the service required another term
+- Term 10: Administration 4→5; the service required another term; aging Endurance 5→4
+- Term 11: Mechanical 0→1; the service required another term; aging Endurance 4→3
+- Term 12: Gunnery 3→4; the service required another term; aging Endurance 3→1
+- Term 13: Dexterity 12→13; the service required another term; aging Dexterity 13→11
+- Term 14: Administration 5→6; aging Endurance 1→0 (held at 0); Endurance recovered from a medical crisis to 1 (6 months older)
 - retired after term 14
-- mustered out with Social Standing +2, Social Standing +2, Social Standing +2 (held at 15), Social Standing +2 (held at 15), Education +2, Social Standing +2 (held at 15), Social Standing +2 (held at 15), Social Standing +2 (held at 15), Social Standing +2 (held at 15), Dagger-1
+- mustered out with Social Standing 10→15 (held at 15), Education 13→15, Dagger 0→1
 
 ## Generation record
 

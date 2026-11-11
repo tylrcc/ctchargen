@@ -47,12 +47,12 @@ UPP A69ABC, age 30, Marines Captain, 3 terms, baron/baroness, denied reenlistmen
 
 ## Service record
 
-- Marines, enlisted; Cutlass-1
-- Term 1: Tactics-1, ATV-1
-- Term 2: commissioned Lieutenant (Revolver-1); ATV-2, Endurance +1
-- Term 3: promoted Captain; Tactics-2, Laser Rifle-1
+- Marines, enlisted; Cutlass 0→1
+- Term 1: Tactics 0→1, ATV 0→1
+- Term 2: commissioned Lieutenant (Revolver 0→1); ATV 1→2, Endurance 8→9
+- Term 3: promoted Captain; Tactics 1→2, Laser Rifle 0→1
 - denied reenlistment after term 3
-- mustered out with Education +1
+- mustered out with Education 10→11
 
 ## Generation record
 

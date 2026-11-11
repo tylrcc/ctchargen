@@ -40,22 +40,22 @@ UPP FAABCC, age 86, Other, 17 terms, killed by the survival throw
 ## Service record
 
 - Other, enlisted
-- Term 1: Medical-1, Streetwise-1; the service required another term
-- Term 2: Forgery-1; the service required another term
-- Term 3: Strength +1; the service required another term
-- Term 4: Medical-2; the service required another term
-- Term 5: Streetwise-2; the service required another term
-- Term 6: Forgery-2; the service required another term
-- Term 7: Strength +1; the service required another term
-- Term 8: Medical-3; the service required another term
-- Term 9: Streetwise-3; the service required another term
-- Term 10: Forgery-3; the service required another term
-- Term 11: Strength +1; the service required another term
-- Term 12: Medical-4; the service required another term
-- Term 13: Streetwise-4; the service required another term
-- Term 14: Forgery-4; the service required another term
-- Term 15: Strength +1 (held at 15); the service required another term
-- Term 16: Medical-5; the service required another term; aging Dexterity -2, Endurance -2, Intelligence -1
+- Term 1: Medical 0→1, Streetwise 0→1; the service required another term
+- Term 2: Forgery 0→1; the service required another term
+- Term 3: Strength 12→13; the service required another term
+- Term 4: Medical 1→2; the service required another term
+- Term 5: Streetwise 1→2; the service required another term
+- Term 6: Forgery 1→2; the service required another term
+- Term 7: Strength 13→14; the service required another term
+- Term 8: Medical 2→3; the service required another term
+- Term 9: Streetwise 2→3; the service required another term
+- Term 10: Forgery 2→3; the service required another term
+- Term 11: Strength 14→15; the service required another term
+- Term 12: Medical 3→4; the service required another term
+- Term 13: Streetwise 3→4; the service required another term
+- Term 14: Forgery 3→4; the service required another term
+- Term 15: Strength 15→15 (held at 15); the service required another term
+- Term 16: Medical 4→5; the service required another term; aging Dexterity 12→10, Endurance 12→10, Intelligence 12→11
 - killed by the survival throw in term 17
 
 ## Generation record

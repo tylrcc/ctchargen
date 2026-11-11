@@ -62,16 +62,16 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 ## Service record
 
-- Scouts, enlisted; Pilot-1
-- Term 1: Medical-1, Mechanical-1; the service required another term
-- Term 2: Jack of all Trades-1
-- Term 3: Laser Carbine-1
-- Term 4: Navigation-1; aging Strength -1, Endurance -1
-- Term 5: Electronic-1; aging Strength -1, Dexterity -1, Endurance -1
-- Term 6: Vacc Suit-1; aging Dexterity -1, Endurance -1
-- Term 7: Strength +1
+- Scouts, enlisted; Pilot 0→1
+- Term 1: Medical 0→1, Mechanical 0→1; the service required another term
+- Term 2: Jack of all Trades 0→1
+- Term 3: Laser Carbine 0→1
+- Term 4: Navigation 0→1; aging Strength 8→7, Endurance 9→8
+- Term 5: Electronic 0→1; aging Strength 7→6, Dexterity 10→9, Endurance 8→7
+- Term 6: Vacc Suit 0→1; aging Dexterity 9→8, Endurance 7→6
+- Term 7: Strength 6→7
 - retired after term 7
-- mustered out with Education +2, Body Pistol-1
+- mustered out with Education 8→10, Body Pistol 0→1
 
 ## Generation record
 

@@ -46,25 +46,20 @@ UPP DBBCCC, age 54, Other, 9 terms, baron/baroness, retired
 ## Possessions
 
 - CR 3000
-- Low Passage
-- Low Passage
-- Low Passage
-- Low Passage
-- Low Passage
-- Low Passage
+- Low Passage ×6
 
 ## Service record
 
 - Other, enlisted
-- Term 1: Medical-1, Streetwise-1; the service required another term
-- Term 2: Forgery-1; the service required another term
-- Term 3: Strength +1; the service required another term
-- Term 4: Medical-2; the service required another term
-- Term 5: Streetwise-2; the service required another term
-- Term 6: Forgery-2; the service required another term
-- Term 7: Strength +1; the service required another term
-- Term 8: Medical-3; the service required another term
-- Term 9: Streetwise-3; aging Strength -1, Dexterity -1, Endurance -1
+- Term 1: Medical 0→1, Streetwise 0→1; the service required another term
+- Term 2: Forgery 0→1; the service required another term
+- Term 3: Strength 12→13; the service required another term
+- Term 4: Medical 1→2; the service required another term
+- Term 5: Streetwise 1→2; the service required another term
+- Term 6: Forgery 1→2; the service required another term
+- Term 7: Strength 13→14; the service required another term
+- Term 8: Medical 2→3; the service required another term
+- Term 9: Streetwise 2→3; aging Strength 14→13, Dexterity 12→11, Endurance 12→11
 - retired after term 9, reenlistment denied
 
 ## Generation record

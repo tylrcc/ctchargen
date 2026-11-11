@@ -46,16 +46,15 @@ UPP 754777, age 34, Merchants 3rd Officer (drafted after the Navy refused enlist
 ## Possessions
 
 - CR 50000
-- Low Passage
-- Low Passage
+- Low Passage ×2
 
 ## Service record
 
 - Merchants, drafted
-- Term 1: Mechanical-1, Jack of all Trades-1
-- Term 2: commissioned 4th Officer and promoted 3rd Officer; Strength +1, Mechanical-2, Electronic-1
-- Term 3: Cudgel-1
-- Term 4: Medical-1; aging Strength -1, Dexterity -1
+- Term 1: Mechanical 0→1, Jack of all Trades 0→1
+- Term 2: commissioned 4th Officer and promoted 3rd Officer; Strength 7→8, Mechanical 1→2, Electronic 0→1
+- Term 3: Cudgel 0→1
+- Term 4: Medical 0→1; aging Strength 8→7, Dexterity 6→5
 - denied reenlistment after term 4
 
 ## Generation record

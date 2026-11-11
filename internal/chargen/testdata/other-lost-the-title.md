@@ -46,10 +46,10 @@ UPP 556ACA, age 34, Other, 4 terms, denied reenlistment
 ## Service record
 
 - Other, enlisted
-- Term 1: Electronic-1, Streetwise-1
-- Term 2: Forgery-1
-- Term 3: Social Standing -1
-- Term 4: Jack of all Trades-1; aging Strength -1
+- Term 1: Electronic 0→1, Streetwise 0→1
+- Term 2: Forgery 0→1
+- Term 3: Social Standing 11→10
+- Term 4: Jack of all Trades 0→1; aging Strength 6→5
 - denied reenlistment after term 4
 
 ## Generation record

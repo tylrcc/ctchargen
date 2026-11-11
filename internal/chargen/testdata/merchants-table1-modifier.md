@@ -48,11 +48,11 @@ UPP ACA469, age 42, Merchants 1st Officer, 6 terms, killed by the survival throw
 ## Service record
 
 - Merchants, enlisted
-- Term 1: commissioned 4th Officer; Mechanical-1, Halberd-1, Endurance +1
-- Term 2: Medical-1
-- Term 3: promoted 3rd Officer; Vacc Suit-1, Strength +1
-- Term 4: promoted 2nd Officer; Electronic-1, Electronic-2; aging Strength -1
-- Term 5: promoted 1st Officer (Pilot-1); Strength +1, Gunnery-1; aging Strength -1
+- Term 1: commissioned 4th Officer; Mechanical 0→1, Halberd 0→1, Endurance 9→10
+- Term 2: Medical 0→1
+- Term 3: promoted 3rd Officer; Vacc Suit 0→1, Strength 10→11
+- Term 4: promoted 2nd Officer; Electronic 0→2; aging Strength 11→10
+- Term 5: promoted 1st Officer (Pilot 0→1); Strength 10→11, Gunnery 0→1; aging Strength 11→10
 - killed by the survival throw in term 6
 
 ## Generation record

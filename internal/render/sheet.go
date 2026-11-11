@@ -123,7 +123,7 @@ func possessionLines(r view) []string {
 		lines = append(lines, credits(r.Benefits.Cash))
 	}
 
-	lines = append(lines, r.Benefits.Passages...)
+	lines = append(lines, passageLines(r.Benefits.Passages)...)
 
 	if r.Benefits.TravellersAid {
 		lines = append(lines, "Travellers' Aid Society membership")
@@ -137,6 +137,39 @@ func possessionLines(r view) []string {
 
 	if r.Pension > 0 {
 		lines = append(lines, credits(r.Pension)+" a year in retirement pay")
+	}
+
+	return lines
+}
+
+// passageLines is each class of passage once, in the order first received,
+// with a count where there is more than one (#560). The possessions property
+// keeps one item for each passage, as #399 holds it.
+//
+// Implements: Passages of one class are one line with a count [Sheet].
+func passageLines(passages []string) []string {
+	var order []string
+
+	count := map[string]int{}
+
+	for _, passage := range passages {
+		if count[passage] == 0 {
+			order = append(order, passage)
+		}
+
+		count[passage]++
+	}
+
+	lines := make([]string, 0, len(order))
+
+	for _, passage := range order {
+		if count[passage] == 1 {
+			lines = append(lines, passage)
+
+			continue
+		}
+
+		lines = append(lines, fmt.Sprintf("%s ×%d", passage, count[passage]))
 	}
 
 	return lines
@@ -285,8 +318,9 @@ func serving(r view) string {
 }
 
 // skillText is a skill in the book's notation, Skill-1 (p. 12): the one form
-// the sheet, the summary and the service history write. The properties write
-// the name alone (#474).
+// the sheet's skills and the summary write. The service record writes a
+// skill's level before and after (#562), and the properties write the name
+// alone (#474).
 func skillText(name string, level int) string {
 	return fmt.Sprintf("%s-%d", name, level)
 }

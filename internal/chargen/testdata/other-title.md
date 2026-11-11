@@ -42,7 +42,7 @@ UPP A68AAC, age 22, Other, 1 term, baron/baroness, denied reenlistment
 ## Service record
 
 - Other, enlisted
-- Term 1: Forgery-1, Electronic-1
+- Term 1: Forgery 0→1, Electronic 0→1
 - denied reenlistment after term 1
 
 ## Generation record

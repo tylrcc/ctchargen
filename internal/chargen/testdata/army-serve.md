@@ -57,23 +57,21 @@ UPP 965BCD, age 46, Army General, 7 terms, marquis/marchioness, retired
 
 - CR 30000
 - Middle Passage
-- High Passage
-- High Passage
-- High Passage
+- High Passage ×3
 - CR 8000 a year in retirement pay
 
 ## Service record
 
-- Army, enlisted; Rifle-1
-- Term 1: commissioned Lieutenant (Submachine Gun-1); Tactics-1, Halberd-1, Submachine Gun-2
-- Term 2: promoted Captain; Gambling-1, Administration-1
-- Term 3: promoted Major; Electronic-1, ATV-1
-- Term 4: promoted Lt Colonel; Education +1, Tactics-2; aging Endurance -1
-- Term 5: promoted Colonel; Electronic-2, ATV-2; aging Endurance -1
-- Term 6: promoted General; Education +1, Tactics-3; aging Strength -1
-- Term 7: Mechanical-1; aging Endurance -1
+- Army, enlisted; Rifle 0→1
+- Term 1: commissioned Lieutenant (Submachine Gun 0→1); Tactics 0→1, Halberd 0→1, Submachine Gun 1→2
+- Term 2: promoted Captain; Gambling 0→1, Administration 0→1
+- Term 3: promoted Major; Electronic 0→1, ATV 0→1
+- Term 4: promoted Lt Colonel; Education 10→11, Tactics 1→2; aging Endurance 8→7
+- Term 5: promoted Colonel; Electronic 1→2, ATV 1→2; aging Endurance 7→6
+- Term 6: promoted General; Education 11→12, Tactics 2→3; aging Strength 10→9
+- Term 7: Mechanical 0→1; aging Endurance 6→5
 - retired after term 7, reenlistment denied
-- mustered out with Social Standing +1, Intelligence +1
+- mustered out with Social Standing 12→13, Intelligence 10→11
 
 ## Generation record
 

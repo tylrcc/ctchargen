@@ -47,12 +47,12 @@ UPP 671682, age 42, Marines Lieutenant (drafted after the Other refused enlistme
 
 ## Service record
 
-- Marines, drafted; Cutlass-1
-- Term 1: Administration-1, ATV-1
-- Term 2: Pike-1
-- Term 3: Gambling-1
-- Term 4: commissioned Lieutenant (Revolver-1); Administration-2, ATV-2; aging Strength -1, Dexterity -1, Endurance -1
-- Term 5: Sword-1; aging Dexterity -1, Endurance -1
+- Marines, drafted; Cutlass 0→1
+- Term 1: Administration 0→1, ATV 0→1
+- Term 2: Pike 0→1
+- Term 3: Gambling 0→1
+- Term 4: commissioned Lieutenant (Revolver 0→1); Administration 1→2, ATV 1→2; aging Strength 7→6, Dexterity 9→8, Endurance 3→2
+- Term 5: Sword 0→1; aging Dexterity 8→7, Endurance 2→1
 - killed by the survival throw in term 6
 
 ## Generation record

@@ -35,7 +35,7 @@ UPP 673735, age 22, Scouts, 1 term, killed by the survival throw
 
 ## Service record
 
-- Scouts, enlisted; Pilot-1
+- Scouts, enlisted; Pilot 0→1
 - killed by the survival throw in term 1
 
 ## Generation record

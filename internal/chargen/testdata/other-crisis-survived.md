@@ -48,15 +48,15 @@ UPP 196799, age 46 years 1 months, Other, 7 terms, retired
 ## Service record
 
 - Other, enlisted
-- Term 1: Electronic-1, Brawling-1
-- Term 2: Automatic Rifle-1
-- Term 3: Brawling-2
-- Term 4: Electronic-2; aging Strength -1, Endurance -1
-- Term 5: Mechanical-1; aging Strength -1, Endurance -1
-- Term 6: Forgery-1; aging Dexterity -1, Endurance -1
-- Term 7: Social Standing -1; aging Strength -1, Endurance -1; Strength recovered from a medical crisis to 1 (1 month older)
+- Term 1: Electronic 0→1, Brawling 0→1
+- Term 2: Automatic Rifle 0→1
+- Term 3: Brawling 1→2
+- Term 4: Electronic 1→2; aging Strength 3→2, Endurance 10→9
+- Term 5: Mechanical 0→1; aging Strength 2→1, Endurance 9→8
+- Term 6: Forgery 0→1; aging Dexterity 10→9, Endurance 8→7
+- Term 7: Social Standing 10→9; aging Strength 1→0, Endurance 7→6; Strength recovered from a medical crisis to 1 (1 month older)
 - retired after term 7
-- mustered out with Intelligence +1, Education +1, Intelligence +1, Intelligence +1
+- mustered out with Intelligence 4→7, Education 8→9
 
 ## Generation record
 

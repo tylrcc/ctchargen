@@ -42,10 +42,10 @@ UPP 335C6C, age 38, Other (drafted after the Navy refused enlistment), 5 terms, 
 ## Service record
 
 - Other, drafted
-- Term 1: Brawling-1, Gambling-1
-- Term 2: Brawling-2
-- Term 3: Forgery-1
-- Term 4: Bribery-1; aging Strength -1, Dexterity -1
+- Term 1: Brawling 0→1, Gambling 0→1
+- Term 2: Brawling 1→2
+- Term 3: Forgery 0→1
+- Term 4: Bribery 0→1; aging Strength 4→3, Dexterity 4→3
 - killed by the survival throw in term 5
 
 ## Generation record

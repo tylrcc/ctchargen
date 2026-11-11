@@ -118,11 +118,11 @@ func TestTheServiceRecordNarratesTheServiceHistory(t *testing.T) {
 	})
 
 	want := "## Service record\n\n" +
-		"- Army, enlisted; Rifle-1\n" +
-		"- Term 1: commissioned Lieutenant (Submachine Gun-1) and promoted Captain; Tactics-1, Halberd-1; " +
+		"- Army, enlisted; Rifle 0→1\n" +
+		"- Term 1: commissioned Lieutenant (Submachine Gun 0→1) and promoted Captain; Tactics 0→1, Halberd 0→1; " +
 		"the service required another term\n" +
-		"- Term 2: promoted Major (Social Standing +1); Education +1, Tactics-2; " +
-		"aging Strength -1, Endurance -1; Strength recovered from a medical crisis to 1 (3 months older)\n" +
+		"- Term 2: promoted Major (Social Standing 9→10); Education 10→11, Tactics 1→2; " +
+		"aging Strength 1→0, Endurance 8→7; Strength recovered from a medical crisis to 1 (3 months older)\n" +
 		"- killed by the survival throw in term 3\n"
 	if !strings.Contains(note, want) {
 		t.Errorf("the service record does not read:\n%s\nin:\n%s", want, note)
@@ -150,7 +150,7 @@ func TestAMusteringOutGainIsOnTheServiceRecord(t *testing.T) {
 		)
 	})
 
-	want := "- mustered out with Education +1, Intelligence +1\n"
+	want := "- mustered out with Education 9→10, Intelligence 7→8\n"
 	if !strings.Contains(note, want) {
 		t.Errorf("the service record does not read %q:\n%s", want, note)
 	}
@@ -170,14 +170,14 @@ func TestMusteringOutExpertiseIsOnTheServiceRecord(t *testing.T) {
 			enlisted(traveller.Army),
 			traveller.Term(1),
 			traveller.DischargedFact{After: 1, Age: traveller.NewAge(22)},
-			traveller.WeaponReceivedFact{Weapon: "Dagger"},
-			traveller.ExpertiseFact{Skill: traveller.Skill{Name: "Dagger", Level: 1}},
+			traveller.WeaponReceivedFact{Weapon: dagger},
+			traveller.ExpertiseFact{Skill: traveller.Skill{Name: dagger, Level: 1}},
 			applied(traveller.Change{Characteristic: traveller.Education, From: 9, To: 10, Delta: 1},
 				traveller.AtMusteringOut),
 		)
 	})
 
-	want := regexp.MustCompile(`(?m)^- mustered out with Dagger-1, Education \+1$`)
+	want := regexp.MustCompile(`(?m)^- mustered out with Dagger 0→1, Education 9→10$`)
 	if !want.MatchString(note) {
 		t.Errorf("the service record has no line matching %s:\n%s", want, note)
 	}
@@ -191,8 +191,8 @@ func TestARecoveryOnTheServiceRecordSaysItsValueAndMonths(t *testing.T) {
 	t.Parallel()
 
 	for months, want := range map[int]string{
-		1: "- Term 1: aging Endurance -1; Endurance recovered from a medical crisis to 1 (1 month older)",
-		6: "- Term 1: aging Endurance -1; Endurance recovered from a medical crisis to 1 (6 months older)",
+		1: "- Term 1: aging Endurance 1→0; Endurance recovered from a medical crisis to 1 (1 month older)",
+		6: "- Term 1: aging Endurance 1→0; Endurance recovered from a medical crisis to 1 (6 months older)",
 	} {
 		note := noteOf(func(c *chargen.Character) {
 			c.Events = recorded(
@@ -607,6 +607,9 @@ func TestTheGenerationRecordIsOneHeading(t *testing.T) {
 // name for it.
 const captain = "Captain"
 
+// dagger is the weapon the mustering-out tests take expertise in.
+const dagger = "Dagger"
+
 // pilot is the one skill the tests below give a Scout or a merchant.
 const pilot = "Pilot"
 
@@ -858,12 +861,15 @@ func TestAnUnnamedNoteIsHeadedByItsTitle(t *testing.T) {
 	}
 }
 
-// A change the floor or the ceiling held says so (#409): the table's change
-// as it printed it, then where the characteristic stayed - what the
-// generation record's "-1, 1 to 1" says. An unclamped change is the delta alone.
+// A gain on the service record is the value before it and the value after,
+// and a skill first acquired goes from 0 (#562). Where the floor or the
+// ceiling held a characteristic short of the table's change it says where -
+// what the generation record's "-1, 1 to 1" says - and an unclamped change
+// says nothing of holding (#409).
 //
-// Holds: A clamped change says the table's change and where it was held.
-func TestAClampedChangeSaysWhereItWasHeld(t *testing.T) {
+// Holds: The service record says a gain's value before and after, and where
+// a floor or a ceiling held it.
+func TestAGainSaysItsValueBeforeAndAfter(t *testing.T) {
 	t.Parallel()
 
 	note := noteOf(func(c *chargen.Character) {
@@ -872,14 +878,101 @@ func TestAClampedChangeSaysWhereItWasHeld(t *testing.T) {
 			traveller.Term(1),
 			applied(traveller.Change{Characteristic: traveller.SocialStanding, From: 1, To: 1, Delta: -1}, traveller.InTerm),
 			applied(traveller.Change{Characteristic: traveller.Education, From: 10, To: 11, Delta: 1}, traveller.InTerm),
+			applied(traveller.SkillGain{Skill: traveller.Skill{Name: "Forgery", Level: 1}}, traveller.InTerm),
 			traveller.AgedFact{Change: traveller.Change{Characteristic: traveller.Strength, From: 1, To: 0, Delta: -2}},
 			traveller.DischargedFact{After: 1, Age: traveller.NewAge(22)},
 		)
 	})
 
-	want := "- Term 1: Social Standing -1 (held at 1), Education +1; aging Strength -2 (held at 0)\n"
-	if !strings.Contains(note, want) {
-		t.Errorf("the service record does not read %q:\n%s", want, note)
+	want := "- Term 1: Social Standing 1→1 (held at 1), Education 10→11, Forgery 0→1; aging Strength 1→0 (held at 0)"
+	if !slices.Contains(strings.Split(note, "\n"), want) {
+		t.Errorf("the service record has no line %q:\n%s", want, note)
+	}
+}
+
+// A list of gains tells each skill or characteristic once, from the value
+// before its first gain to the value after its last, in the order it first
+// moved (#562): a term's skill rolls, a rank's grants, aging, and mustering
+// out, expertise taken there among it. A characteristic the ceiling held on
+// any of its gains says so once, at the value it was held at; one the
+// ceiling never held does not. The generation record keeps each gain.
+//
+// Holds: The service record tells each skill or characteristic once in a
+// list of gains.
+func TestTheServiceRecordTellsEachThingOnceInAList(t *testing.T) {
+	t.Parallel()
+
+	skill := func(name string, level int) traveller.Gain {
+		return traveller.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
+	}
+
+	social := func(from, to, delta int) traveller.Gain {
+		return traveller.Change{Characteristic: traveller.SocialStanding, From: from, To: to, Delta: delta}
+	}
+
+	education := func(from, to int) traveller.Gain {
+		return traveller.Change{Characteristic: traveller.Education, From: from, To: to, Delta: to - from}
+	}
+
+	aged := func(from, to int) traveller.AgedFact {
+		return traveller.AgedFact{Change: traveller.Change{
+			Characteristic: traveller.Strength, From: from, To: to, Delta: to - from,
+		}}
+	}
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = recorded(
+			enlisted(traveller.Navy),
+			traveller.Term(1),
+			traveller.RaisedFact{How: traveller.Promoted, Rank: 5, Name: captain},
+			applied(social(9, 10, 1), traveller.AtRank),
+			applied(social(10, 11, 1), traveller.AtRank),
+			applied(skill("Administration", 1), traveller.InTerm),
+			applied(education(8, 9), traveller.InTerm),
+			applied(skill("Administration", 2), traveller.InTerm),
+			aged(9, 8),
+			aged(8, 7),
+			traveller.DischargedFact{After: 1, Age: traveller.NewAge(22)},
+			traveller.ExpertiseFact{Skill: traveller.Skill{Name: dagger, Level: 1}},
+			applied(social(11, 13, 2), traveller.AtMusteringOut),
+			applied(education(9, 10), traveller.AtMusteringOut),
+			applied(social(13, 15, 2), traveller.AtMusteringOut),
+			applied(social(15, 15, 2), traveller.AtMusteringOut),
+			traveller.ExpertiseFact{Skill: traveller.Skill{Name: dagger, Level: 2}},
+		)
+	})
+
+	lines := strings.Split(note, "\n")
+
+	for _, want := range []string{
+		"- Term 1: promoted Captain (Social Standing 9→11); Administration 0→2, Education 8→9; aging Strength 9→7",
+		"- mustered out with Dagger 0→2, Social Standing 11→15 (held at 15), Education 9→10",
+	} {
+		if !slices.Contains(lines, want) {
+			t.Errorf("the service record has no line %q:\n%s", want, note)
+		}
+	}
+}
+
+// Passages of one class are one line on the sheet, with a count where there
+// are more than one, in the order first received (#560). The possessions
+// property still lists each, as TestPossessionsAreOneItemEach holds.
+//
+// Holds: Passages of one class are one line with a count.
+func TestPassagesOfOneClassAreOneLineWithACount(t *testing.T) {
+	t.Parallel()
+
+	note := noteOf(func(c *chargen.Character) {
+		c.Events = recorded(enlisted(traveller.Merchants), opened(1),
+			traveller.DischargedFact{After: 1, Age: traveller.NewAge(22)},
+			traveller.PassageFact{Class: traveller.LowPassage},
+			traveller.PassageFact{Class: traveller.MiddlePassage},
+			traveller.PassageFact{Class: traveller.LowPassage})
+	})
+
+	want := regexp.MustCompile(`(?m)^## Possessions\n\n- Low Passage ×2\n- Middle Passage\n\n`)
+	if !want.MatchString(note) {
+		t.Errorf("the sheet has no possessions matching %s:\n%s", want, note)
 	}
 }
 

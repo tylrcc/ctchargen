@@ -62,16 +62,16 @@ UPP 73AB8C, age 46, Marines Colonel, 7 terms, baron/baroness, retired
 
 ## Service record
 
-- Marines, enlisted; Cutlass-1
-- Term 1: Computer-1, Tactics-1
-- Term 2: commissioned Lieutenant (Revolver-1) and promoted Captain; Vacc Suit-1, Cudgel-1, Leader-1
-- Term 3: promoted Force Cmdr; Electronic-1, Vacc Suit-2
-- Term 4: promoted Lt Colonel; Dexterity +1, Computer-2; aging Strength -1, Endurance -1
-- Term 5: promoted Colonel; Revolver-2, Vacc Suit-3; aging Dexterity -1, Endurance -1
-- Term 6: Gambling-1
-- Term 7: Medical-1; aging Dexterity -1
+- Marines, enlisted; Cutlass 0→1
+- Term 1: Computer 0→1, Tactics 0→1
+- Term 2: commissioned Lieutenant (Revolver 0→1) and promoted Captain; Vacc Suit 0→1, Cudgel 0→1, Leader 0→1
+- Term 3: promoted Force Cmdr; Electronic 0→1, Vacc Suit 1→2
+- Term 4: promoted Lt Colonel; Dexterity 4→5, Computer 1→2; aging Strength 8→7, Endurance 12→11
+- Term 5: promoted Colonel; Revolver 1→2, Vacc Suit 2→3; aging Dexterity 5→4, Endurance 11→10
+- Term 6: Gambling 0→1
+- Term 7: Medical 0→1; aging Dexterity 4→3
 - retired after term 7, reenlistment denied
-- mustered out with Intelligence +2, Social Standing +2, Social Standing +2
+- mustered out with Intelligence 9→11, Social Standing 8→12
 
 ## Generation record
 

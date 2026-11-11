@@ -15,7 +15,7 @@ import (
 type ServiceHistory struct {
 	// OnEntering is what the Rank and Service Skills box grants on entering
 	// the service, before the first term's survival throw (p. 23, E005).
-	OnEntering []traveller.Gain
+	OnEntering []Moved
 
 	Terms []TermServed
 
@@ -29,7 +29,17 @@ type ServiceHistory struct {
 	// order rolled: a characteristic a Table 1 row altered (p. 9), "applied
 	// to the character immediately" (p. 23, #490), and expertise taken
 	// instead of a repeat weapon (p. 22, #561).
-	MusteredOut []traveller.Gain
+	MusteredOut []Moved
+}
+
+// Moved is a gain and the value it moved its skill or characteristic from:
+// the level the skill was held at before it, zero where he had none, or the
+// characteristic's value before the change. A sheet tells a skill's gains as
+// the level it went from and the level it reached (#562), and the gain
+// carries only the second.
+type Moved struct {
+	Gain traveller.Gain
+	From int
 }
 
 // TermServed is one term of service. The term a survival throw ended has
@@ -43,7 +53,7 @@ type TermServed struct {
 
 	// Gained is what the term's skill eligibilities gave, in the order
 	// they were rolled (pp. 6, 11).
-	Gained []traveller.Gain
+	Gained []Moved
 
 	// Retained is a 12 exactly on the term's reenlistment throw, which
 	// required another term "regardless of his desires" (p. 6, #561).
@@ -69,7 +79,7 @@ type Recovery struct {
 type Raise struct {
 	How    traveller.Advancement
 	Rank   string
-	Grants []traveller.Gain
+	Grants []Moved
 }
 
 // History is the service a term at a time, read from the record (#412). It is
@@ -78,7 +88,7 @@ type Raise struct {
 // Implements: The service history records each term's rank, gains and aging
 // [Sheet].
 func (c *Character) History() ServiceHistory {
-	var fold historyFold
+	fold := historyFold{levels: map[traveller.SkillName]int{}}
 
 	for _, event := range c.Events {
 		// This fold cannot fail: every case only appends.
@@ -89,8 +99,12 @@ func (c *Character) History() ServiceHistory {
 }
 
 // historyFold reads the service history out of the record: a term from the step
-// that opens it, and each entry from the fact its outcome carries.
-type historyFold struct{ out ServiceHistory }
+// that opens it, and each entry from the fact its outcome carries. Its levels
+// are each skill at the level the last fact naming it reached.
+type historyFold struct {
+	out    ServiceHistory
+	levels map[traveller.SkillName]int
+}
 
 func (h *historyFold) Step(e traveller.StepEvent) error {
 	if e.Opens > 0 {
@@ -199,11 +213,24 @@ func (*historyFold) DeniedReenlistment(traveller.DeniedReenlistmentFact) error {
 func (*historyFold) Discharged(traveller.DischargedFact) error                 { return nil }
 
 // gained files a gain where its source says the sheet tells it: on entering,
-// at a rank, in a term, or at mustering out.
+// at a rank, in a term, or at mustering out, with the value it moved from. A
+// skill's is the level the last fact naming that skill reached, read from
+// the record and not from the rule that raises it, so each fact that
+// acquires a skill must pass through here.
+//
+// Implements: The service history keeps the level each skill gain moved from
+// [Sheet].
 func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {
+	from := fromFold{levels: h.levels}
+
+	// This fold cannot fail: every case only assigns.
+	_ = gain.Fold(&from)
+
+	moved := Moved{Gain: gain, From: from.from}
+
 	switch source {
 	case traveller.OnEntering:
-		h.out.OnEntering = append(h.out.OnEntering, gain)
+		h.out.OnEntering = append(h.out.OnEntering, moved)
 	case traveller.AtRank:
 		// A grant at a rank follows the raise that conferred it, in the same
 		// term, so the term has one.
@@ -211,12 +238,33 @@ func (h *historyFold) gained(gain traveller.Gain, source traveller.Source) {
 
 		latest := &raised[len(raised)-1]
 
-		latest.Grants = append(latest.Grants, gain)
+		latest.Grants = append(latest.Grants, moved)
 	case traveller.InTerm:
-		h.serving().Gained = append(h.serving().Gained, gain)
+		h.serving().Gained = append(h.serving().Gained, moved)
 	case traveller.AtMusteringOut:
-		h.out.MusteredOut = append(h.out.MusteredOut, gain)
+		h.out.MusteredOut = append(h.out.MusteredOut, moved)
 	}
+}
+
+// fromFold reads the value a gain moved from, and keeps a skill's new level
+// for the next gain of it. Adding a kind of gain stops this compiling until
+// it has one.
+type fromFold struct {
+	levels map[traveller.SkillName]int
+	from   int
+}
+
+func (f *fromFold) Skill(skill traveller.Skill) error {
+	f.from = f.levels[skill.Name]
+	f.levels[skill.Name] = skill.Level
+
+	return nil
+}
+
+func (f *fromFold) Change(change traveller.Change) error {
+	f.from = change.From
+
+	return nil
 }
 
 // serving is the term being served, the last one opened. Only what happens

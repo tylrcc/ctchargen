@@ -58,24 +58,23 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 ## Possessions
 
 - CR 37000
-- Low Passage
+- Low Passage ×2
 - High Passage
-- Low Passage
 - Dagger
 - CR 8000 a year in retirement pay
 
 ## Service record
 
-- Marines, enlisted; Cutlass-1
-- Term 1: commissioned Lieutenant (Revolver-1); Mechanical-1, Sword-1, Endurance +1
-- Term 2: Dagger-1
-- Term 3: promoted Captain; Shotgun-1, Brawling-1
-- Term 4: Mechanical-2; aging Strength -1
-- Term 5: Bayonet-1; aging Strength -1
-- Term 6: promoted Force Cmdr; Dexterity +1, Tactics-1
-- Term 7: Vacc Suit-1; aging Dexterity -1, Endurance -1
+- Marines, enlisted; Cutlass 0→1
+- Term 1: commissioned Lieutenant (Revolver 0→1); Mechanical 0→1, Sword 0→1, Endurance 8→9
+- Term 2: Dagger 0→1
+- Term 3: promoted Captain; Shotgun 0→1, Brawling 0→1
+- Term 4: Mechanical 1→2; aging Strength 5→4
+- Term 5: Bayonet 0→1; aging Strength 4→3
+- Term 6: promoted Force Cmdr; Dexterity 11→12, Tactics 0→1
+- Term 7: Vacc Suit 0→1; aging Dexterity 12→11, Endurance 9→8
 - retired after term 7
-- mustered out with Intelligence +2, Education +1
+- mustered out with Intelligence 8→10, Education 7→8
 
 ## Generation record
 

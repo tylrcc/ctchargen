@@ -17,17 +17,21 @@ import (
 // reenlistment throw required, what aging took, any medical crisis survived
 // with the value and the months it left (#401, #561), a retirement the
 // reenlistment throw refused, and what mustering out changed in the character,
-// expertise taken instead of a weapon among it (#490, #561).
+// expertise taken instead of a weapon among it (#490, #561). Each gain keeps
+// the value it moved from: a skill's level before it, which the gain does not
+// carry, read as the level the record last gave that skill (#562).
 //
 // The literals are typed from each fixture's generation record, which is what
 // the history has to agree with, and not from the code that fills it. Four
 // fixtures between them reach every part: an Army career for the grant on
-// entering, a rank grant that is a skill and a retirement refused, a Navy
-// career for a rank grant that is a characteristic, an Other career for a
-// crisis survived, and a Scouts career for a term required and expertise at
-// mustering out.
+// entering, a rank grant that is a skill, a skill raised in the term that
+// granted it and a retirement refused, a Navy career for a rank grant that is
+// a characteristic, an Other career for a crisis survived, and a Scouts
+// career for a term required and expertise at mustering out.
 //
 // Holds: The service history records each term's rank, gains and aging.
+//
+// Holds: The service history keeps the level each skill gain moved from.
 func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 	t.Parallel()
 
@@ -54,39 +58,39 @@ func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 // reenlistment throw refused after it.
 func armyServeHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
-		OnEntering:    gains(skill("Rifle", 1)),
+		OnEntering:    gains(skill("Rifle", 0, 1)),
 		RetiredDenied: true,
 		Terms: []chargen.TermServed{
 			{
 				Term: 1,
 				Raised: []chargen.Raise{{
-					How: traveller.Commissioned, Rank: "Lieutenant", Grants: gains(skill("Submachine Gun", 1)),
+					How: traveller.Commissioned, Rank: "Lieutenant", Grants: gains(skill("Submachine Gun", 0, 1)),
 				}},
-				Gained: gains(skill("Tactics", 1), skill("Halberd", 1), skill("Submachine Gun", 2)),
+				Gained: gains(skill("Tactics", 0, 1), skill("Halberd", 0, 1), skill("Submachine Gun", 1, 2)),
 			},
-			{Term: 2, Raised: promoted("Captain"), Gained: gains(skill("Gambling", 1), skill("Administration", 1))},
-			{Term: 3, Raised: promoted("Major"), Gained: gains(skill("Electronic", 1), skill("ATV", 1))},
+			{Term: 2, Raised: promoted("Captain"), Gained: gains(skill("Gambling", 0, 1), skill("Administration", 0, 1))},
+			{Term: 3, Raised: promoted("Major"), Gained: gains(skill("Electronic", 0, 1), skill("ATV", 0, 1))},
 			{
 				Term: 4, Raised: promoted("Lt Colonel"),
-				Gained: gains(change(traveller.Education, 10, 11), skill("Tactics", 2)),
+				Gained: gains(moved(traveller.Education, 10, 11), skill("Tactics", 1, 2)),
 				Aged:   []traveller.Change{change(traveller.Endurance, 8, 7)},
 			},
 			{
 				Term: 5, Raised: promoted("Colonel"),
-				Gained: gains(skill("Electronic", 2), skill("ATV", 2)),
+				Gained: gains(skill("Electronic", 1, 2), skill("ATV", 1, 2)),
 				Aged:   []traveller.Change{change(traveller.Endurance, 7, 6)},
 			},
 			{
 				Term: 6, Raised: promoted("General"),
-				Gained: gains(change(traveller.Education, 11, 12), skill("Tactics", 3)),
+				Gained: gains(moved(traveller.Education, 11, 12), skill("Tactics", 2, 3)),
 				Aged:   []traveller.Change{change(traveller.Strength, 10, 9)},
 			},
 			{
-				Term: 7, Gained: gains(skill("Mechanical", 1)),
+				Term: 7, Gained: gains(skill("Mechanical", 0, 1)),
 				Aged: []traveller.Change{change(traveller.Endurance, 6, 5)},
 			},
 		},
-		MusteredOut: gains(change(traveller.SocialStanding, 12, 13), change(traveller.Intelligence, 10, 11)),
+		MusteredOut: gains(moved(traveller.SocialStanding, 12, 13), moved(traveller.Intelligence, 10, 11)),
 	}
 }
 
@@ -98,39 +102,39 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
 		RetiredDenied: true,
 		Terms: []chargen.TermServed{
-			{Term: 1, Gained: gains(skill("Navigation", 1), skill("Vacc Suit", 1))},
+			{Term: 1, Gained: gains(skill("Navigation", 0, 1), skill("Vacc Suit", 0, 1))},
 			{
 				Term: 2, Raised: []chargen.Raise{{How: traveller.Commissioned, Rank: "Ensign"}},
-				Gained: gains(skill("Ship's Boat", 1), change(traveller.Endurance, 8, 9)),
+				Gained: gains(skill("Ship's Boat", 0, 1), moved(traveller.Endurance, 8, 9)),
 			},
 			{
 				Term: 3, Raised: promoted("Lieutenant"),
-				Gained: gains(skill("Navigation", 2), skill("Jack of all Trades", 1)),
+				Gained: gains(skill("Navigation", 1, 2), skill("Jack of all Trades", 0, 1)),
 			},
 			{
 				Term: 4, Raised: promoted("Lt Cmdr"),
-				Gained: gains(skill("Forward Observer", 1), change(traveller.SocialStanding, 12, 13)),
+				Gained: gains(skill("Forward Observer", 0, 1), moved(traveller.SocialStanding, 12, 13)),
 				Aged:   []traveller.Change{change(traveller.Strength, 10, 9), change(traveller.Endurance, 9, 8)},
 			},
 			{
 				Term: 5, Raised: promoted("Commander"),
-				Gained: gains(skill("Pilot", 1), skill("Vacc Suit", 2)),
+				Gained: gains(skill("Pilot", 0, 1), skill("Vacc Suit", 1, 2)),
 				Aged:   []traveller.Change{change(traveller.Strength, 9, 8)},
 			},
 			{
-				Term: 6, Gained: gains(skill("Ship's Boat", 2)),
+				Term: 6, Gained: gains(skill("Ship's Boat", 1, 2)),
 				Aged: []traveller.Change{change(traveller.Endurance, 8, 7)},
 			},
 			{
 				Term: 7,
 				Raised: []chargen.Raise{{
-					How: traveller.Promoted, Rank: "Captain", Grants: gains(change(traveller.SocialStanding, 13, 14)),
+					How: traveller.Promoted, Rank: "Captain", Grants: gains(moved(traveller.SocialStanding, 13, 14)),
 				}},
-				Gained: gains(change(traveller.Education, 10, 11), skill("Engineer", 1)),
+				Gained: gains(moved(traveller.Education, 10, 11), skill("Engineer", 0, 1)),
 				Aged:   []traveller.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 7, 6)},
 			},
 		},
-		MusteredOut: gains(change(traveller.Education, 11, 13), change(traveller.Intelligence, 10, 11)),
+		MusteredOut: gains(moved(traveller.Education, 11, 13), moved(traveller.Intelligence, 10, 11)),
 	}
 }
 
@@ -140,30 +144,30 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
 		Terms: []chargen.TermServed{
-			{Term: 1, Gained: gains(skill("Electronic", 1), skill("Brawling", 1))},
-			{Term: 2, Gained: gains(skill("Automatic Rifle", 1))},
-			{Term: 3, Gained: gains(skill("Brawling", 2))},
+			{Term: 1, Gained: gains(skill("Electronic", 0, 1), skill("Brawling", 0, 1))},
+			{Term: 2, Gained: gains(skill("Automatic Rifle", 0, 1))},
+			{Term: 3, Gained: gains(skill("Brawling", 1, 2))},
 			{
-				Term: 4, Gained: gains(skill("Electronic", 2)),
+				Term: 4, Gained: gains(skill("Electronic", 1, 2)),
 				Aged: []traveller.Change{change(traveller.Strength, 3, 2), change(traveller.Endurance, 10, 9)},
 			},
 			{
-				Term: 5, Gained: gains(skill("Mechanical", 1)),
+				Term: 5, Gained: gains(skill("Mechanical", 0, 1)),
 				Aged: []traveller.Change{change(traveller.Strength, 2, 1), change(traveller.Endurance, 9, 8)},
 			},
 			{
-				Term: 6, Gained: gains(skill("Forgery", 1)),
+				Term: 6, Gained: gains(skill("Forgery", 0, 1)),
 				Aged: []traveller.Change{change(traveller.Dexterity, 10, 9), change(traveller.Endurance, 8, 7)},
 			},
 			{
-				Term: 7, Gained: gains(change(traveller.SocialStanding, 10, 9)),
+				Term: 7, Gained: gains(moved(traveller.SocialStanding, 10, 9)),
 				Aged:      []traveller.Change{change(traveller.Strength, 1, 0), change(traveller.Endurance, 7, 6)},
 				Recovered: []chargen.Recovery{{Characteristic: traveller.Strength, To: 1, Months: 1}},
 			},
 		},
 		MusteredOut: gains(
-			change(traveller.Intelligence, 4, 5), change(traveller.Education, 8, 9),
-			change(traveller.Intelligence, 5, 6), change(traveller.Intelligence, 6, 7),
+			moved(traveller.Intelligence, 4, 5), moved(traveller.Education, 8, 9),
+			moved(traveller.Intelligence, 5, 6), moved(traveller.Intelligence, 6, 7),
 		),
 	}
 }
@@ -173,33 +177,42 @@ func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 // Body Pistol-1 at mustering out, taken instead of a second Body Pistol.
 func scoutsSecondShipHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
-		OnEntering: gains(skill("Pilot", 1)),
+		OnEntering: gains(skill("Pilot", 0, 1)),
 		Terms: []chargen.TermServed{
-			{Term: 1, Gained: gains(skill("Medical", 1), skill("Mechanical", 1)), Retained: true},
-			{Term: 2, Gained: gains(skill("Jack of all Trades", 1))},
-			{Term: 3, Gained: gains(skill("Laser Carbine", 1))},
+			{Term: 1, Gained: gains(skill("Medical", 0, 1), skill("Mechanical", 0, 1)), Retained: true},
+			{Term: 2, Gained: gains(skill("Jack of all Trades", 0, 1))},
+			{Term: 3, Gained: gains(skill("Laser Carbine", 0, 1))},
 			{
-				Term: 4, Gained: gains(skill("Navigation", 1)),
+				Term: 4, Gained: gains(skill("Navigation", 0, 1)),
 				Aged: []traveller.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 9, 8)},
 			},
 			{
-				Term: 5, Gained: gains(skill("Electronic", 1)),
+				Term: 5, Gained: gains(skill("Electronic", 0, 1)),
 				Aged: []traveller.Change{
 					change(traveller.Strength, 7, 6), change(traveller.Dexterity, 10, 9), change(traveller.Endurance, 8, 7),
 				},
 			},
 			{
-				Term: 6, Gained: gains(skill("Vacc Suit", 1)),
+				Term: 6, Gained: gains(skill("Vacc Suit", 0, 1)),
 				Aged: []traveller.Change{change(traveller.Dexterity, 9, 8), change(traveller.Endurance, 7, 6)},
 			},
-			{Term: 7, Gained: gains(change(traveller.Strength, 6, 7))},
+			{Term: 7, Gained: gains(moved(traveller.Strength, 6, 7))},
 		},
-		MusteredOut: gains(change(traveller.Education, 8, 10), skill("Body Pistol", 1)),
+		MusteredOut: gains(moved(traveller.Education, 8, 10), skill("Body Pistol", 0, 1)),
 	}
 }
 
-func skill(name string, level int) traveller.SkillGain {
-	return traveller.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: level}}
+// skill is a skill gain from the level the record last gave it, zero where
+// it had none, to the level this gain reached.
+func skill(name string, from, to int) chargen.Moved {
+	return chargen.Moved{
+		Gain: traveller.SkillGain{Skill: traveller.Skill{Name: traveller.SkillName(name), Level: to}}, From: from,
+	}
+}
+
+// moved is a characteristic gain the floor and the ceiling left alone.
+func moved(characteristic traveller.Characteristic, from, to int) chargen.Moved {
+	return chargen.Moved{Gain: change(characteristic, from, to), From: from}
 }
 
 // change is a change the floor and the ceiling left alone: the table's
@@ -219,7 +232,7 @@ func promoted(rank string) []chargen.Raise {
 
 // gains is a list of gains in the order given, which is the order the
 // generation record received them in.
-func gains(given ...traveller.Gain) []traveller.Gain { return given }
+func gains(given ...chargen.Moved) []chargen.Moved { return given }
 
 // historyText is a service history a term to a line, so a failure shows
 // which term differs.
@@ -281,11 +294,11 @@ func TestAHeldChangeKeepsTheTablesChange(t *testing.T) {
 }
 
 // changesIn is the characteristic changes among a term's gains.
-func changesIn(gains []traveller.Gain) []traveller.Change {
+func changesIn(gains []chargen.Moved) []traveller.Change {
 	var changes []traveller.Change
 
 	for _, gain := range gains {
-		if change, ok := gain.(traveller.Change); ok {
+		if change, ok := gain.Gain.(traveller.Change); ok {
 			changes = append(changes, change)
 		}
 	}

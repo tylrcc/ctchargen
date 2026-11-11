@@ -41,7 +41,7 @@ UPP 64499B, age 22, Other (service chosen by the policy), 1 term, knight/dame, d
 ## Service record
 
 - Other, enlisted
-- Term 1: Social Standing -1, Brawling-1
+- Term 1: Social Standing 12→11, Brawling 0→1
 - discharged after term 1
 
 ## Generation record

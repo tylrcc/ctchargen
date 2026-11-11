@@ -26,6 +26,17 @@ release turns out to be.
   gave. After the third roll on Table 2, a line says the remaining rolls must
   be on Table 1, and the first designation after Education reaches 8 says it
   offers the fourth skills table. Neither line is a choice: nothing was asked.
+- The service record tells each skill and characteristic as its value before
+  and after, once in each list of gains (#562): `Administration 0→2` for two
+  gains in a term, and
+  `mustered out with Social Standing 9→15 (held at 15), Education 8→10`, where
+  "(held at N)" appears only where a floor or a ceiling stopped a change
+  short. This replaces the table's change, `Social Standing +2 (held at 15)`,
+  that #409 put there. The sheet's skills keep the book's `Administration-2`,
+  and the generation record keeps each gain as it was.
+- The sheet's possessions show one line for each class of passage, with a
+  count where there are more than one (`Low Passage ×2`) (#560). The
+  `possessions` property still lists each passage.
 
 ## 1.0.0-rc.5
 

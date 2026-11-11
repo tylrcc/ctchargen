@@ -40,13 +40,13 @@ UPP 205688, age 46, Other, 7 terms, killed by a medical crisis
 ## Service record
 
 - Other, enlisted
-- Term 1: Electronic-1, Streetwise-1
-- Term 2: Gambling-1
-- Term 3: Strength +1
-- Term 4: Electronic-2; aging Strength -1
-- Term 5: Streetwise-2; aging Dexterity -1
-- Term 6: Gambling-2; aging Dexterity -1
-- Term 7: Endurance +1; aging Dexterity -1
+- Term 1: Electronic 0→1, Streetwise 0→1
+- Term 2: Gambling 0→1
+- Term 3: Strength 2→3
+- Term 4: Electronic 1→2; aging Strength 3→2
+- Term 5: Streetwise 1→2; aging Dexterity 3→2
+- Term 6: Gambling 1→2; aging Dexterity 2→1
+- Term 7: Endurance 4→5; aging Dexterity 1→0
 - killed by a medical crisis in term 7 (Dexterity reached zero)
 
 ## Generation record
