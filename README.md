@@ -13,7 +13,7 @@ in the source, with its page cite.
 ## Install
 
 ```sh
-go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.5
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.6
 ```
 
 Go excludes prereleases from `@latest`, so a prerelease installs by name. That

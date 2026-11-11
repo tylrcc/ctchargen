@@ -1,110 +1,140 @@
 # Changelog
 
-## Unreleased
+## 1.0.0-rc.6
 
-Bullets as the work lands. The release pass rewrites this into whatever the
-release turns out to be.
+The sixth release candidate for `v1.0.0`, answering a referee's evaluation of
+rc.5: sixteen thousand generated characters read for what the note tells a
+referee at the table (#548-#556). The auto policy does what its names say,
+every strategy is explained in the help, and the note says more of what its
+record already knew: why a career ran long, what earned each roll, and when
+the policy drew an answer rather than choosing one. No property changes name or
+meaning.
+
+### Install
+
+```sh
+go install github.com/philoserf/ctchargen/cmd/ctchargen@v1.0.0-rc.6
+```
+
+**No binaries are attached.** A release is a tag, installed with `go install`.
+
+### Breaking
+
+- **`--muster spartan` is renamed `arsenal`** (#570): Table 1, and a different
+  weapon each time. A script that passes `spartan` is refused and must say
+  `arsenal`. It now takes the +1 a rank of 5 or 6 allows on Table 1 and the +1
+  gambling allows on Table 2, as `cash` and `goods` do; declining either is a
+  person's answer on `new` without `--auto`.
+- **Every career strategy submits to the draft, `oneterm` included** (#566).
+  A character who declines has served no term, so `oneterm` had not done the
+  one term it names. A civilian now comes only from `new` without `--auto`,
+  where a person answers no, and a batch never holds one.
+- **A weapon taken as a mustering-out benefit is drawn** from the category's
+  list, as a combat result's weapon is (#420), not taken first in printed
+  order (#570): a benefit was a Dagger or a Body Pistol every time. `cash` and
+  `goods` draw the first and take expertise on a repeat; `arsenal` draws among
+  the weapons not yet received.
+- **The values each strategy and service flag takes are held** like the flags
+  themselves (#591): `serve`, `retire`, `oneterm`; `advanced`, `service`,
+  `personal`; `cash`, `goods`, `arsenal`; and the six services. From
+  `v1.0.0` a value removed or renamed is a break, where nothing in the gate
+  noticed `spartan` becoming `arsenal`.
+
+### The help
+
+- `new --help` and `batch --help` say what each strategy does, not only its
+  name (#563): what every strategy shares, among it that each draws every
+  weapon it takes (#589), that a 12 on reenlistment forces another term, how
+  the skills table is designated, the cap on Table 2, and what `--service` and
+  a death come to on each command. `new --help` says that `terms` counts every
+  term begun, including the term in which a character dies. The README's
+  strategy table is gone; the help is where the values, defaults and behaviour
+  live.
+
+### The sheet
 
 - The profile line comes first under a note's heading, and the summary
   follows it without repeating its service, rank, terms, departure or age
   (#557). A dead character's summary opens with the death, as "Killed by the
   survival throw in term 3, aged 30.", and a civilian's keeps its sentence.
-  The profile line says how the service was entered, `(enlisted)` or
+- The profile line says how the service was entered, `(enlisted)` or
   `(drafted after the Marines refused enlistment)`, and no longer
   `(service chosen by the policy)`: who chose is on the record's choice line
-  (#583). The summary's skills are "Skills include" the three highest at any
-  level, ties in the sheet's order, where "Known for" named only level 2 and
-  up (#558, #559), and its assets add retirement pay, after the cash. A
-  title assumed is on the profile line alone, not repeated in the summary.
-  The sheet's "Possessions" heading is "Benefits"; the `possessions`
-  property is unchanged. The summary and the benefits both say
-  `CR 8000 a year retirement pay`, where the benefits said "a year in
-  retirement pay".
-- The generation record says what the policy's answers were decided on
-  (#564). The three it draws read `policy drew`: the service, a combat
-  result's weapon and a benefit's weapon, where expertise is not taken. A
-  skills table says it was least trained on, with the others' counts
-  (`least trained on (1, against 2 and 2)`), or how a tie was broken
-  (`tied least trained on (0) with three others, the advanced strategy's
-first`). A player's choices, and the policy's fixed answers, read as
-  before.
-- Every career strategy submits to the draft, `oneterm` included (#566): a
-  character who declines has served no term, so `oneterm` had not done the one
-  term it names. A civilian now comes only from `new` without `--auto`, where
-  a person answers no.
-- `--muster spartan` is renamed `arsenal` (#570): Table 1, and a different
-  weapon each time. It now takes the +1 a rank of 5 or 6 allows on Table 1 and
-  the +1 gambling allows on Table 2, as `cash` and `goods` do; declining either
-  is a person's answer on `new` without `--auto`.
-- A weapon taken as a mustering-out benefit is drawn from the category's list,
-  as a combat result's weapon is (#420), not taken first in printed order
-  (#570): a benefit was a Dagger or a Body Pistol every time. `cash` and
-  `goods` draw the first and take expertise on a repeat; `arsenal` draws among
-  the weapons not yet received.
-- `new --help` and `batch --help` say what each strategy does, not only its
-  name (#563): what every strategy shares, that a 12 on reenlistment forces
-  another term, how the skills table is designated, the cap on Table 2, and
-  what `--service` and a death come to on each command. The README's strategy
-  table is gone; the help is where the values, defaults and behaviour live.
+  (#583).
+- The summary's skills are "Skills include" the three highest at any level,
+  ties in the sheet's order, where "Known for" named only level 2 and up
+  (#558, #559). Its assets add retirement pay, after the cash. A title assumed
+  is on the profile line alone.
+- The sheet's "Possessions" heading is "Benefits" (#583), with one line for
+  each class of passage and a count where there are more than one
+  (`Low Passage ×2`) (#560). The summary and the benefits both say
+  `CR 8000 a year retirement pay`. The `possessions` property is unchanged and
+  still lists each passage.
 
-- `task test` fails when the tests leave a file in the tree, and the coding
-  standards say where a test writes and how it matches an expected line.
+### The service record
+
+- It tells what the generation record knew and it left out (#561): a term a
+  12 on the reenlistment throw required (`the service required another term`),
+  a medical crisis recovery's value and months
+  (`Strength recovered from a medical crisis to 1 (3 months older)`), a
+  retirement the throw refused (`retired after term 7, reenlistment denied`),
+  and expertise taken at mustering out instead of a repeat weapon. A crisis
+  that kills a character after retirement still ends the record in the death.
+  The `departure` property is unchanged.
+- Each skill and characteristic is told as its value before and after, once in
+  each list of gains (#562): `Administration 0→2` for two gains in a term, and
+  `mustered out with Social Standing 9→15 (held at 15), Education 8→10`, where
+  "(held at N)" appears only where a floor or a ceiling stopped a change short.
+  This replaces the table's change, `Social Standing +2 (held at 15)`, that
+  #409 put there. The sheet's skills keep the book's `Administration-2`, and
+  the generation record keeps each gain as it was.
+
+### The generation record
+
+- Each step is a heading, numbered as before, so a note's outline shows where
+  a reader is (#577): `### 20. term 1 (pp. 5-7)`, with the term's skills and
+  training and its aging under it at the next level. The record opens by
+  saying that a line's `(from step N)` names the step it came from, most often
+  the roll it was read off, and not every cause behind it.
+- It says what earned each count of rolls (#565): a term's skills step says
+  how many rolls the term, a commission and a promotion gave, and the
+  mustering out step how many the terms and the rank gave. After the third
+  roll on Table 2, a line says the remaining rolls must be on Table 1, and the
+  first designation after Education reaches 8 says it offers the fourth skills
+  table. Neither line is a choice: nothing was asked.
+- It says what the policy's answers were decided on (#564). The three it draws
+  read `policy drew`: the service, a combat result's weapon and a benefit's
+  weapon, where expertise is not taken. A skills table says it was least
+  trained on, with the others' counts (`least trained on (1, against 2 and
+2)`), or how a tie was broken (`tied least trained on (0) with three others,
+the advanced strategy's first`). A player's choices, and the policy's fixed
+  answers, read as before.
+
+### Documents
+
+- The README says no skill is listed below level 1, so a match on `skills`
+  finds every character with that skill at level 1 or better, and a level
+  threshold such as Gun-2 or better is read off the sheet, not a property
+  (#573). It also says the 1977 rules have no level 0: an unlisted skill is no
+  expertise, and Book 1 p. 32 gives player characters ½ in every weapon.
+- The README's batch section names a member a batch can write,
+  `02 Merchants 3rd Officer CA76C7.md`, where it named a civilian, and says
+  `serve` re-enlists up to seven terms, where it said until the service
+  refuses (#588).
+- The README and `CLAUDE.md` show a note saved with `-o` beside one sent on
+  with `>` or a pipe, and say which to use when (#544).
 - The release-snapshot rule moves from `CLAUDE.md` to the coding standards,
   with the stamp each snapshot opens with, beside a new rule: a paragraph a
   change rewrites, comment or document, is wrapped evenly.
-- The README and `CLAUDE.md` show a note saved with `-o` beside one sent on
-  with `>` or a pipe, and say which to use when (#544).
-- The service record tells what the generation record knew and it left out
-  (#561): a term a 12 on the reenlistment throw required
-  (`the service required another term`), a medical crisis recovery's value and
-  months (`Strength recovered from a medical crisis to 1 (3 months older)`), a
-  retirement the throw refused (`retired after term 7, reenlistment denied`),
-  and expertise taken at mustering out instead of a repeat weapon, on the
-  mustering-out line. The `departure` property is unchanged, and a crisis that
-  kills a character after he retires still ends the record in the death.
-- The generation record says what earned each count of rolls (#565): a
-  term's skills step says how many rolls the term, a commission and a
-  promotion gave, and the mustering out step how many the terms and the rank
-  gave. After the third roll on Table 2, a line says the remaining rolls must
-  be on Table 1, and the first designation after Education reaches 8 says it
-  offers the fourth skills table. Neither line is a choice: nothing was asked.
-- The service record tells each skill and characteristic as its value before
-  and after, once in each list of gains (#562): `Administration 0→2` for two
-  gains in a term, and
-  `mustered out with Social Standing 9→15 (held at 15), Education 8→10`, where
-  "(held at N)" appears only where a floor or a ceiling stopped a change
-  short. This replaces the table's change, `Social Standing +2 (held at 15)`,
-  that #409 put there. The sheet's skills keep the book's `Administration-2`,
-  and the generation record keeps each gain as it was.
-- The sheet's possessions show one line for each class of passage, with a
-  count where there are more than one (`Low Passage ×2`) (#560). The
-  `possessions` property still lists each passage.
-- Each step of the generation record is a heading, numbered as before, so a
-  note's outline shows where a reader is in it (#577):
-  `### 20. term 1 (pp. 5-7)`, with the term's skills and training and its
-  aging under it at the next level. The record opens by saying that a line's
-  `(from step N)` names the step it came from, most often the roll it was read
-  off, and not every cause behind it.
-- The README says no skill is listed below level 1, so a match on `skills`
-  finds every character with that skill at level 1 or better (#573), and that
-  the 1977 rules have no level 0: an unlisted skill is no expertise, and p. 32
-  gives player characters ½ in every weapon.
-- `new --help` says that `terms` counts every term begun, including the term
-  in which a character dies (#563, from #556), and the README says a level
-  threshold such as Gun-2 or better is read off the sheet, not a property
-  (#573).
-- The help says every strategy draws each weapon it takes, where it said each
-  weapon a skill or a benefit names (#589): `cash` and `goods` take expertise
-  on a repeated weapon benefit without drawing. The README names a batch
-  member a batch can write, `02 Merchants 3rd Officer CA76C7.md`, where it
-  named a civilian, and says `serve` re-enlists up to seven terms, where it
-  said until the service refuses (#588). An auto policy whose ranking holds
-  nothing on offer now fails rather than taking the first thing offered; no
-  strategy's does (#586).
-- The command line's baseline holds the values `--career`, `--skills`,
-  `--muster` and `--service` take, as it holds the flags: a value removed or
-  renamed fails the gate, where nothing noticed `spartan` becoming `arsenal`
-  (#591).
+- `task test` fails when the tests leave a file in the tree, and the coding
+  standards say where a test writes and how it matches an expected line.
+
+### Internal
+
+- An auto policy whose ranking holds nothing on offer fails rather than taking
+  the first thing offered, and a test holds that every ranking lists every
+  alternative; no strategy's ranking is incomplete (#586). `RollEvent`'s doc
+  names the six characteristic rolls among what it records (#587).
 
 ## 1.0.0-rc.5
 
