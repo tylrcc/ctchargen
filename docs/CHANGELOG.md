@@ -18,6 +18,11 @@ release turns out to be.
   (#570): a benefit was a Dagger or a Body Pistol every time. `cash` and
   `goods` draw the first and take expertise on a repeat; `arsenal` draws among
   the weapons not yet received.
+- `new --help` and `batch --help` say what each strategy does, not only its
+  name (#563): what every strategy shares, that a 12 on reenlistment forces
+  another term, how the skills table is designated, the cap on Table 2, and
+  what `--service` and a death come to on each command. The README's strategy
+  table is gone; the help is where the values, defaults and behaviour live.
 
 - `task test` fails when the tests leave a file in the tree, and the coding
   standards say where a test writes and how it matches an expected line.

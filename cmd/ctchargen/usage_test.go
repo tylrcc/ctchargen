@@ -4,9 +4,12 @@ import (
 	"errors"
 	"flag"
 	"io"
+	"regexp"
 	"slices"
 	"strings"
 	"testing"
+
+	"github.com/philoserf/ctchargen/internal/chargen"
 )
 
 // The help's own words, and the flags each subcommand offers, typed out here
@@ -411,3 +414,113 @@ func TestTheHelpNamesEachFlagsKind(t *testing.T) {
 		}
 	}
 }
+
+// The help says what each strategy does, not only what it is called (#563).
+// Under each strategy flag's heading, every value the flag takes heads a line
+// of its own with a description beside it, on both commands that take the
+// flags, and no other value is described there. The values are read from
+// chargen's alphabets, through the lists the rejection names, so a strategy
+// added there that the help does not describe fails here.
+//
+// Holds: The help says what each strategy does.
+func TestTheHelpSaysWhatEachStrategyDoes(t *testing.T) {
+	t.Parallel()
+
+	values := map[string]string{
+		flagCareer: chargen.CareerChoices(),
+		flagSkills: chargen.SkillsChoices(),
+		flagMuster: chargen.MusterChoices(),
+	}
+
+	for _, command := range []string{cmdNew, cmdBatch} {
+		help, _ := mustRun(t, []string{command, flagHelp}, nil)
+
+		for named, choices := range values {
+			want := strings.Split(choices, ", ")
+			described := describedUnder(help, named)
+
+			for _, value := range want {
+				if !described[value] {
+					t.Errorf("%s --help describes no %s %s under its heading:\n%s", command, named, value, help)
+				}
+			}
+
+			if len(described) != len(want) {
+				t.Errorf("%s --help describes %v under %s, which takes %s", command, described, named, choices)
+			}
+		}
+	}
+}
+
+// describedValue is a line describing one strategy: two spaces, the value,
+// two spaces or more, and its description. A continuation line, all indent,
+// names no value.
+var describedValue = regexp.MustCompile(`^  (\S+) {2,}\S.*$`)
+
+// describedUnder is the values a help describes under a strategy flag's
+// heading: a line that starts with the flag, then the indented lines after it
+// up to the next line that is not indented.
+func describedUnder(help, named string) map[string]bool {
+	described := map[string]bool{}
+	under := false
+
+	for line := range strings.SplitSeq(help, "\n") {
+		switch {
+		case strings.HasPrefix(line, named):
+			under = true
+		case !strings.HasPrefix(line, " "):
+			under = false
+		case under:
+			found := describedValue.FindStringSubmatch(line)
+			if found != nil {
+				described[found[1]] = true
+			}
+		}
+	}
+
+	return described
+}
+
+// The help says what the strategies have in common, where the throws overrule
+// them, and what each command does with a death (#563). A referee with only
+// the binary learns that --service is an attempt, that every strategy submits
+// to the draft and attempts every commission and promotion, that a 12 on
+// reenlistment forces another term, how the skills table is designated, the
+// cap on Table 2, and that weapons are drawn. Typed out here, not read from
+// the code that prints them; matched across the help's line breaks. And none
+// of it calls the character he, him or his.
+//
+// Holds: The help says what each strategy does.
+func TestTheHelpSaysWhatTheThrowsDecide(t *testing.T) {
+	t.Parallel()
+
+	shared := []string{
+		"--service is an enlistment attempt", "a failed throw is the draft",
+		"the throws decide", "submits to the draft", "attempts every commission and promotion",
+		"A 12 on reenlistment forces another term", "trained on least", "Education 8",
+		"up to three rolls", "draws each weapon",
+	}
+
+	for command, own := range map[string][]string{
+		cmdNew:   {"the player picks the service", "--auto draws it", "writes the note all the same, and exits 0"},
+		cmdBatch: {"each member's service is drawn", "writes only the living"},
+	} {
+		help, _ := mustRun(t, []string{command, flagHelp}, nil)
+		said := strings.Join(strings.Fields(help), " ")
+
+		for _, says := range append(slices.Clone(shared), own...) {
+			if !strings.Contains(said, says) {
+				t.Errorf("%s --help does not say %q:\n%s", command, says, help)
+			}
+		}
+
+		if found := pronoun.FindString(help); found != "" {
+			t.Errorf("%s --help calls the character %q:\n%s", command, found, help)
+		}
+	}
+}
+
+// pronoun is a pronoun for the character, which no text a referee reads uses
+// (#474, decision 5): the sheet, the record, the session and the README name
+// the character without one, and so does the help.
+var pronoun = regexp.MustCompile(`(?i)\b(?:he|him|his|himself)\b`)

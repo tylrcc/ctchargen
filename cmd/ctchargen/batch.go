@@ -42,7 +42,7 @@ func batch(args []string, out, asking io.Writer, dice source) error {
 
 	switch {
 	case errors.Is(err, flag.ErrHelp):
-		return writeHelp(out, batchUsage, flags.set)
+		return writeHelp(out, batchUsage, flags.set, batchHelp)
 	case err != nil:
 		return fmt.Errorf("%w: %s; run `ctchargen batch --help`", errUsage, flagMistake(err))
 	}
@@ -127,6 +127,15 @@ func declareBatchFlags() batchFlagSet {
 	strictly(set)
 
 	return flags
+}
+
+// batchHelp is what batch's help says in its own words (#563): every service
+// is drawn, and the dead are passed over.
+var batchHelp = commandHelp{
+	service: "--service is an enlistment attempt, not a guarantee: a failed throw is the\n" +
+		"draft. Without it each member's service is drawn.\n",
+	death: "A character can die in service. A batch writes only the living, and generates\n" +
+		"another in place of each one who dies.\n",
 }
 
 // write sends the batch where it was asked for, and says what it did either

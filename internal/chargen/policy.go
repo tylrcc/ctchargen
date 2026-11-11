@@ -180,6 +180,78 @@ func SkillsChoices() string { return choices(skillsStrategies) }
 // MusterChoices is the values --muster takes, as a reader is shown them.
 func MusterChoices() string { return choices(musterStrategies) }
 
+// Described is one strategy as the help shows it: the value its flag takes,
+// and what it does, a line or two at most.
+type Described struct{ Value, Does string }
+
+// CareerHelp is each --career strategy and what it does, in listed order.
+//
+// This and its two siblings are the help's (#563). Each says in a line what
+// the doc comments of the methods below say at length, and is read against
+// them: a line that claims more than its method does is a finding. Every
+// value comes from the alphabet, so a strategy the help does not describe is
+// one whose does has no case.
+func CareerHelp() []Described { return described(careerStrategies, Career.does) }
+
+// SkillsHelp is each --skills strategy and what it does, in listed order.
+func SkillsHelp() []Described { return described(skillsStrategies, Skills.does) }
+
+// MusterHelp is each --muster strategy and what it does, in listed order.
+func MusterHelp() []Described { return described(musterStrategies, Muster.does) }
+
+func described[T fmt.Stringer](all []T, does func(T) string) []Described {
+	lines := make([]Described, 0, len(all))
+
+	for _, each := range all {
+		lines = append(lines, Described{Value: each.String(), Does: does(each)})
+	}
+
+	return lines
+}
+
+// does is ReenlistIntent's ranking, said as what the character intends.
+func (c Career) does() string {
+	switch c {
+	case CareerServe:
+		return "reenlist whenever the throw allows, up to seven terms"
+	case CareerRetire:
+		return "reenlist to the end of term 5, then retire"
+	case CareerOneTerm:
+		return "leave at the first chance"
+	}
+
+	return ""
+}
+
+// does is SkillTable's ranking, said by the table it puts first.
+func (s Skills) does() string {
+	switch s {
+	case SkillsAdvanced:
+		return "Advanced Education first, its 8+ table from Education 8"
+	case SkillsService:
+		return "Service Skills first"
+	case SkillsPersonal:
+		return "Personal Development first"
+	}
+
+	return ""
+}
+
+// does is MusterTable's ranking and MusterWeapon's answer, together.
+func (m Muster) does() string {
+	switch m {
+	case MusterCash:
+		return "Table 2 for up to three rolls, then Table 1; a repeat\n" +
+			"blade or gun benefit is expertise in the first"
+	case MusterGoods:
+		return "Table 1; a repeat blade or gun benefit is expertise in the first"
+	case MusterArsenal:
+		return "Table 1; a different weapon each time"
+	}
+
+	return ""
+}
+
 // DefaultPolicy is what an auto run applies when it names no strategy. The
 // command's flag defaults read it rather than naming strategies of their own
 // (#367). Each choice's line in the record credits the policy; the note does

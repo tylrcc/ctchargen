@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/philoserf/ctchargen/internal/chargen"
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
@@ -88,7 +89,8 @@ func writeUsageText(out io.Writer, text string) error {
 	return nil
 }
 
-// writeHelp answers --help on a subcommand: its usage line, then its flags.
+// writeHelp answers --help on a generating command: its usage line, its
+// flags, then what --service, the strategies and a death come to (#563).
 //
 // It writes to out and returns nil, so that help asked for leaves by the
 // same door as the note and exits 0 - not to `asking`, which would put
@@ -109,7 +111,7 @@ func writeUsageText(out io.Writer, text string) error {
 // [Command line].
 //
 // Implements: The help says how flags are written [Command line].
-func writeHelp(out io.Writer, line string, flags *flag.FlagSet) error {
+func writeHelp(out io.Writer, line string, flags *flag.FlagSet, about commandHelp) error {
 	if flags.NArg() > 0 {
 		return fmt.Errorf("%w: %s; %s", errUsage, line, helpTakesNoArguments(flags.Arg(0)))
 	}
@@ -124,7 +126,61 @@ func writeHelp(out io.Writer, line string, flags *flag.FlagSet) error {
 		return err
 	}
 
-	return writeUsageText(out, "\n"+flagGrammar)
+	return writeUsageText(out, "\n"+about.service+"\n"+strategyHelp()+"\n"+about.death+"\n"+flagGrammar)
+}
+
+// commandHelp is what a generating command's help says in its own words,
+// around the strategies both share: what it does without --service, and what
+// it does with a death.
+type commandHelp struct{ service, death string }
+
+// strategiesShare is what every strategy has in common, and where the throws
+// overrule it (#563): the answers chargen.Policy gives the same under all
+// three, and the forced term of p. 6.
+const strategiesShare = "The strategies are intent, and the throws decide. Every strategy submits to\n" +
+	"the draft, attempts every commission and promotion, takes both mustering-out\n" +
+	"DMs, assumes any title, and draws each weapon a skill or a benefit names. A\n" +
+	"12 on reenlistment forces another term whatever the strategy.\n"
+
+// strategyHelp says what each strategy does (#563): under each flag a heading
+// saying what it decides, then each value the flag takes and its line, read
+// from chargen's alphabets so that no value is typed here.
+//
+// Implements: The help says what each strategy does [Command line].
+func strategyHelp() string {
+	flags := []struct {
+		heading string
+		values  []chargen.Described
+	}{
+		{"--" + careerFlag + ", when to leave the service:\n", chargen.CareerHelp()},
+		{"--" + skillsFlag + ", which table each skill roll is on, of those trained on least:\n", chargen.SkillsHelp()},
+		{"--" + musterFlag + ", the benefit table for each roll:\n", chargen.MusterHelp()},
+	}
+
+	width := 0
+
+	for _, each := range flags {
+		for _, value := range each.values {
+			width = max(width, len(value.Value))
+		}
+	}
+
+	var text strings.Builder
+
+	text.WriteString(strategiesShare + "\n")
+
+	for _, each := range flags {
+		text.WriteString(each.heading)
+
+		// A description's second line starts under its first.
+		for _, value := range each.values {
+			named := fmt.Sprintf("  %-*s  ", width, value.Value)
+			indent := "\n" + strings.Repeat(" ", len(named))
+			text.WriteString(named + strings.ReplaceAll(value.Does, "\n", indent) + "\n")
+		}
+	}
+
+	return text.String()
 }
 
 // helpLine is one flag as the help prints it: the name and kind on the left,

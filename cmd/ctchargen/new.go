@@ -80,6 +80,14 @@ func declareNewFlags() newFlagSet {
 	return flags
 }
 
+// newHelp is what new's help says in its own words (#563): a guided run asks
+// for the service where an auto run draws it, and a death is written.
+var newHelp = commandHelp{
+	service: "--service is an enlistment attempt, not a guarantee: a failed throw is the\n" +
+		"draft. Without it the player picks the service, or --auto draws it.\n",
+	death: "A character can die in service; new writes the note all the same, and exits 0.\n",
+}
+
 // newCharacter generates one character and writes its note.
 //
 // --force overwrites an -o file, so without one, no -o or -o -, it has
@@ -93,7 +101,7 @@ func newCharacter(args []string, in io.Reader, out, asking io.Writer, dice sourc
 
 	switch {
 	case errors.Is(err, flag.ErrHelp):
-		return writeHelp(out, newUsage, flags.set)
+		return writeHelp(out, newUsage, flags.set, newHelp)
 	case err != nil:
 		return fmt.Errorf("%w: %s; run `ctchargen new --help`", errUsage, flagMistake(err))
 	}
