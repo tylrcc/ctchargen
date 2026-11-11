@@ -16,7 +16,7 @@ status: "alive"
 departure: "retired"
 skills:
   - "Bribery"
-  - "Dagger"
+  - "Cudgel"
   - "Engineer"
   - "Laser Carbine"
   - "Mechanical"
@@ -28,21 +28,21 @@ credits: 45000
 pension: 8000
 nobility: "knight/dame"
 possessions:
-  - "Dagger"
+  - "Cudgel"
   - "Free Trader"
 ctchargen:
 ---
 
 # Merchants Captain 825A9B
 
-Merchants Captain, 7 terms, retired at 46. Known for Navigation-4, Dagger-2 and Mechanical-2. Musters out with CR 45000 and a Free Trader, Type A.
+Merchants Captain, 7 terms, retired at 46. Known for Navigation-4, Cudgel-2 and Mechanical-2. Musters out with CR 45000 and a Free Trader, Type A.
 
 UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 
 ## Skills
 
 - Bribery-1
-- Dagger-2
+- Cudgel-2
 - Engineer-1
 - Laser Carbine-1
 - Mechanical-2
@@ -54,7 +54,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 ## Possessions
 
 - CR 45000
-- Dagger
+- Cudgel
 - Free Trader, Type A, 200 tons, 10 years old, with 30 years of payments left
 - CR 8000 a year in retirement pay
 
@@ -69,7 +69,7 @@ UPP 825A9B, age 46, Merchants Captain, 7 terms, knight/dame, retired
 - Term 6: promoted 1st Officer (Pilot 0→1); Mechanical 1→2, Sword 0→1; aging Dexterity 3→2
 - Term 7: promoted Captain; Strength 7→8, Navigation 3→4; aging Endurance 6→5
 - retired after term 7
-- mustered out with Dagger 0→2, Intelligence 9→10
+- mustered out with Cudgel 0→2, Intelligence 9→10
 
 ## Generation record
 
@@ -291,22 +291,22 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 173. a Free Trader, Type A (from step 172)
 174. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 175. Table 1, Material Benefits: rolled 4 +1 = 5
-176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-177. a Dagger (from step 175)
+176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+177. a Cudgel (from step 175)
 178. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 179. Table 1, Material Benefits: rolled 6 +1 = 7
 180. the Free Trader again: 10 years old, with 30 years of payments left (from step 179)
 181. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 182. Table 1, Material Benefits: rolled 4 +1 = 5
-183. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-184. expertise instead: Dagger-1 (from step 182)
+183. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Cudgel
+184. expertise instead: Cudgel-1 (from step 182)
 185. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 186. Table 1, Material Benefits: rolled 1 +1 = 2
 187. Intelligence +1, 9 to 10 (from step 186)
 188. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 189. Table 1, Material Benefits: rolled 4 +1 = 5
-190. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-191. expertise instead: Dagger-2 (from step 189)
+190. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Cudgel from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Cudgel
+191. expertise instead: Cudgel-2 (from step 189)
 192. retirement pay of CR 8000 a year
 
 ### 193. titles (p. 5; Book 3 p. 22)

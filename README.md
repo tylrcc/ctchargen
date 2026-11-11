@@ -172,20 +172,21 @@ failed enlistment throw sends the character to the draft, which may put the
 character somewhere else entirely — the sheet says that too.
 
 **Three flags steer the policy** where the procedure offers a choice, on
-`new --auto` and on `batch`. `--career` governs the draft and reenlistment;
-`--skills` the skills table; `--muster` the mustering-out table, its two DMs
-and repeated weapons. Every strategy attempts each commission and promotion
-and assumes a title, and draws the weapon a combat result names. What each
-strategy answers at each choice is in the doc comment of the `chargen.Policy`
-method that asks it. On `new` without
-`--auto` the three are refused: you answer every choice they would have, and no
-choice in the note is the policy's.
+`new --auto` and on `batch`. `--career` governs reenlistment; `--skills` the
+skills table; `--muster` the mustering-out table and repeated weapons. Every
+strategy submits to the draft, attempts each commission and promotion, takes
+both mustering-out DMs and assumes a title, and draws each weapon a combat
+result or a benefit names. What each strategy answers at each choice is in the
+doc comment of the `chargen.Policy` method that asks it. On `new` without
+`--auto` the three are refused: you answer every choice they would have, and
+no choice in the note is the policy's. Only there can the draft or a DM be
+declined.
 
 | Flag       | Values                                        |
 | ---------- | --------------------------------------------- |
 | `--career` | `serve` (default) · `retire` · `oneterm`      |
 | `--skills` | `advanced` (default) · `service` · `personal` |
-| `--muster` | `cash` (default) · `goods` · `spartan`        |
+| `--muster` | `cash` (default) · `goods` · `arsenal`        |
 
 **Nothing is overwritten without `--force`.** `new -o` writes into a folder
 that exists, and `-o -` is standard output, as no `-o` is. `new -o` onto an

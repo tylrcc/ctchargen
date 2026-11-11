@@ -84,10 +84,15 @@ type Decider interface {
 	// which is narrower than the weapons held: expertise may be taken only
 	// "in a weapon received as a benefit", and only in lieu of a weapon
 	// "of exactly the same type".
+	//
+	// It is handed a Vary for the reason Weapon is: the list a weapon is
+	// taken from is printed in an order, and the order is not a preference
+	// (#570).
 	MusterWeapon(
 		category traveller.WeaponCategory,
 		from []traveller.WeaponName,
 		received []traveller.WeaponName,
+		vary Vary,
 	) (traveller.WeaponBenefit, error)
 
 	// AssumeTitle asks whether to assume the title a final Social Standing

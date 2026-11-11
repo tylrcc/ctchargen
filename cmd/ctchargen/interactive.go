@@ -245,7 +245,7 @@ type weaponOffer struct {
 //
 // Implements: Each weapon-benefit line records the benefit it says [Choices].
 func (p *player) MusterWeapon(
-	category traveller.WeaponCategory, from, received []traveller.WeaponName,
+	category traveller.WeaponCategory, from, received []traveller.WeaponName, _ chargen.Vary,
 ) (traveller.WeaponBenefit, error) {
 	offers := make([]weaponOffer, 0, len(from)+len(received))
 	for _, weapon := range from {

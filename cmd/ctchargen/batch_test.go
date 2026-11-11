@@ -286,7 +286,6 @@ func TestABatchNamesEachNoteForItsCharacter(t *testing.T) {
 		want  string
 	}{
 		"an officer":            {navyOfficer, oneterm, "1 Navy Lieutenant A85379.md"},
-		"a civilian":            {navyDeclined, oneterm, "1 Civilian 87665B.md"},
 		"a service of no ranks": {otherByPolicy, []string{flagService, other}, "1 Other 644776.md"},
 	} {
 		t.Run(name, func(t *testing.T) {

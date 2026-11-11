@@ -9,7 +9,8 @@ import (
 	"github.com/philoserf/ctchargen/internal/traveller"
 )
 
-// Every choice point the engine offers is reached by some golden record.
+// Every choice point the engine offers is reached by some record: a golden's,
+// or a guided walk's.
 //
 // Until #34 nothing held the choice points to the roster, and Weapon was the
 // result: eleven of the twelve points were exercised by a golden and that one
@@ -40,7 +41,7 @@ func TestEveryChoicePointIsReachedByARecord(t *testing.T) {
 
 	for _, point := range traveller.ChoicePoints {
 		if !reached[point.String()] {
-			t.Errorf("no golden record reaches %v, so what the policy answers there is untested",
+			t.Errorf("no record reaches %v, so what is answered there is untested",
 				point)
 		}
 	}

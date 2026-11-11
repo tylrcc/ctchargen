@@ -122,8 +122,9 @@ var navyOfficer = walk{
 	among: nil,
 }
 
-// navyDeclined is the Navy under --career oneterm, refused at enlistment and
-// declining the draft: an 18-year-old civilian (E001).
+// navyDeclined is the Navy, refused at enlistment, with the draft declined:
+// an 18-year-old civilian (E001). Every strategy submits to the draft (#566),
+// so only a person answering no walks it.
 var navyDeclined = walk{
 	name:  "navyDeclined",
 	dice:  []int{4, 4, 1, 6, 5, 1, 5, 1, 4, 1, 6, 5, 3, 4},

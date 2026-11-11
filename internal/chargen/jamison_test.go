@@ -194,7 +194,7 @@ func (d *decisions) MusterTable2DM() (bool, error) {
 }
 
 func (d *decisions) MusterWeapon(
-	traveller.WeaponCategory, []traveller.WeaponName, []traveller.WeaponName,
+	traveller.WeaponCategory, []traveller.WeaponName, []traveller.WeaponName, chargen.Vary,
 ) (traveller.WeaponBenefit, error) {
 	d.t.Fatal("no weapon row comes up; the six rolls reach rows 6, 7, 3, 7, 7 and 7")
 

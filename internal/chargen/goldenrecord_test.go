@@ -257,8 +257,11 @@ func (r record) departedBy(how string) bool {
 func (r record) died() bool { return r.Departure != nil && r.Departure.Fatal }
 
 // readRecords reads the character every fixture generates, as the engine
-// generates it now, and refuses to run on none: a check over an empty roster
-// passes by saying nothing.
+// generates it now, and every guided walk's beside them, and refuses to run on
+// no fixtures: a check over an empty roster passes by saying nothing. A guided
+// walk is read because its path is one only a person reaches, and a stamping
+// condition still governs it: E001's declined half is on no auto run's record
+// (#566).
 //
 // It reads what the engine generates rather than the goldens on disk, which
 // TestGoldens holds equal, so an engine change is judged here by what it did
@@ -271,10 +274,17 @@ func readRecords(t *testing.T) []record {
 		t.Fatal("no fixtures on the roster")
 	}
 
-	records := make([]record, 0, len(fixtures))
+	records := make([]record, 0, len(fixtures)+len(guidedWalks))
 
 	for _, fixture := range fixtures {
 		rec := recordOf(fixture.name+".md", fixture.generate(t))
+		withTerms(&rec)
+
+		records = append(records, rec)
+	}
+
+	for _, guided := range guidedWalks {
+		rec := recordOf(guided.name, guided.walk(t))
 		withTerms(&rec)
 
 		records = append(records, rec)

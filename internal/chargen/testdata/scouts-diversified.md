@@ -26,9 +26,9 @@ pension: 0
 nobility: "baron/baroness"
 possessions:
   - "Low Passage"
-  - "Body Pistol"
-  - "Dagger"
-  - "Blade"
+  - "Shotgun"
+  - "Sword"
+  - "Cutlass"
   - "Scout ship"
 ctchargen:
 ---
@@ -51,9 +51,9 @@ UPP 865EBC, age 46, Scouts, 7 terms, baron/baroness, retired
 ## Possessions
 
 - Low Passage
-- Body Pistol
-- Dagger
-- Blade
+- Shotgun
+- Sword
+- Cutlass
 - Scout ship, Type S, 100 tons, held in constructive possession
 
 ## Service record
@@ -246,16 +246,16 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 128. Intelligence +2, 12 to 14 (from step 127)
 129. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 130. Table 1, Material Benefits: rolled 5
-131. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
-132. a Body Pistol (from step 130)
+131. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Shotgun from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+132. a Shotgun (from step 130)
 133. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 134. Table 1, Material Benefits: rolled 4
-135. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-136. a Dagger (from step 134)
+135. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+136. a Sword (from step 134)
 137. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 138. Table 1, Material Benefits: rolled 4
-139. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Blade from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-140. a Blade (from step 138)
+139. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Cutlass from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Sword
+140. a Cutlass (from step 138)
 141. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 142. Table 1, Material Benefits: rolled 1
 143. a Low Passage (from step 142)

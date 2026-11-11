@@ -16,7 +16,7 @@ status: "alive"
 departure: "retired"
 skills:
   - "Administration"
-  - "Dagger"
+  - "Cutlass"
   - "Gunnery"
   - "Jack of all Trades"
   - "Mechanical"
@@ -27,7 +27,7 @@ nobility: "duke/duchess"
 possessions:
   - "High Passage"
   - "Travellers' Aid Society"
-  - "Dagger"
+  - "Cutlass"
 ctchargen:
 ---
 
@@ -40,7 +40,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 ## Skills
 
 - Administration-6
-- Dagger-1
+- Cutlass-1
 - Gunnery-4
 - Jack of all Trades-4
 - Mechanical-1
@@ -51,7 +51,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 - CR 80000
 - High Passage
 - Travellers' Aid Society membership
-- Dagger
+- Cutlass
 - CR 22000 a year in retirement pay
 
 ## Service record
@@ -72,7 +72,7 @@ UPP 8B1BFF, age 74 years 6 months, Navy Admiral, 14 terms, duke/duchess, retired
 - Term 13: Dexterity 12→13; the service required another term; aging Dexterity 13→11
 - Term 14: Administration 5→6; aging Endurance 1→0 (held at 0); Endurance recovered from a medical crisis to 1 (6 months older)
 - retired after term 14
-- mustered out with Social Standing 10→15 (held at 15), Education 13→15, Dagger 0→1
+- mustered out with Social Standing 10→15 (held at 15), Education 13→15, Cutlass 0→1
 
 ## Generation record
 
@@ -481,8 +481,8 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 318. a High Passage (from step 317)
 319. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 320. Table 1, Material Benefits: rolled 3 +1 = 4
-321. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-322. a Dagger (from step 320)
+321. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Cutlass from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+322. a Cutlass (from step 320)
 323. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 324. Table 1, Material Benefits: rolled 6 +1 = 7
 325. Social Standing +2, 15 to 15 (from step 324)
@@ -494,8 +494,8 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 331. Social Standing +2, 15 to 15 (from step 330)
 332. add +1 on Table 1 for rank 5 or 6 (pp. 7, 9): policy chose yes from yes, no
 333. Table 1, Material Benefits: rolled 3 +1 = 4
-334. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Dagger
-335. expertise instead: Dagger-1 (from step 333)
+334. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Cutlass from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet, expertise in Cutlass
+335. expertise instead: Cutlass-1 (from step 333)
 336. retirement pay of CR 22000 a year
 
 ### 337. titles (p. 5; Book 3 p. 22)

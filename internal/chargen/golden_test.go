@@ -157,9 +157,6 @@ func pathsReached(character *chargen.Character, reached map[string]bool) {
 	_, drafted := character.Enlistment().(traveller.Drafted)
 	_, dead := character.Departure().(traveller.KilledBySurvivalThrow)
 
-	_, served := character.ServedIn()
-
-	mark(!served, "civilian")
 	mark(drafted, "draftee")
 	mark(dead, "death")
 	mark(character.Nobility().Eligible, "title")
@@ -216,7 +213,7 @@ func TestTheRosterReachesItsPaths(t *testing.T) {
 	}
 
 	for _, path := range []string{
-		"civilian", "draftee", "death", "title", "service grant",
+		"draftee", "death", "title", "service grant",
 		"medical crisis", "aging", "months on an age",
 		"a weapon benefit", "a second weapon benefit",
 		"a commission", "a draftee commissioned later", "a promotion",

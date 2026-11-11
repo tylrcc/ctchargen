@@ -32,7 +32,7 @@ possessions:
   - "Low Passage"
   - "High Passage"
   - "Low Passage"
-  - "Dagger"
+  - "Sword"
 ctchargen:
 ---
 
@@ -60,7 +60,7 @@ UPP 3B8A89, age 46, Marines Force Cmdr, 7 terms, retired
 - CR 37000
 - Low Passage ×2
 - High Passage
-- Dagger
+- Sword
 - CR 8000 a year in retirement pay
 
 ## Service record
@@ -298,8 +298,8 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 173. Table 1, Material Benefits: rolled 3
 174. Education +1, 7 to 8 (from step 173)
 175. Table 1, Material Benefits: rolled 4
-176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Dagger from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
-177. a Dagger (from step 175)
+176. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Sword from Dagger, Blade, Foil, Cutlass, Sword, Broadsword, Spear, Halberd, Pike, Cudgel, Bayonet
+177. a Sword (from step 175)
 178. Table 1, Material Benefits: rolled 6
 179. a High Passage (from step 178)
 180. Table 1, Material Benefits: rolled 1

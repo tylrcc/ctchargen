@@ -137,31 +137,20 @@ func lastReenlistment(character *chargen.Character) (bool, bool) {
 // The zero value of traveller.ServiceName is Navy, so before #42 a civilian
 // carried Navy in a Service field and only a Served flag beside it kept him
 // from reading as a sailor. ServedIn folds the Enlistment instead, and there
-// is no second field left to disagree with it.
+// is no second field left to disagree with it. Declining is a guided run's
+// answer, since every strategy submits (#566).
 //
 // Holds: A civilian entered no service, and the record names none.
 func TestACivilianEnteredNoService(t *testing.T) {
 	t.Parallel()
 
-	var civilians int
+	character := declinedTheDraft.walk(t)
 
-	for _, fixture := range fixtures {
-		character := fixture.generate(t)
-
-		_, declined := character.Enlistment().(traveller.DeclinedTheDraft)
-		if !declined {
-			continue
-		}
-
-		civilians++
-
-		service, served := character.ServedIn()
-		if served {
-			t.Errorf("%s: declined the draft and served in the %v", fixture.name, service)
-		}
+	if _, declined := character.Enlistment().(traveller.DeclinedTheDraft); !declined {
+		t.Fatalf("%s did not decline the draft, so this checks nothing", declinedTheDraft.name)
 	}
 
-	if civilians == 0 {
-		t.Error("no fixture declines the draft, so this checks nothing")
+	if service, served := character.ServedIn(); served {
+		t.Errorf("declined the draft and served in the %v", service)
 	}
 }

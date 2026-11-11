@@ -15,7 +15,7 @@ terms: 7
 status: "alive"
 departure: "retired"
 skills:
-  - "Body Pistol"
+  - "Carbine"
   - "Electronic"
   - "Jack of all Trades"
   - "Laser Carbine"
@@ -30,7 +30,7 @@ nobility:
 possessions:
   - "Low Passage"
   - "Dagger"
-  - "Body Pistol"
+  - "Carbine"
   - "Scout ship"
 ctchargen:
 ---
@@ -43,7 +43,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 ## Skills
 
-- Body Pistol-1
+- Carbine-1
 - Electronic-1
 - Jack of all Trades-1
 - Laser Carbine-1
@@ -57,7 +57,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 
 - Low Passage
 - Dagger
-- Body Pistol
+- Carbine
 - Scout ship, Type S, 100 tons, held in constructive possession
 
 ## Service record
@@ -71,7 +71,7 @@ UPP 7868A9, age 46, Scouts, 7 terms, retired
 - Term 6: Vacc Suit 0→1; aging Dexterity 9→8, Endurance 7→6
 - Term 7: Strength 6→7
 - retired after term 7
-- mustered out with Education 8→10, Body Pistol 0→1
+- mustered out with Education 8→10, Carbine 0→1
 
 ## Generation record
 
@@ -252,8 +252,8 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 130. Education +2, 8 to 10 (from step 129)
 131. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 132. Table 1, Material Benefits: rolled 5
-133. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
-134. a Body Pistol (from step 132)
+133. weapon benefit, or +1 expertise in lieu (p. 22): policy chose Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun
+134. a Carbine (from step 132)
 135. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 136. Table 1, Material Benefits: rolled 1
 137. a Low Passage (from step 136)
@@ -262,5 +262,5 @@ A line's `(from step N)` names the step it came from, most often the roll it was
 140. a second scout ship, which is lost (from step 139)
 141. mustering out table to consult (pp. 7, 9): policy chose Table 1, Material Benefits from Table 1, Material Benefits, Table 2, Cash Allowances
 142. Table 1, Material Benefits: rolled 5
-143. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Body Pistol from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun, expertise in Body Pistol
-144. expertise instead: Body Pistol-1 (from step 142)
+143. weapon benefit, or +1 expertise in lieu (p. 22): policy chose expertise in Carbine from Body Pistol, Automatic Pistol, Revolver, Carbine, Rifle, Laser Carbine, Laser Rifle, Automatic Rifle, Submachine Gun, Shotgun, expertise in Carbine
+144. expertise instead: Carbine-1 (from step 142)

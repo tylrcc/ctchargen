@@ -183,7 +183,7 @@ func (l logging) MusterTable2DM() (bool, error) {
 }
 
 func (l logging) MusterWeapon(
-	category traveller.WeaponCategory, from, received []traveller.WeaponName,
+	category traveller.WeaponCategory, from, received []traveller.WeaponName, vary Vary,
 ) (traveller.WeaponBenefit, error) {
 	// P. 22 offers the expertise beside the weapons, so the record of what
 	// was offered says so - and the gate has the whole offer to check
@@ -199,7 +199,7 @@ func (l logging) MusterWeapon(
 		return nil, err
 	}
 
-	chosen, err := l.to.MusterWeapon(category, own(from), own(received))
+	chosen, err := l.to.MusterWeapon(category, own(from), own(received), vary)
 	if err != nil {
 		return chosen, err
 	}

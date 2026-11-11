@@ -5,6 +5,20 @@
 Bullets as the work lands. The release pass rewrites this into whatever the
 release turns out to be.
 
+- Every career strategy submits to the draft, `oneterm` included (#566): a
+  character who declines has served no term, so `oneterm` had not done the one
+  term it names. A civilian now comes only from `new` without `--auto`, where
+  a person answers no.
+- `--muster spartan` is renamed `arsenal` (#570): Table 1, and a different
+  weapon each time. It now takes the +1 a rank of 5 or 6 allows on Table 1 and
+  the +1 gambling allows on Table 2, as `cash` and `goods` do; declining either
+  is a person's answer on `new` without `--auto`.
+- A weapon taken as a mustering-out benefit is drawn from the category's list,
+  as a combat result's weapon is (#420), not taken first in printed order
+  (#570): a benefit was a Dagger or a Body Pistol every time. `cash` and
+  `goods` draw the first and take expertise on a repeat; `arsenal` draws among
+  the weapons not yet received.
+
 - `task test` fails when the tests leave a file in the tree, and the coding
   standards say where a test writes and how it matches an expected line.
 - The release-snapshot rule moves from `CLAUDE.md` to the coding standards,

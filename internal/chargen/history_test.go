@@ -37,7 +37,7 @@ func TestTheServiceHistoryRecordsEachTerm(t *testing.T) {
 
 	for name, want := range map[string]chargen.ServiceHistory{
 		"army-serve":            armyServeHistory(),
-		"navy-spartan-declines": navySpartanDeclinesHistory(),
+		"navy-captain":          navyCaptainHistory(),
 		"other-crisis-survived": otherCrisisSurvivedHistory(),
 		"scouts-second-ship":    scoutsSecondShipHistory(),
 	} {
@@ -94,11 +94,12 @@ func armyServeHistory() chargen.ServiceHistory {
 	}
 }
 
-// navySpartanDeclinesHistory is navy-spartan-declines' generation record: nothing on
-// entering the Navy, a commission in the second term, and a promotion to
-// Captain in the seventh whose p. 23 grant is Social Standing +1, and the
-// reenlistment throw refused after it.
-func navySpartanDeclinesHistory() chargen.ServiceHistory {
+// navyCaptainHistory is navy-captain's generation record: nothing on entering
+// the Navy, a commission in the second term, and a promotion to Captain in the
+// seventh whose p. 23 grant is Social Standing +1, the reenlistment throw
+// refused after it, and a mustering out whose Social Standing +2 the ceiling
+// holds at 15.
+func navyCaptainHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
 		RetiredDenied: true,
 		Terms: []chargen.TermServed{
@@ -134,7 +135,11 @@ func navySpartanDeclinesHistory() chargen.ServiceHistory {
 				Aged:   []traveller.Change{change(traveller.Strength, 8, 7), change(traveller.Endurance, 7, 6)},
 			},
 		},
-		MusteredOut: gains(moved(traveller.Education, 11, 13), moved(traveller.Intelligence, 10, 11)),
+		MusteredOut: gains(
+			moved(traveller.Education, 11, 13),
+			chargen.Moved{Gain: held(traveller.SocialStanding, 14, 15, 2), From: 14},
+			moved(traveller.Intelligence, 10, 11),
+		),
 	}
 }
 
@@ -174,7 +179,7 @@ func otherCrisisSurvivedHistory() chargen.ServiceHistory {
 
 // scoutsSecondShipHistory is scouts-second-ship's generation record: Pilot-1
 // on entering the Scouts, a 12 on the first term's reenlistment throw, and
-// Body Pistol-1 at mustering out, taken instead of a second Body Pistol.
+// Carbine-1 at mustering out, taken instead of a second Carbine.
 func scoutsSecondShipHistory() chargen.ServiceHistory {
 	return chargen.ServiceHistory{
 		OnEntering: gains(skill("Pilot", 0, 1)),
@@ -198,7 +203,7 @@ func scoutsSecondShipHistory() chargen.ServiceHistory {
 			},
 			{Term: 7, Gained: gains(moved(traveller.Strength, 6, 7))},
 		},
-		MusteredOut: gains(moved(traveller.Education, 8, 10), skill("Body Pistol", 0, 1)),
+		MusteredOut: gains(moved(traveller.Education, 8, 10), skill("Carbine", 0, 1)),
 	}
 }
 

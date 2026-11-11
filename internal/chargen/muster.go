@@ -138,6 +138,7 @@ func (r *run) benefit(table traveller.MusterTable) (int, error) {
 // Implements: The +1 at rank 5 or 6 on Table 1 [1:9].
 // Implements: The +1 on Table 1 may be declined [1:9].
 // Implements: The +1 with gambling on Table 2 [1:9].
+// Implements: The +1 with gambling on Table 2 may be declined [1:9].
 func (r *run) musterModifier(table traveller.MusterTable) (int, error) {
 	if table == traveller.TableOne {
 		// P. 9: "Characters with rank 5 or 6 may add +1 to their rolls on
@@ -262,7 +263,7 @@ func (a *applyBenefit) WeaponPick(category traveller.WeaponCategory) error {
 	list := a.run.tables.Weapons(category)
 	received := a.run.receivedIn(category)
 
-	taken, err := a.run.decide.MusterWeapon(category, list, received)
+	taken, err := a.run.decide.MusterWeapon(category, list, received, varyOnly{a.run.roll})
 	if err != nil {
 		return fmt.Errorf("taking a weapon benefit: %w", err)
 	}

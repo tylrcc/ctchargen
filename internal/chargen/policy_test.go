@@ -1,6 +1,8 @@
 package chargen_test
 
 import (
+	"math/rand/v2"
+	"slices"
 	"strings"
 	"testing"
 
@@ -54,7 +56,7 @@ func TestCareerStrategies(t *testing.T) {
 		"oneterm leaves at the first opportunity": {
 			chargen.CareerOneTerm,
 			[]traveller.Intent{traveller.Continue, traveller.Discharge},
-			traveller.Discharge, false,
+			traveller.Discharge, true,
 		},
 	} {
 		policy := chargen.Policy{Career: tc.career, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash}
@@ -128,8 +130,8 @@ func TestMusterStrategies(t *testing.T) {
 		"goods prefers table 1, which is what reaches the ships": {
 			chargen.MusterGoods, traveller.TableOne, true,
 		},
-		"spartan prefers table 1 and declines both modifiers": {
-			chargen.MusterSpartan, traveller.TableOne, false,
+		"arsenal prefers table 1, and takes both modifiers as the others do": {
+			chargen.MusterArsenal, traveller.TableOne, true,
 		},
 	} {
 		policy := chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: tc.strategy}
@@ -150,44 +152,180 @@ func TestMusterStrategies(t *testing.T) {
 
 // P. 22 offers expertise "in lieu of receiving a second or subsequent weapon
 // of exactly the same type", so it can only be taken in one already
-// received. spartan is the strategy that diversifies instead.
+// received. cash and goods take it on a repeat; arsenal diversifies instead.
+// A weapon taken is drawn, never the first printed (#570): each case's draw
+// names a weapon the first printed is not, and says how many it drew among.
+//
+// Holds: The weapon for a weapon benefit is drawn, not always the first
+// printed.
 func TestMusterWeaponStrategies(t *testing.T) {
 	t.Parallel()
 
-	list := []traveller.WeaponName{dagger, "Blade", "Foil"}
-	received := []traveller.WeaponName{dagger}
+	const blade, foil traveller.WeaponName = "Blade", "Foil"
 
-	cash := chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterCash}
+	list := []traveller.WeaponName{dagger, blade, foil}
 
-	taken, err := cash.MusterWeapon(traveller.Blade, list, received)
+	for name, tc := range map[string]struct {
+		strategy chargen.Muster
+		received []traveller.WeaponName
+		draws    []int
+		want     traveller.WeaponBenefit
+		among    []int // the size of each draw the policy made
+	}{
+		"cash draws a first receipt": {
+			chargen.MusterCash, nil, []int{2}, traveller.TakeWeapon{Weapon: foil}, []int{3},
+		},
+		"goods draws a first receipt": {
+			chargen.MusterGoods, nil, []int{1}, traveller.TakeWeapon{Weapon: blade}, []int{3},
+		},
+		"cash takes expertise on a repeat, and draws nothing": {
+			chargen.MusterCash, []traveller.WeaponName{dagger}, nil, traveller.TakeExpertise{Weapon: dagger}, nil,
+		},
+		"goods takes expertise on a repeat, and draws nothing": {
+			chargen.MusterGoods, []traveller.WeaponName{foil}, nil, traveller.TakeExpertise{Weapon: foil}, nil,
+		},
+		"arsenal draws a first receipt": {
+			chargen.MusterArsenal, nil, []int{2}, traveller.TakeWeapon{Weapon: foil}, []int{3},
+		},
+		"arsenal draws among the weapons not yet received": {
+			chargen.MusterArsenal, []traveller.WeaponName{dagger}, []int{1}, traveller.TakeWeapon{Weapon: foil}, []int{2},
+		},
+		"arsenal draws from the whole list once it has received every one": {
+			chargen.MusterArsenal, list, []int{1}, traveller.TakeWeapon{Weapon: blade}, []int{3},
+		},
+	} {
+		policy := chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: tc.strategy}
+		vary := &drawn{draws: tc.draws}
+
+		got, err := policy.MusterWeapon(traveller.Blade, list, tc.received, vary)
+		if err != nil || got != tc.want {
+			t.Errorf("%s: took %v (%v), want %v", name, got, err, tc.want)
+		}
+
+		if !slices.Equal(vary.among, tc.among) {
+			t.Errorf("%s: drew among %v, want %v", name, vary.among, tc.among)
+		}
+	}
+}
+
+// The draft is a question, and a person may answer no: generation ends there,
+// with an 18-year-old civilian who served no term, stamped with E001. No
+// strategy declines (#566), so a guided run is what reaches it.
+//
+// The walk is played past its script rather than strictly: an engine that
+// went on after a declined draft would otherwise fail as a script run dry,
+// which says nothing of the draft. Past the script the dice are any dice, and
+// the outcome is judged first; the script is held to its end after.
+//
+// Holds: The draft is offered, not compelled.
+// Holds: Declining ends generation with a civilian.
+func TestDecliningTheDraftEndsWithACivilian(t *testing.T) {
+	t.Parallel()
+
+	roller := &pastTheScript{dice: declinedTheDraft.dice, rest: rand.New(rand.NewPCG(566, 1))}
+
+	character, err := chargen.Guided(declinedTheDraft.inputs(),
+		refusing{Policy: declinedTheDraft.policy, at: traveller.ChoiceSubmitToDraft}, chargen.WithRoller(roller))
 	if err != nil {
-		t.Fatalf("cash: %v", err)
+		t.Fatal(err)
 	}
 
-	if _, expertise := taken.(traveller.TakeExpertise); !expertise {
-		t.Errorf("cash took %T on a repeat, want expertise", taken)
+	asked := answersAt(character, traveller.ChoiceSubmitToDraft)
+	if !slices.Equal(asked, []string{"no"}) {
+		t.Fatalf("the draft was answered %v, want one no", asked)
 	}
 
-	// A first receipt has nothing to take expertise in.
-	first, err := cash.MusterWeapon(traveller.Blade, list, nil)
-	if err != nil {
-		t.Fatalf("cash, first receipt: %v", err)
+	if _, declined := character.Enlistment().(traveller.DeclinedTheDraft); !declined {
+		t.Errorf("the draft was declined, and the enlistment is %v; want the draft declined", character.Enlistment())
 	}
 
-	if _, weapon := first.(traveller.TakeWeapon); !weapon {
-		t.Errorf("cash took %T on a first receipt, want the weapon", first)
+	if service, served := character.ServedIn(); served || character.Terms() != 0 || character.Age().Years() != 18 {
+		t.Errorf("the draft was declined, and generation went on: served %v (%v) for %d terms to age %v; "+
+			"want no service, no term, age 18", service, served, character.Terms(), character.Age())
 	}
 
-	spartan := chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan}
-
-	diversified, err := spartan.MusterWeapon(traveller.Blade, list, received)
-	if err != nil {
-		t.Fatalf("spartan: %v", err)
+	if !slices.Contains(character.Errata, traveller.E001) {
+		t.Errorf("the draft was declined, and E001 is not stamped: %v", character.Errata)
 	}
 
-	if got, ok := diversified.(traveller.TakeWeapon); !ok || got.Weapon != "Blade" {
-		t.Errorf("spartan took %v, want the first weapon not already received", diversified)
+	if roller.past > 0 || roller.read != len(declinedTheDraft.dice) {
+		t.Errorf("%s read %d of its %d dice and asked for %d past them",
+			declinedTheDraft.name, roller.read, len(declinedTheDraft.dice), roller.past)
 	}
+}
+
+// pastTheScript plays a script's dice and, past their end, hands out any
+// dice and draws at all, counting them rather than failing.
+type pastTheScript struct {
+	dice       []int
+	read, past int
+	rest       *rand.Rand
+}
+
+func (p *pastTheScript) Die() int {
+	if p.read < len(p.dice) {
+		p.read++
+
+		return p.dice[p.read-1]
+	}
+
+	p.past++
+
+	return p.rest.IntN(6) + 1
+}
+
+func (p *pastTheScript) Among(n int) int {
+	p.past++
+
+	return p.rest.IntN(n)
+}
+
+// A rank of 5 or 6 allows +1 on Table 1, and a person may decline it: the
+// roll is then read at its dice alone (p. 9: "may add"). Every strategy takes
+// it (#570), so a guided run is what reaches the refusal.
+//
+// Holds: The +1 on Table 1 may be declined.
+func TestTheTableOneModifierMayBeDeclined(t *testing.T) {
+	t.Parallel()
+
+	character := declinedTheTableOneModifier.walk(t)
+
+	asked := answersAt(character, traveller.ChoiceMusterTable1DM)
+	if len(asked) == 0 {
+		t.Fatalf("%s was never offered the +1, so this checks nothing", declinedTheTableOneModifier.name)
+	}
+
+	declined := false
+
+	for _, event := range character.Events {
+		switch e := event.(type) {
+		case traveller.ChoiceEvent:
+			declined = e.Point == traveller.ChoiceMusterTable1DM && e.Chosen == "no"
+		case traveller.RollEvent:
+			if declined && e.DM != 0 {
+				t.Errorf("the +1 was declined, and the roll after it was read at %v %+d", e.Dice, e.DM)
+			}
+
+			declined = false
+		}
+	}
+
+	if slices.ContainsFunc(asked, func(answer string) bool { return answer != "no" }) {
+		t.Errorf("the +1 was answered %v, want no every time", asked)
+	}
+}
+
+// answersAt is every answer the record gives at one choice point, in order.
+func answersAt(character *chargen.Character, point traveller.ChoicePoint) []string {
+	var chosen []string
+
+	for _, event := range character.Events {
+		if choice, ok := event.(traveller.ChoiceEvent); ok && choice.Point == point {
+			chosen = append(chosen, choice.Chosen)
+		}
+	}
+
+	return chosen
 }
 
 // A word that names no strategy never becomes one.
@@ -240,7 +378,7 @@ func TestEveryStrategyParsesBackToItsSpelling(t *testing.T) {
 	}
 
 	for _, want := range []chargen.Muster{
-		chargen.MusterCash, chargen.MusterGoods, chargen.MusterSpartan,
+		chargen.MusterCash, chargen.MusterGoods, chargen.MusterArsenal,
 	} {
 		got, err := chargen.ParsePolicy(anyCareer, anySkills, want.String())
 		if err != nil || got.Muster != want {
@@ -265,7 +403,7 @@ func TestTheRejectionNamesTheValuesAndNoDocument(t *testing.T) {
 	}
 
 	for _, want := range []string{
-		chargen.MusterCash.String(), chargen.MusterGoods.String(), chargen.MusterSpartan.String(),
+		chargen.MusterCash.String(), chargen.MusterGoods.String(), chargen.MusterArsenal.String(),
 	} {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("the rejection %q does not offer %q", err, want)
@@ -277,10 +415,16 @@ func TestTheRejectionNamesTheValuesAndNoDocument(t *testing.T) {
 	}
 }
 
-// drawn is a Vary that answers each draw from a script.
-type drawn struct{ draws []int }
+// drawn is a Vary that answers each draw from a script, and keeps how many
+// alternatives each draw was among.
+type drawn struct {
+	draws []int
+	among []int
+}
 
-func (d *drawn) Among(int) int {
+func (d *drawn) Among(n int) int {
+	d.among = append(d.among, n)
+
 	next := d.draws[0]
 
 	d.draws = d.draws[1:]
@@ -311,7 +455,7 @@ func TestServiceIsDrawnFromEveryService(t *testing.T) {
 			chargen.DefaultPolicy(),
 			{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
 		} {
-			chosen, err := policy.Service(offers, &drawn{[]int{draw}})
+			chosen, err := policy.Service(offers, &drawn{draws: []int{draw}})
 			if err != nil || chosen != service {
 				t.Errorf("%v drew %d and chose %v (%v), want %v", policy, draw, chosen, err, service)
 			}

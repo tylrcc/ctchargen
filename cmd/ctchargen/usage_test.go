@@ -124,7 +124,7 @@ func TestHelpNamesTheStrategiesAndTheirDefaults(t *testing.T) {
 
 	for _, want := range []string{
 		"serve, retire, oneterm", "advanced, service, personal",
-		"cash, goods, spartan", "(default serve)", "(default advanced)",
+		"cash, goods, arsenal", "(default serve)", "(default advanced)",
 		"(default cash)", merchants, navy,
 	} {
 		if !strings.Contains(out, want) {

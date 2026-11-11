@@ -418,6 +418,24 @@ func TestTheDraftQuestionSaysWhatDecliningCosts(t *testing.T) {
 	}
 }
 
+// A person may answer no to the draft, and the note is then a civilian's: no
+// strategy declines (#566), so this is the one way a civilian is made.
+func TestDecliningTheDraftWritesACivilian(t *testing.T) {
+	t.Parallel()
+
+	note, _ := mustRun(t, []string{cmdNew, flagService, navy}, answers("2", 10),
+		withDice(navyDeclined.roller(t)))
+
+	for _, want := range []string{
+		"# Civilian 87665B",
+		"submit to the draft (p. 5): player chose no from yes, no",
+	} {
+		if !regexp.MustCompile(`(?m)^(\d+\. )?` + regexp.QuoteMeta(want) + `$`).MatchString(note) {
+			t.Errorf("the note has no line %q:\n%s", want, note)
+		}
+	}
+}
+
 // The skills question says which roll of how many it is and what gave the
 // term that many, and each table offered shows its six results (#486). Held
 // at the drafted walk's third term, which is commissioned and promoted, so
@@ -459,17 +477,31 @@ func TestTheSkillsQuestionSaysWhichRollAndWhatEachTableHolds(t *testing.T) {
 
 // The gambling modifier is offered only to someone who has the expertise, so
 // reaching it takes a walk that draws the skill: the gambler, taking the
-// Service Skills Table every time.
+// Service Skills Table every time. Answering 2 there declines it, which no
+// strategy does (#570), so this is the one way the refusal is reached: the
+// record says the player chose no, and the roll after it is read at its die.
 //
 // Holds: The gambling modifier is offered only to one who has the expertise.
+// Holds: The +1 with gambling on Table 2 may be declined.
 func TestInteractiveOffersTheGamblingModifier(t *testing.T) {
 	t.Parallel()
 
-	out := mustRunTogether(t, []string{cmdNew, flagService, other}, answers("2", 300),
-		withDice(gamblerWalked.roller(t)))
+	var note, asked strings.Builder
 
-	if !strings.Contains(out, "Your gambling expertise allows +1 on this table") {
+	err := run([]string{cmdNew, flagService, other}, answers("2", 300), &note, &asked,
+		withDice(gamblerWalked.roller(t)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !strings.Contains(asked.String(), "Your gambling expertise allows +1 on this table") {
 		t.Error("a character with Gambling was never offered the modifier p. 9 gives him")
+	}
+
+	declined := regexp.MustCompile(`(?m)^\d+\. DM \+1 on Table 2 for gambling expertise \(pp\. 7, 9\): ` +
+		`player chose no from yes, no\n\d+\. Table 2, Cash Allowances: rolled \d$`)
+	if !declined.MatchString(note.String()) {
+		t.Errorf("the note does not record the modifier declined and the roll read without it:\n%s", note.String())
 	}
 }
 

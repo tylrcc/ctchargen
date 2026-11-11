@@ -26,7 +26,7 @@ type fixture struct {
 	forced chargen.ForcedService
 	policy chargen.Policy
 	dice   []int // every die, in the order the procedure asks for it
-	among  []int // every draw among alternatives, as an index into the offer
+	among  []int // every draw among alternatives, as an index into what it was drawn among
 }
 
 func (f fixture) inputs() chargen.Inputs {
@@ -61,12 +61,12 @@ func (f fixture) run(t *testing.T, options ...chargen.Option) (*chargen.Characte
 // finishes is held to the whole script as run's is. One that answers
 // otherwise walks somewhere the script was not written for: it fails if it
 // asks for a die past the end, and, finishing, if it leaves any unread.
-func (f fixture) runWith(t *testing.T, decider chargen.Decider, options ...chargen.Option) (*chargen.Character, error) {
+func (f fixture) runWith(t *testing.T, decider chargen.Decider) (*chargen.Character, error) {
 	t.Helper()
 
 	return f.play(t, func(options ...chargen.Option) (*chargen.Character, error) {
 		return chargen.Guided(f.inputs(), decider, options...)
-	}, options)
+	}, nil)
 }
 
 // play runs the fixture one way in and, when the run finishes, holds the
@@ -99,8 +99,7 @@ func (f fixture) roller(t *testing.T) *scripted.Roller {
 }
 
 // The roster. One fixture per selectable strategy, plus what only a
-// particular path produces: a civilian who declined the draft, a draftee, a
-// death in service, a medical crisis, which is the one path that puts months
+// particular path produces: a draftee, a death in service, a medical crisis, which is the one path that puts months
 // on an age, a death in service carrying those months, and the two readings
 // only a career past the Aging Table's last printed column reaches.
 //
@@ -169,7 +168,7 @@ var fixtures = []fixture{
 		// The nine mustering-out rolls, one die each: three on Table 2, then
 		// six on Table 1.
 		dice:  slices.Concat(merchantsCaptainCareer, []int{2, 4, 5, 6, 4, 6, 4, 1, 4}),
-		among: []int{5, 4},
+		among: []int{5, 4, 9},
 	},
 	// merchants-captain's career, mustered out on goods, so all nine rolls go
 	// to Table 1 with the rank's +1: +1 Intelligence, +1 Education and a Low
@@ -301,31 +300,13 @@ var fixtures = []fixture{
 		},
 		among: nil,
 	},
-	// Rank 5 declining the +1 that p. 9 allows him on Table 1. Spartan is
-	// the only strategy that declines it, and until this fixture no
-	// generated character both held the rank and refused the modifier.
-	//
-	// Holds: The +1 on Table 1 may be declined.
-	{
-		name: "navy-spartan-declines", forced: chargen.ForceService(traveller.Navy),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
-		dice: []int{
-			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
-			3, 5, 4, 6, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 4, 3,
-			1, 4, 6, 6, 3, 4, 5, 6, 2, 5, 4, 6, 4, 3, 5, 2, 5, 6, 5, 1,
-			6, 3, 1, 2, 6, 6, 3, 5, 2, 5, 1, 2, 1, 4, 2, 6, 2, 5, 4, 4,
-			1, 4, 6, 6, 5, 6, 3, 2, 2, 2, 4, 6, 4, 4, 2, 5, 4, 3, 2, 5,
-			6, 4, 4, 1,
-		},
-		among: nil,
-	},
 	// Killed in the Scouts, which is where the service-wide grant of p. 23
 	// is carried by a character who never lived to muster out.
 	//
 	// Holds: Service-wide rank and service skills, granted once on entering.
 	{
 		name: "scouts-died", forced: chargen.ForceService(traveller.Scouts),
-		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
+		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterArsenal},
 		dice: []int{
 			6, 1, 6, 6, 2, 6, 5, 1, 4, 2, 3, 6, 3, 3, 1, 6, 1, 1, 3, 2,
 			2, 4,
@@ -359,29 +340,32 @@ var fixtures = []fixture{
 			1, 4, 2, 4, 5, 1, 6, 2, 3, 6, 5, 2, 5, 6, 4, 6, 3, 5, 1, 6,
 			5,
 		},
-		among: []int{5},
+		among: []int{5, 0, 3},
 	},
 	// Rejected by the Navy, drafted into Other, and killed there.
 	{
 		name: "drafted-and-died", forced: chargen.ForceService(traveller.Navy),
-		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterSpartan},
+		policy: chargen.Policy{Career: chargen.CareerRetire, Skills: chargen.SkillsService, Muster: chargen.MusterArsenal},
 		dice: []int{
 			2, 6, 4, 3, 1, 6, 3, 4, 4, 6, 4, 4, 2, 2, 6, 1, 3,
 		},
 		among: nil,
 	},
-	// Holds: The draft is offered, not compelled.
-	// Holds: Declining ends generation with a civilian.
+	// Rejected by the Scouts and drafted into Other under oneterm, which
+	// submits to the draft as every strategy does (#566). Until #566 oneterm
+	// declined, and this path ended in an 18-year-old civilian who had served
+	// no term at all; a civilian is now a guided run's (declinedTheDraft).
 	{
-		name: "scouts-civilian", forced: chargen.ForceService(traveller.Scouts),
+		name: "drafted-under-oneterm", forced: chargen.ForceService(traveller.Scouts),
 		policy: chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
 		dice: []int{
-			6, 1, 2, 4, 5, 6, 1, 2, 1, 3, 2, 6, 4, 2,
+			6, 1, 2, 4, 5, 6, 1, 2, 1, 3, 2, 6, 4, 2, 6, 3, 6, 3, 3, 1,
+			2, 5,
 		},
 		among: nil,
 	},
 	// Weapon rows taken twice: goods converts the repeat into expertise,
-	// spartan takes a different weapon instead (p. 22).
+	// arsenal takes a different weapon instead (p. 22).
 	//
 	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
@@ -394,12 +378,12 @@ var fixtures = []fixture{
 			6, 3, 1, 2, 6, 6, 3, 5, 2, 5, 1, 2, 1, 4, 2, 6, 2, 5, 4, 4,
 			1,
 		},
-		among: nil,
+		among: []int{5, 1},
 	},
 	// Holds: A repeat weapon may be taken as expertise, or as a different weapon.
 	{
 		name: "scouts-diversified", forced: chargen.ForceService(traveller.Scouts),
-		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterSpartan},
+		policy: chargen.Policy{Career: chargen.CareerServe, Skills: chargen.SkillsAdvanced, Muster: chargen.MusterArsenal},
 		dice: []int{
 			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
 			3, 5, 4, 6, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 4, 3,
@@ -407,7 +391,7 @@ var fixtures = []fixture{
 			6, 3, 1, 2, 6, 6, 3, 5, 2, 5, 1, 2, 1, 4, 2, 6, 2, 5, 4, 4,
 			1,
 		},
-		among: nil,
+		among: []int{9, 4, 3},
 	},
 	{
 		name:   "other-oneterm",
@@ -451,7 +435,7 @@ var fixtures = []fixture{
 			3, 4, 3, 3, 2, 5, 5, 4, 6, 4, 1, 1, 4, 6, 3, 1, 2, 1, 3, 4,
 			6, 1,
 		},
-		among: []int{4, 0, 9, 10},
+		among: []int{4, 0, 9, 10, 4},
 	},
 	// E011's first consequence, both ways round. A mustering out or a rank
 	// alteration can confer a title the character did not hold at 18, and
@@ -523,7 +507,7 @@ var fixtures = []fixture{
 			6, 6, 6, 6, 6, 5, 6, 6, 6, 6, 6, 2, 4, 6, 4, 6, 6, 6, 4, 5,
 			6, 6, 6, 6, 6, 2, 4, 6, 5, 3, 6, 6, 6, 3,
 		},
-		among: nil,
+		among: []int{3},
 	},
 	// Eighty 12s in a row: seventeen terms, three past the Aging Table's
 	// last printed column, which E014 reads as terminal. Both readings turn
@@ -566,6 +550,92 @@ var merchantsCaptainCareer = []int{
 	4, 1, 6, 3, 4, 6, 4, 2, 1, 6, 1, 1, 5, 4, 3, 1, 1, 4, 2, 6,
 	1, 5, 1, 5, 4, 6, 4, 2, 3, 5, 4, 2, 3, 6, 1, 4, 4, 3, 3, 6,
 	3, 4, 2, 5, 5, 4, 2, 1, 5, 4, 5, 6, 1, 2, 3,
+}
+
+// A guidedWalk is a path only a person reaches, because it answers no at one
+// point where every strategy answers yes. It is a walk, not a fixture: off the
+// roster, which is the auto runs', with no golden, and held in a fixture value
+// only so runWith can walk it with a refusing decider. Its record is read
+// beside the roster's all the same (readRecords), so the stamping conditions
+// see what only a person reaches. Each was extracted, as the roster's scripts
+// were, from a record of its own path.
+type guidedWalk struct {
+	fixture
+
+	refuses traveller.ChoicePoint
+}
+
+// walk generates the walk's character, answered by its policy except where it
+// refuses, and held to its whole script.
+func (g guidedWalk) walk(t *testing.T) *chargen.Character {
+	t.Helper()
+
+	character, err := g.runWith(t, refusing{Policy: g.policy, at: g.refuses})
+	if err != nil {
+		t.Fatalf("%s: %v", g.name, err)
+	}
+
+	return character
+}
+
+// The guided walks.
+var (
+	guidedWalks = []guidedWalk{declinedTheDraft, declinedTheTableOneModifier}
+
+	// declinedTheDraft is rejected by the Scouts and declines the draft: an
+	// 18-year-old civilian. It is the first fourteen dice of
+	// drafted-under-oneterm, which submits.
+	declinedTheDraft = guidedWalk{
+		name: "declined-the-draft", forced: chargen.ForceService(traveller.Scouts),
+		policy:  chargen.Policy{Career: chargen.CareerOneTerm, Skills: chargen.SkillsPersonal, Muster: chargen.MusterGoods},
+		dice:    []int{6, 1, 2, 4, 5, 6, 1, 2, 1, 3, 2, 6, 4, 2},
+		among:   nil,
+		refuses: traveller.ChoiceSubmitToDraft,
+	}
+
+	// declinedTheTableOneModifier is navy-captain's career, a Captain at rank
+	// 5, mustered out on goods and declining the +1 the rank allows on each
+	// of the nine Table 1 rolls (p. 9). Read without the +1, three of them
+	// are Blade Combat benefits: its one draw is the first, and goods takes
+	// the other two as expertise.
+	declinedTheTableOneModifier = guidedWalk{
+		name: "declined-the-table-1-modifier", forced: chargen.ForceService(traveller.Navy),
+		policy: servesMustersGoods,
+		dice: []int{
+			5, 5, 3, 3, 2, 6, 6, 4, 5, 5, 6, 6, 5, 1, 2, 5, 2, 3, 2, 1,
+			3, 5, 4, 6, 6, 6, 3, 2, 1, 3, 5, 4, 6, 3, 5, 3, 2, 6, 4, 3,
+			1, 4, 6, 6, 3, 4, 5, 6, 2, 5, 4, 6, 4, 3, 5, 2, 5, 6, 5, 1,
+			6, 3, 1, 2, 6, 6, 3, 5, 2, 5, 1, 2, 1, 4, 2, 6, 2, 5, 4, 4,
+			1, 4, 6, 6, 5, 6, 3, 2, 2, 2, 4, 6, 4, 4, 2, 5, 4, 3, 2, 5,
+			6, 4, 4, 1,
+		},
+		among:   []int{3},
+		refuses: traveller.ChoiceMusterTable1DM,
+	}
+)
+
+// refusing is a fixture's policy, except that it answers no at one yes-or-no
+// point: a person's answer, which no strategy gives (#566, #570).
+type refusing struct {
+	chargen.Policy
+
+	at traveller.ChoicePoint
+}
+
+func (r refusing) SubmitToDraft() (bool, error) {
+	if r.at == traveller.ChoiceSubmitToDraft {
+		return false, nil
+	}
+
+	return r.Policy.SubmitToDraft() //nolint:wrapcheck // the policy's own error, unchanged
+}
+
+func (r refusing) MusterTable1DM() (bool, error) {
+	if r.at == traveller.ChoiceMusterTable1DM {
+		return false, nil
+	}
+
+	return r.Policy.MusterTable1DM() //nolint:wrapcheck // the policy's own error, unchanged
 }
 
 // byName finds a fixture on the roster, for a test that holds a rule the

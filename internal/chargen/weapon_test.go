@@ -172,10 +172,10 @@ func (f forging) Weapon(
 }
 
 func (f forging) MusterWeapon(
-	category traveller.WeaponCategory, from, received []traveller.WeaponName,
+	category traveller.WeaponCategory, from, received []traveller.WeaponName, vary chargen.Vary,
 ) (traveller.WeaponBenefit, error) {
 	if f.at != traveller.ChoiceMusterWeapon {
-		return f.Policy.MusterWeapon(category, from, received) //nolint:wrapcheck // the policy's own error, unchanged
+		return f.Policy.MusterWeapon(category, from, received, vary) //nolint:wrapcheck // the policy's own error, unchanged
 	}
 
 	return traveller.TakeWeapon{Weapon: f.forge(from)}, nil

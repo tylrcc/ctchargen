@@ -70,9 +70,9 @@ func (s scribbling) MusterTable(from []traveller.MusterTable) (traveller.MusterT
 }
 
 func (s scribbling) MusterWeapon(
-	category traveller.WeaponCategory, from, received []traveller.WeaponName,
+	category traveller.WeaponCategory, from, received []traveller.WeaponName, vary chargen.Vary,
 ) (traveller.WeaponBenefit, error) {
-	chosen, err := s.Policy.MusterWeapon(category, from, received)
+	chosen, err := s.Policy.MusterWeapon(category, from, received, vary)
 	for i := range from {
 		from[i] = scribbled
 	}
@@ -155,7 +155,7 @@ func (a answeringOutsideTheOffer) SkillTable(
 }
 
 func (a answeringOutsideTheOffer) MusterWeapon(
-	category traveller.WeaponCategory, from, received []traveller.WeaponName,
+	category traveller.WeaponCategory, from, received []traveller.WeaponName, vary chargen.Vary,
 ) (traveller.WeaponBenefit, error) {
 	if a.expertise && len(received) == 0 {
 		// P. 22 offers the expertise only in a weapon already received as a
@@ -163,7 +163,7 @@ func (a answeringOutsideTheOffer) MusterWeapon(
 		return traveller.TakeExpertise{Weapon: from[0]}, nil
 	}
 
-	return a.Decider.MusterWeapon(category, from, received) //nolint:wrapcheck // the policy's own error, unchanged
+	return a.Decider.MusterWeapon(category, from, received, vary) //nolint:wrapcheck // the policy's own error, unchanged
 }
 
 // A decider that answers outside the offered set is refused, not obeyed.

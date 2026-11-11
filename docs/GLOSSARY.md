@@ -94,8 +94,10 @@ path, named for the path it reaches, whose note is checked in as a golden.
 _Avoid_: Seed, magic number, case
 
 **Walk**:
-The command tests' scripted path: dice and draws extracted from a record the
-tool wrote, with no golden. The test that drives it is its proof.
+A scripted path with no golden: dice and draws extracted from a record the
+tool wrote. The command tests take walks, and the engine's tests take guided
+walks, the paths a person's answer reaches and no strategy does. The test that
+drives it is its proof.
 _Avoid_: Fixture (a fixture has a golden), replay
 
 **Golden**:

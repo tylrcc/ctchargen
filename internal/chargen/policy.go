@@ -20,11 +20,12 @@ import (
 // of what --auto decides.
 //
 // It is total - it answers every method of Decider - and every strategy is a
-// pure function of what it is handed. Two answers draw - the service and the
-// weapon - and they draw only through the Vary they are handed, which is the
-// run's own dice, so a run is determined by its dice and nothing else. Where a strategy needs to
-// know that an option is legal, the engine supplies that by what it puts in
-// the offered set, never by the strategy reaching into the character.
+// pure function of what it is handed. Three answers draw - the service, the
+// weapon a combat result names, and the weapon a benefit names - and they draw
+// only through the Vary they are handed, which is the run's own dice, so a run
+// is determined by its dice and nothing else. Where a strategy needs to know
+// that an option is legal, the engine supplies that by what it puts in the
+// offered set, never by the strategy reaching into the character.
 //
 // Ranked preferences are written best-first. A strategy takes the first of its
 // ranking that is on offer; where its ranking is silent, the tie-break is
@@ -85,7 +86,7 @@ const (
 const (
 	MusterCash Muster = iota
 	MusterGoods
-	MusterSpartan
+	MusterArsenal
 )
 
 // The three alphabets, for parsing a flag and for listing the choices. They
@@ -94,7 +95,7 @@ const (
 var (
 	careerStrategies = []Career{CareerServe, CareerRetire, CareerOneTerm}
 	skillsStrategies = []Skills{SkillsAdvanced, SkillsService, SkillsPersonal}
-	musterStrategies = []Muster{MusterCash, MusterGoods, MusterSpartan}
+	musterStrategies = []Muster{MusterCash, MusterGoods, MusterArsenal}
 )
 
 func (c Career) String() string {
@@ -129,8 +130,8 @@ func (m Muster) String() string {
 		return "cash"
 	case MusterGoods:
 		return "goods"
-	case MusterSpartan:
-		return "spartan"
+	case MusterArsenal:
+		return "arsenal"
 	}
 
 	return fmt.Sprintf("Muster(%d)", int(m))
@@ -253,10 +254,12 @@ func (p Policy) Service(from []traveller.EnlistmentOffer, vary Vary) (traveller.
 // SubmitToDraft is asked when the enlistment throw failed. The question
 // exists at all because the draft is declinable (E001).
 //
-// serve and retire answer yes. oneterm answers no, and generation ends with
-// an 18-year-old civilian; it is the strategy that reaches the civilian record
-// at all, and the only one whose golden can.
-func (p Policy) SubmitToDraft() (bool, error) { return p.Career != CareerOneTerm, nil }
+// All three strategies answer yes. A character who declines is an
+// 18-year-old civilian with no term at all, and oneterm, which once declined,
+// had then not served the term it names (#566). Declining is a person's
+// answer: a guided run reaches it, and an auto run never does
+// (TestDecliningTheDraftEndsWithACivilian).
+func (p Policy) SubmitToDraft() (bool, error) { return true, nil }
 
 // AttemptCommission is asked when the service has commissions (not Scouts,
 // not Other; pp. 6, 10), the character is not yet commissioned, and it is not
@@ -405,7 +408,8 @@ func thinnest(from []traveller.SkillTableOffer) []traveller.SkillTable {
 //
 // All three strategies draw a name from the list, uniformly. The draw comes
 // from the run's own dice, so a fixture that scripts its draws still walks the
-// same path. It and the service are the two draws any strategy takes (#420).
+// same path. It is one of the three draws every strategy takes, with the
+// service (#420) and the weapon a benefit names (MusterWeapon, #570).
 //
 // It draws rather than ranks because the book names no basis. Where p. 11
 // makes the player designate a table, or p. 21 decides a departure by the
@@ -421,7 +425,7 @@ func thinnest(from []traveller.SkillTableOffer) []traveller.SkillTable {
 // already has raises its level (p. 12: "Additional acquisitions of expertise
 // in the same weapon increase the present level by one"); that is the branch
 // that produces a level above 1 from the skills tables. Diversifying on
-// purpose is spartan's MusterWeapon.
+// purpose is arsenal's MusterWeapon.
 //
 // Implements: The weapon for a Blade or Gun result is drawn, not always the
 // first printed [1:11–13].
@@ -437,7 +441,7 @@ func (p Policy) Weapon(
 // maximum of three rolls on table 2 are allowed per character"); once the cap
 // is reached Table 1 is the only option and this is not called.
 //
-// cash ranks Table 2 over Table 1; goods and spartan rank Table 1 over
+// cash ranks Table 2 over Table 1; goods and arsenal rank Table 1 over
 // Table 2. cash reaches the three-roll cap in any run with three or more
 // rolls, which is the only way the cap is exercised; goods is what reaches the
 // ship benefits, Travellers' Aid, and Table 1's dash rows.
@@ -453,57 +457,67 @@ func (p Policy) MusterTable(from []traveller.MusterTable) (traveller.MusterTable
 // "Characters with rank 5 or 6 may add +1 to their rolls on this table") and
 // the roll is on Table 1.
 //
-// cash and goods answer yes; spartan answers no. The declined branch is
-// reached by the golden navy-spartan-declines: spartan prefers Table 1, so a
-// spartan character who reaches rank 5 is asked and refuses.
-func (p Policy) MusterTable1DM() (bool, error) { return p.Muster != MusterSpartan, nil }
+// All three strategies answer yes: the page prices nothing against the +1.
+// Declining is a person's answer: a guided run reaches it, and an auto run
+// never does (TestTheTableOneModifierMayBeDeclined).
+func (p Policy) MusterTable1DM() (bool, error) { return true, nil }
 
 // MusterTable2DM is asked when the character has Gambling skill (p. 9:
 // "Individuals with gambling expertise are allowed a DM of +1 on table 2") and
 // the roll is on Table 2.
 //
-// cash and goods answer yes; spartan answers no. On an auto run only cash is
-// ever asked: it is the only strategy that rolls on Table 2, because goods
-// and spartan both prefer Table 1 and Table 1 is always on offer. So --auto
-// reaches only cash's yes, and goods' yes and spartan's no are answers no
-// generated character is given, held by TestMusterStrategies alone. The
-// declined branch is reachable only from outside the policy, where a person
-// is asked and answers no
-// (cmd/ctchargen.TestInteractiveOffersTheGamblingModifier).
-func (p Policy) MusterTable2DM() (bool, error) { return p.Muster != MusterSpartan, nil }
+// All three strategies answer yes. On an auto run only cash is ever asked: it
+// is the only strategy that rolls on Table 2, because goods and arsenal both
+// prefer Table 1 and Table 1 is always on offer, so the other two's yes is an
+// answer no generated character is given, held by TestMusterStrategies alone.
+// Declining is a person's answer: a guided run reaches it, and an auto run
+// never does (cmd/ctchargen.TestInteractiveOffersTheGamblingModifier).
+func (p Policy) MusterTable2DM() (bool, error) { return true, nil }
 
 // MusterWeapon is asked when a Table 1 roll is a weapon benefit (p. 9's Blade
-// and Gun rows). from is the category's printed list, read column-major (settled by the
-// page; see rules.Rules.Weapons). received is the weapons
-// of this category the character has already taken as benefits - narrower
-// twice over than the weapons he holds: p. 22 says "Expertise may only be
-// taken in a weapon received as a benefit", which excludes weapons from
-// skills-table results, and offers the expertise "in lieu of receiving a
-// second or subsequent weapon of exactly the same type", which keeps it inside
-// the benefit's own category. It is offered TakeWeapon on any name in the
-// list, and TakeExpertise on a name in received once received is non-empty.
+// and Gun rows). from is the category's printed list, read column-major
+// (settled by the page; see rules.Rules.Weapons). received is the weapons of
+// this category the character has already taken as benefits - narrower twice
+// over than the weapons he holds: p. 22 says "Expertise may only be taken in a
+// weapon received as a benefit", which excludes weapons from skills-table
+// results, and offers the expertise "in lieu of receiving a second or
+// subsequent weapon of exactly the same type", which keeps it inside the
+// benefit's own category. It is offered TakeWeapon on any name in the list,
+// and TakeExpertise on a name in received once received is non-empty.
+//
+// A weapon taken is drawn from the list, uniformly, with the run's own dice,
+// for the reason Weapon draws one: the list's printed order is not a
+// preference (#570). Before #570 every strategy took the first name printed,
+// and a benefit was a Dagger or a Body Pistol every time.
 //
 //   - cash and goods: TakeExpertise on the first name in received when it is
-//     offered; otherwise TakeWeapon on the first name in the printed list. They
+//     offered; otherwise TakeWeapon on a name drawn from the list. They
 //     convert repeats into expertise, the branch p. 22's worked sentence
 //     describes.
-//   - spartan: TakeWeapon on the first name in the printed list not already in
-//     received, or the first name in the list if every one is. It diversifies,
-//     the branch that fills a benefit list with distinct weapons.
+//   - arsenal: TakeWeapon on a name drawn from those in the list not already
+//     in received, or from the whole list if he has received every one. It
+//     diversifies, the branch that fills a benefit list with distinct
+//     weapons.
+//
+// Implements: The weapon for a weapon benefit is drawn, not always the first
+// printed [1:9, 22].
 func (p Policy) MusterWeapon(
-	_ traveller.WeaponCategory, from, received []traveller.WeaponName,
+	_ traveller.WeaponCategory, from, received []traveller.WeaponName, vary Vary,
 ) (traveller.WeaponBenefit, error) {
-	if p.Muster != MusterSpartan && len(received) > 0 {
-		return traveller.TakeExpertise{Weapon: received[0]}, nil
-	}
-
-	if p.Muster == MusterSpartan {
-		for _, name := range from {
-			if !slices.Contains(received, name) {
-				return traveller.TakeWeapon{Weapon: name}, nil
-			}
+	if p.Muster != MusterArsenal {
+		if len(received) > 0 {
+			return traveller.TakeExpertise{Weapon: received[0]}, nil
 		}
+
+		return traveller.TakeWeapon{Weapon: from[vary.Among(len(from))]}, nil
 	}
 
-	return traveller.TakeWeapon{Weapon: from[0]}, nil
+	fresh := slices.DeleteFunc(slices.Clone(from), func(name traveller.WeaponName) bool {
+		return slices.Contains(received, name)
+	})
+	if len(fresh) == 0 {
+		fresh = from
+	}
+
+	return traveller.TakeWeapon{Weapon: fresh[vary.Among(len(fresh))]}, nil
 }
